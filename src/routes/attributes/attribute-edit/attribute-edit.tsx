@@ -89,32 +89,36 @@ export const AttributeEdit = () => {
       onOpenChange={(open) => {
         if (!open) handleClose();
       }}
+      data-testid="attribute-edit-modal"
     >
-      <FocusModal.Content>
+      <FocusModal.Content data-testid="attribute-edit-modal-content">
         <ProgressTabs
           value={activeTab}
           onValueChange={(value) => setActiveTab(value as "details" | "type")}
           className="w-full h-full"
+          data-testid="attribute-edit-progress-tabs"
         >
-          <FocusModal.Header className="flex items-center justify-between w-full py-0 h-fit">
+          <FocusModal.Header className="flex items-center justify-between w-full py-0 h-fit" data-testid="attribute-edit-modal-header">
             <div className="w-full border-l h-full">
-              <ProgressTabs.List className="justify-start flex w-full items-center">
+              <ProgressTabs.List className="justify-start flex w-full items-center" data-testid="attribute-edit-progress-tabs-list">
                 <ProgressTabs.Trigger
                   value="details"
                   status={tabStatuses.detailsStatus}
+                  data-testid="attribute-edit-details-tab"
                 >
                   Details
                 </ProgressTabs.Trigger>
                 <ProgressTabs.Trigger
                   value="type"
                   status={tabStatuses.typeStatus}
+                  data-testid="attribute-edit-type-tab"
                 >
                   Type
                 </ProgressTabs.Trigger>
               </ProgressTabs.List>
             </div>
           </FocusModal.Header>
-          <FocusModal.Body className="flex flex-col items-center py-16">
+          <FocusModal.Body className="flex flex-col items-center py-16" data-testid="attribute-edit-modal-body">
             <div>
               <AttributeForm
                 initialData={attribute}
@@ -128,11 +132,11 @@ export const AttributeEdit = () => {
             </div>
           </FocusModal.Body>
         </ProgressTabs>
-        <FocusModal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+        <FocusModal.Footer data-testid="attribute-edit-modal-footer">
+          <Button variant="secondary" onClick={handleClose} data-testid="attribute-edit-modal-cancel-button">
             Cancel
           </Button>
-          <Button type="submit" form="attribute-form">
+          <Button type="submit" form="attribute-form" data-testid="attribute-edit-modal-save-button">
             Save
           </Button>
         </FocusModal.Footer>

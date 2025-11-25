@@ -139,10 +139,10 @@ export const AttributeForm = ({
   }, [form.watch(), onFormStateChange]);
 
   const renderDetailsTab = () => (
-    <div className="grid gap-6">
+    <div className="grid gap-6" data-testid="attribute-form-details-tab">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label size="small" htmlFor="name">
+        <div data-testid="attribute-form-name-field">
+          <Label size="small" htmlFor="name" data-testid="attribute-form-name-label">
             Name
           </Label>
           <Input
@@ -150,15 +150,16 @@ export const AttributeForm = ({
             id="name"
             className="mt-1"
             {...form.register("name")}
+            data-testid="attribute-form-name-input"
           />
           {form.formState.errors.name && (
-            <Text className="text-red-500 text-sm mt-1">
+            <Text className="text-red-500 text-sm mt-1" data-testid="attribute-form-name-error">
               {form.formState.errors.name.message}
             </Text>
           )}
         </div>
-        <div>
-          <Label size="small" htmlFor="handle">
+        <div data-testid="attribute-form-handle-field">
+          <Label size="small" htmlFor="handle" data-testid="attribute-form-handle-label">
             Handle <span className="text-ui-fg-subtle text-xs">(Optional)</span>
           </Label>
           <div className="relative">
@@ -167,12 +168,13 @@ export const AttributeForm = ({
               id="handle"
               className="pl-9 mt-1"
               {...form.register("handle")}
+              data-testid="attribute-form-handle-input"
             />
             <div className="absolute z-100 left-0 top-1 bottom-0 flex items-center justify-center px-2 w-7 border-r border-ui-border-base text-ui-fg-muted">
               /
             </div>
             {form.formState.errors.handle && (
-              <Text className="text-red-500 text-sm mt-1">
+              <Text className="text-red-500 text-sm mt-1" data-testid="attribute-form-handle-error">
                 {form.formState.errors.handle.message}
               </Text>
             )}
@@ -180,8 +182,8 @@ export const AttributeForm = ({
         </div>
       </div>
       <div className="grid grid-cols-1 gap-4">
-        <div>
-          <Label size="small" htmlFor="description">
+        <div data-testid="attribute-form-description-field">
+          <Label size="small" htmlFor="description" data-testid="attribute-form-description-label">
             Description{" "}
             <span className="text-ui-fg-subtle text-xs">(Optional)</span>
           </Label>
@@ -189,15 +191,16 @@ export const AttributeForm = ({
             className="mt-1"
             id="description"
             {...form.register("description")}
+            data-testid="attribute-form-description-input"
           />
           {form.formState.errors.description && (
-            <Text className="text-red-500 text-sm mt-1">
+            <Text className="text-red-500 text-sm mt-1" data-testid="attribute-form-description-error">
               {form.formState.errors.description.message}
             </Text>
           )}
         </div>
 
-        <div className="bg-ui-bg-component p-4 rounded-lg shadow-elevation-card-rest">
+        <div className="bg-ui-bg-component p-4 rounded-lg shadow-elevation-card-rest" data-testid="attribute-form-filterable-field">
           <div className="flex gap-3">
             <Switch
               id="is_filterable"
@@ -206,9 +209,10 @@ export const AttributeForm = ({
                 form.setValue("is_filterable", checked)
               }
               className="mt-1"
+              data-testid="attribute-form-filterable-switch"
             />
             <div>
-              <Label size="small" htmlFor="is_filterable">
+              <Label size="small" htmlFor="is_filterable" data-testid="attribute-form-filterable-label">
                 Yes, this is a filterable attribute
               </Label>
               <Text className="text-ui-fg-subtle text-xs mt-1">
@@ -219,7 +223,7 @@ export const AttributeForm = ({
           </div>
         </div>
 
-        <div className="bg-ui-bg-component p-4 rounded-lg shadow-elevation-card-rest">
+        <div className="bg-ui-bg-component p-4 rounded-lg shadow-elevation-card-rest" data-testid="attribute-form-required-field">
           <div className="flex gap-3">
             <Switch
               id="is_required"
@@ -228,9 +232,10 @@ export const AttributeForm = ({
                 form.setValue("is_required", checked)
               }
               className="mt-1"
+              data-testid="attribute-form-required-switch"
             />
             <div>
-              <Label size="small" htmlFor="is_required">
+              <Label size="small" htmlFor="is_required" data-testid="attribute-form-required-label">
                 Yes, this is a required attribute
               </Label>
               <Text className="text-ui-fg-subtle text-xs mt-1">
@@ -240,7 +245,7 @@ export const AttributeForm = ({
           </div>
         </div>
 
-        <div className="bg-ui-bg-component p-4 rounded-lg shadow-elevation-card-rest">
+        <div className="bg-ui-bg-component p-4 rounded-lg shadow-elevation-card-rest" data-testid="attribute-form-global-field">
           <div className="flex gap-3">
             <Switch
               id="is_global"
@@ -257,9 +262,10 @@ export const AttributeForm = ({
                 }
               }}
               className="mt-1"
+              data-testid="attribute-form-global-switch"
             />
             <div>
-              <Label size="small" htmlFor="is_global">
+              <Label size="small" htmlFor="is_global" data-testid="attribute-form-global-label">
                 Yes, this is a global attribute
               </Label>
               <Text className="text-ui-fg-subtle text-xs mt-1">
@@ -272,8 +278,8 @@ export const AttributeForm = ({
 
         {(showCategorySection ||
           (form.watch("product_category_ids")?.length || 0) > 0) && (
-          <div>
-            <Label size="small" htmlFor="product_categories">
+          <div data-testid="attribute-form-category-field">
+            <Label size="small" htmlFor="product_categories" data-testid="attribute-form-category-label">
               Category
             </Label>
             <div className="mt-1">
@@ -285,7 +291,7 @@ export const AttributeForm = ({
                 }
               />
               {form.formState.errors.product_category_ids && (
-                <Text className="text-red-500 text-sm mt-1">
+                <Text className="text-red-500 text-sm mt-1" data-testid="attribute-form-category-error">
                   {form.formState.errors.product_category_ids.message}
                 </Text>
               )}
@@ -305,9 +311,9 @@ export const AttributeForm = ({
   );
 
   const renderTypeTab = () => (
-    <div className="grid gap-6 w-[720px]">
-      <div>
-        <Label size="small" htmlFor="ui_component">
+    <div className="grid gap-6 w-[720px]" data-testid="attribute-form-type-tab">
+      <div data-testid="attribute-form-ui-component-field">
+        <Label size="small" htmlFor="ui_component" data-testid="attribute-form-ui-component-label">
           Type
         </Label>
         <Select
@@ -315,13 +321,14 @@ export const AttributeForm = ({
           onValueChange={(value) =>
             form.setValue("ui_component", value as AttributeUIComponent)
           }
+          data-testid="attribute-form-ui-component-select"
         >
-          <Select.Trigger className="mt-1">
+          <Select.Trigger className="mt-1" data-testid="attribute-form-ui-component-trigger">
             <Select.Value placeholder="Select Type" />
           </Select.Trigger>
-          <Select.Content>
+          <Select.Content data-testid="attribute-form-ui-component-content">
             {Object.values(AttributeUIComponent).map((component) => (
-              <Select.Item key={component} value={component}>
+              <Select.Item key={component} value={component} data-testid={`attribute-form-ui-component-option-${component}`}>
                 {component === "select"
                   ? "Single Select"
                   : component === "multivalue"
@@ -338,7 +345,7 @@ export const AttributeForm = ({
           </Select.Content>
         </Select>
         {form.formState.errors.ui_component && (
-          <Text className="text-red-500 text-sm mt-1">
+          <Text className="text-red-500 text-sm mt-1" data-testid="attribute-form-ui-component-error">
             {form.formState.errors.ui_component.message}
           </Text>
         )}
@@ -353,7 +360,7 @@ export const AttributeForm = ({
 
       {(form.watch("ui_component") === AttributeUIComponent.SELECT ||
         form.watch("ui_component") === AttributeUIComponent.MULTIVALUE) && (
-        <div>
+        <div data-testid="attribute-form-possible-values-section">
           <PossibleValuesList />
         </div>
       )}
@@ -362,7 +369,7 @@ export const AttributeForm = ({
 
   return (
     <FormProvider {...form}>
-      <form id="attribute-form" onSubmit={handleSubmit}>
+      <form id="attribute-form" onSubmit={handleSubmit} data-testid="attribute-form">
         {activeTab === "details" && renderDetailsTab()}
         {activeTab === "type" && renderTypeTab()}
       </form>

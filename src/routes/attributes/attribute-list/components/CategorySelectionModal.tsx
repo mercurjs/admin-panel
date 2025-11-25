@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Prompt } from "@medusajs/ui";
+import React, { useEffect, useState } from "react";
+
 import { AdminProductCategory } from "@medusajs/types";
-import MultiSelectCategory from "../../attribute-create/components/MultiSelectCategory";
+import { Prompt } from "@medusajs/ui";
+
 import { sdk } from "../../../../lib/client";
+import MultiSelectCategory from "../../attribute-create/components/MultiSelectCategory";
 
 interface CategorySelectionModalProps {
   open: boolean;
@@ -53,13 +55,24 @@ export const CategorySelectionModal: React.FC<CategorySelectionModalProps> = ({
   };
 
   return (
-    <Prompt open={open} variant="confirmation" onOpenChange={onOpenChange}>
-      <Prompt.Content>
-        <Prompt.Header>
-          <Prompt.Title className="border-ui-border-base border-b -mx-6 pl-6 pb-4 -mt-2">
+    <Prompt
+      open={open}
+      variant="confirmation"
+      onOpenChange={onOpenChange}
+      data-testid="attribute-category-selection-modal"
+    >
+      <Prompt.Content data-testid="attribute-category-selection-modal-content">
+        <Prompt.Header data-testid="attribute-category-selection-modal-header">
+          <Prompt.Title
+            className="-mx-6 -mt-2 border-b border-ui-border-base pb-4 pl-6"
+            data-testid="attribute-category-selection-modal-title"
+          >
             Select category
           </Prompt.Title>
-          <Prompt.Description className="flex flex-col gap-4 py-4">
+          <Prompt.Description
+            className="flex flex-col gap-4 py-4"
+            data-testid="attribute-category-selection-modal-description"
+          >
             Please select the category where this attribute applies.
             <MultiSelectCategory
               categories={categories}
@@ -69,11 +82,20 @@ export const CategorySelectionModal: React.FC<CategorySelectionModalProps> = ({
           </Prompt.Description>
         </Prompt.Header>
 
-        <Prompt.Footer className="border-ui-border-base border-t py-4">
-          <Prompt.Cancel onClick={handleCancel}>Cancel</Prompt.Cancel>
+        <Prompt.Footer
+          className="border-t border-ui-border-base py-4"
+          data-testid="attribute-category-selection-modal-footer"
+        >
+          <Prompt.Cancel
+            onClick={handleCancel}
+            data-testid="attribute-category-selection-modal-cancel-button"
+          >
+            Cancel
+          </Prompt.Cancel>
           <Prompt.Action
             onClick={handleConfirm}
             disabled={selectedCategories.length === 0 || isLoading}
+            data-testid="attribute-category-selection-modal-save-button"
           >
             Save
           </Prompt.Action>

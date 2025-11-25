@@ -181,32 +181,34 @@ export const AttributeList = () => {
 
   return (
     <SingleColumnLayout>
-      <Container className="divide-y p-0">
-        <div className="flex items-center justify-between px-6 py-4">
-          <Heading level="h2">Product Attributes</Heading>
+      <Container className="divide-y p-0" data-testid="attribute-list-container">
+        <div className="flex items-center justify-between px-6 py-4" data-testid="attribute-list-header">
+          <Heading level="h2" data-testid="attribute-list-heading">Product Attributes</Heading>
           <Button
             variant="primary"
             size="small"
             onClick={() => navigate("/settings/attributes/create")}
+            data-testid="attribute-list-create-button"
           >
             Create
           </Button>
         </div>
 
-        <div>
-          <DataTable instance={table}>
-            <DataTable.Toolbar className="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center">
+        <div data-testid="attribute-list-table-wrapper">
+          <DataTable instance={table} data-testid="attribute-list-table">
+            <DataTable.Toolbar className="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center" data-testid="attribute-list-table-toolbar">
               <div className="flex flex-wrap items-center gap-2">
                 {/* Active Filters */}
                 {filters.filterable !== undefined && (
                   <Badge
                     size="small"
                     className="flex items-center gap-1 bg-ui-bg-subtle text-ui-fg-subtle"
+                    data-testid="attribute-list-filterable-badge"
                   >
                     Filterable
                     <DropdownMenu>
                       <DropdownMenu.Trigger asChild>
-                        <button className="hover:bg-ui-bg-subtle-hover px-2 h-7 border border-ui-border-base">
+                        <button className="hover:bg-ui-bg-subtle-hover px-2 h-7 border border-ui-border-base" data-testid="attribute-list-filterable-dropdown-trigger">
                           {filters.filterable ? "Yes" : "No"}
                         </button>
                       </DropdownMenu.Trigger>
@@ -236,6 +238,7 @@ export const AttributeList = () => {
                     <button
                       onClick={() => removeFilter("filterable")}
                       className="hover:bg-ui-bg-subtle-hover px-2 h-7 border border-ui-border-base bg-ui-bg-subtle flex items-center justify-center rounded-e-md border-x-0 -ml-1 -mr-2"
+                      data-testid="attribute-list-filterable-remove-button"
                     >
                       <XMark />
                     </button>
@@ -245,11 +248,12 @@ export const AttributeList = () => {
                   <Badge
                     size="small"
                     className="flex items-center gap-1 bg-ui-bg-subtle text-ui-fg-subtle"
+                    data-testid="attribute-list-global-badge"
                   >
                     Global
                     <DropdownMenu>
                       <DropdownMenu.Trigger asChild>
-                        <button className="hover:bg-ui-bg-subtle-hover px-2 h-7 border border-ui-border-base">
+                        <button className="hover:bg-ui-bg-subtle-hover px-2 h-7 border border-ui-border-base" data-testid="attribute-list-global-dropdown-trigger">
                           {filters.global ? "Yes" : "No"}
                         </button>
                       </DropdownMenu.Trigger>
@@ -279,6 +283,7 @@ export const AttributeList = () => {
                     <button
                       onClick={() => removeFilter("global")}
                       className="hover:bg-ui-bg-subtle-hover px-2 h-7 border border-ui-border-base bg-ui-bg-subtle flex items-center justify-center rounded-e-md border-x-0 -ml-1 -mr-2"
+                      data-testid="attribute-list-global-remove-button"
                     >
                       <XMark />
                     </button>
@@ -301,6 +306,7 @@ export const AttributeList = () => {
                         filters.filterable !== undefined &&
                         filters.global !== undefined
                       }
+                      data-testid="attribute-list-add-filter-button"
                     >
                       Add filter
                     </Button>
@@ -330,19 +336,20 @@ export const AttributeList = () => {
                     variant="transparent"
                     size="small"
                     onClick={clearAllFilters}
+                    data-testid="attribute-list-clear-all-filters-button"
                   >
                     Clear all
                   </Button>
                 )}
               </div>
 
-              <div className="flex items-center gap-2">
-                <DataTable.Search placeholder="Search table" />
+              <div className="flex items-center gap-2" data-testid="attribute-list-table-toolbar-actions">
+                <DataTable.Search placeholder="Search table" data-testid="attribute-list-table-search" />
 
                 {/* Sorting Dropdown */}
                 <DropdownMenu>
                   <DropdownMenu.Trigger asChild>
-                    <IconButton size="small">
+                    <IconButton size="small" data-testid="attribute-list-sort-button">
                       <DescendingSorting />
                     </IconButton>
                   </DropdownMenu.Trigger>
@@ -406,8 +413,8 @@ export const AttributeList = () => {
                 </DropdownMenu>
               </div>
             </DataTable.Toolbar>
-            <DataTable.Table />
-            <DataTable.Pagination />
+            <DataTable.Table data-testid="attribute-list-table-content" />
+            <DataTable.Pagination data-testid="attribute-list-table-pagination" />
           </DataTable>
         </div>
       </Container>

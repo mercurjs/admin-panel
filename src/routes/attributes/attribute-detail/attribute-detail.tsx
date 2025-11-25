@@ -74,19 +74,19 @@ export const AttributeDetail = () => {
 
   return (
     <SingleColumnLayout>
-      <Container className="divide-y p-0">
-        <div className="flex items-center justify-between px-6 py-4">
-          <Heading level="h2">{attribute.name}</Heading>
-          <div className="flex items-center gap-2">
+      <Container className="divide-y p-0" data-testid="attribute-detail-container">
+        <div className="flex items-center justify-between px-6 py-4" data-testid="attribute-detail-header">
+          <Heading level="h2" data-testid="attribute-detail-heading">{attribute.name}</Heading>
+          <div className="flex items-center gap-2" data-testid="attribute-detail-actions">
             <DropdownMenu>
               <DropdownMenu.Trigger asChild>
-                <Button variant="transparent" size="small">
+                <Button variant="transparent" size="small" data-testid="attribute-detail-action-menu-trigger">
                   <EllipsisHorizontal />
                 </Button>
               </DropdownMenu.Trigger>
-              <DropdownMenu.Content align="end">
-                <DropdownMenu.Item onClick={handleEdit}>Edit</DropdownMenu.Item>
-                <DropdownMenu.Item onClick={handleDelete}>
+              <DropdownMenu.Content align="end" data-testid="attribute-detail-action-menu">
+                <DropdownMenu.Item onClick={handleEdit} data-testid="attribute-detail-edit-action">Edit</DropdownMenu.Item>
+                <DropdownMenu.Item onClick={handleDelete} data-testid="attribute-detail-delete-action">
                   Delete
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
@@ -94,20 +94,23 @@ export const AttributeDetail = () => {
           </div>
         </div>
 
-        <SectionRow title="Description" value={attribute.description} />
-        <SectionRow title="Handle" value={attribute.handle} />
-        <SectionRow title="Type" value={attribute.ui_component} />
+        <SectionRow title="Description" value={attribute.description} data-testid="attribute-detail-description-row" />
+        <SectionRow title="Handle" value={attribute.handle} data-testid="attribute-detail-handle-row" />
+        <SectionRow title="Type" value={attribute.ui_component} data-testid="attribute-detail-type-row" />
         <SectionRow
           title="Filterable"
           value={attribute.is_filterable ? "True" : "False"}
+          data-testid="attribute-detail-filterable-row"
         />
         <SectionRow
           title="Required"
           value={attribute.is_required ? "True" : "False"}
+          data-testid="attribute-detail-required-row"
         />
         <SectionRow
           title="Global"
           value={!attribute.product_categories?.length ? "True" : "False"}
+          data-testid="attribute-detail-global-row"
         />
 
         {attribute.product_categories &&
@@ -118,13 +121,14 @@ export const AttributeDetail = () => {
                 <>
                   {attribute.product_categories.map(
                     (category: { id: string; name: string }) => (
-                      <Badge size="xsmall" key={category.id}>
+                      <Badge size="xsmall" key={category.id} data-testid={`attribute-detail-category-badge-${category.id}`}>
                         {category.name}
                       </Badge>
                     )
                   )}
                 </>
               }
+              data-testid="attribute-detail-categories-row"
             />
           )}
       </Container>
