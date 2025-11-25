@@ -212,9 +212,10 @@ export const AttributeList = () => {
                           {filters.filterable ? "Yes" : "No"}
                         </button>
                       </DropdownMenu.Trigger>
-                      <DropdownMenu.Content align="start">
+                      <DropdownMenu.Content align="start" data-testid="attribute-list-filterable-dropdown-content">
                         <DropdownMenu.Item
                           onClick={() => addFilter("filterable", true)}
+                          data-testid="attribute-list-filterable-dropdown-yes"
                         >
                           {filters.filterable === true ? (
                             <span className="mr-2">•</span>
@@ -225,6 +226,7 @@ export const AttributeList = () => {
                         </DropdownMenu.Item>
                         <DropdownMenu.Item
                           onClick={() => addFilter("filterable", false)}
+                          data-testid="attribute-list-filterable-dropdown-no"
                         >
                           {filters.filterable === false ? (
                             <span className="mr-2">•</span>
@@ -257,9 +259,10 @@ export const AttributeList = () => {
                           {filters.global ? "Yes" : "No"}
                         </button>
                       </DropdownMenu.Trigger>
-                      <DropdownMenu.Content align="start">
+                      <DropdownMenu.Content align="start" data-testid="attribute-list-global-dropdown-content">
                         <DropdownMenu.Item
                           onClick={() => addFilter("global", true)}
+                          data-testid="attribute-list-global-dropdown-yes"
                         >
                           {filters.global === true ? (
                             <span className="mr-2">•</span>
@@ -270,6 +273,7 @@ export const AttributeList = () => {
                         </DropdownMenu.Item>
                         <DropdownMenu.Item
                           onClick={() => addFilter("global", false)}
+                          data-testid="attribute-list-global-dropdown-no"
                         >
                           {filters.global === false ? (
                             <span className="mr-2">•</span>
@@ -311,10 +315,11 @@ export const AttributeList = () => {
                       Add filter
                     </Button>
                   </DropdownMenu.Trigger>
-                  <DropdownMenu.Content align="start">
+                  <DropdownMenu.Content align="start" data-testid="attribute-list-add-filter-dropdown-content">
                     {filters.filterable === undefined && (
                       <DropdownMenu.Item
                         onClick={() => addFilter("filterable", true)}
+                        data-testid="attribute-list-add-filter-filterable"
                       >
                         Filterable
                       </DropdownMenu.Item>
@@ -322,6 +327,7 @@ export const AttributeList = () => {
                     {filters.global === undefined && (
                       <DropdownMenu.Item
                         onClick={() => addFilter("global", true)}
+                        data-testid="attribute-list-add-filter-global"
                       >
                         Global
                       </DropdownMenu.Item>
@@ -353,10 +359,11 @@ export const AttributeList = () => {
                       <DescendingSorting />
                     </IconButton>
                   </DropdownMenu.Trigger>
-                  <DropdownMenu.Content align="end">
+                  <DropdownMenu.Content align="end" data-testid="attribute-list-sort-dropdown-content">
                     <div className="px-2 py-1">
                       <DropdownMenu.Item
                         onClick={() => handleSortFieldChange("name")}
+                        data-testid="attribute-list-sort-field-name"
                       >
                         {sorting.field === "name" ? (
                           <span className="mr-2">•</span>
@@ -367,6 +374,7 @@ export const AttributeList = () => {
                       </DropdownMenu.Item>
                       <DropdownMenu.Item
                         onClick={() => handleSortFieldChange("created_at")}
+                        data-testid="attribute-list-sort-field-created-at"
                       >
                         {sorting.field === "created_at" ? (
                           <span className="mr-2">•</span>
@@ -377,6 +385,7 @@ export const AttributeList = () => {
                       </DropdownMenu.Item>
                       <DropdownMenu.Item
                         onClick={() => handleSortFieldChange("updated_at")}
+                        data-testid="attribute-list-sort-field-updated-at"
                       >
                         {sorting.field === "updated_at" ? (
                           <span className="mr-2">•</span>
@@ -390,6 +399,7 @@ export const AttributeList = () => {
                     <div className="px-2 py-1">
                       <DropdownMenu.Item
                         onClick={() => handleSortOrderChange("asc")}
+                        data-testid="attribute-list-sort-order-asc"
                       >
                         {sorting.order === "asc" ? (
                           <span className="mr-2">•</span>
@@ -400,6 +410,7 @@ export const AttributeList = () => {
                       </DropdownMenu.Item>
                       <DropdownMenu.Item
                         onClick={() => handleSortOrderChange("desc")}
+                        data-testid="attribute-list-sort-order-desc"
                       >
                         {sorting.order === "desc" ? (
                           <span className="mr-2">•</span>
