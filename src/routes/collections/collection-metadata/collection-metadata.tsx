@@ -12,8 +12,6 @@ export const CollectionMetadata = () => {
   if (isError) {
     throw error
   }
-console.log(id)
-console.log( collection?.id)
 
   const handleSubmit = async (
     params: { metadata?: Record<string, unknown> | null },
