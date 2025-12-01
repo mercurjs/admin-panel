@@ -3184,7 +3184,11 @@
     }
   },
   "attributes": {
-    "domain": "Product Attributes"
+    "domain": "Product Attributes",
+    "create": {
+      "fillNameWarning": "Please fill in at least the name field before proceeding to Type configuration.",
+      "possibleValuesRequired": "At least one possible value is required for this type"
+    }
   },
   "requests": {
     "domain": "Requests",

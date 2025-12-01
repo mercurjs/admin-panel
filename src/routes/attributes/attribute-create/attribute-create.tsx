@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { FocusModal, Button, toast, ProgressTabs } from "@medusajs/ui";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import type { AdminProductCategory } from "@medusajs/types";
 import { AttributeForm, type AttributeFormRef } from "@/routes/attributes/attribute-edit/components/attribute-form";
 import type { z } from "zod";
@@ -10,6 +11,7 @@ import { attributeQueryKeys } from "@/hooks/api/attributes";
 import type { CreateAttributeFormSchema } from "@/routes/attributes/attribute-edit/schema";
 
 export const AttributeCreate = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const formRef = useRef<AttributeFormRef>(null);
   const [categories, setCategories] = useState<AdminProductCategory[]>([]);
@@ -69,7 +71,7 @@ export const AttributeCreate = () => {
 
 
     if (newTab === "type" && tabStatuses.detailsStatus === "not-started") {
-      toast.warning("Please fill in at least the name field before proceeding to Type configuration.");
+      toast.warning(t("attributes.create.fillNameWarning"));
 
       return
     }
