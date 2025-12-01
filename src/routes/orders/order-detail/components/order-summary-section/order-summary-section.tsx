@@ -37,7 +37,7 @@ import {
   usePrompt,
 } from "@medusajs/ui"
 
-import { AdminReservation } from "@medusajs/types/src/http"
+import type { AdminReservation } from "@medusajs/types"
 import { format } from "date-fns"
 import { ActionMenu } from "../../../../../components/common/action-menu"
 import DisplayId from "../../../../../components/common/display-id/display-id"

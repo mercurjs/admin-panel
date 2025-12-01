@@ -1,4 +1,4 @@
-import {
+import type {
   BigNumberInput,
   CartDTO,
   CustomerDTO,
@@ -9,7 +9,7 @@ import {
   PaymentCollectionDTO,
   PaymentCollectionStatus,
   SalesChannelDTO
-} from '@medusajs/framework/types'
+} from '@medusajs/types'
 
 export type OrderSetDTO = {
   id: string

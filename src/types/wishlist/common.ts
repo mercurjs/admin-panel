@@ -1,8 +1,8 @@
-import {
+import type {
   PriceDTO,
   ProductDTO,
   ProductVariantDTO
-} from '@medusajs/framework/types'
+} from '@medusajs/types'
 
 export interface WishlistProductVariantDTO extends ProductVariantDTO {
   prices: PriceDTO[]

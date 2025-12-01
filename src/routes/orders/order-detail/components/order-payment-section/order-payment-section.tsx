@@ -1,6 +1,5 @@
-import { OrderCreditLineDTO } from "@medusajs/framework/types"
 import { ArrowDownRightMini, DocumentText, XCircle } from "@medusajs/icons"
-import { AdminOrder, AdminPayment, HttpTypes } from "@medusajs/types"
+import type { AdminOrder, AdminPayment, HttpTypes, OrderCreditLineDTO } from "@medusajs/types"
 import {
   Badge,
   Button,
@@ -14,18 +13,18 @@ import {
 } from "@medusajs/ui"
 import { format } from "date-fns"
 import { Trans, useTranslation } from "react-i18next"
-import { ActionMenu } from "../../../../../components/common/action-menu"
-import DisplayId from "../../../../../components/common/display-id/display-id"
-import { useCapturePayment } from "../../../../../hooks/api"
-import { formatCurrency } from "../../../../../lib/format-currency"
+import { ActionMenu } from "@components/common/action-menu"
+import DisplayId from "@components/common/display-id/display-id"
+import { useCapturePayment } from "@hooks/api"
+import { formatCurrency } from "@lib/format-currency"
 import {
   getLocaleAmount,
   getStylizedAmount,
-} from "../../../../../lib/money-amount-helpers"
-import { getOrderPaymentStatus } from "../../../../../lib/order-helpers"
-import { getPaymentsFromOrder } from "../../../../../lib/orders"
-import { getTotalCaptured, getTotalPending } from "../../../../../lib/payment"
-import { getLoyaltyPlugin } from "../../../../../lib/plugins"
+} from "@lib/money-amount-helpers"
+import { getOrderPaymentStatus } from "@lib/order-helpers"
+import { getPaymentsFromOrder } from "@lib/orders"
+import { getTotalCaptured, getTotalPending } from "@lib/payment"
+import { getLoyaltyPlugin } from "@lib/plugins"
 
 type OrderPaymentSectionProps = {
   order: HttpTypes.AdminOrder
@@ -189,10 +188,10 @@ const Payment = ({
   const showCapture =
     payment.captured_at === null && payment.canceled_at === null
 
-  const totalRefunded = payment.refunds.reduce(
+  const totalRefunded = payment.refunds?.reduce(
     (acc, next) => next.amount + acc,
     0
-  )
+  ) ?? 0
 
   return (
     <div className="divide-y divide-dashed">
@@ -207,9 +206,13 @@ const Payment = ({
             <DisplayId id={payment.id} />
           </Text>
           <Text size="small" leading="compact">
-            {format(
-              new Date(payment.created_at as string),
-              "dd MMM, yyyy, HH:mm:ss"
+            {payment.created_at ? (
+              format(
+                new Date(payment.created_at),
+                "dd MMM, yyyy, HH:mm:ss"
+              )
+            ) : (
+              "-"
             )}
           </Text>
         </div>
@@ -253,7 +256,7 @@ const Payment = ({
             <Text size="small" leading="compact">
               <Trans
                 i18nKey="orders.payment.isReadyToBeCaptured"
-                components={[<DisplayId id={payment.id} />]}
+                components={[<DisplayId key={payment.id} id={payment.id} />]}
               />
             </Text>
           </div>
@@ -324,10 +327,15 @@ const CreditLine = ({
             )}
           </Text>
           <Text size="small" leading="compact">
-            {format(
-              new Date(creditLine.created_at as string),
-              "dd MMM, yyyy, HH:mm:ss"
+            {creditLine.created_at ?  (
+              format(
+               new Date(creditLine.created_at),
+               "dd MMM, yyyy, HH:mm:ss"
+              )
+            ) : (
+              "-"
             )}
+            
           </Text>
         </div>
         <div className="hidden items-center justify-end sm:flex">

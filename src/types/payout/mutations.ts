@@ -1,6 +1,5 @@
-import { BigNumberInput } from '@medusajs/framework/types'
-
-import { OnboardingDTO, PayoutAccountDTO } from './common'
+import type { BigNumberInput } from '@medusajs/types'
+import type { OnboardingDTO, PayoutAccountDTO } from './common'
 
 export interface CreatePayoutAccountDTO {
   context: Record<string, unknown>
