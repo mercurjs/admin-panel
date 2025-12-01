@@ -2,12 +2,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { FocusModal, Button, toast, ProgressTabs } from "@medusajs/ui";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
-import { AdminProductCategory } from "@medusajs/types";
-import { AttributeForm, AttributeFormRef } from "../attribute-edit/components/attribute-form";
-import { z } from "zod";
-import { sdk } from "../../../lib/client";
-import { attributeQueryKeys } from "../../../hooks/api/attributes";
-import { CreateAttributeFormSchema } from "../attribute-edit/schema";
+import type { AdminProductCategory } from "@medusajs/types";
+import { AttributeForm, type AttributeFormRef } from "@/routes/attributes/attribute-edit/components/attribute-form";
+import type { z } from "zod";
+import { sdk } from "@/lib/client";
+import { attributeQueryKeys } from "@/hooks/api/attributes";
+import type { CreateAttributeFormSchema } from "@/routes/attributes/attribute-edit/schema";
 
 export const AttributeCreate = () => {
   const navigate = useNavigate();
@@ -66,18 +66,18 @@ export const AttributeCreate = () => {
 
   const handleTabChange = (value: string) => {
     const newTab = value as "details" | "type";
-    
-    // Guard: prevent switching to type tab if details are not started
+
+
     if (newTab === "type" && tabStatuses.detailsStatus === "not-started") {
       toast.warning("Please fill in at least the name field before proceeding to Type configuration.");
-      return;
+
+      return
     }
-    
+
     setActiveTab(newTab);
   };
 
   const handleNext = async () => {
-    // Validate critical fields before advancing to Type tab
     if (formRef.current) {
       const isValid = await formRef.current.validateFields(["name"]);
       if (isValid) {

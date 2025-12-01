@@ -105,7 +105,7 @@ export const AttributeForm = forwardRef<AttributeFormRef, AttributeFormProps>(({
     }
   });
 
-  // Expose validation method to parent via ref
+
   useImperativeHandle(ref, () => ({
     validateFields: async (fields: string[]) => {
       const result = await form.trigger(
