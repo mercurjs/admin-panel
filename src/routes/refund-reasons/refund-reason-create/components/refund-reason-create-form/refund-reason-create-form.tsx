@@ -15,7 +15,7 @@ import { useCreateRefundReason } from "../../../../../hooks/api";
 
 const RefundReasonCreateSchema = z.object({
   label: z.string().min(1),
-  // code: z.string().min(1),
+  code: z.string().min(1),
   description: z.string().optional(),
 });
 
@@ -26,19 +26,19 @@ export const RefundReasonCreateForm = () => {
   const form = useForm<z.infer<typeof RefundReasonCreateSchema>>({
     defaultValues: {
       label: "",
-      // code: "",
+      code: "",
       description: "",
     },
     resolver: zodResolver(RefundReasonCreateSchema),
   });
 
-  // const generateCodeFromLabel = (label: string) => {
-  //   return label
-  //     .toLowerCase()
-  //     .replace(/[^a-z0-9]/g, "_")
-  //     .replace(/_+/g, "_")
-  //     .replace(/^_|_$/g, "");
-  // };
+  const generateCodeFromLabel = (label: string) => {
+    return label
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "_")
+      .replace(/_+/g, "_")
+      .replace(/^_|_$/g, "");
+  };
 
   const { mutateAsync, isPending } = useCreateRefundReason();
 
@@ -93,18 +93,18 @@ export const RefundReasonCreateForm = () => {
                           placeholder={t(
                             "refundReasons.fields.label.placeholder",
                           )}
-                          // onChange={(e) => {
-                          //   if (
-                          //     !form.getFieldState("code").isTouched ||
-                          //     !form.getValues("code")
-                          //   ) {
-                          //     form.setValue(
-                          //       "code",
-                          //       generateCodeFromLabel(e.target.value),
-                          //     );
-                          //   }
-                          //   field.onChange(e);
-                          // }}
+                          onChange={(e) => {
+                            if (
+                              !form.getFieldState("code").isTouched ||
+                              !form.getValues("code")
+                            ) {
+                              form.setValue(
+                                "code",
+                                generateCodeFromLabel(e.target.value),
+                              );
+                            }
+                            field.onChange(e);
+                          }}
                         />
                       </Form.Control>
                       <Form.ErrorMessage />
@@ -113,7 +113,7 @@ export const RefundReasonCreateForm = () => {
                 }}
               />
             </div>
-            {/* <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2">
               <Form.Field
                 control={form.control}
                 name="code"
@@ -136,7 +136,7 @@ export const RefundReasonCreateForm = () => {
                   );
                 }}
               />
-            </div> */}
+            </div>
             <Form.Field
               control={form.control}
               name="description"

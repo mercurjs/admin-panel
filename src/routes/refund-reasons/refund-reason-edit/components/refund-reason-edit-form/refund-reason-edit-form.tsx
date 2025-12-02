@@ -18,7 +18,7 @@ type RefundReasonEditFormProps = {
 
 const RefundReasonEditSchema = z.object({
   label: z.string().min(1),
-  // code: z.string().min(1),
+  code: z.string().min(1),
   description: z.string().optional(),
 });
 
@@ -31,7 +31,7 @@ export const RefundReasonEditForm = ({
   const form = useForm<z.infer<typeof RefundReasonEditSchema>>({
     defaultValues: {
       label: refundReason.label,
-      // code: refundReason.code,
+      code: refundReason.code,
       description: refundReason.description ?? undefined,
     },
     resolver: zodResolver(RefundReasonEditSchema),
@@ -82,7 +82,7 @@ export const RefundReasonEditForm = ({
               );
             }}
           />
-          {/* <Form.Field
+          <Form.Field
             control={form.control}
             name="code"
             render={({ field }) => {
@@ -101,7 +101,7 @@ export const RefundReasonEditForm = ({
                 </Form.Item>
               );
             }}
-          /> */}
+          />
           <Form.Field
             control={form.control}
             name="description"
