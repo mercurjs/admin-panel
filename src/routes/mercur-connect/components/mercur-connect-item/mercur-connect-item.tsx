@@ -1,4 +1,11 @@
-import { Avatar, Button, Container, Heading, Text } from "@medusajs/ui";
+import {
+  Avatar,
+  Button,
+  Container,
+  Heading,
+  StatusBadge,
+  Text,
+} from "@medusajs/ui";
 
 import { Link } from "react-router-dom";
 
@@ -59,13 +66,15 @@ export const MercurConnectItem = ({
                 Contact us
               </Button>
             </Link>
+          ) : item.enabled ? (
+            <StatusBadge color="green">Enabled</StatusBadge>
           ) : (
             <Button
               variant="secondary"
               size="small"
               onClick={() => onOpenPrompt?.(true)}
             >
-              {item.enabled ? "Disable" : "Enable"}
+              Enable
             </Button>
           )}
         </div>
