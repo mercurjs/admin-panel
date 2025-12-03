@@ -38,7 +38,7 @@ export const UserListTable = () => {
   }
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="divide-y p-0" data-testid="user-list-table-container">
       <DataTable
         data={users}
         columns={columns}
@@ -63,6 +63,7 @@ export const UserListTable = () => {
             description: t("users.list.filtered.description"),
           },
         }}
+        data-testid="user-list-table"
       />
     </Container>
   )

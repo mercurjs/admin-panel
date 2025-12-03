@@ -3,7 +3,7 @@ import { CreateShippingProfileForm } from "./components/create-shipping-profile-
 
 export function ShippingProfileCreate() {
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="shipping-profile-create-modal">
       <CreateShippingProfileForm />
     </RouteFocusModal>
   )

@@ -126,53 +126,55 @@ export const EditPossibleValue = () => {
       onOpenChange={(open) => {
         if (!open) handleClose();
       }}
+      data-testid="attribute-edit-possible-value-drawer"
     >
-      <Drawer.Content>
+      <Drawer.Content data-testid="attribute-edit-possible-value-drawer-content">
         {isAttributeLoading ? (
           <>
-            <Drawer.Header>
+            <Drawer.Header data-testid="attribute-edit-possible-value-loading-header">
               <Heading>Loading...</Heading>
             </Drawer.Header>
-            <Drawer.Body>
+            <Drawer.Body data-testid="attribute-edit-possible-value-loading-body">
               <Text>Fetching possible value details...</Text>
             </Drawer.Body>
           </>
         ) : !possibleValue ? (
           <>
-            <Drawer.Header>
+            <Drawer.Header data-testid="attribute-edit-possible-value-not-found-header">
               <Heading>Possible Value Not Found</Heading>
             </Drawer.Header>
-            <Drawer.Body>
+            <Drawer.Body data-testid="attribute-edit-possible-value-not-found-body">
               <Text>The requested possible value could not be found.</Text>
-              <Button onClick={handleClose}>Close</Button>
+              <Button onClick={handleClose} data-testid="attribute-edit-possible-value-close-button">Close</Button>
             </Drawer.Body>
           </>
         ) : (
           <>
-            <Drawer.Header>
-              <Drawer.Title>Edit Possible Value</Drawer.Title>
+            <Drawer.Header data-testid="attribute-edit-possible-value-drawer-header">
+              <Drawer.Title data-testid="attribute-edit-possible-value-drawer-title">Edit Possible Value</Drawer.Title>
             </Drawer.Header>
-            <Drawer.Body>
-              <form id="edit-possible-value-form" onSubmit={handleSave}>
+            <Drawer.Body data-testid="attribute-edit-possible-value-drawer-body">
+              <form id="edit-possible-value-form" onSubmit={handleSave} data-testid="attribute-edit-possible-value-form">
                 <div className="grid gap-4">
-                  <div>
-                    <Label htmlFor="value">Value</Label>
-                    <Input id="value" {...form.register("value")} />
+                  <div data-testid="attribute-edit-possible-value-value-field">
+                    <Label htmlFor="value" data-testid="attribute-edit-possible-value-value-label">Value</Label>
+                    <Input id="value" {...form.register("value")} data-testid="attribute-edit-possible-value-value-input" />
                     {form.formState.errors.value && (
-                      <Text className="text-red-500 text-sm mt-1">
+                      <Text className="text-red-500 text-sm mt-1" data-testid="attribute-edit-possible-value-value-error">
                         {form.formState.errors.value.message}
                       </Text>
                     )}
                   </div>
-                  <div>
-                    <Label htmlFor="rank">Rank</Label>
+                  <div data-testid="attribute-edit-possible-value-rank-field">
+                    <Label htmlFor="rank" data-testid="attribute-edit-possible-value-rank-label">Rank</Label>
                     <Input
                       id="rank"
                       type="number"
                       {...form.register("rank", { valueAsNumber: true })}
+                      data-testid="attribute-edit-possible-value-rank-input"
                     />
                     {form.formState.errors.rank && (
-                      <Text className="text-red-500 text-sm mt-1">
+                      <Text className="text-red-500 text-sm mt-1" data-testid="attribute-edit-possible-value-rank-error">
                         {form.formState.errors.rank.message}
                       </Text>
                     )}
@@ -182,11 +184,12 @@ export const EditPossibleValue = () => {
                 </div>
               </form>
             </Drawer.Body>
-            <Drawer.Footer>
+            <Drawer.Footer data-testid="attribute-edit-possible-value-drawer-footer">
               <Button
                 variant="secondary"
                 onClick={handleClose}
                 disabled={!!isPending}
+                data-testid="attribute-edit-possible-value-cancel-button"
               >
                 Cancel
               </Button>
@@ -194,6 +197,7 @@ export const EditPossibleValue = () => {
                 type="submit"
                 form="edit-possible-value-form"
                 disabled={!!isPending}
+                data-testid="attribute-edit-possible-value-save-button"
               >
                 Save
               </Button>

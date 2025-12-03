@@ -213,6 +213,7 @@ const TaxRegionCardActions = ({
           ].filter(Boolean) as unknown as Action[],
         },
       ]}
+      data-testid={`tax-region-card-action-menu-${taxRegion.id}`}
     />
   )
 }

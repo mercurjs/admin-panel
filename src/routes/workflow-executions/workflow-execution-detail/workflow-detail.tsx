@@ -33,6 +33,7 @@ export const ExecutionDetail = () => {
       }}
       data={workflow_execution}
       showJSON
+      data-testid="workflow-detail-page"
     >
       <WorkflowExecutionGeneralSection execution={workflow_execution} />
       <WorkflowExecutionTimelineSection execution={workflow_execution} />

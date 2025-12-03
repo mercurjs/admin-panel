@@ -124,14 +124,14 @@ export const AddCountriesForm = ({ region }: AddCountriesFormProps) => {
   })
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="region-add-countries-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex h-full flex-col overflow-hidden"
       >
-        <RouteFocusModal.Header />
+        <RouteFocusModal.Header data-testid="region-add-countries-form-header" />
 
-        <RouteFocusModal.Body className="overflow-hidden">
+        <RouteFocusModal.Body className="overflow-hidden" data-testid="region-add-countries-form-body">
           <_DataTable
             table={table}
             columns={columns}
@@ -146,15 +146,16 @@ export const AddCountriesForm = ({ region }: AddCountriesFormProps) => {
             ]}
             queryObject={raw}
             prefix={PREFIX}
+            data-testid="region-add-countries-form-table"
           />
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="region-add-countries-form-footer">
           <RouteFocusModal.Close asChild>
-            <Button size="small" variant="secondary">
+            <Button size="small" variant="secondary" data-testid="region-add-countries-form-cancel-button">
               {t("actions.cancel")}
             </Button>
           </RouteFocusModal.Close>
-          <Button size="small" isLoading={isLoading} type="submit">
+          <Button size="small" isLoading={isLoading} type="submit" data-testid="region-add-countries-form-add-button">
             {t("actions.add")}
           </Button>
         </RouteFocusModal.Footer>
@@ -183,6 +184,7 @@ const useColumns = () => {
               onCheckedChange={(value) =>
                 table.toggleAllPageRowsSelected(!!value)
               }
+              data-testid="region-add-countries-form-select-all-checkbox"
             />
           )
         },
@@ -197,6 +199,7 @@ const useColumns = () => {
               onClick={(e) => {
                 e.stopPropagation()
               }}
+              data-testid={`region-add-countries-form-select-checkbox-${row.original.iso_2}`}
             />
           )
         },

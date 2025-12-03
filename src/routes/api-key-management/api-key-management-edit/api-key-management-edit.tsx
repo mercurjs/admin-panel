@@ -17,13 +17,13 @@ export const ApiKeyManagementEdit = () => {
   }
 
   return (
-    <RouteDrawer>
-      <RouteDrawer.Header>
+    <RouteDrawer data-testid={`${api_key?.type || "api"}-api-key-edit-drawer`}>
+      <RouteDrawer.Header data-testid={`${api_key?.type || "api"}-api-key-edit-drawer-header`}>
         <RouteDrawer.Title asChild>
-          <Heading>{t("apiKeyManagement.edit.header")}</Heading>
+          <Heading data-testid={`${api_key?.type || "api"}-api-key-edit-drawer-title`}>{t("apiKeyManagement.edit.header")}</Heading>
         </RouteDrawer.Title>
         <RouteDrawer.Description asChild>
-          <VisuallyHidden>
+          <VisuallyHidden data-testid={`${api_key?.type || "api"}-api-key-edit-drawer-description`}>
             {t("apiKeyManagement.edit.description")}
           </VisuallyHidden>
         </RouteDrawer.Description>

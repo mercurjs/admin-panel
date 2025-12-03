@@ -18,7 +18,7 @@ export const LocationFulfillmentProviders = () => {
   }
 
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="location-fulfillment-providers-modal">
       {ready && (
         <LocationEditFulfillmentProvidersForm location={stock_location} />
       )}

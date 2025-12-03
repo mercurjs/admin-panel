@@ -45,38 +45,38 @@ export const UserMenu = () => {
   }
 
   return (
-    <div>
-      <DropdownMenu dir={direction} open={openMenu} onOpenChange={setOpenMenu}>
+    <div data-testid="sidebar-user-menu">
+      <DropdownMenu dir={direction} open={openMenu} onOpenChange={setOpenMenu} data-testid="sidebar-user-menu-dropdown">
         <UserBadge />
-        <DropdownMenu.Content className="min-w-[var(--radix-dropdown-menu-trigger-width)] max-w-[var(--radix-dropdown-menu-trigger-width)]">
+        <DropdownMenu.Content className="min-w-[var(--radix-dropdown-menu-trigger-width)] max-w-[var(--radix-dropdown-menu-trigger-width)]" data-testid="sidebar-user-menu-content">
           <UserItem />
-          <DropdownMenu.Separator />
-          <DropdownMenu.Item asChild>
+          <DropdownMenu.Separator data-testid="sidebar-user-menu-separator-1" />
+          <DropdownMenu.Item asChild data-testid="sidebar-user-menu-profile-settings">
             <Link to="/settings/profile" state={{ from: location.pathname }}>
               <UserIcon className="text-ui-fg-subtle me-2" />
               {t("app.menus.user.profileSettings")}
             </Link>
           </DropdownMenu.Item>
-          <DropdownMenu.Separator />
-          <DropdownMenu.Item asChild>
+          <DropdownMenu.Separator data-testid="sidebar-user-menu-separator-2" />
+          <DropdownMenu.Item asChild data-testid="sidebar-user-menu-documentation">
             <Link to="https://docs.medusajs.com" target="_blank">
               <BookOpen className="text-ui-fg-subtle me-2" />
               {t("app.menus.user.documentation")}
             </Link>
           </DropdownMenu.Item>
-          <DropdownMenu.Item asChild>
+          <DropdownMenu.Item asChild data-testid="sidebar-user-menu-changelog">
             <Link to="https://medusajs.com/changelog/" target="_blank">
               <TimelineVertical className="text-ui-fg-subtle me-2" />
               {t("app.menus.user.changelog")}
             </Link>
           </DropdownMenu.Item>
-          <DropdownMenu.Separator />
-          <DropdownMenu.Item onClick={toggleModal}>
+          <DropdownMenu.Separator data-testid="sidebar-user-menu-separator-3" />
+          <DropdownMenu.Item onClick={toggleModal} data-testid="sidebar-user-menu-shortcuts">
             <Keyboard className="text-ui-fg-subtle me-2" />
             {t("app.menus.user.shortcuts")}
           </DropdownMenu.Item>
           <ThemeToggle />
-          <DropdownMenu.Separator />
+          <DropdownMenu.Separator data-testid="sidebar-user-menu-separator-4" />
           <Logout />
         </DropdownMenu.Content>
       </DropdownMenu>
@@ -107,7 +107,7 @@ const UserBadge = () => {
   }
 
   return (
-    <div className="p-3">
+    <div className="p-3" data-testid="sidebar-user-menu-badge">
       <DropdownMenu.Trigger
         disabled={!user}
         className={clx(
@@ -116,21 +116,23 @@ const UserBadge = () => {
           "data-[state=open]:bg-ui-bg-subtle-hover",
           "focus-visible:shadow-borders-focus"
         )}
+        data-testid="sidebar-user-menu-trigger"
       >
-        <div className="flex size-6 items-center justify-center">
+        <div className="flex size-6 items-center justify-center" data-testid="sidebar-user-menu-avatar-container">
           {fallback ? (
-            <Avatar size="xsmall" fallback={fallback} />
+            <Avatar size="xsmall" fallback={fallback} data-testid="sidebar-user-menu-avatar" />
           ) : (
             <Skeleton className="h-6 w-6 rounded-full" />
           )}
         </div>
-        <div className="flex items-center overflow-hidden">
+        <div className="flex items-center overflow-hidden" data-testid="sidebar-user-menu-name-container">
           {displayName ? (
             <Text
               size="xsmall"
               weight="plus"
               leading="compact"
               className="truncate"
+              data-testid="sidebar-user-menu-name"
             >
               {displayName}
             </Text>
@@ -149,19 +151,20 @@ const ThemeToggle = () => {
   const { theme, setTheme } = useTheme()
 
   return (
-    <DropdownMenu.SubMenu>
-      <DropdownMenu.SubMenuTrigger dir="ltr" className="rounded-md rtl:rotate-180">
+    <DropdownMenu.SubMenu data-testid="sidebar-user-menu-theme-toggle">
+      <DropdownMenu.SubMenuTrigger dir="ltr" className="rounded-md rtl:rotate-180" data-testid="sidebar-user-menu-theme-trigger">
         <CircleHalfSolid className="text-ui-fg-subtle me-2" />
         <span className="rtl:rotate-180">{t("app.menus.user.theme.label")}</span>
       </DropdownMenu.SubMenuTrigger>
-      <DropdownMenu.SubMenuContent>
-        <DropdownMenu.RadioGroup value={theme}>
+      <DropdownMenu.SubMenuContent data-testid="sidebar-user-menu-theme-content">
+        <DropdownMenu.RadioGroup value={theme} data-testid="sidebar-user-menu-theme-radio-group">
           <DropdownMenu.RadioItem
             value="system"
             onClick={(e) => {
               e.preventDefault()
               setTheme("system")
             }}
+            data-testid="sidebar-user-menu-theme-system"
           >
             {t("app.menus.user.theme.system")}
           </DropdownMenu.RadioItem>
@@ -171,6 +174,7 @@ const ThemeToggle = () => {
               e.preventDefault()
               setTheme("light")
             }}
+            data-testid="sidebar-user-menu-theme-light"
           >
             {t("app.menus.user.theme.light")}
           </DropdownMenu.RadioItem>
@@ -180,6 +184,7 @@ const ThemeToggle = () => {
               e.preventDefault()
               setTheme("dark")
             }}
+            data-testid="sidebar-user-menu-theme-dark"
           >
             {t("app.menus.user.theme.dark")}
           </DropdownMenu.RadioItem>
@@ -208,7 +213,7 @@ const Logout = () => {
   }
 
   return (
-    <DropdownMenu.Item onClick={handleLogout}>
+    <DropdownMenu.Item onClick={handleLogout} data-testid="sidebar-user-menu-logout">
       <div className="flex items-center gap-x-2">
         <OpenRectArrowOut className="text-ui-fg-subtle" />
         <span>{t("app.menus.actions.logout")}</span>
@@ -233,50 +238,52 @@ const GlobalKeybindsModal = (props: {
     : globalShortcuts
 
   return (
-    <RadixDialog.Root {...props}>
+    <RadixDialog.Root {...props} data-testid="shortcuts-modal">
       <RadixDialog.Portal>
-        <RadixDialog.Overlay className="bg-ui-bg-overlay fixed inset-0" />
-        <RadixDialog.Content className="bg-ui-bg-subtle shadow-elevation-modal fixed left-[50%] top-[50%] flex h-full max-h-[612px] w-full max-w-[560px] translate-x-[-50%] translate-y-[-50%] flex-col divide-y overflow-hidden rounded-lg">
-          <div className="flex flex-col gap-y-3 px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div>
+        <RadixDialog.Overlay className="bg-ui-bg-overlay fixed inset-0" data-testid="shortcuts-modal-overlay" />
+        <RadixDialog.Content className="bg-ui-bg-subtle shadow-elevation-modal fixed left-[50%] top-[50%] flex h-full max-h-[612px] w-full max-w-[560px] translate-x-[-50%] translate-y-[-50%] flex-col divide-y overflow-hidden rounded-lg" data-testid="shortcuts-modal-content">
+          <div className="flex flex-col gap-y-3 px-6 py-4" data-testid="shortcuts-modal-header">
+            <div className="flex items-center justify-between" data-testid="shortcuts-modal-header-top">
+              <div data-testid="shortcuts-modal-title-container">
                 <RadixDialog.Title asChild>
-                  <Heading>{t("app.menus.user.shortcuts")}</Heading>
+                  <Heading data-testid="shortcuts-modal-title">{t("app.menus.user.shortcuts")}</Heading>
                 </RadixDialog.Title>
-                <RadixDialog.Description className="sr-only"></RadixDialog.Description>
+                <RadixDialog.Description className="sr-only" data-testid="shortcuts-modal-description"></RadixDialog.Description>
               </div>
-              <div className="flex items-center gap-x-2">
-                <Kbd>esc</Kbd>
+              <div className="flex items-center gap-x-2" data-testid="shortcuts-modal-close-container">
+                <Kbd data-testid="shortcuts-modal-close-hint">esc</Kbd>
                 <RadixDialog.Close asChild>
-                  <IconButton variant="transparent" size="small">
+                  <IconButton variant="transparent" size="small" data-testid="shortcuts-modal-close-button">
                     <XMark />
                   </IconButton>
                 </RadixDialog.Close>
               </div>
             </div>
-            <div>
+            <div data-testid="shortcuts-modal-search-container">
               <Input
                 type="search"
                 value={searchValue}
                 onChange={(e) => onSearchValueChange(e.target.value)}
+                data-testid="shortcuts-modal-search"
               />
             </div>
           </div>
-          <div className="flex flex-col divide-y overflow-y-auto">
+          <div className="flex flex-col divide-y overflow-y-auto" data-testid="shortcuts-modal-list">
             {searchResults.map((shortcut, index) => {
               return (
                 <div
                   key={index}
                   className="text-ui-fg-subtle flex items-center justify-between px-6 py-3"
+                  data-testid={`shortcut-item-${shortcut.label.toLowerCase().replace(/\s/g, '-')}`}
                 >
-                  <Text size="small">{shortcut.label}</Text>
-                  <div className="flex items-center gap-x-1">
+                  <Text size="small" data-testid={`shortcut-item-${shortcut.label.toLowerCase().replace(/\s/g, '-')}-label`}>{shortcut.label}</Text>
+                  <div className="flex items-center gap-x-1" data-testid={`shortcut-item-${shortcut.label.toLowerCase().replace(/\s/g, '-')}-keys`}>
                     {shortcut.keys.Mac?.map((key, index) => {
                       return (
-                        <div className="flex items-center gap-x-1" key={index}>
-                          <Kbd>{key}</Kbd>
+                        <div className="flex items-center gap-x-1" key={index} data-testid={`shortcut-item-${shortcut.label.toLowerCase().replace(/\s/g, '-')}-key-${index}`}>
+                          <Kbd data-testid={`shortcut-item-${shortcut.label.toLowerCase().replace(/\s/g, '-')}-kbd-${index}`}>{key}</Kbd>
                           {index < (shortcut.keys.Mac?.length || 0) - 1 && (
-                            <span className="txt-compact-xsmall text-ui-fg-subtle">
+                            <span className="txt-compact-xsmall text-ui-fg-subtle" data-testid={`shortcut-item-${shortcut.label.toLowerCase().replace(/\s/g, '-')}-separator-${index}`}>
                               {t("app.keyboardShortcuts.then")}
                             </span>
                           )}
@@ -313,19 +320,21 @@ const UserItem = () => {
   }
 
   return (
-    <div className="flex items-center gap-x-3 overflow-hidden px-2 py-1">
+    <div className="flex items-center gap-x-3 overflow-hidden px-2 py-1" data-testid="sidebar-user-menu-item">
       <Avatar
         size="small"
         variant="rounded"
         src={avatar || undefined}
         fallback={fallback}
+        data-testid="sidebar-user-menu-item-avatar"
       />
-      <div className="block w-full min-w-0 max-w-[187px] overflow-hidden whitespace-nowrap">
+      <div className="block w-full min-w-0 max-w-[187px] overflow-hidden whitespace-nowrap" data-testid="sidebar-user-menu-item-details">
         <Text
           size="small"
           weight="plus"
           leading="compact"
           className="overflow-hidden text-ellipsis whitespace-nowrap"
+          data-testid="sidebar-user-menu-item-name"
         >
           {name || email}
         </Text>
@@ -334,6 +343,7 @@ const UserItem = () => {
             size="xsmall"
             leading="compact"
             className="text-ui-fg-subtle overflow-hidden text-ellipsis whitespace-nowrap"
+            data-testid="sidebar-user-menu-item-email"
           >
             {email}
           </Text>

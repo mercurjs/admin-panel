@@ -3,7 +3,8 @@ import { Text } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { Navigate, useLocation, useRouteError } from "react-router-dom"
 
-import { isFetchError } from "../../../lib/is-fetch-error"
+import { getAuthToken, isTokenExpired } from "@lib/client"
+import { isFetchError } from "@lib/is-fetch-error"
 
 export const ErrorBoundary = () => {
   const error = useRouteError()
@@ -14,7 +15,13 @@ export const ErrorBoundary = () => {
 
   if (isFetchError(error)) {
     if (error.status === 401) {
-      return <Navigate to="/login" state={{ from: location }} replace />
+      const token = getAuthToken()
+
+      if (isTokenExpired(token)) {
+        localStorage.removeItem("medusa_auth_token")
+
+        return <Navigate to="/login?reason=unauthorized" state={{ from: location }} replace />
+      }
     }
 
     code = error.status ?? null

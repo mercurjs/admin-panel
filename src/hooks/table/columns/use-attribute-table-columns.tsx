@@ -202,6 +202,7 @@ export const useAttributeTableColumns = () => {
                     attribute,
                   )
                 }
+                data-testid={`attribute-list-filterable-switch-${attribute.id}`}
               />
             </div>
           );
@@ -220,6 +221,7 @@ export const useAttributeTableColumns = () => {
                 handleToggleGlobal(attribute.id, newValue, attribute)
               }
               onClick={(e) => e.stopPropagation()}
+              data-testid={`attribute-list-global-switch-${attribute.id}`}
             />
           );
         },
@@ -270,15 +272,16 @@ export const useAttributeTableColumns = () => {
             <div className="flex items-center justify-end">
               <DropdownMenu>
                 <DropdownMenu.Trigger asChild>
-                  <IconButton variant="transparent" size="small">
+                  <IconButton variant="transparent" size="small" data-testid={`attribute-list-row-action-menu-trigger-${attribute.id}`}>
                     <EllipsisHorizontal />
                   </IconButton>
                 </DropdownMenu.Trigger>
-                <DropdownMenu.Content align="end">
+                <DropdownMenu.Content align="end" data-testid={`attribute-list-row-action-menu-${attribute.id}`}>
                   <DropdownMenu.Item
                     onClick={(e) => {
                       (e.stopPropagation(), handleEdit(attribute.id));
                     }}
+                    data-testid={`attribute-list-row-edit-action-${attribute.id}`}
                   >
                     <span className="flex items-center gap-2">
                       <PencilSquare /> Edit
@@ -289,6 +292,7 @@ export const useAttributeTableColumns = () => {
                       (e.stopPropagation(),
                         handleDelete(attribute.id, attribute.name));
                     }}
+                    data-testid={`attribute-list-row-delete-action-${attribute.id}`}
                   >
                     <span className="flex items-center gap-2">
                       <Trash /> Delete

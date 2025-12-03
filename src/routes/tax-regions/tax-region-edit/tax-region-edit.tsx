@@ -18,10 +18,10 @@ export const TaxRegionEdit = () => {
   }
 
   return (
-    <RouteDrawer>
-      <RouteDrawer.Header>
+    <RouteDrawer data-testid="tax-region-edit-drawer">
+      <RouteDrawer.Header data-testid="tax-region-edit-drawer-header">
         <RouteDrawer.Title asChild>
-          <Heading>{t("taxRegions.edit.header")}</Heading>
+          <Heading data-testid="tax-region-edit-drawer-heading">{t("taxRegions.edit.header")}</Heading>
         </RouteDrawer.Title>
         <RouteDrawer.Description className="sr-only">
           {t("taxRegions.edit.hint")}

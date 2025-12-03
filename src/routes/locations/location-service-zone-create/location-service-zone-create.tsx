@@ -34,7 +34,7 @@ export function LocationCreateServiceZone() {
   }
 
   return (
-    <RouteFocusModal prev={`/settings/locations/${location_id}`}>
+    <RouteFocusModal prev={`/settings/locations/${location_id}`} data-testid="location-service-zone-create-modal">
       {fulfillmentSet && (
         <CreateServiceZoneForm
           fulfillmentSet={fulfillmentSet}

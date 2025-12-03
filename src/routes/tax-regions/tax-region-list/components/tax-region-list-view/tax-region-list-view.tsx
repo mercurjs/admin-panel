@@ -37,7 +37,7 @@ export const TaxRegionListView = () => {
   }
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="divide-y p-0" data-testid="tax-region-list-view-container">
       <TaxRegionTable
         action={{
           to: "create",
@@ -47,9 +47,10 @@ export const TaxRegionListView = () => {
         queryObject={raw}
         table={table}
         count={count}
+        data-testid="tax-region-list-view-table"
       >
-        <Heading>{t("taxes.domain")}</Heading>
-        <Text size="small" className="text-pretty text-ui-fg-subtle">
+        <Heading data-testid="tax-region-list-view-heading">{t("taxes.domain")}</Heading>
+        <Text size="small" className="text-pretty text-ui-fg-subtle" data-testid="tax-region-list-view-hint">
           {t("taxRegions.list.hint")}
         </Text>
       </TaxRegionTable>

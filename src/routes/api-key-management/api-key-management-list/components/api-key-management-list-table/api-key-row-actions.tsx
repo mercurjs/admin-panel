@@ -118,6 +118,7 @@ export const ApiKeyRowActions = ({
           ],
         },
       ]}
+      data-testid={`api-key-row-action-menu-${apiKey.id}`}
     />
   )
 }

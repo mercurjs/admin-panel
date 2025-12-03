@@ -42,23 +42,23 @@ export const EditUserForm = ({ user }: EditUserFormProps) => {
   })
 
   return (
-    <RouteDrawer.Form form={form}>
+    <RouteDrawer.Form form={form} data-testid="user-edit-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex flex-1 flex-col overflow-hidden"
       >
-        <RouteDrawer.Body className="flex max-w-full flex-1 flex-col gap-y-8 overflow-y-auto">
+        <RouteDrawer.Body className="flex max-w-full flex-1 flex-col gap-y-8 overflow-y-auto" data-testid="user-edit-form-body">
           <Form.Field
             control={form.control}
             name="first_name"
             render={({ field }) => {
               return (
-                <Form.Item>
-                  <Form.Label>{t("fields.firstName")}</Form.Label>
-                  <Form.Control>
-                    <Input {...field} />
+                <Form.Item data-testid="user-edit-form-first-name-item">
+                  <Form.Label data-testid="user-edit-form-first-name-label">{t("fields.firstName")}</Form.Label>
+                  <Form.Control data-testid="user-edit-form-first-name-control">
+                    <Input {...field} data-testid="user-edit-form-first-name-input" />
                   </Form.Control>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="user-edit-form-first-name-error" />
                 </Form.Item>
               )
             }}
@@ -68,25 +68,25 @@ export const EditUserForm = ({ user }: EditUserFormProps) => {
             name="last_name"
             render={({ field }) => {
               return (
-                <Form.Item>
-                  <Form.Label>{t("fields.lastName")}</Form.Label>
-                  <Form.Control>
-                    <Input {...field} />
+                <Form.Item data-testid="user-edit-form-last-name-item">
+                  <Form.Label data-testid="user-edit-form-last-name-label">{t("fields.lastName")}</Form.Label>
+                  <Form.Control data-testid="user-edit-form-last-name-control">
+                    <Input {...field} data-testid="user-edit-form-last-name-input" />
                   </Form.Control>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="user-edit-form-last-name-error" />
                 </Form.Item>
               )
             }}
           />
         </RouteDrawer.Body>
-        <RouteDrawer.Footer>
+        <RouteDrawer.Footer data-testid="user-edit-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="user-edit-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
+            <Button size="small" type="submit" isLoading={isPending} data-testid="user-edit-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

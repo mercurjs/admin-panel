@@ -101,18 +101,18 @@ export const InviteUserForm = () => {
   }
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="user-invite-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex h-full flex-col overflow-hidden"
       >
-        <RouteFocusModal.Header />
-        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-hidden">
+        <RouteFocusModal.Header data-testid="user-invite-form-header" />
+        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-hidden" data-testid="user-invite-form-body">
           <div className="flex flex-1 flex-col items-center overflow-y-auto">
             <div className="flex w-full max-w-[720px] flex-col gap-y-8 px-2 py-16">
-              <div>
-                <Heading>{t("users.inviteUser")}</Heading>
-                <Text size="small" className="text-ui-fg-subtle">
+              <div data-testid="user-invite-form-header-section">
+                <Heading data-testid="user-invite-form-heading">{t("users.inviteUser")}</Heading>
+                <Text size="small" className="text-ui-fg-subtle" data-testid="user-invite-form-hint">
                   {t("users.inviteUserHint")}
                 </Text>
               </div>
@@ -122,24 +122,25 @@ export const InviteUserForm = () => {
                   variant="error"
                   dismissible={false}
                   className="text-balance"
+                  data-testid="user-invite-form-error-alert"
                 >
                   {form.formState.errors.root.message}
                 </Alert>
               )}
 
-              <div className="flex flex-col gap-y-4">
+              <div className="flex flex-col gap-y-4" data-testid="user-invite-form-email-section">
                 <div className="grid grid-cols-2 gap-4">
                   <Form.Field
                     control={form.control}
                     name="email"
                     render={({ field }) => {
                       return (
-                        <Form.Item>
-                          <Form.Label>{t("fields.email")}</Form.Label>
-                          <Form.Control>
-                            <Input {...field} />
+                        <Form.Item data-testid="user-invite-form-email-item">
+                          <Form.Label data-testid="user-invite-form-email-label">{t("fields.email")}</Form.Label>
+                          <Form.Control data-testid="user-invite-form-email-control">
+                            <Input {...field} data-testid="user-invite-form-email-input" />
                           </Form.Control>
-                          <Form.ErrorMessage />
+                          <Form.ErrorMessage data-testid="user-invite-form-email-error" />
                         </Form.Item>
                       )
                     }}
@@ -151,13 +152,14 @@ export const InviteUserForm = () => {
                     variant="secondary"
                     type="submit"
                     isLoading={isPending}
+                    data-testid="user-invite-form-send-invite-button"
                   >
                     {t("users.sendInvite")}
                   </Button>
                 </div>
               </div>
-              <div className="flex flex-col gap-y-4">
-                <Heading level="h2">{t("users.pendingInvites")}</Heading>
+              <div className="flex flex-col gap-y-4" data-testid="user-invite-form-pending-invites-section">
+                <Heading level="h2" data-testid="user-invite-form-pending-invites-heading">{t("users.pendingInvites")}</Heading>
                 <Container className="overflow-hidden p-0">
                   <_DataTable
                     table={table}
@@ -174,6 +176,7 @@ export const InviteUserForm = () => {
                       { key: "created_at", label: t("fields.createdAt") },
                       { key: "updated_at", label: t("fields.updatedAt") },
                     ]}
+                    data-testid="user-invite-form-pending-invites-table"
                   />
                 </Container>
               </div>
@@ -249,6 +252,7 @@ const InviteActions = ({ invite }: { invite: HttpTypes.AdminInvite }) => {
           ],
         },
       ]}
+      data-testid={`user-invite-form-invite-action-menu-${invite.id}`}
     />
   )
 }

@@ -58,20 +58,20 @@ export const CreateSalesChannelForm = () => {
   })
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="sales-channel-create-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex h-full flex-col overflow-hidden"
       >
-        <RouteFocusModal.Header />
-        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-hidden">
+        <RouteFocusModal.Header data-testid="sales-channel-create-form-header" />
+        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-hidden" data-testid="sales-channel-create-form-body">
           <div className="flex flex-1 flex-col items-center overflow-y-auto">
             <div className="flex w-full max-w-[720px] flex-col gap-y-8 px-2 py-16">
-              <div>
-                <Heading className="capitalize">
+              <div data-testid="sales-channel-create-form-header-section">
+                <Heading className="capitalize" data-testid="sales-channel-create-form-heading">
                   {t("salesChannels.createSalesChannel")}
                 </Heading>
-                <Text size="small" className="text-ui-fg-subtle">
+                <Text size="small" className="text-ui-fg-subtle" data-testid="sales-channel-create-form-hint">
                   {t("salesChannels.createSalesChannelHint")}
                 </Text>
               </div>
@@ -82,12 +82,12 @@ export const CreateSalesChannelForm = () => {
                     name="name"
                     render={({ field }) => {
                       return (
-                        <Form.Item>
-                          <Form.Label>{t("fields.name")}</Form.Label>
-                          <Form.Control>
-                            <Input size="small" {...field} />
+                        <Form.Item data-testid="sales-channel-create-form-name-item">
+                          <Form.Label data-testid="sales-channel-create-form-name-label">{t("fields.name")}</Form.Label>
+                          <Form.Control data-testid="sales-channel-create-form-name-control">
+                            <Input size="small" {...field} data-testid="sales-channel-create-form-name-input" />
                           </Form.Control>
-                          <Form.ErrorMessage />
+                          <Form.ErrorMessage data-testid="sales-channel-create-form-name-error" />
                         </Form.Item>
                       )
                     }}
@@ -98,12 +98,12 @@ export const CreateSalesChannelForm = () => {
                   name="description"
                   render={({ field }) => {
                     return (
-                      <Form.Item>
-                        <Form.Label>{t("fields.description")}</Form.Label>
-                        <Form.Control>
-                          <Textarea {...field} />
+                      <Form.Item data-testid="sales-channel-create-form-description-item">
+                        <Form.Label data-testid="sales-channel-create-form-description-label">{t("fields.description")}</Form.Label>
+                        <Form.Control data-testid="sales-channel-create-form-description-control">
+                          <Textarea {...field} data-testid="sales-channel-create-form-description-input" />
                         </Form.Control>
-                        <Form.ErrorMessage />
+                        <Form.ErrorMessage data-testid="sales-channel-create-form-description-error" />
                       </Form.Item>
                     )
                   }}
@@ -114,21 +114,22 @@ export const CreateSalesChannelForm = () => {
                 name="enabled"
                 render={({ field: { value, onChange, ...field } }) => {
                   return (
-                    <Form.Item>
+                    <Form.Item data-testid="sales-channel-create-form-enabled-item">
                       <div className="flex items-center justify-between">
-                        <Form.Label>{t("general.enabled")}</Form.Label>
-                        <Form.Control>
+                        <Form.Label data-testid="sales-channel-create-form-enabled-label">{t("general.enabled")}</Form.Label>
+                        <Form.Control data-testid="sales-channel-create-form-enabled-control">
                           <Switch
                             dir="ltr"
                             className="rtl:rotate-180"
                             {...field}
                             checked={value}
                             onCheckedChange={onChange}
+                            data-testid="sales-channel-create-form-enabled-switch"
                           />
                         </Form.Control>
                       </div>
-                      <Form.Hint>{t("salesChannels.enabledHint")}</Form.Hint>
-                      <Form.ErrorMessage />
+                      <Form.Hint data-testid="sales-channel-create-form-enabled-hint">{t("salesChannels.enabledHint")}</Form.Hint>
+                      <Form.ErrorMessage data-testid="sales-channel-create-form-enabled-error" />
                     </Form.Item>
                   )
                 }}
@@ -136,14 +137,14 @@ export const CreateSalesChannelForm = () => {
             </div>
           </div>
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="sales-channel-create-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="sales-channel-create-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
+            <Button size="small" type="submit" isLoading={isPending} data-testid="sales-channel-create-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

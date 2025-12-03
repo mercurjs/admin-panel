@@ -121,12 +121,13 @@ export const CreateShippingOptionsPricesForm = ({
           setSelectedPrice(null)
         }
       }}
+      data-testid="location-shipping-option-create-prices-form"
     >
       <ShippingOptionPriceProvider
         onOpenConditionalPricesModal={onOpenConditionalPricesModal}
         onCloseConditionalPricesModal={onCloseConditionalPricesModal}
       >
-        <div className="flex size-full flex-col divide-y overflow-hidden">
+        <div className="flex size-full flex-col divide-y overflow-hidden" data-testid="location-shipping-option-create-prices-form-container">
           <DataGrid
             isLoading={isLoading}
             data={data}
@@ -134,6 +135,7 @@ export const CreateShippingOptionsPricesForm = ({
             state={form}
             onEditingChange={(editing) => setCloseOnEscape(!editing)}
             disableInteractions={getIsOpen(CONDITIONAL_PRICES_STACKED_MODAL_ID)}
+            data-testid="location-shipping-option-create-prices-form-data-grid"
           />
           {selectedPrice && (
             <ConditionalPriceForm info={selectedPrice} variant="create" />

@@ -48,36 +48,36 @@ export const ProductTagEditForm = ({ productTag }: ProductTagEditFormProps) => {
   })
 
   return (
-    <RouteDrawer.Form form={form}>
+    <RouteDrawer.Form form={form} data-testid="product-tag-edit-form">
       <KeyboundForm
         className="flex size-full flex-col overflow-hidden"
         onSubmit={handleSubmit}
       >
-        <RouteDrawer.Body className="flex flex-1 flex-col overflow-auto">
+        <RouteDrawer.Body className="flex flex-1 flex-col overflow-auto" data-testid="product-tag-edit-form-body">
           <Form.Field
             control={form.control}
             name="value"
             render={({ field }) => {
               return (
-                <Form.Item>
-                  <Form.Label>{t("productTags.fields.value")}</Form.Label>
-                  <Form.Control>
-                    <Input {...field} />
+                <Form.Item data-testid="product-tag-edit-form-value-item">
+                  <Form.Label data-testid="product-tag-edit-form-value-label">{t("productTags.fields.value")}</Form.Label>
+                  <Form.Control data-testid="product-tag-edit-form-value-control">
+                    <Input {...field} data-testid="product-tag-edit-form-value-input" />
                   </Form.Control>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="product-tag-edit-form-value-error" />
                 </Form.Item>
               )
             }}
           />
         </RouteDrawer.Body>
-        <RouteDrawer.Footer>
+        <RouteDrawer.Footer data-testid="product-tag-edit-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button variant="secondary" size="small" type="button">
+              <Button variant="secondary" size="small" type="button" data-testid="product-tag-edit-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
+            <Button size="small" type="submit" isLoading={isPending} data-testid="product-tag-edit-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

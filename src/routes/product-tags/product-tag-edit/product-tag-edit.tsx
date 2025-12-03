@@ -18,10 +18,10 @@ export const ProductTagEdit = () => {
   }
 
   return (
-    <RouteDrawer>
-      <RouteDrawer.Header>
+    <RouteDrawer data-testid="product-tag-edit-drawer">
+      <RouteDrawer.Header data-testid="product-tag-edit-drawer-header">
         <RouteDrawer.Title asChild>
-          <Heading>{t("productTags.edit.header")}</Heading>
+          <Heading data-testid="product-tag-edit-drawer-heading">{t("productTags.edit.header")}</Heading>
         </RouteDrawer.Title>
         <RouteDrawer.Description className="sr-only">
           {t("productTags.edit.subtitle")}

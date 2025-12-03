@@ -169,23 +169,23 @@ export const AddCurrenciesForm = ({
   }
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="store-add-currencies-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex h-full flex-col overflow-hidden"
       >
-        <RouteFocusModal.Header>
+        <RouteFocusModal.Header data-testid="store-add-currencies-form-header">
           <div className="flex flex-1 items-center justify-between">
             <div className="flex items-center">
               {form.formState.errors.currencies && (
-                <Hint variant="error">
+                <Hint variant="error" data-testid="store-add-currencies-form-error-hint">
                   {form.formState.errors.currencies.message}
                 </Hint>
               )}
             </div>
           </div>
         </RouteFocusModal.Header>
-        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-hidden">
+        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-hidden" data-testid="store-add-currencies-form-body">
           <_DataTable
             table={table}
             pageSize={PAGE_SIZE}
@@ -201,16 +201,17 @@ export const AddCurrenciesForm = ({
             ]}
             isLoading={isLoading}
             queryObject={raw}
+            data-testid="store-add-currencies-form-table"
           />
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="store-add-currencies-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="store-add-currencies-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
+            <Button size="small" type="submit" isLoading={isPending} data-testid="store-add-currencies-form-save-button">
               {t("actions.save")}
             </Button>
           </div>
@@ -244,6 +245,7 @@ const useColumns = (
               onCheckedChange={(value) =>
                 table.toggleAllPageRowsSelected(!!value)
               }
+              data-testid="store-add-currencies-form-select-all-checkbox"
             />
           )
         },
@@ -259,6 +261,7 @@ const useColumns = (
               onClick={(e) => {
                 e.stopPropagation()
               }}
+              data-testid={`store-add-currencies-form-select-checkbox-${row.original.code}`}
             />
           )
 
@@ -297,6 +300,7 @@ const useColumns = (
                     [row.original.code]: val,
                   })
                 }}
+                data-testid={`store-add-currencies-form-tax-inclusive-switch-${row.original.code}`}
               />
             </div>
           )

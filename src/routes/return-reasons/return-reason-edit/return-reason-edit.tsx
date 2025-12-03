@@ -18,10 +18,10 @@ export const ReturnReasonEdit = () => {
   }
 
   return (
-    <RouteDrawer>
-      <RouteDrawer.Header>
+    <RouteDrawer data-testid="return-reason-edit-drawer">
+      <RouteDrawer.Header data-testid="return-reason-edit-drawer-header">
         <RouteDrawer.Title asChild>
-          <Heading>{t("returnReasons.edit.header")}</Heading>
+          <Heading data-testid="return-reason-edit-drawer-heading">{t("returnReasons.edit.header")}</Heading>
         </RouteDrawer.Title>
         <RouteDrawer.Description className="sr-only">
           {t("returnReasons.edit.subtitle")}

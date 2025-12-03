@@ -49,7 +49,7 @@ export const ApiKeySalesChannelSection = ({
   const emptyState = hooks.useSalesChannelTableEmptyState()
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="divide-y p-0" data-testid={`publishable-api-key-sales-channels-section`}>
       <DataTable
         data={sales_channels}
         columns={columns}
@@ -71,6 +71,7 @@ export const ApiKeySalesChannelSection = ({
         }}
         prefix={PREFIX}
         pageSize={PAGE_SIZE}
+        data-testid="publishable-api-key-sales-channels-table"
       />
     </Container>
   )

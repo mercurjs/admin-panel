@@ -53,10 +53,10 @@ export const ProductTagListTable = () => {
   }
 
   return (
-    <Container className="divide-y px-0 py-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <Heading>{t("productTags.domain")}</Heading>
-        <Button variant="secondary" size="small" asChild>
+    <Container className="divide-y px-0 py-0" data-testid="product-tag-list-table-container">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="product-tag-list-table-header">
+        <Heading data-testid="product-tag-list-table-heading">{t("productTags.domain")}</Heading>
+        <Button variant="secondary" size="small" asChild data-testid="product-tag-list-table-create-button">
           <Link to="create">{t("actions.create")}</Link>
         </Button>
       </div>
@@ -76,6 +76,7 @@ export const ProductTagListTable = () => {
           { key: "created_at", label: t("fields.createdAt") },
           { key: "updated_at", label: t("fields.updatedAt") },
         ]}
+        data-testid="product-tag-list-table"
       />
     </Container>
   )
@@ -111,6 +112,7 @@ const ProductTagRowActions = ({
           ],
         },
       ]}
+      data-testid={`product-tag-list-table-action-menu-${productTag.id}`}
     />
   )
 }

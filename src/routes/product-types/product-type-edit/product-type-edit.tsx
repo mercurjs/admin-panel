@@ -18,9 +18,9 @@ export const ProductTypeEdit = () => {
   }
 
   return (
-    <RouteDrawer>
-      <RouteDrawer.Header>
-        <Heading>{t("productTypes.edit.header")}</Heading>
+    <RouteDrawer data-testid="product-type-edit-drawer">
+      <RouteDrawer.Header data-testid="product-type-edit-drawer-header">
+        <Heading data-testid="product-type-edit-drawer-heading">{t("productTypes.edit.header")}</Heading>
       </RouteDrawer.Header>
       {ready && <EditProductTypeForm productType={product_type} />}
     </RouteDrawer>

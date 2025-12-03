@@ -19,8 +19,8 @@ export const ProductTypeGeneralSection = ({
   )
 
   return (
-    <Container className="flex items-center justify-between">
-      <Heading>{productType.value}</Heading>
+    <Container className="flex items-center justify-between" data-testid="product-type-general-section-container">
+      <Heading data-testid="product-type-general-section-heading">{productType.value}</Heading>
       <ActionMenu
         groups={[
           {
@@ -42,6 +42,7 @@ export const ProductTypeGeneralSection = ({
             ],
           },
         ]}
+        data-testid="product-type-general-section-action-menu"
       />
     </Container>
   )

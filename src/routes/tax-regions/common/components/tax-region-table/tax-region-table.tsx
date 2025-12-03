@@ -25,6 +25,7 @@ type TaxRegionTableProps = {
   action: { label: string; to: string };
   prefix?: string;
   children?: ReactNode;
+  "data-testid"?: string;
 };
 
 export const TaxRegionTable = ({
@@ -36,6 +37,7 @@ export const TaxRegionTable = ({
   queryObject,
   prefix,
   children,
+  "data-testid": dataTestId,
 }: TaxRegionTableProps) => {
   const { t } = useTranslation();
   if (isPending) {
@@ -62,8 +64,8 @@ export const TaxRegionTable = ({
   const { pageIndex, pageSize } = table.getState().pagination;
 
   return (
-    <div className="flex flex-col divide-y">
-      <div className="flex flex-col justify-between gap-x-4 gap-y-3 px-6 py-4 md:flex-row md:items-center">
+    <div className="flex flex-col divide-y" data-testid={dataTestId}>
+      <div className="flex flex-col justify-between gap-x-4 gap-y-3 px-6 py-4 md:flex-row md:items-center" data-testid={dataTestId ? `${dataTestId}-header` : undefined}>
         <div>{children}</div>
         <div className="flex items-center gap-x-2">
           {!noRecords && (
@@ -83,7 +85,7 @@ export const TaxRegionTable = ({
             </div>
           )}
           <Link to={action.to}>
-            <Button size="small" variant="secondary">
+            <Button size="small" variant="secondary" data-testid={dataTestId ? `${dataTestId}-create-button` : undefined}>
               {action.label}
             </Button>
           </Link>

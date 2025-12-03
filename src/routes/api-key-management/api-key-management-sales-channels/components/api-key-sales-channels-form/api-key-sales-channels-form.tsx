@@ -105,28 +105,28 @@ export const ApiKeySalesChannelsForm = ({
   })
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="publishable-api-key-sales-channels-form">
       <KeyboundForm onSubmit={handleSubmit} className="flex h-full flex-col">
-        <RouteFocusModal.Header>
+        <RouteFocusModal.Header data-testid="publishable-api-key-sales-channels-form-header">
           <RouteFocusModal.Title asChild>
-            <VisuallyHidden>
+            <VisuallyHidden data-testid="publishable-api-key-sales-channels-form-title">
               {t("apiKeyManagement.salesChannels.title")}
             </VisuallyHidden>
           </RouteFocusModal.Title>
           <RouteFocusModal.Description asChild>
-            <VisuallyHidden>
+            <VisuallyHidden data-testid="publishable-api-key-sales-channels-form-description">
               {t("apiKeyManagement.salesChannels.description")}
             </VisuallyHidden>
           </RouteFocusModal.Description>
-          <div className="flex items-center justify-end gap-x-2">
+          <div className="flex items-center justify-end gap-x-2" data-testid="publishable-api-key-sales-channels-form-error-container">
             {form.formState.errors.sales_channel_ids && (
-              <Hint variant="error">
+              <Hint variant="error" data-testid="publishable-api-key-sales-channels-form-error">
                 {form.formState.errors.sales_channel_ids.message}
               </Hint>
             )}
           </div>
         </RouteFocusModal.Header>
-        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-auto">
+        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-auto" data-testid="publishable-api-key-sales-channels-form-body">
           <DataTable
             data={sales_channels}
             columns={columns}
@@ -144,16 +144,17 @@ export const ApiKeySalesChannelsForm = ({
             prefix={PREFIX}
             pageSize={PAGE_SIZE}
             autoFocusSearch
+            data-testid="publishable-api-key-sales-channels-form-table"
           />
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="publishable-api-key-sales-channels-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="publishable-api-key-sales-channels-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
-            <Button size="small" type="submit" isLoading={isMutating}>
+            <Button size="small" type="submit" isLoading={isMutating} data-testid="publishable-api-key-sales-channels-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

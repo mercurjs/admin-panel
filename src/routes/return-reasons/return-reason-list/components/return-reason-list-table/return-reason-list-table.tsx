@@ -45,15 +45,15 @@ export const ReturnReasonListTable = () => {
   }
 
   return (
-    <Container className="divide-y px-0 py-0">
-      <div className="flex items-center justify-between px-6 py-4">
+    <Container className="divide-y px-0 py-0" data-testid="return-reason-list-table-container">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="return-reason-list-table-header">
         <div>
-          <Heading>{t("returnReasons.domain")}</Heading>
-          <Text className="text-ui-fg-subtle" size="small">
+          <Heading data-testid="return-reason-list-table-heading">{t("returnReasons.domain")}</Heading>
+          <Text className="text-ui-fg-subtle" size="small" data-testid="return-reason-list-table-subtitle">
             {t("returnReasons.subtitle")}
           </Text>
         </div>
-        <Button variant="secondary" size="small" asChild>
+        <Button variant="secondary" size="small" asChild data-testid="return-reason-list-table-create-button">
           <Link to="create">{t("actions.create")}</Link>
         </Button>
       </div>
@@ -67,6 +67,7 @@ export const ReturnReasonListTable = () => {
         noHeader={true}
         pagination
         search
+        data-testid="return-reason-list-table"
       />
     </Container>
   )
@@ -104,6 +105,7 @@ const ReturnReasonRowActions = ({
           ],
         },
       ]}
+      data-testid={`return-reason-list-table-action-menu-${returnReason.id}`}
     />
   )
 }

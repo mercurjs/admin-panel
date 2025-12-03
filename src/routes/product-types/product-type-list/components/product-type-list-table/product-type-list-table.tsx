@@ -45,15 +45,15 @@ export const ProductTypeListTable = () => {
   }
 
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
+    <Container className="divide-y p-0" data-testid="product-type-list-table-container">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="product-type-list-table-header">
         <div>
-          <Heading>{t("productTypes.domain")}</Heading>
-          <Text className="text-ui-fg-subtle" size="small">
+          <Heading data-testid="product-type-list-table-heading">{t("productTypes.domain")}</Heading>
+          <Text className="text-ui-fg-subtle" size="small" data-testid="product-type-list-table-subtitle">
             {t("productTypes.subtitle")}
           </Text>
         </div>
-        <Button size="small" variant="secondary" asChild>
+        <Button size="small" variant="secondary" asChild data-testid="product-type-list-table-create-button">
           <Link to="create">{t("actions.create")}</Link>
         </Button>
       </div>
@@ -73,6 +73,7 @@ export const ProductTypeListTable = () => {
         queryObject={raw}
         pagination
         search
+        data-testid="product-type-list-table"
       />
     </Container>
   )

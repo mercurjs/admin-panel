@@ -363,23 +363,23 @@ export const TaxRegionCreateTaxOverrideForm = ({
   )
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="tax-region-override-create-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex h-full flex-col overflow-hidden"
       >
-        <RouteFocusModal.Header />
-        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-hidden">
+        <RouteFocusModal.Header data-testid="tax-region-override-create-form-header" />
+        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-hidden" data-testid="tax-region-override-create-form-body">
           <div className="flex flex-1 flex-col items-center overflow-y-auto">
             <div className="flex w-full max-w-[720px] flex-col gap-y-8 px-2 py-16">
-              <div>
+              <div data-testid="tax-region-override-create-form-header-section">
                 <RouteFocusModal.Title asChild>
-                  <Heading>
+                  <Heading data-testid="tax-region-override-create-form-heading">
                     {t("taxRegions.taxOverrides.create.header")}
                   </Heading>
                 </RouteFocusModal.Title>
                 <RouteFocusModal.Description asChild>
-                  <Text size="small" className="text-ui-fg-subtle">
+                  <Text size="small" className="text-ui-fg-subtle" data-testid="tax-region-override-create-form-hint">
                     {t("taxRegions.taxOverrides.create.hint")}
                   </Text>
                 </RouteFocusModal.Description>
@@ -392,12 +392,12 @@ export const TaxRegionCreateTaxOverrideForm = ({
                       name="name"
                       render={({ field }) => {
                         return (
-                          <Form.Item>
-                            <Form.Label>{t("fields.name")}</Form.Label>
-                            <Form.Control>
-                              <Input {...field} />
+                          <Form.Item data-testid="tax-region-override-create-form-name-item">
+                            <Form.Label data-testid="tax-region-override-create-form-name-label">{t("fields.name")}</Form.Label>
+                            <Form.Control data-testid="tax-region-override-create-form-name-control">
+                              <Input {...field} data-testid="tax-region-override-create-form-name-input" />
                             </Form.Control>
-                            <Form.ErrorMessage />
+                            <Form.ErrorMessage data-testid="tax-region-override-create-form-name-error" />
                           </Form.Item>
                         )
                       }}
@@ -407,11 +407,11 @@ export const TaxRegionCreateTaxOverrideForm = ({
                       name="rate"
                       render={({ field: { value, onChange, ...field } }) => {
                         return (
-                          <Form.Item>
-                            <Form.Label>
+                          <Form.Item data-testid="tax-region-override-create-form-rate-item">
+                            <Form.Label data-testid="tax-region-override-create-form-rate-label">
                               {t("taxRegions.fields.taxRate")}
                             </Form.Label>
-                            <Form.Control>
+                            <Form.Control data-testid="tax-region-override-create-form-rate-control">
                               <PercentageInput
                                 {...field}
                                 placeholder="0.00"
@@ -423,9 +423,10 @@ export const TaxRegionCreateTaxOverrideForm = ({
                                     float: values?.float,
                                   })
                                 }
+                                data-testid="tax-region-override-create-form-rate-input"
                               />
                             </Form.Control>
-                            <Form.ErrorMessage />
+                            <Form.ErrorMessage data-testid="tax-region-override-create-form-rate-error" />
                           </Form.Item>
                         )
                       }}
@@ -435,14 +436,14 @@ export const TaxRegionCreateTaxOverrideForm = ({
                       name="code"
                       render={({ field }) => {
                         return (
-                          <Form.Item>
-                            <Form.Label>
+                          <Form.Item data-testid="tax-region-override-create-form-code-item">
+                            <Form.Label data-testid="tax-region-override-create-form-code-label">
                               {t("taxRegions.fields.taxCode")}
                             </Form.Label>
-                            <Form.Control>
-                              <Input {...field} />
+                            <Form.Control data-testid="tax-region-override-create-form-code-control">
+                              <Input {...field} data-testid="tax-region-override-create-form-code-input" />
                             </Form.Control>
-                            <Form.ErrorMessage />
+                            <Form.ErrorMessage data-testid="tax-region-override-create-form-code-error" />
                           </Form.Item>
                         )
                       }}
@@ -455,14 +456,16 @@ export const TaxRegionCreateTaxOverrideForm = ({
                 name="is_combinable"
                 label={t("taxRegions.fields.isCombinable.label")}
                 description={t("taxRegions.fields.isCombinable.hint")}
+                data-testid="tax-region-override-create-form-is-combinable"
               />
-              <div className="flex flex-col gap-y-3">
-                <div className="flex items-center justify-between gap-x-4">
+              <div className="flex flex-col gap-y-3" data-testid="tax-region-override-create-form-targets-section">
+                <div className="flex items-center justify-between gap-x-4" data-testid="tax-region-override-create-form-targets-header">
                   <div className="flex flex-col">
                     <div className="flex items-center gap-x-1">
                       <Label
                         id="tax_region_rules_label"
                         htmlFor="tax_region_rules"
+                        data-testid="tax-region-override-create-form-targets-label"
                       >
                         {t("taxRegions.fields.targets.label")}
                       </Label>
@@ -470,6 +473,7 @@ export const TaxRegionCreateTaxOverrideForm = ({
                         size="small"
                         leading="compact"
                         className="text-ui-fg-muted"
+                        data-testid="tax-region-override-create-form-targets-optional"
                       >
                         ({t("fields.optional")})
                       </Text>
@@ -477,6 +481,7 @@ export const TaxRegionCreateTaxOverrideForm = ({
                     <Hint
                       id="tax_region_rules_description"
                       className="text-pretty"
+                      data-testid="tax-region-override-create-form-targets-hint"
                     >
                       {t("taxRegions.fields.targets.hint")}
                     </Hint>
@@ -488,6 +493,7 @@ export const TaxRegionCreateTaxOverrideForm = ({
                       size="small"
                       variant="transparent"
                       className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover flex-shrink-0"
+                      data-testid="tax-region-override-create-form-targets-add-button"
                     >
                       {t("taxRegions.fields.targets.action")}
                     </Button>
@@ -657,14 +663,14 @@ export const TaxRegionCreateTaxOverrideForm = ({
             </div>
           </div>
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="tax-region-override-create-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="tax-region-override-create-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
+            <Button size="small" type="submit" isLoading={isPending} data-testid="tax-region-override-create-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

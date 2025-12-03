@@ -122,12 +122,12 @@ export const ApiKeyGeneralSection = ({ apiKey }: ApiKeyGeneralSectionProps) => {
   const apiKeyType = getApiKeyTypeProps(apiKey.type, t)
 
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <Heading>{apiKey.title}</Heading>
-        <div className="flex items-center gap-x-4">
-          <div className="flex items-center gap-x-2">
-            <StatusBadge color={apiKeyStatus.color}>
+    <Container className="divide-y p-0" data-testid={`${apiKey.type}-api-key-general-section`}>
+      <div className="flex items-center justify-between px-6 py-4" data-testid={`${apiKey.type}-api-key-general-section-header`}>
+        <Heading data-testid={`${apiKey.type}-api-key-general-section-heading`}>{apiKey.title}</Heading>
+        <div className="flex items-center gap-x-4" data-testid={`${apiKey.type}-api-key-general-section-actions`}>
+          <div className="flex items-center gap-x-2" data-testid={`${apiKey.type}-api-key-general-section-status`}>
+            <StatusBadge color={apiKeyStatus.color} data-testid={`${apiKey.type}-api-key-general-section-status-badge`}>
               {apiKeyStatus.label}
             </StatusBadge>
           </div>
@@ -146,64 +146,65 @@ export const ApiKeyGeneralSection = ({ apiKey }: ApiKeyGeneralSectionProps) => {
                 actions: dangerousActions,
               },
             ]}
+            data-testid={`${apiKey.type}-api-key-general-section-action-menu`}
           />
         </div>
       </div>
-      <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4">
-        <Text size="small" leading="compact" weight="plus">
+      <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4" data-testid={`${apiKey.type}-api-key-general-section-key-row`}>
+        <Text size="small" leading="compact" weight="plus" data-testid={`${apiKey.type}-api-key-general-section-key-label`}>
           {t("fields.key")}
         </Text>
         {apiKey.type === "secret" ? (
-          <Badge size="2xsmall" className="inline-block w-fit">
+          <Badge size="2xsmall" className="inline-block w-fit" data-testid={`${apiKey.type}-api-key-general-section-key-badge`}>
             {prettifyRedactedToken(apiKey.redacted)}
           </Badge>
         ) : (
-          <Copy asChild content={apiKey.token} className="cursor-pointer">
-            <Badge size="2xsmall" className="text-ui-tag-neutral-text">
+          <Copy asChild content={apiKey.token} className="cursor-pointer" data-testid={`${apiKey.type}-api-key-general-section-key-copy`}>
+            <Badge size="2xsmall" className="text-ui-tag-neutral-text" data-testid={`${apiKey.type}-api-key-general-section-key-badge`}>
               {prettifyRedactedToken(apiKey.redacted)}
             </Badge>
           </Copy>
         )}
       </div>
-      <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4">
-        <Text size="small" leading="compact" weight="plus">
+      <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4" data-testid={`${apiKey.type}-api-key-general-section-type-row`}>
+        <Text size="small" leading="compact" weight="plus" data-testid={`${apiKey.type}-api-key-general-section-type-label`}>
           {t("fields.type")}
         </Text>
-        <Text size="small" leading="compact">
+        <Text size="small" leading="compact" data-testid={`${apiKey.type}-api-key-general-section-type-value`}>
           {apiKeyType.label}
         </Text>
       </div>
-      <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4">
-        <Text size="small" leading="compact" weight="plus">
+      <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4" data-testid={`${apiKey.type}-api-key-general-section-last-used-row`}>
+        <Text size="small" leading="compact" weight="plus" data-testid={`${apiKey.type}-api-key-general-section-last-used-label`}>
           {t("apiKeyManagement.fields.lastUsedAtLabel")}
         </Text>
-        <Text size="small" leading="compact">
+        <Text size="small" leading="compact" data-testid={`${apiKey.type}-api-key-general-section-last-used-value`}>
           {apiKey.last_used_at
             ? getFullDate({ date: apiKey.last_used_at, includeTime: true })
             : "-"}
         </Text>
       </div>
-      <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4">
-        <Text size="small" leading="compact" weight="plus">
+      <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4" data-testid={`${apiKey.type}-api-key-general-section-created-by-row`}>
+        <Text size="small" leading="compact" weight="plus" data-testid={`${apiKey.type}-api-key-general-section-created-by-label`}>
           {t("apiKeyManagement.fields.createdByLabel")}
         </Text>
-        <ActionBy userId={apiKey.created_by} />
+        <ActionBy userId={apiKey.created_by} data-testid={`${apiKey.type}-api-key-general-section-created-by-value`} />
       </div>
       {apiKey.revoked_at && (
         <>
-          <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4">
-            <Text size="small" leading="compact" weight="plus">
+          <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4" data-testid={`${apiKey.type}-api-key-general-section-revoked-at-row`}>
+            <Text size="small" leading="compact" weight="plus" data-testid={`${apiKey.type}-api-key-general-section-revoked-at-label`}>
               {t("apiKeyManagement.fields.revokedAtLabel")}
             </Text>
-            <Text size="small" leading="compact">
+            <Text size="small" leading="compact" data-testid={`${apiKey.type}-api-key-general-section-revoked-at-value`}>
               {getFullDate({ date: apiKey.revoked_at, includeTime: true })}
             </Text>
           </div>
-          <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4">
-            <Text size="small" leading="compact" weight="plus">
+          <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4" data-testid={`${apiKey.type}-api-key-general-section-revoked-by-row`}>
+            <Text size="small" leading="compact" weight="plus" data-testid={`${apiKey.type}-api-key-general-section-revoked-by-label`}>
               {t("apiKeyManagement.fields.revokedByLabel")}
             </Text>
-            <ActionBy userId={apiKey.revoked_by} />
+            <ActionBy userId={apiKey.revoked_by} data-testid={`${apiKey.type}-api-key-general-section-revoked-by-value`} />
           </div>
         </>
       )}
@@ -211,14 +212,14 @@ export const ApiKeyGeneralSection = ({ apiKey }: ApiKeyGeneralSectionProps) => {
   )
 }
 
-const ActionBy = ({ userId }: { userId: string | null }) => {
+const ActionBy = ({ userId, "data-testid": dataTestId }: { userId: string | null; "data-testid"?: string }) => {
   const { user, isLoading, isError, error } = useUser(userId!, undefined, {
     enabled: !!userId,
   })
 
   if (!userId) {
     return (
-      <Text size="small" className="text-ui-fg-subtle">
+      <Text size="small" className="text-ui-fg-subtle" data-testid={dataTestId}>
         -
       </Text>
     )
@@ -230,7 +231,7 @@ const ActionBy = ({ userId }: { userId: string | null }) => {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-[20px_1fr]">
+      <div className="grid grid-cols-[20px_1fr]" data-testid={dataTestId}>
         <Skeleton className="h-5 w-5 rounded-full" />
         <Skeleton className="w-full max-w-[220px]" />
       </div>
@@ -239,11 +240,11 @@ const ActionBy = ({ userId }: { userId: string | null }) => {
 
   if (!user) {
     return (
-      <Text size="small" className="text-ui-fg-subtle">
+      <Text size="small" className="text-ui-fg-subtle" data-testid={dataTestId}>
         -
       </Text>
     )
   }
 
-  return <UserLink {...user} />
+  return <UserLink {...user} data-testid={dataTestId} />
 }

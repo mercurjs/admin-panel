@@ -17,7 +17,7 @@ export const TaxRegionCreateTaxOverride = () => {
   }
 
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="tax-region-override-create-modal">
       {ready && <TaxRegionCreateTaxOverrideForm taxRegion={tax_region} />}
     </RouteFocusModal>
   )

@@ -3,7 +3,7 @@ import { CreateLocationForm } from "./components/create-location-form"
 
 export const LocationCreate = () => {
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="location-create-modal">
       <CreateLocationForm />
     </RouteFocusModal>
   )

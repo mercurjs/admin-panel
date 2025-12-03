@@ -15,9 +15,9 @@ export const StoreEdit = () => {
   const ready = !!store && !isLoading
 
   return (
-    <RouteDrawer>
-      <RouteDrawer.Header>
-        <Heading>{t("store.edit.header")}</Heading>
+    <RouteDrawer data-testid="store-edit">
+      <RouteDrawer.Header data-testid="store-edit-header">
+        <Heading data-testid="store-edit-heading">{t("store.edit.header")}</Heading>
       </RouteDrawer.Header>
       {ready && <EditStoreForm store={store} />}
     </RouteDrawer>

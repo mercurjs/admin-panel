@@ -48,13 +48,13 @@ export const CreateProductTypeForm = () => {
   )
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="product-type-create-form">
       <KeyboundForm onSubmit={handleSubmit} className="flex h-full flex-col">
-        <RouteFocusModal.Body className="flex flex-col items-center overflow-auto p-16">
+        <RouteFocusModal.Body className="flex flex-col items-center overflow-auto p-16" data-testid="product-type-create-form-body">
           <div className="flex w-full max-w-[720px] flex-col gap-y-8">
-            <div>
-              <Heading>{t("productTypes.create.header")}</Heading>
-              <Text size="small" className="text-ui-fg-subtle">
+            <div data-testid="product-type-create-form-header-section">
+              <Heading data-testid="product-type-create-form-heading">{t("productTypes.create.header")}</Heading>
+              <Text size="small" className="text-ui-fg-subtle" data-testid="product-type-create-form-hint">
                 {t("productTypes.create.hint")}
               </Text>
             </div>
@@ -64,12 +64,12 @@ export const CreateProductTypeForm = () => {
                 name="value"
                 render={({ field }) => {
                   return (
-                    <Form.Item>
-                      <Form.Label>{t("productTypes.fields.value")}</Form.Label>
-                      <Form.Control>
-                        <Input {...field} />
+                    <Form.Item data-testid="product-type-create-form-value-item">
+                      <Form.Label data-testid="product-type-create-form-value-label">{t("productTypes.fields.value")}</Form.Label>
+                      <Form.Control data-testid="product-type-create-form-value-control">
+                        <Input {...field} data-testid="product-type-create-form-value-input" />
                       </Form.Control>
-                      <Form.ErrorMessage />
+                      <Form.ErrorMessage data-testid="product-type-create-form-value-error" />
                     </Form.Item>
                   )
                 }}
@@ -77,10 +77,10 @@ export const CreateProductTypeForm = () => {
             </div>
           </div>
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="product-type-create-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="product-type-create-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
@@ -89,6 +89,7 @@ export const CreateProductTypeForm = () => {
               variant="primary"
               type="submit"
               isLoading={isPending}
+              data-testid="product-type-create-form-create-button"
             >
               {t("actions.create")}
             </Button>

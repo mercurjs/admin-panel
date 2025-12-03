@@ -18,6 +18,7 @@ export const ApiKeyManagementList = () => {
         before: getWidgets("api_key.list.before"),
         after: getWidgets("api_key.list.after"),
       }}
+      data-testid="publishable-api-keys-list-page"
     >
       <ApiKeyManagementListTable keyType={keyType} />
     </SingleColumnPage>

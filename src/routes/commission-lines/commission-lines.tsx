@@ -65,7 +65,8 @@ export const CommissionLines = () => {
                 <Table.Row key={line.id}>
                   <Table.Cell>{line.order?.seller?.name || "-"}</Table.Cell>
                   <Table.Cell>{line.order?.display_id ? `#${line.order?.display_id}` : "-"}</Table.Cell>
-                  <Table.Cell>{`${line.value} ${line.currency_code.toUpperCase()}`}</Table.Cell>
+                  <Table.Cell>{`${line.value.toFixed(2)} ${line.currency_code.toUpperCase()}`}</Table.Cell>
+
                   <Table.Cell>
                     <div className="flex items-center gap-2">
                       <History />

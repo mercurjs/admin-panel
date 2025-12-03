@@ -79,18 +79,18 @@ export function EditServiceZoneAreasForm({
   })
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="location-service-zone-manage-areas-form">
       <KeyboundForm
         className="flex h-full flex-col overflow-hidden"
         onSubmit={handleSubmit}
       >
-        <RouteFocusModal.Header />
+        <RouteFocusModal.Header data-testid="location-service-zone-manage-areas-form-header" />
 
-        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-auto">
-          <StackedFocusModal id={GEO_ZONE_STACKED_MODAL_ID}>
+        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-auto" data-testid="location-service-zone-manage-areas-form-body">
+          <StackedFocusModal id={GEO_ZONE_STACKED_MODAL_ID} data-testid="location-service-zone-manage-areas-form-stacked-modal">
             <div className="flex flex-col items-center p-16">
               <div className="flex w-full max-w-[720px] flex-col gap-y-8">
-                <Heading>
+                <Heading data-testid="location-service-zone-manage-areas-form-heading">
                   {t("stockLocations.serviceZones.manageAreas.header", {
                     name: zone.name,
                   })}
@@ -102,14 +102,14 @@ export function EditServiceZoneAreasForm({
             <GeoZoneForm.AreaDrawer form={form} />
           </StackedFocusModal>
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="location-service-zone-manage-areas-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button variant="secondary" size="small">
+              <Button variant="secondary" size="small" data-testid="location-service-zone-manage-areas-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
-            <Button type="submit" size="small" isLoading={isLoading}>
+            <Button type="submit" size="small" isLoading={isLoading} data-testid="location-service-zone-manage-areas-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

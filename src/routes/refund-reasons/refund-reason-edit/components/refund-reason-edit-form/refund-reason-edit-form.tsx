@@ -56,28 +56,29 @@ export const RefundReasonEditForm = ({
   });
 
   return (
-    <RouteDrawer.Form form={form}>
+    <RouteDrawer.Form form={form} data-testid="refund-reason-edit-form">
       <KeyboundForm
         className="flex size-full flex-col overflow-hidden"
         onSubmit={handleSubmit}
       >
-        <RouteDrawer.Body className="flex flex-1 flex-col gap-y-4 overflow-auto">
+        <RouteDrawer.Body className="flex flex-1 flex-col gap-y-4 overflow-auto" data-testid="refund-reason-edit-form-body">
           <Form.Field
             control={form.control}
             name="label"
             render={({ field }) => {
               return (
-                <Form.Item>
-                  <Form.Label>
+                <Form.Item data-testid="refund-reason-edit-form-label-item">
+                  <Form.Label data-testid="refund-reason-edit-form-label-label">
                     {t("refundReasons.fields.label.label")}
                   </Form.Label>
-                  <Form.Control>
+                  <Form.Control data-testid="refund-reason-edit-form-label-control">
                     <Input
                       {...field}
                       placeholder={t("refundReasons.fields.label.placeholder")}
+                      data-testid="refund-reason-edit-form-label-input"
                     />
                   </Form.Control>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="refund-reason-edit-form-label-error" />
                 </Form.Item>
               );
             }}
@@ -107,32 +108,33 @@ export const RefundReasonEditForm = ({
             name="description"
             render={({ field }) => {
               return (
-                <Form.Item>
-                  <Form.Label optional>
+                <Form.Item data-testid="refund-reason-edit-form-description-item">
+                  <Form.Label optional data-testid="refund-reason-edit-form-description-label">
                     {t("refundReasons.fields.description.label")}
                   </Form.Label>
-                  <Form.Control>
+                  <Form.Control data-testid="refund-reason-edit-form-description-control">
                     <Textarea
                       {...field}
                       placeholder={t(
                         "refundReasons.fields.description.placeholder",
                       )}
+                      data-testid="refund-reason-edit-form-description-input"
                     />
                   </Form.Control>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="refund-reason-edit-form-description-error" />
                 </Form.Item>
               );
             }}
           />
         </RouteDrawer.Body>
-        <RouteDrawer.Footer>
+        <RouteDrawer.Footer data-testid="refund-reason-edit-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button variant="secondary" size="small" type="button">
+              <Button variant="secondary" size="small" type="button" data-testid="refund-reason-edit-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
+            <Button size="small" type="submit" isLoading={isPending} data-testid="refund-reason-edit-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

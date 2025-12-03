@@ -41,7 +41,7 @@ export function LocationServiceZoneShippingOptionCreate() {
   }
 
   return (
-    <RouteFocusModal prev={`/settings/locations/${location_id}`}>
+    <RouteFocusModal prev={`/settings/locations/${location_id}`} data-testid="location-shipping-option-create-modal">
       {zone && (
         <CreateShippingOptionsForm
           zone={zone}

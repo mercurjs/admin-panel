@@ -53,9 +53,9 @@ export const ShippingProfileGeneralSection = ({
   }
 
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <Heading>{profile.name}</Heading>
+    <Container className="divide-y p-0" data-testid="shipping-profile-general-section-container">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="shipping-profile-general-section-header">
+        <Heading data-testid="shipping-profile-general-section-heading">{profile.name}</Heading>
         <ActionMenu
           groups={[
             {
@@ -68,9 +68,10 @@ export const ShippingProfileGeneralSection = ({
               ],
             },
           ]}
+          data-testid="shipping-profile-general-section-action-menu"
         />
       </div>
-      <SectionRow title={t("fields.type")} value={profile.type} />
+      <SectionRow title={t("fields.type")} value={profile.type} data-testid="shipping-profile-general-section-type-row" />
     </Container>
   )
 }

@@ -40,17 +40,18 @@ export const Configuration = () => {
   };
 
   return (
-    <Container>
-      <div className="flex items-center justify-between px-6 py-4">
+    <Container data-testid="configuration-container">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="configuration-header">
         <div>
-          <Heading>Product catalog settings</Heading>
-          <Text className="text-ui-fg-subtle" size="small">
+          <Heading data-testid="configuration-heading">Product catalog settings</Heading>
+          <Text className="text-ui-fg-subtle" size="small" data-testid="configuration-subtitle">
             Manage global product catalog configuration settings
           </Text>
         </div>
         <Drawer
           open={open}
           onOpenChange={(openChanged) => setOpen(openChanged)}
+          data-testid="configuration-create-drawer"
         >
           <Drawer.Trigger
             onClick={() => {
@@ -58,13 +59,13 @@ export const Configuration = () => {
             }}
             asChild
           >
-            <Button>Create</Button>
+            <Button data-testid="configuration-create-button">Create</Button>
           </Drawer.Trigger>
-          <Drawer.Content>
-            <Drawer.Header>
-              <Drawer.Title>Create Rules</Drawer.Title>
+          <Drawer.Content data-testid="configuration-create-drawer-content">
+            <Drawer.Header data-testid="configuration-create-drawer-header">
+              <Drawer.Title data-testid="configuration-create-drawer-title">Create Rules</Drawer.Title>
             </Drawer.Header>
-            <Drawer.Body>
+            <Drawer.Body data-testid="configuration-create-drawer-body">
               <CreateConfigurationRuleForm
                 onSuccess={() => {
                   setOpen(false);
@@ -75,20 +76,20 @@ export const Configuration = () => {
           </Drawer.Content>
         </Drawer>
       </div>
-      <div className="flex size-full flex-col overflow-hidden">
-        {isLoading && <Text>Loading...</Text>}
-        <Table>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Rule type</Table.HeaderCell>
-              <Table.HeaderCell>Enabled</Table.HeaderCell>
-              <Table.HeaderCell></Table.HeaderCell>
+      <div className="flex size-full flex-col overflow-hidden" data-testid="configuration-table-wrapper">
+        {isLoading && <Text data-testid="configuration-loading">Loading...</Text>}
+        <Table data-testid="configuration-table">
+          <Table.Header data-testid="configuration-table-header">
+            <Table.Row data-testid="configuration-table-header-row">
+              <Table.HeaderCell data-testid="configuration-table-header-rule-type">Rule type</Table.HeaderCell>
+              <Table.HeaderCell data-testid="configuration-table-header-enabled">Enabled</Table.HeaderCell>
+              <Table.HeaderCell data-testid="configuration-table-header-actions"></Table.HeaderCell>
             </Table.Row>
           </Table.Header>
-          <Table.Body>
+          <Table.Body data-testid="configuration-table-body">
             {configuration_rules?.map((rule) => (
-              <Table.Row key={rule.id}>
-                <Table.Cell>
+              <Table.Row key={rule.id} data-testid={`configuration-table-row-${rule.id}`}>
+                <Table.Cell data-testid={`configuration-table-row-rule-type-${rule.id}`}>
                   <div className="flex items-center gap-2">
                     <ConfigurationRuleTooltip
                       type={rule.rule_type as RuleType}
@@ -96,17 +97,18 @@ export const Configuration = () => {
                     {rule.rule_type}
                   </div>
                 </Table.Cell>
-                <Table.Cell>
-                  <StatusBadge color={rule.is_enabled ? "green" : "grey"}>
+                <Table.Cell data-testid={`configuration-table-row-enabled-${rule.id}`}>
+                  <StatusBadge color={rule.is_enabled ? "green" : "grey"} data-testid={`configuration-table-row-status-badge-${rule.id}`}>
                     {rule.is_enabled ? "True" : "False"}
                   </StatusBadge>
                 </Table.Cell>
-                <Table.Cell>
+                <Table.Cell data-testid={`configuration-table-row-actions-${rule.id}`}>
                   <Button
                     variant="secondary"
                     onClick={() => {
                       updateRule(rule.id!, !rule.is_enabled);
                     }}
+                    data-testid={`configuration-table-row-toggle-button-${rule.id}`}
                   >
                     {rule.is_enabled ? "Disable" : "Enable"}
                   </Button>

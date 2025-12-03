@@ -40,6 +40,7 @@ export const ApiKeyManagementDetail = () => {
         after: getWidgets("api_key.details.after"),
       }}
       data={api_key}
+      data-testid={`${api_key.type}-api-key-detail-page`}
     >
       <ApiKeyGeneralSection apiKey={api_key} />
       {isPublishable && <ApiKeySalesChannelSection apiKey={api_key} />}

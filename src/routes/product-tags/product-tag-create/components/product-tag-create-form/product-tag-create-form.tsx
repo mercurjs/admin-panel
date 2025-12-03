@@ -45,20 +45,20 @@ export const ProductTagCreateForm = () => {
   })
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="product-tag-create-form">
       <KeyboundForm
         className="flex size-full flex-col overflow-hidden"
         onSubmit={handleSubmit}
       >
-        <RouteFocusModal.Header />
-        <RouteFocusModal.Body className="flex flex-1 justify-center overflow-auto px-6 py-16">
+        <RouteFocusModal.Header data-testid="product-tag-create-form-header" />
+        <RouteFocusModal.Body className="flex flex-1 justify-center overflow-auto px-6 py-16" data-testid="product-tag-create-form-body">
           <div className="flex w-full max-w-[720px] flex-col gap-y-8">
-            <div className="flex flex-col gap-y-1">
+            <div className="flex flex-col gap-y-1" data-testid="product-tag-create-form-header-section">
               <RouteFocusModal.Title asChild>
-                <Heading>{t("productTags.create.header")}</Heading>
+                <Heading data-testid="product-tag-create-form-heading">{t("productTags.create.header")}</Heading>
               </RouteFocusModal.Title>
               <RouteFocusModal.Description asChild>
-                <Text size="small" className="text-ui-fg-subtle">
+                <Text size="small" className="text-ui-fg-subtle" data-testid="product-tag-create-form-subtitle">
                   {t("productTags.create.subtitle")}
                 </Text>
               </RouteFocusModal.Description>
@@ -69,12 +69,12 @@ export const ProductTagCreateForm = () => {
                 name="value"
                 render={({ field }) => {
                   return (
-                    <Form.Item>
-                      <Form.Label>{t("productTags.fields.value")}</Form.Label>
-                      <Form.Control>
-                        <Input {...field} />
+                    <Form.Item data-testid="product-tag-create-form-value-item">
+                      <Form.Label data-testid="product-tag-create-form-value-label">{t("productTags.fields.value")}</Form.Label>
+                      <Form.Control data-testid="product-tag-create-form-value-control">
+                        <Input {...field} data-testid="product-tag-create-form-value-input" />
                       </Form.Control>
-                      <Form.ErrorMessage />
+                      <Form.ErrorMessage data-testid="product-tag-create-form-value-error" />
                     </Form.Item>
                   )
                 }}
@@ -82,14 +82,14 @@ export const ProductTagCreateForm = () => {
             </div>
           </div>
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="product-tag-create-form-footer">
           <div className="flex items-center justify-end gap-2">
             <RouteFocusModal.Close asChild>
-              <Button size="small" variant="secondary" type="button">
+              <Button size="small" variant="secondary" type="button" data-testid="product-tag-create-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
+            <Button size="small" type="submit" isLoading={isPending} data-testid="product-tag-create-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

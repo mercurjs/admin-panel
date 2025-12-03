@@ -69,32 +69,36 @@ export const AttributeCreate = () => {
       onOpenChange={(open) => {
         if (!open) handleClose();
       }}
+      data-testid="attribute-create-modal"
     >
-      <FocusModal.Content>
+      <FocusModal.Content data-testid="attribute-create-modal-content">
         <ProgressTabs
           value={activeTab}
           onValueChange={(value) => setActiveTab(value as "details" | "type")}
           className="w-full h-full overflow-y-auto"
+          data-testid="attribute-create-progress-tabs"
         >
-          <FocusModal.Header className="flex items-center justify-between bg-ui-bg-base w-full py-0 h-fit sticky top-0 z-10">
+          <FocusModal.Header className="flex items-center justify-between bg-ui-bg-base w-full py-0 h-fit sticky top-0 z-10" data-testid="attribute-create-modal-header">
             <div className="w-full border-l h-full">
-              <ProgressTabs.List className="justify-start flex w-full items-center">
+              <ProgressTabs.List className="justify-start flex w-full items-center" data-testid="attribute-create-progress-tabs-list">
                 <ProgressTabs.Trigger
                   value="details"
                   status={tabStatuses.detailsStatus}
+                  data-testid="attribute-create-details-tab"
                 >
                   Details
                 </ProgressTabs.Trigger>
                 <ProgressTabs.Trigger
                   value="type"
                   status={tabStatuses.typeStatus}
+                  data-testid="attribute-create-type-tab"
                 >
                   Type
                 </ProgressTabs.Trigger>
               </ProgressTabs.List>
             </div>
           </FocusModal.Header>
-          <FocusModal.Body className="flex flex-col items-center py-16">
+          <FocusModal.Body className="flex flex-col items-center py-16" data-testid="attribute-create-modal-body">
             <div>
               <AttributeForm
                 //@ts-expect-error The received values will be for create form
@@ -107,11 +111,11 @@ export const AttributeCreate = () => {
             </div>
           </FocusModal.Body>
         </ProgressTabs>
-        <FocusModal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+        <FocusModal.Footer data-testid="attribute-create-modal-footer">
+          <Button variant="secondary" onClick={handleClose} data-testid="attribute-create-modal-cancel-button">
             Cancel
           </Button>
-          <Button type="submit" form="attribute-form">
+          <Button type="submit" form="attribute-form" data-testid="attribute-create-modal-save-button">
             Save
           </Button>
         </FocusModal.Footer>

@@ -128,10 +128,10 @@ export const LocationEditFulfillmentProvidersForm = ({
   }
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="location-fulfillment-providers-form">
       <KeyboundForm onSubmit={handleSubmit} className="flex size-full flex-col">
-        <RouteFocusModal.Header />
-        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-auto">
+        <RouteFocusModal.Header data-testid="location-fulfillment-providers-form-header" />
+        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-auto" data-testid="location-fulfillment-providers-form-body">
           <_DataTable
             table={table}
             columns={columns}
@@ -144,18 +144,19 @@ export const LocationEditFulfillmentProvidersForm = ({
             orderBy={[{ key: "id", label: t("fields.id") }]}
             queryObject={raw}
             layout="fill"
+            data-testid="location-fulfillment-providers-form-table"
           />
         </RouteFocusModal.Body>
 
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="location-fulfillment-providers-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button size="small" variant="secondary" type="button">
+              <Button size="small" variant="secondary" type="button" data-testid="location-fulfillment-providers-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
 
-            <Button size="small" isLoading={isMutating} type="submit">
+            <Button size="small" isLoading={isMutating} type="submit" data-testid="location-fulfillment-providers-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

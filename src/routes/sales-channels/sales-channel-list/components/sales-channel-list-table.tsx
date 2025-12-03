@@ -57,7 +57,7 @@ export const SalesChannelListTable = () => {
   }
 
   return (
-    <Container className="p-0">
+    <Container className="p-0" data-testid="sales-channel-list-table-container">
       <DataTable
         data={sales_channels_data}
         columns={columns}

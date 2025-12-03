@@ -41,16 +41,16 @@ export const ShippingProfileListTable = () => {
   }
 
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
+    <Container className="divide-y p-0" data-testid="shipping-profile-list-table-container">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="shipping-profile-list-table-header">
         <div>
-          <Heading>{t("shippingProfile.domain")}</Heading>
-          <Text className="text-ui-fg-subtle" size="small">
+          <Heading data-testid="shipping-profile-list-table-heading">{t("shippingProfile.domain")}</Heading>
+          <Text className="text-ui-fg-subtle" size="small" data-testid="shipping-profile-list-table-subtitle">
             {t("shippingProfile.subtitle")}
           </Text>
         </div>
         <div>
-          <Button size="small" variant="secondary" asChild>
+          <Button size="small" variant="secondary" asChild data-testid="shipping-profile-list-table-create-button">
             <Link to="create">{t("actions.create")}</Link>
           </Button>
         </div>
@@ -72,6 +72,7 @@ export const ShippingProfileListTable = () => {
         queryObject={raw}
         search
         pagination
+        data-testid="shipping-profile-list-table"
       />
     </Container>
   )

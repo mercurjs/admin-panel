@@ -22,9 +22,9 @@ function LocationsSalesChannelsSection({
   const hasConnectedChannels = !!location.sales_channels?.length
 
   return (
-    <Container className="flex flex-col px-6 py-4">
-      <div className="flex items-center justify-between">
-        <Heading level="h2">{t("stockLocations.salesChannels.header")}</Heading>
+    <Container className="flex flex-col px-6 py-4" data-testid="location-sales-channels-section-container">
+      <div className="flex items-center justify-between" data-testid="location-sales-channels-section-header">
+        <Heading level="h2" data-testid="location-sales-channels-section-heading">{t("stockLocations.salesChannels.header")}</Heading>
         <ActionMenu
           groups={[
             {
@@ -37,12 +37,13 @@ function LocationsSalesChannelsSection({
               ],
             },
           ]}
+          data-testid="location-sales-channels-section-action-menu"
         />
       </div>
       {hasConnectedChannels ? (
-        <div className="flex flex-col gap-y-4 pt-4">
-          <div className="grid grid-cols-[28px_1fr] items-center gap-x-3">
-            <IconAvatar>
+        <div className="flex flex-col gap-y-4 pt-4" data-testid="location-sales-channels-section-content">
+          <div className="grid grid-cols-[28px_1fr] items-center gap-x-3" data-testid="location-sales-channels-section-list">
+            <IconAvatar data-testid="location-sales-channels-section-icon">
               <Channels className="text-ui-fg-subtle" />
             </IconAvatar>
             <ListSummary
@@ -50,9 +51,10 @@ function LocationsSalesChannelsSection({
               className="text-ui-fg-base"
               inline
               list={location.sales_channels?.map((sc) => sc.name) ?? []}
+              data-testid="location-sales-channels-section-summary"
             />
           </div>
-          <Text className="text-ui-fg-subtle" size="small" leading="compact">
+          <Text className="text-ui-fg-subtle" size="small" leading="compact" data-testid="location-sales-channels-section-description">
             {t("stockLocations.salesChannels.connectedTo", {
               count: location.sales_channels?.length,
               total: count,
@@ -67,6 +69,7 @@ function LocationsSalesChannelsSection({
             to: "sales-channels",
           }}
           message={t("stockLocations.salesChannels.noChannels")}
+          data-testid="location-sales-channels-section-no-records"
         />
       )}
     </Container>

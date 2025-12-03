@@ -3,14 +3,13 @@ import { Alert, Button, Heading, Hint, Input, Text } from "@medusajs/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import * as z from "zod";
-
-import { Form } from "../../components/common/form";
-import AvatarBox from "../../components/common/logo-box/avatar-box";
-import { useSignInWithEmailPass } from "../../hooks/api";
-import { isFetchError } from "../../lib/is-fetch-error";
-import { useExtension } from "../../providers/extension-provider";
+import AvatarBox from "@components/common/logo-box/avatar-box";
+import { Form } from "@components/common/form";
+import { useExtension } from "@providers/extension-provider";
+import { useSignInWithEmailPass } from "@hooks/api";
+import { isFetchError } from "@lib/is-fetch-error";
 
 const LoginSchema = z.object({
   email: z.string().email(),
@@ -22,7 +21,11 @@ export const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { getWidgets } = useExtension();
+  const [searchParams] = useSearchParams()
 
+
+  const reason = searchParams.get("reason") || ""
+  const reasonMessage = reason && reason.toLowerCase() === "unauthorized" ? "Session expired" : reason
   const from = location.state?.from?.pathname || "/orders";
 
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -66,7 +69,7 @@ export const Login = () => {
     );
   });
 
-  const serverError = form.formState.errors?.root?.serverError?.message;
+  const serverError = form.formState.errors?.root?.serverError?.message || reasonMessage;
   const validationError =
     form.formState.errors.email?.message ||
     form.formState.errors.password?.message;
@@ -153,7 +156,7 @@ export const Login = () => {
                 >
                   <Hint
                     className="inline-flex"
-                    variant={"error"}
+                    variant="error"
                     data-testid="login-validation-error-message"
                   >
                     {validationError}

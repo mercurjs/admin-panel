@@ -62,25 +62,25 @@ export const EditShippingOptionTypeForm = ({
   })
 
   return (
-    <RouteDrawer.Form form={form}>
+    <RouteDrawer.Form form={form} data-testid="shipping-option-type-edit-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex flex-1 flex-col overflow-hidden"
       >
-        <RouteDrawer.Body className="flex flex-1 flex-col gap-y-8 overflow-y-auto">
+        <RouteDrawer.Body className="flex flex-1 flex-col gap-y-8 overflow-y-auto" data-testid="shipping-option-type-edit-form-body">
           <Form.Field
             control={form.control}
             name="label"
             render={({ field }) => {
               return (
-                <Form.Item>
-                  <Form.Label>
+                <Form.Item data-testid="shipping-option-type-edit-form-label-item">
+                  <Form.Label data-testid="shipping-option-type-edit-form-label-label">
                     {t("shippingOptionTypes.fields.label")}
                   </Form.Label>
-                  <Form.Control>
-                    <Input {...field} />
+                  <Form.Control data-testid="shipping-option-type-edit-form-label-control">
+                    <Input {...field} data-testid="shipping-option-type-edit-form-label-input" />
                   </Form.Control>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="shipping-option-type-edit-form-label-error" />
                 </Form.Item>
               )
             }}
@@ -90,14 +90,14 @@ export const EditShippingOptionTypeForm = ({
             name="code"
             render={({ field }) => {
               return (
-                <Form.Item>
-                  <Form.Label>
+                <Form.Item data-testid="shipping-option-type-edit-form-code-item">
+                  <Form.Label data-testid="shipping-option-type-edit-form-code-label">
                     {t("shippingOptionTypes.fields.code")}
                   </Form.Label>
-                  <Form.Control>
-                    <Input {...field} />
+                  <Form.Control data-testid="shipping-option-type-edit-form-code-control">
+                    <Input {...field} data-testid="shipping-option-type-edit-form-code-input" />
                   </Form.Control>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="shipping-option-type-edit-form-code-error" />
                 </Form.Item>
               )
             }}
@@ -107,8 +107,8 @@ export const EditShippingOptionTypeForm = ({
             name="description"
             render={({ field }) => {
               return (
-                <Form.Item>
-                  <Form.Label>
+                <Form.Item data-testid="shipping-option-type-edit-form-description-item">
+                  <Form.Label data-testid="shipping-option-type-edit-form-description-label">
                     {t("shippingOptionTypes.fields.description")}
                     <Text
                       size="small"
@@ -118,23 +118,23 @@ export const EditShippingOptionTypeForm = ({
                       ({t("fields.optional")})
                     </Text>
                   </Form.Label>
-                  <Form.Control>
-                    <Input {...field} />
+                  <Form.Control data-testid="shipping-option-type-edit-form-description-control">
+                    <Input {...field} data-testid="shipping-option-type-edit-form-description-input" />
                   </Form.Control>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="shipping-option-type-edit-form-description-error" />
                 </Form.Item>
               )
             }}
           />
         </RouteDrawer.Body>
-        <RouteDrawer.Footer>
+        <RouteDrawer.Footer data-testid="shipping-option-type-edit-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="shipping-option-type-edit-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
+            <Button size="small" type="submit" isLoading={isPending} data-testid="shipping-option-type-edit-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

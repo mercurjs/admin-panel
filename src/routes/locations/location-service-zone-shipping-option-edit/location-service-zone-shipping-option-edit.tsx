@@ -36,9 +36,9 @@ export const LocationServiceZoneShippingOptionEdit = () => {
     FulfillmentSetType.Pickup
 
   return (
-    <RouteDrawer>
-      <RouteDrawer.Header>
-        <Heading>
+    <RouteDrawer data-testid="location-shipping-option-edit-drawer">
+      <RouteDrawer.Header data-testid="location-shipping-option-edit-drawer-header">
+        <Heading data-testid="location-shipping-option-edit-drawer-heading">
           {t(
             `stockLocations.${isPickup ? "pickupOptions" : "shippingOptions"}.edit.header`
           )}

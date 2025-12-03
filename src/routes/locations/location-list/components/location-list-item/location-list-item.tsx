@@ -118,8 +118,8 @@ function LocationListItem(props: LocationProps) {
   }
 
   return (
-    <Container className="flex flex-col divide-y p-0">
-      <div className="px-6 py-4">
+    <Container className="flex flex-col divide-y p-0" data-testid={`location-list-item-${location.id}`}>
+      <div className="px-6 py-4" data-testid={`location-list-item-header-${location.id}`}>
         <div className="flex flex-row items-center justify-between gap-x-4">
           <div className="shadow-borders-base flex size-7 items-center justify-center rounded-md">
             <div className="bg-ui-bg-field flex size-6 items-center justify-center rounded-[4px]">
@@ -127,14 +127,14 @@ function LocationListItem(props: LocationProps) {
             </div>
           </div>
 
-          <div className="grow-1 flex flex-1 flex-col">
-            <Text weight="plus">{location.name}</Text>
-            <Text className="text-ui-fg-subtle txt-small">
+          <div className="grow-1 flex flex-1 flex-col" data-testid={`location-list-item-info-${location.id}`}>
+            <Text weight="plus" data-testid={`location-list-item-name-${location.id}`}>{location.name}</Text>
+            <Text className="text-ui-fg-subtle txt-small" data-testid={`location-list-item-address-${location.id}`}>
               {getFormattedAddress({ address: location.address }).join(", ")}
             </Text>
           </div>
 
-          <div className="flex grow-0 items-center gap-4">
+          <div className="flex grow-0 items-center gap-4" data-testid={`location-list-item-actions-${location.id}`}>
             <ActionMenu
               groups={[
                 {
@@ -156,9 +156,10 @@ function LocationListItem(props: LocationProps) {
                   ],
                 },
               ]}
+              data-testid={`location-list-item-action-menu-${location.id}`}
             />
             <div className="bg-ui-border-strong h-[12px] w-[1px]" />
-            <LinkButton to={`/settings/locations/${location.id}`}>
+            <LinkButton to={`/settings/locations/${location.id}`} data-testid={`location-list-item-view-details-button-${location.id}`}>
               {t("actions.viewDetails")}
             </LinkButton>
           </div>

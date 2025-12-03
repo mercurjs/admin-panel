@@ -17,7 +17,7 @@ export const SalesChannelAddProducts = () => {
   }
 
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="sales-channel-add-products-modal">
       {!isLoading && sales_channel && (
         <AddProductsToSalesChannelForm salesChannel={sales_channel} />
       )}

@@ -39,6 +39,7 @@ export const ShippingOptionTypeRowActions = ({
           ],
         },
       ]}
+      data-testid={`shipping-option-type-list-table-action-menu-${shippingOptionType.id}`}
     />
   )
 }

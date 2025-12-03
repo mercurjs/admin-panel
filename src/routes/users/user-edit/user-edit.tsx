@@ -15,9 +15,9 @@ export const UserEdit = () => {
   }
 
   return (
-    <RouteDrawer>
-      <RouteDrawer.Header>
-        <Heading>{t("users.editUser")}</Heading>
+    <RouteDrawer data-testid="user-edit">
+      <RouteDrawer.Header data-testid="user-edit-header">
+        <Heading data-testid="user-edit-heading">{t("users.editUser")}</Heading>
       </RouteDrawer.Header>
       {!isLoading && user && <EditUserForm user={user} />}
     </RouteDrawer>

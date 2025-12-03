@@ -20,7 +20,7 @@ export const RegionAddCountries = () => {
   }
 
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="region-add-countries-modal">
       {!isLoading && region && <AddCountriesForm region={region} />}
     </RouteFocusModal>
   )

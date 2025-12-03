@@ -34,7 +34,7 @@ export const TaxRegionMetadata = () => {
   }
 
   return (
-    <RouteDrawer>
+    <RouteDrawer data-testid="tax-region-metadata-drawer">
       <MetadataForm
         isPending={isPending}
         isMutating={isMutating}

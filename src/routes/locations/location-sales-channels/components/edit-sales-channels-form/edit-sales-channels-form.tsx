@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { HttpTypes } from "@medusajs/types"
 import {
   Button,
+  Checkbox,
   createDataTableColumnHelper,
   DataTableRowSelectionState,
   toast,
@@ -110,9 +111,9 @@ export const LocationEditSalesChannelsForm = ({
   }
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="location-sales-channels-form">
       <KeyboundForm onSubmit={handleSubmit} className="flex h-full flex-col">
-        <RouteFocusModal.Header>
+        <RouteFocusModal.Header data-testid="location-sales-channels-form-header">
           <RouteFocusModal.Title asChild>
             <VisuallyHidden>
               {t("stockLocations.salesChannels.header")}
@@ -124,7 +125,7 @@ export const LocationEditSalesChannelsForm = ({
             </VisuallyHidden>
           </RouteFocusModal.Description>
         </RouteFocusModal.Header>
-        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-auto">
+        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-auto" data-testid="location-sales-channels-form-body">
           <DataTable
             data={sales_channels}
             columns={columns}
@@ -140,16 +141,17 @@ export const LocationEditSalesChannelsForm = ({
             rowCount={count}
             layout="fill"
             getRowId={(row) => row.id}
+            data-testid="location-sales-channels-form-table"
           />
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="location-sales-channels-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button size="small" variant="secondary" type="button">
+              <Button size="small" variant="secondary" type="button" data-testid="location-sales-channels-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
-            <Button size="small" isLoading={isMutating} type="submit">
+            <Button size="small" isLoading={isMutating} type="submit" data-testid="location-sales-channels-form-save-button">
               {t("actions.save")}
             </Button>
           </div>
@@ -164,7 +166,45 @@ const columnHelper = createDataTableColumnHelper<HttpTypes.AdminSalesChannel>()
 const useColumns = () => {
   const base = hooks.useSalesChannelTableColumns()
 
-  return useMemo(() => [columnHelper.select(), ...base], [base])
+  return useMemo(
+    () => [
+      columnHelper.select({
+        header: ({ table }) => {
+          return (
+            <div data-testid="location-sales-channels-form-table-select-all-header">
+              <Checkbox
+                checked={
+                  table.getIsSomePageRowsSelected()
+                    ? "indeterminate"
+                    : table.getIsAllPageRowsSelected()
+                }
+                onCheckedChange={(value) =>
+                  table.toggleAllPageRowsSelected(!!value)
+                }
+                data-testid="location-sales-channels-form-table-select-all-checkbox"
+              />
+            </div>
+          )
+        },
+        cell: ({ row }) => {
+          return (
+            <div data-testid={`location-sales-channels-form-table-row-${row.id}-select-cell`}>
+              <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                }}
+                data-testid={`location-sales-channels-form-table-row-${row.id}-select-checkbox`}
+              />
+            </div>
+          )
+        },
+      }),
+      ...base,
+    ],
+    [base]
+  )
 }
 
 function getInitialState(location: HttpTypes.AdminStockLocation) {

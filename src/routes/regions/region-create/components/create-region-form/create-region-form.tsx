@@ -191,13 +191,13 @@ export const CreateRegionForm = ({ currencies }: CreateRegionFormProps) => {
   })
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="region-create-form">
       <KeyboundForm
         className="flex h-full flex-col overflow-hidden"
         onSubmit={handleSubmit}
       >
-        <RouteFocusModal.Header />
-        <RouteFocusModal.Body className="flex overflow-hidden">
+        <RouteFocusModal.Header data-testid="region-create-form-header" />
+        <RouteFocusModal.Body className="flex overflow-hidden" data-testid="region-create-form-body">
           <div
             className={clx(
               "flex h-full w-full flex-col items-center overflow-y-auto p-16"
@@ -205,9 +205,9 @@ export const CreateRegionForm = ({ currencies }: CreateRegionFormProps) => {
             id="form-section"
           >
             <div className="flex w-full max-w-[720px] flex-col gap-y-8">
-              <div>
-                <Heading>{t("regions.createRegion")}</Heading>
-                <Text size="small" className="text-ui-fg-subtle">
+              <div data-testid="region-create-form-header-section">
+                <Heading data-testid="region-create-form-heading">{t("regions.createRegion")}</Heading>
+                <Text size="small" className="text-ui-fg-subtle" data-testid="region-create-form-hint">
                   {t("regions.createRegionHint")}
                 </Text>
               </div>
@@ -218,12 +218,12 @@ export const CreateRegionForm = ({ currencies }: CreateRegionFormProps) => {
                     name="name"
                     render={({ field }) => {
                       return (
-                        <Form.Item>
-                          <Form.Label>{t("fields.name")}</Form.Label>
-                          <Form.Control>
-                            <Input {...field} />
+                        <Form.Item data-testid="region-create-form-name-item">
+                          <Form.Label data-testid="region-create-form-name-label">{t("fields.name")}</Form.Label>
+                          <Form.Control data-testid="region-create-form-name-control">
+                            <Input {...field} data-testid="region-create-form-name-input" />
                           </Form.Control>
-                          <Form.ErrorMessage />
+                          <Form.ErrorMessage data-testid="region-create-form-name-error" />
                         </Form.Item>
                       )
                     }}
@@ -233,22 +233,24 @@ export const CreateRegionForm = ({ currencies }: CreateRegionFormProps) => {
                     name="currency_code"
                     render={({ field: { onChange, ref, ...field } }) => {
                       return (
-                        <Form.Item>
-                          <Form.Label>{t("fields.currency")}</Form.Label>
-                          <Form.Control>
+                        <Form.Item data-testid="region-create-form-currency-item">
+                          <Form.Label data-testid="region-create-form-currency-label">{t("fields.currency")}</Form.Label>
+                          <Form.Control data-testid="region-create-form-currency-control">
                             <Select
                               dir={direction}
                               {...field}
                               onValueChange={onChange}
+                              data-testid="region-create-form-currency-select"
                             >
-                              <Select.Trigger ref={ref}>
+                              <Select.Trigger ref={ref} data-testid="region-create-form-currency-select-trigger">
                                 <Select.Value />
                               </Select.Trigger>
-                              <Select.Content>
+                              <Select.Content data-testid="region-create-form-currency-select-content">
                                 {currencies.map((currency) => (
                                   <Select.Item
                                     value={currency.code}
                                     key={currency.code}
+                                    data-testid={`region-create-form-currency-select-option-${currency.code}`}
                                   >
                                     {currency.name}
                                   </Select.Item>
@@ -256,7 +258,7 @@ export const CreateRegionForm = ({ currencies }: CreateRegionFormProps) => {
                               </Select.Content>
                             </Select>
                           </Form.Control>
-                          <Form.ErrorMessage />
+                          <Form.ErrorMessage data-testid="region-create-form-currency-error" />
                         </Form.Item>
                       )
                     }}
@@ -268,22 +270,23 @@ export const CreateRegionForm = ({ currencies }: CreateRegionFormProps) => {
                 name="automatic_taxes"
                 render={({ field: { value, onChange, ...field } }) => {
                   return (
-                    <Form.Item>
+                    <Form.Item data-testid="region-create-form-automatic-taxes-item">
                       <div>
                         <div className="flex items-start justify-between">
-                          <Form.Label>{t("fields.automaticTaxes")}</Form.Label>
-                          <Form.Control>
+                          <Form.Label data-testid="region-create-form-automatic-taxes-label">{t("fields.automaticTaxes")}</Form.Label>
+                          <Form.Control data-testid="region-create-form-automatic-taxes-control">
                             <Switch
                               dir="ltr"
                               className="rtl:rotate-180"
                               {...field}
                               checked={value}
                               onCheckedChange={onChange}
+                              data-testid="region-create-form-automatic-taxes-switch"
                             />
                           </Form.Control>
                         </div>
-                        <Form.Hint>{t("regions.automaticTaxesHint")}</Form.Hint>
-                        <Form.ErrorMessage />
+                        <Form.Hint data-testid="region-create-form-automatic-taxes-hint">{t("regions.automaticTaxesHint")}</Form.Hint>
+                        <Form.ErrorMessage data-testid="region-create-form-automatic-taxes-error" />
                       </div>
                     </Form.Item>
                   )
@@ -295,24 +298,25 @@ export const CreateRegionForm = ({ currencies }: CreateRegionFormProps) => {
                 name="is_tax_inclusive"
                 render={({ field: { value, onChange, ...field } }) => {
                   return (
-                    <Form.Item>
+                    <Form.Item data-testid="region-create-form-tax-inclusive-item">
                       <div>
                         <div className="flex items-start justify-between">
-                          <Form.Label>
+                          <Form.Label data-testid="region-create-form-tax-inclusive-label">
                             {t("fields.taxInclusivePricing")}
                           </Form.Label>
-                          <Form.Control>
+                          <Form.Control data-testid="region-create-form-tax-inclusive-control">
                             <Switch
                               className="rtl:rotate-180"
                               dir="ltr"
                               {...field}
                               checked={value}
                               onCheckedChange={onChange}
+                              data-testid="region-create-form-tax-inclusive-switch"
                             />
                           </Form.Control>
                         </div>
-                        <Form.Hint>{t("regions.taxInclusiveHint")}</Form.Hint>
-                        <Form.ErrorMessage />
+                        <Form.Hint data-testid="region-create-form-tax-inclusive-hint">{t("regions.taxInclusiveHint")}</Form.Hint>
+                        <Form.ErrorMessage data-testid="region-create-form-tax-inclusive-error" />
                       </div>
                     </Form.Item>
                   )
@@ -320,17 +324,17 @@ export const CreateRegionForm = ({ currencies }: CreateRegionFormProps) => {
               />
 
               <div className="bg-ui-border-base h-px w-full" />
-              <div className="flex flex-col gap-y-4">
-                <div>
-                  <Text size="small" leading="compact" weight="plus">
+              <div className="flex flex-col gap-y-4" data-testid="region-create-form-countries-section">
+                <div data-testid="region-create-form-countries-header">
+                  <Text size="small" leading="compact" weight="plus" data-testid="region-create-form-countries-label">
                     {t("fields.countries")}
                   </Text>
-                  <Text size="small" className="text-ui-fg-subtle">
+                  <Text size="small" className="text-ui-fg-subtle" data-testid="region-create-form-countries-hint">
                     {t("regions.countriesHint")}
                   </Text>
                 </div>
                 {selectedCountries.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2" data-testid="region-create-form-countries-selected">
                     {selectedCountries.map((country) => (
                       <CountryTag
                         key={country.code}
@@ -343,29 +347,30 @@ export const CreateRegionForm = ({ currencies }: CreateRegionFormProps) => {
                       size="small"
                       className="text-ui-fg-muted hover:text-ui-fg-subtle"
                       onClick={clearCountries}
+                      data-testid="region-create-form-countries-clear-all-button"
                     >
                       {t("actions.clearAll")}
                     </Button>
                   </div>
                 )}
-                <StackedFocusModal id={STACKED_MODAL_ID}>
+                <StackedFocusModal id={STACKED_MODAL_ID} data-testid="region-create-form-countries-modal">
                   <div className="flex items-center justify-end">
                     <StackedFocusModal.Trigger asChild>
-                      <Button variant="secondary" size="small">
+                      <Button variant="secondary" size="small" data-testid="region-create-form-countries-add-button">
                         {t("regions.addCountries")}
                       </Button>
                     </StackedFocusModal.Trigger>
                   </div>
-                  <StackedFocusModal.Content>
+                  <StackedFocusModal.Content data-testid="region-create-form-countries-modal-content">
                     <div className="flex size-full flex-col overflow-hidden">
-                      <StackedFocusModal.Header>
+                      <StackedFocusModal.Header data-testid="region-create-form-countries-modal-header">
                         <StackedFocusModal.Title asChild>
                           <span className="sr-only">
                             {t("regions.addCountries")}
                           </span>
                         </StackedFocusModal.Title>
                       </StackedFocusModal.Header>
-                      <StackedFocusModal.Body className="overflow-hidden">
+                      <StackedFocusModal.Body className="overflow-hidden" data-testid="region-create-form-countries-modal-body">
                         <_DataTable
                           table={table}
                           columns={columns}
@@ -380,12 +385,13 @@ export const CreateRegionForm = ({ currencies }: CreateRegionFormProps) => {
                           layout="fill"
                           queryObject={raw}
                           prefix={PREFIX}
+                          data-testid="region-create-form-countries-modal-table"
                         />
                       </StackedFocusModal.Body>
-                      <StackedFocusModal.Footer>
+                      <StackedFocusModal.Footer data-testid="region-create-form-countries-modal-footer">
                         <div className="flex items-center justify-end gap-x-2">
                           <StackedFocusModal.Close asChild>
-                            <Button variant="secondary" size="small">
+                            <Button variant="secondary" size="small" data-testid="region-create-form-countries-modal-cancel-button">
                               {t("actions.cancel")}
                             </Button>
                           </StackedFocusModal.Close>
@@ -393,6 +399,7 @@ export const CreateRegionForm = ({ currencies }: CreateRegionFormProps) => {
                             size="small"
                             type="button"
                             onClick={saveCountries}
+                            data-testid="region-create-form-countries-modal-save-button"
                           >
                             {t("actions.save")}
                           </Button>
@@ -403,12 +410,12 @@ export const CreateRegionForm = ({ currencies }: CreateRegionFormProps) => {
                 </StackedFocusModal>
               </div>
               <div className="bg-ui-border-base h-px w-full" />
-              <div className="flex flex-col gap-y-4">
-                <div>
-                  <Text size="small" leading="compact" weight="plus">
+              <div className="flex flex-col gap-y-4" data-testid="region-create-form-payment-providers-section">
+                <div data-testid="region-create-form-payment-providers-header">
+                  <Text size="small" leading="compact" weight="plus" data-testid="region-create-form-payment-providers-label">
                     {t("fields.providers")}
                   </Text>
-                  <Text size="small" className="text-ui-fg-subtle">
+                  <Text size="small" className="text-ui-fg-subtle" data-testid="region-create-form-payment-providers-hint">
                     {t("regions.providersHint")}
                   </Text>
                 </div>
@@ -418,19 +425,20 @@ export const CreateRegionForm = ({ currencies }: CreateRegionFormProps) => {
                     name="payment_providers"
                     render={({ field }) => {
                       return (
-                        <Form.Item>
-                          <Form.Label>
+                        <Form.Item data-testid="region-create-form-payment-providers-item">
+                          <Form.Label data-testid="region-create-form-payment-providers-item-label">
                             {t("fields.paymentProviders")}
                           </Form.Label>
-                          <Form.Control>
+                          <Form.Control data-testid="region-create-form-payment-providers-item-control">
                             <Combobox
                               forceHideInput
                               options={comboboxProviders.options}
                               fetchNextPage={comboboxProviders.fetchNextPage}
                               {...field}
+                              data-testid="region-create-form-payment-providers-combobox"
                             />
                           </Form.Control>
-                          <Form.ErrorMessage />
+                          <Form.ErrorMessage data-testid="region-create-form-payment-providers-item-error" />
                         </Form.Item>
                       )
                     }}
@@ -440,13 +448,13 @@ export const CreateRegionForm = ({ currencies }: CreateRegionFormProps) => {
             </div>
           </div>
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="region-create-form-footer">
           <RouteFocusModal.Close asChild>
-            <Button size="small" variant="secondary">
+            <Button size="small" variant="secondary" data-testid="region-create-form-cancel-button">
               {t("actions.cancel")}
             </Button>
           </RouteFocusModal.Close>
-          <Button size="small" type="submit" isLoading={isPendingRegion}>
+          <Button size="small" type="submit" isLoading={isPendingRegion} data-testid="region-create-form-save-button">
             {t("actions.save")}
           </Button>
         </RouteFocusModal.Footer>
@@ -475,6 +483,7 @@ const useColumns = () => {
               onCheckedChange={(value) =>
                 table.toggleAllPageRowsSelected(!!value)
               }
+              data-testid="region-create-form-countries-modal-select-all-checkbox"
             />
           )
         },
@@ -489,6 +498,7 @@ const useColumns = () => {
               onClick={(e) => {
                 e.stopPropagation()
               }}
+              data-testid={`region-create-form-countries-modal-select-checkbox-${row.original.iso_2}`}
             />
           )
         },
@@ -507,14 +517,15 @@ const CountryTag = ({
   onRemove: (code: string) => void
 }) => {
   return (
-    <div className="bg-ui-bg-field shadow-borders-base transition-fg hover:bg-ui-bg-field-hover flex h-7 items-center overflow-hidden rounded-md">
-      <div className="txt-compact-small-plus flex h-full select-none items-center justify-center px-2 py-0.5">
+    <div className="bg-ui-bg-field shadow-borders-base transition-fg hover:bg-ui-bg-field-hover flex h-7 items-center overflow-hidden rounded-md" data-testid={`region-create-form-country-tag-${country.code}`}>
+      <div className="txt-compact-small-plus flex h-full select-none items-center justify-center px-2 py-0.5" data-testid={`region-create-form-country-tag-${country.code}-name`}>
         {country.name}
       </div>
       <button
         type="button"
         onClick={() => onRemove(country.code)}
         className="focus-visible:bg-ui-bg-field-hover transition-fg hover:bg-ui-bg-field-hover flex h-full w-7 items-center justify-center border-l outline-none"
+        data-testid={`region-create-form-country-tag-${country.code}-remove-button`}
       >
         <XMarkMini className="text-ui-fg-muted" />
       </button>

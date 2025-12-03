@@ -55,11 +55,11 @@ export const SalesChannelGeneralSection = ({
   }
 
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <Heading>{salesChannel.name}</Heading>
+    <Container className="divide-y p-0" data-testid="sales-channel-general-section-container">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="sales-channel-general-section-header">
+        <Heading data-testid="sales-channel-general-section-heading">{salesChannel.name}</Heading>
         <div className="flex items-center gap-x-2">
-          <StatusBadge color={salesChannel.is_disabled ? "red" : "green"}>
+          <StatusBadge color={salesChannel.is_disabled ? "red" : "green"} data-testid="sales-channel-general-section-status-badge">
             {t(`general.${salesChannel.is_disabled ? "disabled" : "enabled"}`)}
           </StatusBadge>
           <ActionMenu
@@ -83,14 +83,15 @@ export const SalesChannelGeneralSection = ({
                 ],
               },
             ]}
+            data-testid="sales-channel-general-section-action-menu"
           />
         </div>
       </div>
-      <div className="text-ui-fg-subtle grid grid-cols-2 items-start px-6 py-4">
-        <Text size="small" leading="compact" weight="plus">
+      <div className="text-ui-fg-subtle grid grid-cols-2 items-start px-6 py-4" data-testid="sales-channel-general-section-description-row">
+        <Text size="small" leading="compact" weight="plus" data-testid="sales-channel-general-section-description-label">
           {t("fields.description")}
         </Text>
-        <Text size="small" leading="compact">
+        <Text size="small" leading="compact" data-testid="sales-channel-general-section-description-value">
           {salesChannel.description || "-"}
         </Text>
       </div>

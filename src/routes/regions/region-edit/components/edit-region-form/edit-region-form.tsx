@@ -90,12 +90,12 @@ export const EditRegionForm = ({
   })
 
   return (
-    <RouteDrawer.Form form={form}>
+    <RouteDrawer.Form form={form} data-testid="region-edit-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex flex-1 flex-col overflow-hidden"
       >
-        <RouteDrawer.Body className="overflow-y-auto">
+        <RouteDrawer.Body className="overflow-y-auto" data-testid="region-edit-form-body">
           <div className="flex flex-col gap-y-8">
             <div className="flex flex-col gap-y-4">
               <Form.Field
@@ -103,12 +103,12 @@ export const EditRegionForm = ({
                 name="name"
                 render={({ field }) => {
                   return (
-                    <Form.Item>
-                      <Form.Label>{t("fields.name")}</Form.Label>
-                      <Form.Control>
-                        <Input {...field} />
+                    <Form.Item data-testid="region-edit-form-name-item">
+                      <Form.Label data-testid="region-edit-form-name-label">{t("fields.name")}</Form.Label>
+                      <Form.Control data-testid="region-edit-form-name-control">
+                        <Input {...field} data-testid="region-edit-form-name-input" />
                       </Form.Control>
-                      <Form.ErrorMessage />
+                      <Form.ErrorMessage data-testid="region-edit-form-name-error" />
                     </Form.Item>
                   )
                 }}
@@ -118,27 +118,28 @@ export const EditRegionForm = ({
                 name="currency_code"
                 render={({ field: { onChange, ref, ...field } }) => {
                   return (
-                    <Form.Item>
-                      <Form.Label>{t("fields.currency")}</Form.Label>
-                      <Form.Control>
+                    <Form.Item data-testid="region-edit-form-currency-item">
+                      <Form.Label data-testid="region-edit-form-currency-label">{t("fields.currency")}</Form.Label>
+                      <Form.Control data-testid="region-edit-form-currency-control">
                         <Select
                           dir={direction}
                           onValueChange={onChange}
                           {...field}
+                          data-testid="region-edit-form-currency-select"
                         >
-                          <Select.Trigger ref={ref}>
+                          <Select.Trigger ref={ref} data-testid="region-edit-form-currency-select-trigger">
                             <Select.Value />
                           </Select.Trigger>
-                          <Select.Content>
+                          <Select.Content data-testid="region-edit-form-currency-select-content">
                             {currencies.map((c) => (
-                              <Select.Item key={c.code} value={c.code}>
+                              <Select.Item key={c.code} value={c.code} data-testid={`region-edit-form-currency-select-option-${c.code}`}>
                                 {c.code.toUpperCase()}
                               </Select.Item>
                             ))}
                           </Select.Content>
                         </Select>
                       </Form.Control>
-                      <Form.ErrorMessage />
+                      <Form.ErrorMessage data-testid="region-edit-form-currency-error" />
                     </Form.Item>
                   )
                 }}
@@ -150,22 +151,23 @@ export const EditRegionForm = ({
                 name="automatic_taxes"
                 render={({ field: { value, onChange, ...field } }) => {
                   return (
-                    <Form.Item>
+                    <Form.Item data-testid="region-edit-form-automatic-taxes-item">
                       <div>
                         <div className="flex items-start justify-between">
-                          <Form.Label>{t("fields.automaticTaxes")}</Form.Label>
-                          <Form.Control>
+                          <Form.Label data-testid="region-edit-form-automatic-taxes-label">{t("fields.automaticTaxes")}</Form.Label>
+                          <Form.Control data-testid="region-edit-form-automatic-taxes-control">
                             <Switch
                               dir="ltr"
                               className="rtl:rotate-180"
                               {...field}
                               checked={value}
                               onCheckedChange={onChange}
+                              data-testid="region-edit-form-automatic-taxes-switch"
                             />
                           </Form.Control>
                         </div>
-                        <Form.Hint>{t("regions.automaticTaxesHint")}</Form.Hint>
-                        <Form.ErrorMessage />
+                        <Form.Hint data-testid="region-edit-form-automatic-taxes-hint">{t("regions.automaticTaxesHint")}</Form.Hint>
+                        <Form.ErrorMessage data-testid="region-edit-form-automatic-taxes-error" />
                       </div>
                     </Form.Item>
                   )
@@ -177,36 +179,37 @@ export const EditRegionForm = ({
                 name="is_tax_inclusive"
                 render={({ field: { value, onChange, ...field } }) => {
                   return (
-                    <Form.Item>
+                    <Form.Item data-testid="region-edit-form-tax-inclusive-item">
                       <div>
                         <div className="flex items-start justify-between">
-                          <Form.Label>
+                          <Form.Label data-testid="region-edit-form-tax-inclusive-label">
                             {t("fields.taxInclusivePricing")}
                           </Form.Label>
-                          <Form.Control>
+                          <Form.Control data-testid="region-edit-form-tax-inclusive-control">
                             <Switch
                               dir="ltr"
                               className="rtl:rotate-180"
                               {...field}
                               checked={value}
                               onCheckedChange={onChange}
+                              data-testid="region-edit-form-tax-inclusive-switch"
                             />
                           </Form.Control>
                         </div>
-                        <Form.Hint>{t("regions.taxInclusiveHint")}</Form.Hint>
-                        <Form.ErrorMessage />
+                        <Form.Hint data-testid="region-edit-form-tax-inclusive-hint">{t("regions.taxInclusiveHint")}</Form.Hint>
+                        <Form.ErrorMessage data-testid="region-edit-form-tax-inclusive-error" />
                       </div>
                     </Form.Item>
                   )
                 }}
               />
             </div>
-            <div className="flex flex-col gap-y-4">
-              <div>
-                <Text size="small" leading="compact" weight="plus">
+            <div className="flex flex-col gap-y-4" data-testid="region-edit-form-payment-providers-section">
+              <div data-testid="region-edit-form-payment-providers-header">
+                <Text size="small" leading="compact" weight="plus" data-testid="region-edit-form-payment-providers-label">
                   Providers
                 </Text>
-                <Text size="small" className="text-ui-fg-subtle">
+                <Text size="small" className="text-ui-fg-subtle" data-testid="region-edit-form-payment-providers-hint">
                   {t("regions.providersHint")}
                 </Text>
               </div>
@@ -215,17 +218,18 @@ export const EditRegionForm = ({
                 name="payment_providers"
                 render={({ field }) => {
                   return (
-                    <Form.Item>
-                      <Form.Label>{t("fields.paymentProviders")}</Form.Label>
-                      <Form.Control>
+                    <Form.Item data-testid="region-edit-form-payment-providers-item">
+                      <Form.Label data-testid="region-edit-form-payment-providers-item-label">{t("fields.paymentProviders")}</Form.Label>
+                      <Form.Control data-testid="region-edit-form-payment-providers-item-control">
                         <Combobox
                           forceHideInput
                           options={comboboxProviders.options}
                           fetchNextPage={comboboxProviders.fetchNextPage}
                           {...field}
+                          data-testid="region-edit-form-payment-providers-combobox"
                         />
                       </Form.Control>
-                      <Form.ErrorMessage />
+                      <Form.ErrorMessage data-testid="region-edit-form-payment-providers-item-error" />
                     </Form.Item>
                   )
                 }}
@@ -233,14 +237,14 @@ export const EditRegionForm = ({
             </div>
           </div>
         </RouteDrawer.Body>
-        <RouteDrawer.Footer>
+        <RouteDrawer.Footer data-testid="region-edit-form-footer">
           <div className="flex items-center gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="region-edit-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={isPendingRegion}>
+            <Button size="small" type="submit" isLoading={isPendingRegion} data-testid="region-edit-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

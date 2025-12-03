@@ -230,14 +230,14 @@ export function EditShippingOptionsPricingForm({
   }
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="location-shipping-option-pricing-form">
       <KeyboundForm
         className="flex h-full flex-col overflow-hidden"
         onSubmit={handleSubmit}
       >
-        <RouteFocusModal.Header />
+        <RouteFocusModal.Header data-testid="location-shipping-option-pricing-form-header" />
 
-        <RouteFocusModal.Body>
+        <RouteFocusModal.Body data-testid="location-shipping-option-pricing-form-body">
           <StackedFocusModal
             id={CONDITIONAL_PRICES_STACKED_MODAL_ID}
             onOpenChangeCallback={(open) => {
@@ -245,12 +245,13 @@ export function EditShippingOptionsPricingForm({
                 setSelectedPrice(null)
               }
             }}
+            data-testid="location-shipping-option-pricing-form-stacked-modal"
           >
             <ShippingOptionPriceProvider
               onOpenConditionalPricesModal={onOpenConditionalPricesModal}
               onCloseConditionalPricesModal={onCloseConditionalPricesModal}
             >
-              <div className="flex size-full flex-col divide-y overflow-hidden">
+              <div className="flex size-full flex-col divide-y overflow-hidden" data-testid="location-shipping-option-pricing-form-container">
                 <DataGrid
                   isLoading={isLoading}
                   data={data}
@@ -260,6 +261,7 @@ export function EditShippingOptionsPricingForm({
                   disableInteractions={getIsOpen(
                     CONDITIONAL_PRICES_STACKED_MODAL_ID
                   )}
+                  data-testid="location-shipping-option-pricing-form-data-grid"
                 />
               </div>
               {selectedPrice && (
@@ -268,10 +270,10 @@ export function EditShippingOptionsPricingForm({
             </ShippingOptionPriceProvider>
           </StackedFocusModal>
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="location-shipping-option-pricing-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button variant="secondary" size="small">
+              <Button variant="secondary" size="small" data-testid="location-shipping-option-pricing-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
@@ -281,6 +283,7 @@ export function EditShippingOptionsPricingForm({
               isLoading={isPending}
               onClick={handleSubmit}
               type="button"
+              data-testid="location-shipping-option-pricing-form-save-button"
             >
               {t("actions.save")}
             </Button>

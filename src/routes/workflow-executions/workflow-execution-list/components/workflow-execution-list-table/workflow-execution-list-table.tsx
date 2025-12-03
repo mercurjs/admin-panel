@@ -41,29 +41,31 @@ export const WorkflowExecutionListTable = () => {
   }
 
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
+    <Container className="divide-y p-0" data-testid="workflows-container">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="workflows-header">
         <div>
-          <Heading>{t("workflowExecutions.domain")}</Heading>
-          <Text className="text-ui-fg-subtle" size="small">
+          <Heading data-testid="workflows-heading">{t("workflowExecutions.domain")}</Heading>
+          <Text className="text-ui-fg-subtle" size="small" data-testid="workflows-description">
             {t(`workflowExecutions.subtitle`)}
           </Text>
         </div>
       </div>
-      <_DataTable
-        table={table}
-        columns={columns}
-        count={count}
-        isLoading={isLoading}
-        pageSize={PAGE_SIZE}
-        navigateTo={(row) => `${row.id}`}
-        search
-        pagination
-        queryObject={raw}
-        noRecords={{
-          message: t("workflowExecutions.list.noRecordsMessage"),
-        }}
-      />
+      <div data-testid="workflows-table-wrapper">
+        <_DataTable
+          table={table}
+          columns={columns}
+          count={count}
+          isLoading={isLoading}
+          pageSize={PAGE_SIZE}
+          navigateTo={(row) => `${row.id}`}
+          search
+          pagination
+          queryObject={raw}
+          noRecords={{
+            message: t("workflowExecutions.list.noRecordsMessage"),
+          }}
+        />
+      </div>
     </Container>
   )
 }

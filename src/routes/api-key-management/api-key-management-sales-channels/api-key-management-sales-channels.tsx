@@ -23,7 +23,7 @@ export const ApiKeyManagementAddSalesChannels = () => {
   }
 
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="publishable-api-key-sales-channels-modal">
       {ready && (
         <ApiKeySalesChannelsForm apiKey={id!} preSelected={preSelected} />
       )}

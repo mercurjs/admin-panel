@@ -62,7 +62,7 @@ export function CommissionLineDetail({ line, open, close }: Props) {
             <legend className="mt-4">Calculated commission value</legend>
             <Container>
               <div className="flex items-center justify-between">
-                <Text>{`${line.value === null ? '-' : line.value} ${line.currency_code.toUpperCase()}`}</Text>
+                <Text>{`${line.value === null ? '-' : line.value.toFixed(2)} ${line.currency_code.toUpperCase()}`}</Text>
               </div>
             </Container>
           </fieldset>

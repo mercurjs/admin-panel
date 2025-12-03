@@ -3,7 +3,7 @@ import { RefundReasonCreateForm } from "./components/refund-reason-create-form"
 
 export const RefundReasonCreate = () => {
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="refund-reason-create-modal">
       <RefundReasonCreateForm />
     </RouteFocusModal>
   )

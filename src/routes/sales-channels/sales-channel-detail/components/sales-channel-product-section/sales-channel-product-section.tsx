@@ -109,11 +109,11 @@ export const SalesChannelProductSection = ({
   }
 
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">{t("products.domain")}</Heading>
+    <Container className="divide-y p-0" data-testid="sales-channel-product-section-container">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="sales-channel-product-section-header">
+        <Heading level="h2" data-testid="sales-channel-product-section-heading">{t("products.domain")}</Heading>
         <Link to={`/settings/sales-channels/${salesChannel.id}/add-products`}>
-          <Button size="small" variant="secondary">
+          <Button size="small" variant="secondary" data-testid="sales-channel-product-section-add-button">
             {t("general.add")}
           </Button>
         </Link>
@@ -145,6 +145,7 @@ export const SalesChannelProductSection = ({
         noRecords={{
           message: t("salesChannels.products.list.noRecordsMessage"),
         }}
+        data-testid="sales-channel-product-section-table"
       />
     </Container>
   )
@@ -170,6 +171,7 @@ const useColumns = () => {
               onCheckedChange={(value) =>
                 table.toggleAllPageRowsSelected(!!value)
               }
+              data-testid="sales-channel-product-section-select-all-checkbox"
             />
           )
         },
@@ -181,6 +183,7 @@ const useColumns = () => {
               onClick={(e) => {
                 e.stopPropagation()
               }}
+              data-testid={`sales-channel-product-section-select-checkbox-${row.original.id}`}
             />
           )
         },
@@ -250,6 +253,7 @@ const ProductListCellActions = ({
           ],
         },
       ]}
+      data-testid={`sales-channel-product-section-row-action-menu-${productId}`}
     />
   )
 }

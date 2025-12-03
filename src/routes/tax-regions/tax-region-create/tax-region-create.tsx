@@ -3,7 +3,7 @@ import { TaxRegionCreateForm } from "./components/tax-region-create-form"
 
 export const TaxRegionCreate = () => {
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="tax-region-create-modal">
       <TaxRegionCreateForm />
     </RouteFocusModal>
   )

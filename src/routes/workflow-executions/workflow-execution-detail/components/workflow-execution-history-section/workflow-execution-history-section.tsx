@@ -50,13 +50,13 @@ export const WorkflowExecutionHistorySection = ({
     : []
 
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">
+    <Container className="divide-y p-0" data-testid="workflow-execution-history-section">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="workflow-execution-history-section-header">
+        <Heading level="h2" data-testid="workflow-execution-history-section-heading">
           {t("workflowExecutions.history.sectionTitle")}
         </Heading>
       </div>
-      <div className="flex flex-col gap-y-0.5 px-6 py-4">
+      <div className="flex flex-col gap-y-0.5 px-6 py-4" data-testid="workflow-execution-history-section-events">
         {steps.map((step, index) => {
           const stepId = step.id.split(".").pop()
 
@@ -119,8 +119,9 @@ const Event = ({
     <div
       className="grid grid-cols-[20px_1fr] items-start gap-x-2 px-2"
       id={stepId}
+      data-testid={`workflow-execution-history-event-${stepId}`}
     >
-      <div className="grid h-full grid-rows-[20px_1fr] items-center justify-center gap-y-0.5">
+      <div className="grid h-full grid-rows-[20px_1fr] items-center justify-center gap-y-0.5" data-testid={`workflow-execution-history-event-${stepId}-indicator`}>
         <div className="flex size-5 items-center justify-center">
           <div className="bg-ui-bg-base shadow-borders-base flex size-2.5 items-center justify-center rounded-full">
             <div
@@ -141,6 +142,7 @@ const Event = ({
                   step.invoke.state
                 ),
               })}
+              data-testid={`workflow-execution-history-event-${stepId}-indicator-dot`}
             />
           </div>
         </div>
@@ -151,13 +153,14 @@ const Event = ({
             className={clx({
               "bg-ui-border-base h-full min-h-[14px] w-px": !isLast,
             })}
+            data-testid={`workflow-execution-history-event-${stepId}-line`}
           />
         </div>
       </div>
-      <RadixCollapsible.Root open={open} onOpenChange={setOpen}>
+      <RadixCollapsible.Root open={open} onOpenChange={setOpen} data-testid={`workflow-execution-history-event-${stepId}-collapsible`}>
         <RadixCollapsible.Trigger asChild>
-          <div className="group flex cursor-pointer items-start justify-between outline-none">
-            <Text size="small" leading="compact" weight="plus">
+          <div className="group flex cursor-pointer items-start justify-between outline-none" data-testid={`workflow-execution-history-event-${stepId}-trigger`}>
+            <Text size="small" leading="compact" weight="plus" data-testid={`workflow-execution-history-event-${stepId}-name`}>
               {identifier}
             </Text>
             <div className="flex items-center gap-x-2">
@@ -165,17 +168,18 @@ const Event = ({
                 state={step.invoke.state}
                 startedAt={step.startedAt}
                 isUnreachable={isUnreachable}
+                data-testid={`workflow-execution-history-event-${stepId}-state`}
               />
-              <IconButton size="2xsmall" variant="transparent">
+              <IconButton size="2xsmall" variant="transparent" data-testid={`workflow-execution-history-event-${stepId}-toggle`}>
                 <TriangleDownMini className="text-ui-fg-muted transition-transform group-data-[state=open]:rotate-180" />
               </IconButton>
             </div>
           </div>
         </RadixCollapsible.Trigger>
-        <RadixCollapsible.Content ref={ref}>
+        <RadixCollapsible.Content ref={ref} data-testid={`workflow-execution-history-event-${stepId}-content`}>
           <div className="flex flex-col gap-y-2 pb-4 pt-2">
-            <div className="text-ui-fg-subtle flex flex-col gap-y-2">
-              <Text size="small" leading="compact">
+            <div className="text-ui-fg-subtle flex flex-col gap-y-2" data-testid={`workflow-execution-history-event-${stepId}-definition`}>
+              <Text size="small" leading="compact" data-testid={`workflow-execution-history-event-${stepId}-definition-label`}>
                 {t("workflowExecutions.history.definitionLabel")}
               </Text>
               <CodeBlock
@@ -187,13 +191,14 @@ const Event = ({
                     hideLineNumbers: true,
                   },
                 ]}
+                data-testid={`workflow-execution-history-event-${stepId}-definition-code`}
               >
                 <CodeBlock.Body />
               </CodeBlock>
             </div>
             {stepInvokeContext && (
-              <div className="text-ui-fg-subtle flex flex-col gap-y-2">
-                <Text size="small" leading="compact">
+              <div className="text-ui-fg-subtle flex flex-col gap-y-2" data-testid={`workflow-execution-history-event-${stepId}-output`}>
+                <Text size="small" leading="compact" data-testid={`workflow-execution-history-event-${stepId}-output-label`}>
                   {t("workflowExecutions.history.outputLabel")}
                 </Text>
                 <CodeBlock
@@ -210,6 +215,7 @@ const Event = ({
                       hideLineNumbers: true,
                     },
                   ]}
+                  data-testid={`workflow-execution-history-event-${stepId}-output-code`}
                 >
                   <CodeBlock.Body />
                 </CodeBlock>
@@ -217,8 +223,8 @@ const Event = ({
             )}
             {!!stepInvokeContext?.output?.compensateInput &&
               step.compensate.state === TransactionStepState.REVERTED && (
-                <div className="text-ui-fg-subtle flex flex-col gap-y-2">
-                  <Text size="small" leading="compact">
+                <div className="text-ui-fg-subtle flex flex-col gap-y-2" data-testid={`workflow-execution-history-event-${stepId}-compensate`}>
+                  <Text size="small" leading="compact" data-testid={`workflow-execution-history-event-${stepId}-compensate-label`}>
                     {t("workflowExecutions.history.compensateInputLabel")}
                   </Text>
                   <CodeBlock
@@ -237,14 +243,15 @@ const Event = ({
                         hideLineNumbers: true,
                       },
                     ]}
+                    data-testid={`workflow-execution-history-event-${stepId}-compensate-code`}
                   >
                     <CodeBlock.Body />
                   </CodeBlock>
                 </div>
               )}
             {stepError && (
-              <div className="text-ui-fg-subtle flex flex-col gap-y-2">
-                <Text size="small" leading="compact">
+              <div className="text-ui-fg-subtle flex flex-col gap-y-2" data-testid={`workflow-execution-history-event-${stepId}-error`}>
+                <Text size="small" leading="compact" data-testid={`workflow-execution-history-event-${stepId}-error-label`}>
                   {t("workflowExecutions.history.errorLabel")}
                 </Text>
                 <CodeBlock
@@ -263,6 +270,7 @@ const Event = ({
                       hideLineNumbers: true,
                     },
                   ]}
+                  data-testid={`workflow-execution-history-event-${stepId}-error-code`}
                 >
                   <CodeBlock.Body />
                 </CodeBlock>
@@ -279,10 +287,12 @@ const StepState = ({
   state,
   startedAt,
   isUnreachable,
+  "data-testid": dataTestId,
 }: {
   state: HttpTypes.TransactionStepState
   startedAt?: number | null
   isUnreachable?: boolean
+  "data-testid"?: string
 }) => {
   const { t } = useTranslation()
 
@@ -297,7 +307,7 @@ const StepState = ({
 
   if (isRunning) {
     return (
-      <div className="flex items-center gap-x-1">
+      <div className="flex items-center gap-x-1" data-testid={dataTestId}>
         <Text size="small" leading="compact" className="text-ui-fg-subtle">
           {t("workflowExecutions.history.runningState")}
         </Text>
@@ -318,7 +328,7 @@ const StepState = ({
 
   if (stateText !== null) {
     return (
-      <Text size="small" leading="compact" className="text-ui-fg-subtle">
+      <Text size="small" leading="compact" className="text-ui-fg-subtle" data-testid={dataTestId}>
         {stateText}
       </Text>
     )
@@ -326,7 +336,7 @@ const StepState = ({
 
   if (startedAt) {
     return (
-      <Text size="small" leading="compact" className="text-ui-fg-muted">
+      <Text size="small" leading="compact" className="text-ui-fg-muted" data-testid={dataTestId}>
         {format(startedAt, "dd MMM yyyy HH:mm:ss")}
       </Text>
     )

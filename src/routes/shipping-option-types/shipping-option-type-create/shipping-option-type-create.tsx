@@ -3,7 +3,7 @@ import { CreateShippingOptionTypeForm } from "./components/create-shipping-optio
 
 export const ShippingOptionTypeCreate = () => {
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="shipping-option-type-create-modal">
       <CreateShippingOptionTypeForm />
     </RouteFocusModal>
   )

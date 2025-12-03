@@ -28,7 +28,7 @@ export const LocationServiceZoneManageAreas = () => {
   }
 
   return (
-    <RouteFocusModal prev={`/settings/locations/${location_id}`}>
+    <RouteFocusModal prev={`/settings/locations/${location_id}`} data-testid="location-service-zone-manage-areas-modal">
       {zone && (
         <EditServiceZoneAreasForm
           zone={zone}

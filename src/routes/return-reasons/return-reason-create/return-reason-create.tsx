@@ -3,7 +3,7 @@ import { ReturnReasonCreateForm } from "./components/return-reason-create-form"
 
 export const ReturnReasonCreate = () => {
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="return-reason-create-modal">
       <ReturnReasonCreateForm />
     </RouteFocusModal>
   )

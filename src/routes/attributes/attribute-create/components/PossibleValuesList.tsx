@@ -53,11 +53,13 @@ const SortableItem = ({ id, index, onRemove }: SortableItemProps) => {
       ref={setNodeRef}
       style={style}
       className="flex items-center gap-2 p-2 bg-ui-bg-component border border-ui-border-base rounded-xl mb-2"
+      data-testid={`attribute-form-possible-value-item-${index}`}
     >
       <button
         className="cursor-grab active:cursor-grabbing"
         {...attributes}
         {...listeners}
+        data-testid={`attribute-form-possible-value-drag-handle-${index}`}
       >
         <DotsSix className="text-ui-fg-subtle" />
       </button>
@@ -67,9 +69,10 @@ const SortableItem = ({ id, index, onRemove }: SortableItemProps) => {
           aria-invalid={!!fieldError}
           placeholder="Enter value"
           {...register(`possible_values.${index}.value`)}
+          data-testid={`attribute-form-possible-value-input-${index}`}
         />
       </div>
-      <IconButton variant="transparent" size="small" onClick={onRemove}>
+      <IconButton variant="transparent" size="small" onClick={onRemove} data-testid={`attribute-form-possible-value-remove-button-${index}`}>
         <XMark />
       </IconButton>
     </div>
@@ -125,14 +128,15 @@ const PossibleValuesList = () => {
   };
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between pb-1">
-        <Label>Possible Values</Label>
+    <div className="space-y-2" data-testid="attribute-form-possible-values-list">
+      <div className="flex items-center justify-between pb-1" data-testid="attribute-form-possible-values-header">
+        <Label data-testid="attribute-form-possible-values-label">Possible Values</Label>
         <Button
           type="button"
           variant="secondary"
           size="small"
           onClick={handleAddValue}
+          data-testid="attribute-form-possible-values-add-button"
         >
           Add
         </Button>

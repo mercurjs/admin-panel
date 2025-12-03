@@ -39,17 +39,17 @@ export function CommissionActionMenu({
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenu.Trigger asChild>
+    <DropdownMenu data-testid={`commission-rule-action-menu-${id}`}>
+      <DropdownMenu.Trigger asChild data-testid={`commission-rule-action-menu-${id}-trigger`}>
         <EllipsisHorizontal />
       </DropdownMenu.Trigger>
-      <DropdownMenu.Content>
-        <DropdownMenu.Item className="gap-x-2" onClick={onSwitchEnableClick}>
+      <DropdownMenu.Content data-testid={`commission-rule-action-menu-${id}-content`}>
+        <DropdownMenu.Item className="gap-x-2" onClick={onSwitchEnableClick} data-testid={`commission-rule-action-menu-${id}-${is_active ? "disable" : "enable"}`}>
           <PencilSquare className="text-ui-fg-subtle" />
           {is_active ? "Disable" : "Enable"}
         </DropdownMenu.Item>
         <DropdownMenu.Separator />
-        <DropdownMenu.Item className="gap-x-2" onClick={onDeleteClick}>
+        <DropdownMenu.Item className="gap-x-2" onClick={onDeleteClick} data-testid={`commission-rule-action-menu-${id}-delete`}>
           <Trash className="text-ui-fg-subtle" />
           Delete
         </DropdownMenu.Item>

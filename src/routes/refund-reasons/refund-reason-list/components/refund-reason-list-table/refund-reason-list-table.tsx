@@ -43,7 +43,7 @@ export const RefundReasonListTable = () => {
   }
 
   return (
-    <Container className="divide-y px-0 py-0">
+    <Container className="divide-y px-0 py-0" data-testid="refund-reason-list-table-container">
       <DataTable
         data={refund_reasons}
         columns={columns}

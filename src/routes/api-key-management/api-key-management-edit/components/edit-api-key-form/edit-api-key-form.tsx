@@ -48,35 +48,35 @@ export const EditApiKeyForm = ({ apiKey }: EditApiKeyFormProps) => {
   })
 
   return (
-    <RouteDrawer.Form form={form}>
+    <RouteDrawer.Form form={form} data-testid={`${apiKey.type}-api-key-edit-form`}>
       <KeyboundForm onSubmit={handleSubmit} className="flex flex-1 flex-col">
-        <RouteDrawer.Body>
+        <RouteDrawer.Body data-testid={`${apiKey.type}-api-key-edit-body`}>
           <div className="flex flex-col gap-y-4">
             <Form.Field
               control={form.control}
               name="title"
               render={({ field }) => {
                 return (
-                  <Form.Item>
-                    <Form.Label>{t("fields.title")}</Form.Label>
-                    <Form.Control>
-                      <Input {...field} />
+                  <Form.Item data-testid={`${apiKey.type}-api-key-edit-title-item`}>
+                    <Form.Label data-testid={`${apiKey.type}-api-key-edit-title-label`}>{t("fields.title")}</Form.Label>
+                    <Form.Control data-testid={`${apiKey.type}-api-key-edit-title-control`}>
+                      <Input {...field} data-testid={`${apiKey.type}-api-key-edit-title-input`} />
                     </Form.Control>
-                    <Form.ErrorMessage />
+                    <Form.ErrorMessage data-testid={`${apiKey.type}-api-key-edit-title-error`} />
                   </Form.Item>
                 )
               }}
             />
           </div>
         </RouteDrawer.Body>
-        <RouteDrawer.Footer>
+        <RouteDrawer.Footer data-testid={`${apiKey.type}-api-key-edit-footer`}>
           <div className="flex items-center gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid={`${apiKey.type}-api-key-edit-cancel-button`}>
                 {t("actions.cancel")}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
+            <Button size="small" type="submit" isLoading={isPending} data-testid={`${apiKey.type}-api-key-edit-save-button`}>
               {t("actions.save")}
             </Button>
           </div>

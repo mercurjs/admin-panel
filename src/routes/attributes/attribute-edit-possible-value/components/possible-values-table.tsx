@@ -66,11 +66,11 @@ export const PossibleValuesTable = ({
           <div className="flex items-center justify-end">
             <DropdownMenu>
               <DropdownMenu.Trigger asChild>
-                <Button variant="transparent" size="small">
+                <Button variant="transparent" size="small" data-testid={`attribute-possible-value-action-menu-trigger-${possibleValue.id}`}>
                   <EllipsisHorizontal />
                 </Button>
               </DropdownMenu.Trigger>
-              <DropdownMenu.Content align="end">
+              <DropdownMenu.Content align="end" data-testid={`attribute-possible-value-action-menu-${possibleValue.id}`}>
                 <DropdownMenu.Item
                   onClick={() => {
                     if (attributeId) {
@@ -81,6 +81,7 @@ export const PossibleValuesTable = ({
                       toast.error("Attribute ID not found.");
                     }
                   }}
+                  data-testid={`attribute-possible-value-edit-action-${possibleValue.id}`}
                 >
                   Edit
                 </DropdownMenu.Item>
@@ -125,17 +126,17 @@ export const PossibleValuesTable = ({
   }
 
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">Possible Values</Heading>
+    <Container className="divide-y p-0" data-testid="attribute-possible-values-table-container">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="attribute-possible-values-table-header">
+        <Heading level="h2" data-testid="attribute-possible-values-table-heading">Possible Values</Heading>
       </div>
-      <div>
-        <DataTable instance={possibleValuesTable}>
-          <DataTable.Toolbar className="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center">
-            <DataTable.Search placeholder="Search possible values..." />
+      <div data-testid="attribute-possible-values-table-wrapper">
+        <DataTable instance={possibleValuesTable} data-testid="attribute-possible-values-table">
+          <DataTable.Toolbar className="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center" data-testid="attribute-possible-values-table-toolbar">
+            <DataTable.Search placeholder="Search possible values..." data-testid="attribute-possible-values-table-search" />
           </DataTable.Toolbar>
-          <DataTable.Table />
-          <DataTable.Pagination />
+          <DataTable.Table data-testid="attribute-possible-values-table-content" />
+          <DataTable.Pagination data-testid="attribute-possible-values-table-pagination" />
         </DataTable>
       </div>
     </Container>

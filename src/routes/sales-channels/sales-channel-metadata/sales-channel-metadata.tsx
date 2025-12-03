@@ -39,7 +39,7 @@ export const SalesChannelMetadata = () => {
   }
 
   return (
-    <RouteDrawer>
+    <RouteDrawer data-testid="sales-channel-metadata-drawer">
       <MetadataForm
         isPending={isPending}
         isMutating={isMutating}

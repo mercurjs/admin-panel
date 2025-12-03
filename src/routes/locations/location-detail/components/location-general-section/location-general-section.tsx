@@ -61,11 +61,11 @@ export const LocationGeneralSection = ({
 }: LocationGeneralSectionProps) => {
   return (
     <>
-      <Container className="p-0">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div>
-            <Heading>{location.name}</Heading>
-            <Text className="text-ui-fg-subtle txt-small">
+      <Container className="p-0" data-testid="location-general-section-container">
+        <div className="flex items-center justify-between px-6 py-4" data-testid="location-general-section-header">
+          <div data-testid="location-general-section-info">
+            <Heading data-testid="location-general-section-heading">{location.name}</Heading>
+            <Text className="text-ui-fg-subtle txt-small" data-testid="location-general-section-address">
               {getFormattedAddress({ address: location.address }).join(", ")}
             </Text>
           </div>
@@ -143,8 +143,8 @@ function ShippingOption({
   }
 
   return (
-    <div className="flex items-center justify-between px-3 py-2">
-      <div className="flex-1">
+    <div className="flex items-center justify-between px-3 py-2" data-testid={`location-shipping-option-${option.id}`}>
+      <div className="flex-1" data-testid={`location-shipping-option-name-${option.id}`}>
         <Text size="small" weight="plus">
           {option.name} - {option.shipping_profile.name} (
           {formatProvider(option.provider_id)})
@@ -155,6 +155,7 @@ function ShippingOption({
         color={isStoreOption ? "grey" : "purple"}
         size="2xsmall"
         rounded="full"
+        data-testid={`location-shipping-option-badge-${option.id}`}
       >
         {isStoreOption ? t("general.store") : t("general.admin")}
       </Badge>
@@ -186,6 +187,7 @@ function ShippingOption({
             ],
           },
         ]}
+        data-testid={`location-shipping-option-action-menu-${option.id}`}
       />
     </div>
   )
@@ -213,22 +215,23 @@ function ServiceZoneOptions({
   const returnOptions = zone.shipping_options.filter((o) => isReturnOption(o))
 
   return (
-    <div>
+    <div data-testid={`location-service-zone-options-${zone.id}`}>
       <Divider variant="dashed" />
-      <div className="flex flex-col gap-y-4 px-6 py-4">
-        <div className="item-center flex justify-between">
-          <span className="text-ui-fg-subtle txt-small self-center font-medium">
+      <div className="flex flex-col gap-y-4 px-6 py-4" data-testid={`location-service-zone-shipping-options-${zone.id}`}>
+        <div className="item-center flex justify-between" data-testid={`location-service-zone-shipping-options-header-${zone.id}`}>
+          <span className="text-ui-fg-subtle txt-small self-center font-medium" data-testid={`location-service-zone-shipping-options-label-${zone.id}`}>
             {t(`stockLocations.shippingOptions.create.${type}.label`)}
           </span>
           <LinkButton
             to={`/settings/locations/${locationId}/fulfillment-set/${fulfillmentSetId}/service-zone/${zone.id}/shipping-option/create`}
+            data-testid={`location-service-zone-shipping-options-create-button-${zone.id}`}
           >
             {t("stockLocations.shippingOptions.create.action")}
           </LinkButton>
         </div>
 
         {!!shippingOptions.length && (
-          <div className="shadow-elevation-card-rest bg-ui-bg-subtle grid divide-y rounded-md">
+          <div className="shadow-elevation-card-rest bg-ui-bg-subtle grid divide-y rounded-md" data-testid={`location-service-zone-shipping-options-list-${zone.id}`}>
             {shippingOptions.map((o) => (
               <ShippingOption
                 key={o.id}
@@ -243,20 +246,21 @@ function ServiceZoneOptions({
 
       <Divider variant="dashed" />
 
-      <div className="flex flex-col gap-y-4 px-6 py-4">
-        <div className="item-center flex justify-between">
-          <span className="text-ui-fg-subtle txt-small self-center font-medium">
+      <div className="flex flex-col gap-y-4 px-6 py-4" data-testid={`location-service-zone-return-options-${zone.id}`}>
+        <div className="item-center flex justify-between" data-testid={`location-service-zone-return-options-header-${zone.id}`}>
+          <span className="text-ui-fg-subtle txt-small self-center font-medium" data-testid={`location-service-zone-return-options-label-${zone.id}`}>
             {t("stockLocations.shippingOptions.create.returns.label")}
           </span>
           <LinkButton
             to={`/settings/locations/${locationId}/fulfillment-set/${fulfillmentSetId}/service-zone/${zone.id}/shipping-option/create?is_return`}
+            data-testid={`location-service-zone-return-options-create-button-${zone.id}`}
           >
             {t("stockLocations.shippingOptions.create.action")}
           </LinkButton>
         </div>
 
         {!!returnOptions.length && (
-          <div className="shadow-elevation-card-rest bg-ui-bg-subtle grid divide-y rounded-md">
+          <div className="shadow-elevation-card-rest bg-ui-bg-subtle grid divide-y rounded-md" data-testid={`location-service-zone-return-options-list-${zone.id}`}>
             {returnOptions.map((o) => (
               <ShippingOption
                 key={o.id}
@@ -357,31 +361,32 @@ function ServiceZone({
   }, [zone.shipping_options])
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-row items-center justify-between gap-x-4 px-6 py-4">
-        <IconAvatar>
+    <div className="flex flex-col" data-testid={`location-service-zone-${zone.id}`}>
+      <div className="flex flex-row items-center justify-between gap-x-4 px-6 py-4" data-testid={`location-service-zone-header-${zone.id}`}>
+        <IconAvatar data-testid={`location-service-zone-icon-${zone.id}`}>
           <Map />
         </IconAvatar>
 
-        <div className="grow-1 flex flex-1 flex-col">
-          <Text size="small" leading="compact" weight="plus">
+        <div className="grow-1 flex flex-1 flex-col" data-testid={`location-service-zone-info-${zone.id}`}>
+          <Text size="small" leading="compact" weight="plus" data-testid={`location-service-zone-name-${zone.id}`}>
             {zone.name}
           </Text>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" data-testid={`location-service-zone-details-${zone.id}`}>
             <ListSummary
               variant="base"
               list={countries.map((c) => c.display_name)}
               inline
               n={1}
+              data-testid={`location-service-zone-countries-${zone.id}`}
             />
             <span>·</span>
-            <Text className="text-ui-fg-subtle txt-small">
+            <Text className="text-ui-fg-subtle txt-small" data-testid={`location-service-zone-shipping-count-${zone.id}`}>
               {t(`stockLocations.shippingOptions.fields.count.${type}`, {
                 count: shippingOptionsCount,
               })}
             </Text>
             <span>·</span>
-            <Text className="text-ui-fg-subtle txt-small">
+            <Text className="text-ui-fg-subtle txt-small" data-testid={`location-service-zone-return-count-${zone.id}`}>
               {t("stockLocations.shippingOptions.fields.count.returns", {
                 count: returnOptionsCount,
               })}
@@ -389,11 +394,12 @@ function ServiceZone({
           </div>
         </div>
 
-        <div className="flex grow-0 items-center gap-4">
+        <div className="flex grow-0 items-center gap-4" data-testid={`location-service-zone-actions-${zone.id}`}>
           <IconButton
             size="small"
             onClick={() => setOpen((s) => !s)}
             variant="transparent"
+            data-testid={`location-service-zone-toggle-button-${zone.id}`}
           >
             <TriangleDownMini
               style={{
@@ -428,6 +434,7 @@ function ServiceZone({
                 ],
               },
             ]}
+            data-testid={`location-service-zone-action-menu-${zone.id}`}
           />
         </div>
       </div>
@@ -544,25 +551,25 @@ function FulfillmentSet(props: FulfillmentSetProps) {
       ]
 
   return (
-    <Container className="p-0">
+    <Container className="p-0" data-testid={`location-fulfillment-set-${type}`}>
       <div className="flex flex-col divide-y">
-        <div className="flex items-center justify-between px-6 py-4">
-          <Heading level="h2">
+        <div className="flex items-center justify-between px-6 py-4" data-testid={`location-fulfillment-set-header-${type}`}>
+          <Heading level="h2" data-testid={`location-fulfillment-set-heading-${type}`}>
             {t(`stockLocations.fulfillmentSets.${type}.header`)}
           </Heading>
-          <div className="flex items-center gap-4">
-            <StatusBadge color={fulfillmentSetExists ? "green" : "grey"}>
+          <div className="flex items-center gap-4" data-testid={`location-fulfillment-set-actions-${type}`}>
+            <StatusBadge color={fulfillmentSetExists ? "green" : "grey"} data-testid={`location-fulfillment-set-status-badge-${type}`}>
               {t(
                 fulfillmentSetExists ? "statuses.enabled" : "statuses.disabled"
               )}
             </StatusBadge>
 
-            <ActionMenu groups={groups} />
+            <ActionMenu groups={groups} data-testid={`location-fulfillment-set-action-menu-${type}`} />
           </div>
         </div>
 
         {fulfillmentSetExists && !hasServiceZones && (
-          <div className="flex items-center justify-center py-8 pt-6">
+          <div className="flex items-center justify-center py-8 pt-6" data-testid={`location-fulfillment-set-empty-${type}`}>
             <NoRecords
               message={t("stockLocations.serviceZones.fields.noRecords")}
               className="h-fit"
@@ -575,7 +582,7 @@ function FulfillmentSet(props: FulfillmentSetProps) {
         )}
 
         {hasServiceZones && (
-          <div className="flex flex-col divide-y">
+          <div className="flex flex-col divide-y" data-testid={`location-fulfillment-set-service-zones-${type}`}>
             {fulfillmentSet?.service_zones.map((zone) => (
               <ServiceZone
                 zone={zone}
@@ -656,6 +663,7 @@ const Actions = ({ location }: { location: HttpTypes.AdminStockLocation }) => {
           ],
         },
       ]}
+      data-testid="location-general-section-action-menu"
     />
   )
 }

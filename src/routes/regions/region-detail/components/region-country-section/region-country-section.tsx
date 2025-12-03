@@ -98,9 +98,9 @@ export const RegionCountrySection = ({ region }: RegionCountrySectionProps) => {
   }
 
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">{t("fields.countries")}</Heading>
+    <Container className="divide-y p-0" data-testid="region-country-section-container">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="region-country-section-header">
+        <Heading level="h2" data-testid="region-country-section-heading">{t("fields.countries")}</Heading>
         <ActionMenu
           groups={[
             {
@@ -113,6 +113,7 @@ export const RegionCountrySection = ({ region }: RegionCountrySectionProps) => {
               ],
             },
           ]}
+          data-testid="region-country-section-action-menu"
         />
       </div>
       <_DataTable
@@ -135,6 +136,7 @@ export const RegionCountrySection = ({ region }: RegionCountrySectionProps) => {
             shortcut: "r",
           },
         ]}
+        data-testid="region-country-section-table"
       />
     </Container>
   )
@@ -199,6 +201,7 @@ const CountryActions = ({
           ],
         },
       ]}
+      data-testid={`region-country-section-action-menu-${country.iso_2}`}
     />
   )
 }
@@ -223,6 +226,7 @@ const useColumns = () => {
               onCheckedChange={(value) =>
                 table.toggleAllPageRowsSelected(!!value)
               }
+              data-testid="region-country-section-select-all-checkbox"
             />
           )
         },
@@ -234,6 +238,7 @@ const useColumns = () => {
               onClick={(e) => {
                 e.stopPropagation()
               }}
+              data-testid={`region-country-section-select-checkbox-${row.original.iso_2}`}
             />
           )
         },

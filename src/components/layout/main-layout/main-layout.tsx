@@ -95,7 +95,7 @@ const Logout = () => {
   };
 
   return (
-    <DropdownMenu.Item onClick={handleLogout}>
+    <DropdownMenu.Item onClick={handleLogout} data-testid="sidebar-header-dropdown-logout">
       <div className="flex items-center gap-x-2">
         <OpenRectArrowOut className="text-ui-fg-subtle" />
         <span>{t("app.menus.actions.logout")}</span>
@@ -118,8 +118,8 @@ const Header = () => {
   }
 
   return (
-    <div className="w-full p-3">
-      <DropdownMenu dir={direction}>
+    <div className="w-full p-3" data-testid="sidebar-header-dropdown">
+      <DropdownMenu dir={direction} data-testid="sidebar-header-dropdown-menu">
         <DropdownMenu.Trigger
           disabled={!isLoaded}
           className={clx(
@@ -128,13 +128,14 @@ const Header = () => {
             "data-[state=open]:bg-ui-bg-subtle-hover",
             "focus-visible:shadow-borders-focus",
           )}
+          data-testid="sidebar-header-dropdown-trigger"
         >
           {fallback ? (
-            <Avatar variant="squared" size="xsmall" fallback={fallback} />
+            <Avatar variant="squared" size="xsmall" fallback={fallback} data-testid="sidebar-header-dropdown-avatar" />
           ) : (
             <Skeleton className="h-6 w-6 rounded-md" />
           )}
-          <div className="block overflow-hidden text-start">
+          <div className="block overflow-hidden text-start" data-testid="sidebar-header-dropdown-store-name">
             {name ? (
               <Text
                 size="small"
@@ -151,15 +152,16 @@ const Header = () => {
           <EllipsisHorizontal className="text-ui-fg-muted" />
         </DropdownMenu.Trigger>
         {isLoaded && (
-          <DropdownMenu.Content className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-0">
-            <div className="flex items-center gap-x-3 px-2 py-1">
-              <Avatar variant="squared" size="small" fallback={fallback} />
-              <div className="flex flex-col overflow-hidden">
+          <DropdownMenu.Content className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-0" data-testid="sidebar-header-dropdown-content">
+            <div className="flex items-center gap-x-3 px-2 py-1" data-testid="sidebar-header-dropdown-user-info">
+              <Avatar variant="squared" size="small" fallback={fallback} data-testid="sidebar-header-dropdown-user-avatar" />
+              <div className="flex flex-col overflow-hidden" data-testid="sidebar-header-dropdown-user-details">
                 <Text
                   size="small"
                   weight="plus"
                   leading="compact"
                   className="truncate"
+                  data-testid="sidebar-header-dropdown-user-name"
                 >
                   {name}
                 </Text>
@@ -167,19 +169,20 @@ const Header = () => {
                   size="xsmall"
                   leading="compact"
                   className="text-ui-fg-subtle"
+                  data-testid="sidebar-header-dropdown-store-label"
                 >
                   {t("app.nav.main.store")}
                 </Text>
               </div>
             </div>
-            <DropdownMenu.Separator />
-            <DropdownMenu.Item className="gap-x-2" asChild>
+            <DropdownMenu.Separator data-testid="sidebar-header-dropdown-separator-1" />
+            <DropdownMenu.Item className="gap-x-2" asChild data-testid="sidebar-header-dropdown-store-settings">
               <Link to="/settings/store">
                 <BuildingStorefront className="text-ui-fg-subtle" />
                 {t("app.nav.main.storeSettings")}
               </Link>
             </DropdownMenu.Item>
-            <DropdownMenu.Separator />
+            <DropdownMenu.Separator data-testid="sidebar-header-dropdown-separator-2" />
             <Logout />
           </DropdownMenu.Content>
         )}

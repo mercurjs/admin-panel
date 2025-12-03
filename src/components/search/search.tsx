@@ -150,7 +150,7 @@ export const Search = () => {
   }, [isFetching, dynamicResults, filteredStaticResults])
 
   return (
-    <CommandDialog open={open} onOpenChange={handleOpenChange}>
+    <CommandDialog open={open} onOpenChange={handleOpenChange} data-testid="search-modal">
       <CommandInput
         isFetching={isFetching}
         ref={inputRef}
@@ -160,12 +160,13 @@ export const Search = () => {
         onValueChange={handleSearch}
         onBack={area !== "all" ? handleBack : undefined}
         placeholder={t("app.search.placeholder")}
+        data-testid="search-input"
       />
-      <CommandList ref={listRef}>
-        {showLoading && <CommandLoading />}
+      <CommandList ref={listRef} data-testid="search-results-list">
+        {showLoading && <CommandLoading data-testid="search-loading" />}
         {dynamicResults.map((group) => {
           return (
-            <CommandGroup key={group.title} heading={group.title}>
+            <CommandGroup key={group.title} heading={group.title} data-testid={`search-group-${group.area}`}>
               {group.items.map((item) => {
                 return (
                   <CommandItem
@@ -173,6 +174,7 @@ export const Search = () => {
                     onSelect={() => handleSelect(item)}
                     value={item.value}
                     className="flex items-center justify-between"
+                    data-testid={`search-result-${item.id}`}
                   >
                     <div className="flex items-center gap-x-3">
                       {item.thumbnail && (
@@ -197,6 +199,7 @@ export const Search = () => {
                   onSelect={() => handleShowMore(group.area)}
                   hidden={true}
                   value={`${group.title}:show:more`} // Prevent the "Show more" buttons across groups from sharing the same value/state
+                  data-testid={`search-show-more-${group.area}`}
                 >
                   <div className="text-ui-fg-muted flex items-center gap-x-3">
                     <Plus />
@@ -211,6 +214,7 @@ export const Search = () => {
                   onSelect={handleLoadMore}
                   hidden={true}
                   value={`${group.title}:load:more`}
+                  data-testid={`search-load-more-${group.area}`}
                 >
                   <div className="text-ui-fg-muted flex items-center gap-x-3">
                     <Plus />
@@ -233,6 +237,7 @@ export const Search = () => {
             <CommandGroup
               key={group.title}
               heading={t(`app.keyboardShortcuts.${group.title}`)}
+              data-testid={`search-group-${group.title}`}
             >
               {group.items.map((item) => {
                 return (
@@ -240,6 +245,7 @@ export const Search = () => {
                     key={item.label}
                     onSelect={() => handleSelect(item)}
                     className="flex items-center justify-between"
+                    data-testid={`search-shortcut-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
                   >
                     <span>{item.label}</span>
                     <div className="flex items-center gap-x-1.5">
@@ -265,7 +271,7 @@ export const Search = () => {
             </CommandGroup>
           )
         })}
-        {!showLoading && <CommandEmpty q={search} />}
+        {!showLoading && <CommandEmpty q={search} data-testid="search-empty" />}
       </CommandList>
     </CommandDialog>
   )
@@ -301,7 +307,7 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (
     <RadixDialog.Root {...props}>
       <RadixDialog.Portal>
-        <RadixDialog.Overlay className="bg-ui-bg-overlay fixed inset-0" />
+        <RadixDialog.Overlay className="bg-ui-bg-overlay fixed inset-0" data-testid="search-modal-overlay" />
         <RadixDialog.Content
           className={clx(
             "bg-ui-bg-base shadow-elevation-modal fixed left-[50%] top-[50%] flex max-h-[calc(100%-16px)] w-[calc(100%-16px)] min-w-0 max-w-2xl translate-x-[-50%] translate-y-[-50%] flex-col overflow-hidden rounded-xl p-0",
@@ -309,6 +315,7 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
               "h-[300px]": preserveHeight, // Prevents the dialog from collapsing when loading async results and before the no results message is displayed
             }
           )}
+          data-testid="search-modal-content"
         >
           <RadixDialog.Title className="sr-only">
             {t("app.search.title")}
@@ -316,12 +323,12 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
           <RadixDialog.Description className="sr-only">
             {t("app.search.description")}
           </RadixDialog.Description>
-          <CommandPalette className="[&_[cmdk-group-heading]]:text-muted-foreground flex h-full flex-col overflow-hidden [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0">
+          <CommandPalette className="[&_[cmdk-group-heading]]:text-muted-foreground flex h-full flex-col overflow-hidden [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0" data-testid="search-command-palette">
             {children}
           </CommandPalette>
-          <div className="bg-ui-bg-field text-ui-fg-subtle flex items-center justify-end border-t px-4 py-3">
+          <div className="bg-ui-bg-field text-ui-fg-subtle flex items-center justify-end border-t px-4 py-3" data-testid="search-modal-footer">
             <div className="flex items-center gap-x-3">
-              <div className="flex items-center gap-x-2">
+              <div className="flex items-center gap-x-2" data-testid="search-navigation-hint">
                 <Text size="xsmall" leading="compact">
                   {t("app.search.navigation")}
                 </Text>
@@ -331,7 +338,7 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
                 </div>
               </div>
               <div className="bg-ui-border-strong h-3 w-px" />
-              <div className="flex items-center gap-x-2">
+              <div className="flex items-center gap-x-2" data-testid="search-open-result-hint">
                 <Text size="xsmall" leading="compact">
                   {t("app.search.openResult")}
                 </Text>
@@ -376,13 +383,14 @@ const CommandInput = forwardRef<
     )
 
     return (
-      <div className="flex flex-col border-b">
-        <div className="px-4 pt-4">
-          <DropdownMenu dir={direction}>
+      <div className="flex flex-col border-b" data-testid="search-input-container">
+        <div className="px-4 pt-4" data-testid="search-area-selector">
+          <DropdownMenu dir={direction} data-testid="search-area-dropdown">
             <DropdownMenu.Trigger asChild>
               <Badge
                 size="2xsmall"
                 className="hover:bg-ui-bg-base-pressed transition-fg cursor-pointer"
+                data-testid="search-area-trigger"
               >
                 {t(`app.search.groups.${area}`)}
                 <TriangleDownMini className="text-ui-fg-muted" />
@@ -395,15 +403,17 @@ const CommandInput = forwardRef<
                 e.preventDefault()
                 innerRef.current?.focus()
               }}
+              data-testid="search-area-content"
             >
               <DropdownMenu.RadioGroup
                 value={area}
                 onValueChange={(v) => setArea(v as SearchArea)}
+                data-testid="search-area-radio-group"
               >
                 {SEARCH_AREAS.map((area) => (
                   <Fragment key={area}>
                     {area === "command" && <DropdownMenu.Separator />}
-                    <DropdownMenu.RadioItem value={area}>
+                    <DropdownMenu.RadioItem value={area} data-testid={`search-area-option-${area}`}>
                       {t(`app.search.groups.${area}`)}
                     </DropdownMenu.RadioItem>
                     {area === "all" && <DropdownMenu.Separator />}
@@ -413,13 +423,14 @@ const CommandInput = forwardRef<
             </DropdownMenu.Content>
           </DropdownMenu>
         </div>
-        <div className="relative flex items-center gap-x-2 px-4 py-3">
+        <div className="relative flex items-center gap-x-2 px-4 py-3" data-testid="search-input-wrapper">
           {onBack && (
             <IconButton
               type="button"
               size="small"
               variant="transparent"
               onClick={onBack}
+              data-testid="search-back-button"
             >
               <ArrowUturnLeft className="text-ui-fg-muted" />
             </IconButton>
@@ -434,9 +445,9 @@ const CommandInput = forwardRef<
             )}
             {...props}
           />
-          <div className="absolute end-4 top-1/2 flex -translate-y-1/2 items-center justify-end gap-x-2">
+          <div className="absolute end-4 top-1/2 flex -translate-y-1/2 items-center justify-end gap-x-2" data-testid="search-input-actions">
             {isFetching && (
-              <Spinner className="text-ui-fg-muted animate-spin" />
+              <Spinner className="text-ui-fg-muted animate-spin" data-testid="search-spinner" />
             )}
             {value && (
               <Button
@@ -448,6 +459,7 @@ const CommandInput = forwardRef<
                   onValueChange?.("")
                   innerRef.current?.focus()
                 }}
+                data-testid="search-clear-button"
               >
                 {t("actions.clear")}
               </Button>
@@ -487,15 +499,15 @@ const CommandEmpty = forwardRef<
 
   return (
     <Command.Empty ref={ref} className="py-6 text-center text-sm" {...props}>
-      <div className="text-ui-fg-subtle flex min-h-[236px] flex-col items-center justify-center gap-y-3">
-        <MagnifyingGlass className="text-ui-fg-subtle" />
-        <div className="flex flex-col items-center justify-center gap-y-1">
-          <Text size="small" weight="plus" leading="compact">
+      <div className="text-ui-fg-subtle flex min-h-[236px] flex-col items-center justify-center gap-y-3" data-testid="search-empty-content">
+        <MagnifyingGlass className="text-ui-fg-subtle" data-testid="search-empty-icon" />
+        <div className="flex flex-col items-center justify-center gap-y-1" data-testid="search-empty-text">
+          <Text size="small" weight="plus" leading="compact" data-testid="search-empty-title">
             {props.q
               ? t("app.search.noResultsTitle")
               : t("app.search.emptySearchTitle")}
           </Text>
-          <Text size="small" className="text-ui-fg-muted">
+          <Text size="small" className="text-ui-fg-muted" data-testid="search-empty-message">
             {props.q
               ? t("app.search.noResultsMessage")
               : t("app.search.emptySearchMessage")}
@@ -518,11 +530,11 @@ const CommandLoading = forwardRef<
       {...props}
       className="bg-ui-bg-base flex flex-col"
     >
-      <div className="w-full px-2 pb-1 pt-3">
+      <div className="w-full px-2 pb-1 pt-3" data-testid="search-loading-header">
         <Skeleton className="h-5 w-10" />
       </div>
       {Array.from({ length: 7 }).map((_, index) => (
-        <div key={index} className="w-full p-2">
+        <div key={index} className="w-full p-2" data-testid={`search-loading-item-${index}`}>
           <Skeleton className="h-5 w-full" />
         </div>
       ))}

@@ -119,21 +119,21 @@ export const AddProductsToSalesChannelForm = ({
   }
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="sales-channel-add-products-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex h-full flex-col overflow-hidden"
       >
-        <RouteFocusModal.Header>
+        <RouteFocusModal.Header data-testid="sales-channel-add-products-form-header">
           <div className="flex items-center justify-end gap-x-2">
             {form.formState.errors.product_ids && (
-              <Hint variant="error">
+              <Hint variant="error" data-testid="sales-channel-add-products-form-error">
                 {form.formState.errors.product_ids.message}
               </Hint>
             )}
           </div>
         </RouteFocusModal.Header>
-        <RouteFocusModal.Body className="flex size-full flex-col overflow-y-auto">
+        <RouteFocusModal.Body className="flex size-full flex-col overflow-y-auto" data-testid="sales-channel-add-products-form-body">
           <_DataTable
             table={table}
             count={count}
@@ -154,16 +154,17 @@ export const AddProductsToSalesChannelForm = ({
             noRecords={{
               message: t("salesChannels.products.add.list.noRecordsMessage"),
             }}
+            data-testid="sales-channel-add-products-form-table"
           />
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="sales-channel-add-products-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="sales-channel-add-products-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
+            <Button size="small" type="submit" isLoading={isPending} data-testid="sales-channel-add-products-form-save-button">
               {t("actions.save")}
             </Button>
           </div>
@@ -194,6 +195,7 @@ const useColumns = () => {
               onCheckedChange={(value) =>
                 table.toggleAllPageRowsSelected(!!value)
               }
+              data-testid="sales-channel-add-products-form-select-all-checkbox"
             />
           )
         },
@@ -216,6 +218,7 @@ const useColumns = () => {
               onClick={(e) => {
                 e.stopPropagation()
               }}
+              data-testid={`sales-channel-add-products-form-select-checkbox-${row.original.id}`}
             />
           )
 

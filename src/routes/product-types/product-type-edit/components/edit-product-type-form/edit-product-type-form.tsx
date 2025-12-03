@@ -54,36 +54,36 @@ export const EditProductTypeForm = ({
   })
 
   return (
-    <RouteDrawer.Form form={form}>
+    <RouteDrawer.Form form={form} data-testid="product-type-edit-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex flex-1 flex-col overflow-hidden"
       >
-        <RouteDrawer.Body className="flex flex-1 flex-col gap-y-8 overflow-y-auto">
+        <RouteDrawer.Body className="flex flex-1 flex-col gap-y-8 overflow-y-auto" data-testid="product-type-edit-form-body">
           <Form.Field
             control={form.control}
             name="value"
             render={({ field }) => {
               return (
-                <Form.Item>
-                  <Form.Label>{t("productTypes.fields.value")}</Form.Label>
-                  <Form.Control>
-                    <Input {...field} />
+                <Form.Item data-testid="product-type-edit-form-value-item">
+                  <Form.Label data-testid="product-type-edit-form-value-label">{t("productTypes.fields.value")}</Form.Label>
+                  <Form.Control data-testid="product-type-edit-form-value-control">
+                    <Input {...field} data-testid="product-type-edit-form-value-input" />
                   </Form.Control>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="product-type-edit-form-value-error" />
                 </Form.Item>
               )
             }}
           />
         </RouteDrawer.Body>
-        <RouteDrawer.Footer>
+        <RouteDrawer.Footer data-testid="product-type-edit-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="product-type-edit-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
+            <Button size="small" type="submit" isLoading={isPending} data-testid="product-type-edit-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

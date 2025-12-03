@@ -58,7 +58,7 @@ export function LocationList() {
       showJSON
     >
       <TwoColumnPage.Main>
-        <Container className="flex flex-col divide-y p-0">
+        <Container className="flex flex-col divide-y p-0" data-testid="location-list-container">
           <DataTable
             data={stockLocations}
             columns={columns}
@@ -88,6 +88,7 @@ export function LocationList() {
             enableSearch={true}
             prefix={PREFIX}
             layout="fill"
+            data-testid="location-list-table"
           />
         </Container>
       </TwoColumnPage.Main>
@@ -102,9 +103,9 @@ const LinksSection = () => {
   const { t } = useTranslation()
 
   return (
-    <Container className="p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">{t("stockLocations.sidebar.header")}</Heading>
+    <Container className="p-0" data-testid="location-list-sidebar">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="location-list-sidebar-header">
+        <Heading level="h2" data-testid="location-list-sidebar-heading">{t("stockLocations.sidebar.header")}</Heading>
       </div>
 
       <SidebarLink
@@ -114,6 +115,7 @@ const LinksSection = () => {
           "stockLocations.sidebar.shippingProfiles.description"
         )}
         icon={<ShoppingBag />}
+        data-testid="location-list-sidebar-shipping-profiles-link"
       />
       <SidebarLink
         to="/settings/locations/shipping-option-types"
@@ -122,6 +124,7 @@ const LinksSection = () => {
           "stockLocations.sidebar.shippingOptionTypes.description"
         )}
         icon={<TruckFast />}
+        data-testid="location-list-sidebar-shipping-option-types-link"
       />
     </Container>
   )

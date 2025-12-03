@@ -243,7 +243,7 @@ export function CreateShippingOptionsForm({
     : "in-progress"
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="location-shipping-option-create-form">
       <KeyboundForm
         className="flex h-full flex-col"
         onSubmit={handleSubmit}
@@ -276,13 +276,15 @@ export function CreateShippingOptionsForm({
           value={activeTab}
           className="flex h-full flex-col overflow-hidden"
           onValueChange={(tab) => onTabChange(tab as Tab)}
+          data-testid="location-shipping-option-create-progress-tabs"
         >
-          <RouteFocusModal.Header>
-            <ProgressTabs.List className="border-ui-border-base -my-2 ml-2 min-w-0 flex-1 border-l">
+          <RouteFocusModal.Header data-testid="location-shipping-option-create-form-header">
+            <ProgressTabs.List className="border-ui-border-base -my-2 ml-2 min-w-0 flex-1 border-l" data-testid="location-shipping-option-create-progress-tabs-list">
               <ProgressTabs.Trigger
                 value={Tab.DETAILS}
                 status={detailsStatus}
                 className="w-full max-w-[200px]"
+                data-testid="location-shipping-option-create-details-tab"
               >
                 <span className="w-full cursor-auto overflow-hidden text-ellipsis whitespace-nowrap">
                   {t("stockLocations.shippingOptions.create.tabs.details")}
@@ -293,6 +295,7 @@ export function CreateShippingOptionsForm({
                   value={Tab.PRICING}
                   status={pricesStatus}
                   className="w-full max-w-[200px]"
+                  data-testid="location-shipping-option-create-pricing-tab"
                 >
                   <span className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
                     {t("stockLocations.shippingOptions.create.tabs.prices")}
@@ -302,10 +305,11 @@ export function CreateShippingOptionsForm({
             </ProgressTabs.List>
           </RouteFocusModal.Header>
 
-          <RouteFocusModal.Body className="size-full overflow-hidden">
+          <RouteFocusModal.Body className="size-full overflow-hidden" data-testid="location-shipping-option-create-form-body">
             <ProgressTabs.Content
               value={Tab.DETAILS}
               className="size-full overflow-y-auto"
+              data-testid="location-shipping-option-create-details-tab-content"
             >
               <CreateShippingOptionDetailsForm
                 form={form}
@@ -317,14 +321,14 @@ export function CreateShippingOptionsForm({
                 selectedProviderId={selectedProviderId}
               />
             </ProgressTabs.Content>
-            <ProgressTabs.Content value={Tab.PRICING} className="size-full">
+            <ProgressTabs.Content value={Tab.PRICING} className="size-full" data-testid="location-shipping-option-create-pricing-tab-content">
               <CreateShippingOptionsPricesForm form={form} type={type} />
             </ProgressTabs.Content>
           </RouteFocusModal.Body>
-          <RouteFocusModal.Footer>
+          <RouteFocusModal.Footer data-testid="location-shipping-option-create-form-footer">
             <div className="flex items-center justify-end gap-x-2">
               <RouteFocusModal.Close asChild>
-                <Button variant="secondary" size="small">
+                <Button variant="secondary" size="small" data-testid="location-shipping-option-create-form-cancel-button">
                   {t("actions.cancel")}
                 </Button>
               </RouteFocusModal.Close>
@@ -335,6 +339,7 @@ export function CreateShippingOptionsForm({
                   isLoading={isLoading}
                   key="submit-btn"
                   type="submit"
+                  data-testid="location-shipping-option-create-form-save-button"
                 >
                   {t("actions.save")}
                 </Button>
@@ -346,6 +351,7 @@ export function CreateShippingOptionsForm({
                   onClick={() => onTabChange(Tab.PRICING)}
                   key="continue-btn"
                   type="button"
+                  data-testid="location-shipping-option-create-form-continue-button"
                 >
                   {t("actions.continue")}
                 </Button>

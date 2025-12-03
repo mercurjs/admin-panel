@@ -52,11 +52,11 @@ export const Commission = () => {
 
   return (
     <>
-      <Container className="divide-y p-0">
-        <div className="flex items-center justify-between px-6 py-4">
+      <Container className="divide-y p-0" data-testid="commission-global-settings-container">
+        <div className="flex items-center justify-between px-6 py-4" data-testid="commission-global-settings-header">
           <div>
-            <Heading>Global Commission Settings</Heading>
-            <Text className="text-ui-fg-subtle" size="small">
+            <Heading data-testid="commission-global-settings-heading">Global Commission Settings</Heading>
+            <Text className="text-ui-fg-subtle" size="small" data-testid="commission-global-settings-description">
               Manage global commission settings for your marketplace.
             </Text>
           </div>
@@ -64,20 +64,22 @@ export const Commission = () => {
           <Drawer
             open={upsertDefaultOpen}
             onOpenChange={(openChanged) => setUpsertDefaultOpen(openChanged)}
+            data-testid="commission-global-settings-edit-drawer"
           >
             <Drawer.Trigger
               onClick={() => {
                 setUpsertDefaultOpen(true);
               }}
               asChild
+              data-testid="commission-global-settings-edit-button"
             >
               <Button variant="secondary">Edit</Button>
             </Drawer.Trigger>
-            <Drawer.Content>
-              <Drawer.Header>
-                <Drawer.Title>Edit default rule</Drawer.Title>
+            <Drawer.Content data-testid="commission-global-settings-edit-drawer-content">
+              <Drawer.Header data-testid="commission-global-settings-edit-drawer-header">
+                <Drawer.Title data-testid="commission-global-settings-edit-drawer-title">Edit default rule</Drawer.Title>
               </Drawer.Header>
-              <Drawer.Body>
+              <Drawer.Body data-testid="commission-global-settings-edit-drawer-body">
                 <UpsertDefaultCommissionRuleForm
                   onSuccess={() => {
                     setUpsertDefaultOpen(false);
@@ -92,29 +94,31 @@ export const Commission = () => {
 
         <CommissionDetailTable commissionRule={defaultRule.commission_rule} />
       </Container>
-      <Container className="divide-y p-0">
-        <div className="flex items-center justify-between px-6 py-4">
+      <Container className="divide-y p-0" data-testid="commission-rules-container">
+        <div className="flex items-center justify-between px-6 py-4" data-testid="commission-rules-header">
           <div>
-            <Heading>Commission Rules</Heading>
-            <Text className="text-ui-fg-subtle" size="small">
+            <Heading data-testid="commission-rules-heading">Commission Rules</Heading>
+            <Text className="text-ui-fg-subtle" size="small" data-testid="commission-rules-description">
               View, search, and manage existing commission rules.
             </Text>
           </div>
           <Drawer
             open={createRuleOpen}
             onOpenChange={(openChanged) => setCreateRuleOpen(openChanged)}
+            data-testid="commission-rules-create-drawer"
           >
             <Drawer.Trigger
               onClick={() => {
                 setCreateRuleOpen(true);
               }}
               asChild
+              data-testid="commission-rules-create-button"
             >
               <Button variant="secondary">Create</Button>
             </Drawer.Trigger>
-            <Drawer.Content>
-              <Drawer.Header>
-                <Drawer.Title>Create Rule</Drawer.Title>
+            <Drawer.Content data-testid="commission-rules-create-drawer-content">
+              <Drawer.Header data-testid="commission-rules-create-drawer-header">
+                <Drawer.Title data-testid="commission-rules-create-drawer-title">Create Rule</Drawer.Title>
               </Drawer.Header>
                 <CreateCommissionRuleForm
                   onSuccess={() => {
@@ -139,6 +143,7 @@ export const Commission = () => {
             title: "Commission rules",
             message: "No records",
           }}
+          data-testid="commission-rules-table"
         />
       </Container>
     </>

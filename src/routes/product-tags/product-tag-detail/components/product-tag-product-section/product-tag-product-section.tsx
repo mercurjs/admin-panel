@@ -47,9 +47,9 @@ export const ProductTagProductSection = ({
   }
 
   return (
-    <Container className="divide-y px-0 py-0">
-      <div className="px-6 py-4">
-        <Heading level="h2">{t("products.domain")}</Heading>
+    <Container className="divide-y px-0 py-0" data-testid="product-tag-product-section-container">
+      <div className="px-6 py-4" data-testid="product-tag-product-section-header">
+        <Heading level="h2" data-testid="product-tag-product-section-heading">{t("products.domain")}</Heading>
       </div>
       <_DataTable
         table={table}
@@ -68,6 +68,7 @@ export const ProductTagProductSection = ({
           { key: "created_at", label: t("fields.createdAt") },
           { key: "updated_at", label: t("fields.updatedAt") },
         ]}
+        data-testid="product-tag-product-section-table"
       />
     </Container>
   )

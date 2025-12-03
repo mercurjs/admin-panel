@@ -30,11 +30,11 @@ export const WorkflowExecutionTimelineSection = ({
   const { t } = useTranslation()
 
   return (
-    <Container className="overflow-hidden px-0 pb-8 pt-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">{t("general.timeline")}</Heading>
+    <Container className="overflow-hidden px-0 pb-8 pt-0" data-testid="workflow-execution-timeline-section">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="workflow-execution-timeline-section-header">
+        <Heading level="h2" data-testid="workflow-execution-timeline-section-heading">{t("general.timeline")}</Heading>
       </div>
-      <div className="w-full overflow-hidden border-y">
+      <div className="w-full overflow-hidden border-y" data-testid="workflow-execution-timeline-section-canvas-wrapper">
         <Canvas execution={execution} />
       </div>
     </Container>
@@ -156,8 +156,8 @@ const Canvas = ({
   }
 
   return (
-    <div className="h-[400px] w-full">
-      <div ref={dragConstraints} className="relative size-full">
+    <div className="h-[400px] w-full" data-testid="workflow-execution-timeline-canvas">
+      <div ref={dragConstraints} className="relative size-full" data-testid="workflow-execution-timeline-canvas-container">
         <div className="relative size-full overflow-hidden object-contain">
           <div>
             <motion.div
@@ -184,14 +184,15 @@ const Canvas = ({
                   "cursor-grabbing": isDragging,
                 }
               )}
+              data-testid="workflow-execution-timeline-canvas-motion"
             >
               <main className="size-full">
-                <div className="absolute left-[1100px] top-[1100px] flex select-none items-start">
+                <div className="absolute left-[1100px] top-[1100px] flex select-none items-start" data-testid="workflow-execution-timeline-canvas-nodes">
                   {Object.entries(clusters).map(([depth, cluster]) => {
                     const next = getNextCluster(clusters, Number(depth))
 
                     return (
-                      <div key={depth} className="flex items-start">
+                      <div key={depth} className="flex items-start" data-testid={`workflow-execution-timeline-canvas-cluster-${depth}`}>
                         <div className="flex flex-col justify-center gap-y-2">
                           {cluster.map((step) => (
                             <Node key={step.id} step={step} />
@@ -206,7 +207,7 @@ const Canvas = ({
             </motion.div>
           </div>
         </div>
-        <div className="bg-ui-bg-base shadow-borders-base text-ui-fg-subtle absolute bottom-4 left-6 flex h-7 items-center overflow-hidden rounded-md">
+        <div className="bg-ui-bg-base shadow-borders-base text-ui-fg-subtle absolute bottom-4 left-6 flex h-7 items-center overflow-hidden rounded-md" data-testid="workflow-execution-timeline-canvas-controls">
           <div className="flex items-center">
             <button
               onClick={zoomIn}
@@ -214,12 +215,13 @@ const Canvas = ({
               disabled={!canZoomIn}
               aria-label="Zoom in"
               className="disabled:text-ui-fg-disabled transition-fg hover:bg-ui-bg-base-hover active:bg-ui-bg-base-pressed focus-visible:bg-ui-bg-base-pressed border-r p-1 outline-none"
+              data-testid="workflow-execution-timeline-canvas-zoom-in-button"
             >
               <PlusMini />
             </button>
             <div>
-              <DropdownMenu dir={direction}>
-                <DropdownMenu.Trigger className="disabled:text-ui-fg-disabled transition-fg hover:bg-ui-bg-base-hover active:bg-ui-bg-base-pressed focus-visible:bg-ui-bg-base-pressed flex w-[50px] items-center justify-center border-r p-1 outline-none">
+              <DropdownMenu dir={direction} data-testid="workflow-execution-timeline-canvas-zoom-menu">
+                <DropdownMenu.Trigger className="disabled:text-ui-fg-disabled transition-fg hover:bg-ui-bg-base-hover active:bg-ui-bg-base-pressed focus-visible:bg-ui-bg-base-pressed flex w-[50px] items-center justify-center border-r p-1 outline-none" data-testid="workflow-execution-timeline-canvas-zoom-trigger">
                   <Text
                     as="span"
                     size="xsmall"
@@ -229,11 +231,12 @@ const Canvas = ({
                     {Math.round(zoom * 100)}%
                   </Text>
                 </DropdownMenu.Trigger>
-                <DropdownMenu.Content>
+                <DropdownMenu.Content data-testid="workflow-execution-timeline-canvas-zoom-content">
                   {[50, 75, 100, 125, 150].map((value) => (
                     <DropdownMenu.Item
                       key={value}
                       onClick={() => changeZoom(value / 100)}
+                      data-testid={`workflow-execution-timeline-canvas-zoom-option-${value}`}
                     >
                       {value}%
                     </DropdownMenu.Item>
@@ -247,6 +250,7 @@ const Canvas = ({
               disabled={!canZoomOut}
               aria-label="Zoom out"
               className="disabled:text-ui-fg-disabled transition-fg hover:bg-ui-bg-base-hover active:bg-ui-bg-base-pressed focus-visible:bg-ui-bg-base-pressed border-r p-1 outline-none"
+              data-testid="workflow-execution-timeline-canvas-zoom-out-button"
             >
               <MinusMini />
             </button>
@@ -256,6 +260,7 @@ const Canvas = ({
             type="button"
             aria-label="Reset canvas"
             className="disabled:text-ui-fg-disabled transition-fg hover:bg-ui-bg-base-hover active:bg-ui-bg-base-pressed focus-visible:bg-ui-bg-base-pressed p-1 outline-none"
+            data-testid="workflow-execution-timeline-canvas-reset-button"
           >
             <ArrowPathMini />
           </button>
@@ -403,6 +408,7 @@ const Node = ({ step }: { step: HttpTypes.AdminWorkflowExecutionStep }) => {
       to={`#${stepId}`}
       onClick={handleScrollTo}
       className="focus-visible:shadow-borders-focus transition-fg rounded-md outline-none"
+      data-testid={`workflow-execution-timeline-node-${stepId}`}
     >
       <div
         className="bg-ui-bg-base shadow-borders-base flex min-w-[120px] items-center gap-x-0.5 rounded-md p-0.5"
@@ -430,6 +436,7 @@ const Node = ({ step }: { step: HttpTypes.AdminWorkflowExecutionStep }) => {
                 ),
               }
             )}
+            data-testid={`workflow-execution-timeline-node-${stepId}-indicator`}
           />
         </div>
         <Text
@@ -437,6 +444,7 @@ const Node = ({ step }: { step: HttpTypes.AdminWorkflowExecutionStep }) => {
           leading="compact"
           weight="plus"
           className="select-none"
+          data-testid={`workflow-execution-timeline-node-${stepId}-label`}
         >
           {stepId}
         </Text>

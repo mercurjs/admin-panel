@@ -63,42 +63,43 @@ export const TaxRegionEditForm = ({ taxRegion }: TaxRegionEditFormProps) => {
   })
 
   return (
-    <RouteDrawer.Form form={form}>
+    <RouteDrawer.Form form={form} data-testid="tax-region-edit-form">
       <KeyboundForm
         className="flex flex-1 flex-col overflow-hidden"
         onSubmit={handleSubmit}
       >
-        <RouteDrawer.Body className="flex flex-1 flex-col gap-y-6 overflow-auto">
+        <RouteDrawer.Body className="flex flex-1 flex-col gap-y-6 overflow-auto" data-testid="tax-region-edit-form-body">
           <div className="flex flex-col gap-y-4">
             <Form.Field
               control={form.control}
               name="provider_id"
               render={({ field }) => (
-                <Form.Item>
-                  <Form.Label>{t("taxRegions.fields.taxProvider")}</Form.Label>
-                  <Form.Control>
+                <Form.Item data-testid="tax-region-edit-form-provider-item">
+                  <Form.Label data-testid="tax-region-edit-form-provider-label">{t("taxRegions.fields.taxProvider")}</Form.Label>
+                  <Form.Control data-testid="tax-region-edit-form-provider-control">
                     <Combobox
                       {...field}
                       options={taxProviders.options}
                       searchValue={taxProviders.searchValue}
                       onSearchValueChange={taxProviders.onSearchValueChange}
                       fetchNextPage={taxProviders.fetchNextPage}
+                      data-testid="tax-region-edit-form-provider-combobox"
                     />
                   </Form.Control>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="tax-region-edit-form-provider-error" />
                 </Form.Item>
               )}
             />
           </div>
         </RouteDrawer.Body>
-        <RouteDrawer.Footer className="shrink-0">
+        <RouteDrawer.Footer className="shrink-0" data-testid="tax-region-edit-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="tax-region-edit-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
+            <Button size="small" type="submit" isLoading={isPending} data-testid="tax-region-edit-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

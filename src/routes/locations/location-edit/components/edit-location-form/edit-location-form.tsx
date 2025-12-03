@@ -72,24 +72,24 @@ export const EditLocationForm = ({ location }: EditLocationFormProps) => {
   })
 
   return (
-    <RouteDrawer.Form form={form}>
+    <RouteDrawer.Form form={form} data-testid="location-edit-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex flex-1 flex-col overflow-hidden"
       >
-        <RouteDrawer.Body className="flex flex-col gap-y-8 overflow-y-auto">
+        <RouteDrawer.Body className="flex flex-col gap-y-8 overflow-y-auto" data-testid="location-edit-form-body">
           <div className="grid grid-cols-1 gap-4">
             <Form.Field
               control={form.control}
               name="name"
               render={({ field }) => {
                 return (
-                  <Form.Item>
-                    <Form.Label>{t("fields.name")}</Form.Label>
-                    <Form.Control>
-                      <Input size="small" {...field} />
+                  <Form.Item data-testid="location-edit-form-name-item">
+                    <Form.Label data-testid="location-edit-form-name-label">{t("fields.name")}</Form.Label>
+                    <Form.Control data-testid="location-edit-form-name-control">
+                      <Input size="small" {...field} data-testid="location-edit-form-name-input" />
                     </Form.Control>
-                    <Form.ErrorMessage />
+                    <Form.ErrorMessage data-testid="location-edit-form-name-error" />
                   </Form.Item>
                 )
               }}
@@ -216,14 +216,14 @@ export const EditLocationForm = ({ location }: EditLocationFormProps) => {
             />
           </div>
         </RouteDrawer.Body>
-        <RouteDrawer.Footer>
+        <RouteDrawer.Footer data-testid="location-edit-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="location-edit-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
+            <Button size="small" type="submit" isLoading={isPending} data-testid="location-edit-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

@@ -51,11 +51,12 @@ export const LocationDetail = () => {
       data={location}
       showJSON
       hasOutlet
+      data-testid="location-detail-page"
     >
-      <TwoColumnPage.Main>
+      <TwoColumnPage.Main data-testid="location-detail-main">
         <LocationGeneralSection location={location} />
       </TwoColumnPage.Main>
-      <TwoColumnPage.Sidebar>
+      <TwoColumnPage.Sidebar data-testid="location-detail-sidebar">
         <LocationsSalesChannelsSection location={location} />
         <LocationsFulfillmentProvidersSection location={location} />
       </TwoColumnPage.Sidebar>

@@ -79,17 +79,17 @@ export function CreateServiceZoneForm({
   })
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="location-service-zone-create-form">
       <KeyboundForm
         className="flex h-full flex-col overflow-hidden"
         onSubmit={handleSubmit}
       >
-        <RouteFocusModal.Header />
-        <RouteFocusModal.Body className="flex flex-1 flex-col items-center overflow-auto">
-          <StackedFocusModal id={GEO_ZONE_STACKED_MODAL_ID}>
+        <RouteFocusModal.Header data-testid="location-service-zone-create-form-header" />
+        <RouteFocusModal.Body className="flex flex-1 flex-col items-center overflow-auto" data-testid="location-service-zone-create-form-body">
+          <StackedFocusModal id={GEO_ZONE_STACKED_MODAL_ID} data-testid="location-service-zone-create-form-stacked-modal">
             <div className="flex flex-1 flex-col items-center">
               <div className="flex w-full max-w-[720px] flex-col gap-y-8 px-2 py-16">
-                <Heading>
+                <Heading data-testid="location-service-zone-create-form-heading">
                   {type === FulfillmentSetType.Pickup
                     ? t("stockLocations.serviceZones.create.headerPickup", {
                         location: location.name,
@@ -105,19 +105,19 @@ export function CreateServiceZoneForm({
                     name="name"
                     render={({ field }) => {
                       return (
-                        <Form.Item>
-                          <Form.Label>{t("fields.name")}</Form.Label>
-                          <Form.Control>
-                            <Input {...field} />
+                        <Form.Item data-testid="location-service-zone-create-form-name-item">
+                          <Form.Label data-testid="location-service-zone-create-form-name-label">{t("fields.name")}</Form.Label>
+                          <Form.Control data-testid="location-service-zone-create-form-name-control">
+                            <Input {...field} data-testid="location-service-zone-create-form-name-input" />
                           </Form.Control>
-                          <Form.ErrorMessage />
+                          <Form.ErrorMessage data-testid="location-service-zone-create-form-name-error" />
                         </Form.Item>
                       )
                     }}
                   />
                 </div>
 
-                <InlineTip label={t("general.tip")}>
+                <InlineTip label={t("general.tip")} data-testid="location-service-zone-create-form-tip">
                   {t("stockLocations.serviceZones.fields.tip")}
                 </InlineTip>
 
@@ -128,14 +128,14 @@ export function CreateServiceZoneForm({
           </StackedFocusModal>
         </RouteFocusModal.Body>
 
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="location-service-zone-create-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button variant="secondary" size="small">
+              <Button variant="secondary" size="small" data-testid="location-service-zone-create-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
-            <Button type="submit" size="small" isLoading={isPending}>
+            <Button type="submit" size="small" isLoading={isPending} data-testid="location-service-zone-create-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

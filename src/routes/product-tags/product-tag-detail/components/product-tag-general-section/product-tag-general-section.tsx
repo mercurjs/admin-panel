@@ -16,10 +16,10 @@ export const ProductTagGeneralSection = ({
   const handleDelete = useDeleteProductTagAction({ productTag })
 
   return (
-    <Container className="flex items-center justify-between">
-      <div className="flex items-center gap-x-1.5">
+    <Container className="flex items-center justify-between" data-testid="product-tag-general-section-container">
+      <div className="flex items-center gap-x-1.5" data-testid="product-tag-general-section-heading-container">
         <span className="text-ui-fg-muted h1-core">#</span>
-        <Heading>{productTag.value}</Heading>
+        <Heading data-testid="product-tag-general-section-heading">{productTag.value}</Heading>
       </div>
       <ActionMenu
         groups={[
@@ -42,6 +42,7 @@ export const ProductTagGeneralSection = ({
             ],
           },
         ]}
+        data-testid="product-tag-general-section-action-menu"
       />
     </Container>
   )

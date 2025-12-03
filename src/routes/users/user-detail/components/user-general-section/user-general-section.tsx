@@ -47,9 +47,9 @@ export const UserGeneralSection = ({ user }: UserGeneralSectionProps) => {
   }
 
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <Heading>{user.email}</Heading>
+    <Container className="divide-y p-0" data-testid="user-general-section-container">
+      <div className="flex items-center justify-between px-6 py-4" data-testid="user-general-section-header">
+        <Heading data-testid="user-general-section-email">{user.email}</Heading>
         <ActionMenu
           groups={[
             {
@@ -71,13 +71,14 @@ export const UserGeneralSection = ({ user }: UserGeneralSectionProps) => {
               ],
             },
           ]}
+          data-testid="user-general-section-action-menu"
         />
       </div>
-      <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4">
-        <Text size="small" leading="compact" weight="plus">
+      <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4" data-testid="user-general-section-name">
+        <Text size="small" leading="compact" weight="plus" data-testid="user-general-section-name-label">
           {t("fields.name")}
         </Text>
-        <Text size="small" leading="compact">
+        <Text size="small" leading="compact" data-testid="user-general-section-name-value">
           {name ?? "-"}
         </Text>
       </div>

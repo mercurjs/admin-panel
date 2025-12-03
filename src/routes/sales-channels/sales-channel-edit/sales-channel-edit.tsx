@@ -22,9 +22,9 @@ export const SalesChannelEdit = () => {
   }
 
   return (
-    <RouteDrawer>
-      <RouteDrawer.Header>
-        <Heading className="capitalize">
+    <RouteDrawer data-testid="sales-channel-edit-drawer">
+      <RouteDrawer.Header data-testid="sales-channel-edit-drawer-header">
+        <Heading className="capitalize" data-testid="sales-channel-edit-drawer-heading">
           {t("salesChannels.editSalesChannel")}
         </Heading>
       </RouteDrawer.Header>

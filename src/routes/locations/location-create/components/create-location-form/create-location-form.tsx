@@ -69,20 +69,20 @@ export const CreateLocationForm = () => {
   })
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="location-create-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex h-full flex-col overflow-hidden"
       >
-        <RouteFocusModal.Header />
-        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-hidden">
+        <RouteFocusModal.Header data-testid="location-create-form-header" />
+        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-hidden" data-testid="location-create-form-body">
           <div className="flex flex-1 flex-col items-center overflow-y-auto">
             <div className="flex w-full max-w-[720px] flex-col gap-y-8 px-2 py-16">
-              <div>
-                <Heading className="capitalize">
+              <div data-testid="location-create-form-header-section">
+                <Heading className="capitalize" data-testid="location-create-form-heading">
                   {t("stockLocations.create.header")}
                 </Heading>
-                <Text size="small" className="text-ui-fg-subtle">
+                <Text size="small" className="text-ui-fg-subtle" data-testid="location-create-form-hint">
                   {t("stockLocations.create.hint")}
                 </Text>
               </div>
@@ -92,12 +92,12 @@ export const CreateLocationForm = () => {
                   name="name"
                   render={({ field }) => {
                     return (
-                      <Form.Item>
-                        <Form.Label>{t("fields.name")}</Form.Label>
-                        <Form.Control>
-                          <Input size="small" {...field} />
+                      <Form.Item data-testid="location-create-form-name-item">
+                        <Form.Label data-testid="location-create-form-name-label">{t("fields.name")}</Form.Label>
+                        <Form.Control data-testid="location-create-form-name-control">
+                          <Input size="small" {...field} data-testid="location-create-form-name-input" />
                         </Form.Control>
-                        <Form.ErrorMessage />
+                        <Form.ErrorMessage data-testid="location-create-form-name-error" />
                       </Form.Item>
                     )
                   }}
@@ -230,14 +230,14 @@ export const CreateLocationForm = () => {
             </div>
           </div>
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="location-create-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="location-create-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
-            <Button type="submit" size="small" isLoading={isPending}>
+            <Button type="submit" size="small" isLoading={isPending} data-testid="location-create-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

@@ -1,13 +1,11 @@
+import { useMe } from "@hooks/api";
 import { Spinner } from "@medusajs/icons";
-
+import { SearchProvider } from "@providers/search-provider";
+import { SidebarProvider } from "@providers/sidebar-provider";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-import { useMe } from "../../../hooks/api/users";
-import { SearchProvider } from "../../../providers/search-provider";
-import { SidebarProvider } from "../../../providers/sidebar-provider";
-
 export const ProtectedRoute = () => {
-  const { user, isLoading } = useMe();
+  const { user, isLoading, error } = useMe();
   const location = useLocation();
 
   if (isLoading) {
@@ -25,7 +23,13 @@ export const ProtectedRoute = () => {
   }
 
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return (
+      <Navigate
+        to={`/login${error?.message ? `?reason=${encodeURIComponent(error.message)}` : ""}`}
+        state={{ from: location }}
+        replace
+      />
+    );
   }
 
   return (

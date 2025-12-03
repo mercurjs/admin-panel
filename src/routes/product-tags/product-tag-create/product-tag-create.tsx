@@ -3,7 +3,7 @@ import { ProductTagCreateForm } from "./components/product-tag-create-form"
 
 export const ProductTagCreate = () => {
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="product-tag-create-modal">
       <ProductTagCreateForm />
     </RouteFocusModal>
   )

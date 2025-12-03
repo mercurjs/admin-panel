@@ -3,7 +3,7 @@ import { CreateSalesChannelForm } from "./components/create-sales-channel-form"
 
 export const SalesChannelCreate = () => {
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="sales-channel-create-modal">
       <CreateSalesChannelForm />
     </RouteFocusModal>
   )

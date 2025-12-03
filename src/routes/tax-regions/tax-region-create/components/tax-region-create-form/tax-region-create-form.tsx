@@ -114,20 +114,20 @@ export const TaxRegionCreateForm = ({ parentId }: TaxRegionCreateFormProps) => {
   })
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="tax-region-create-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex h-full flex-col overflow-hidden"
       >
-        <RouteFocusModal.Header />
-        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-hidden">
+        <RouteFocusModal.Header data-testid="tax-region-create-form-header" />
+        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-hidden" data-testid="tax-region-create-form-body">
           <div className="flex flex-1 flex-col items-center overflow-y-auto">
             <div className="flex w-full max-w-[720px] flex-col gap-y-8 px-2 py-16">
-              <div>
-                <Heading className="capitalize">
+              <div data-testid="tax-region-create-form-header-section">
+                <Heading className="capitalize" data-testid="tax-region-create-form-heading">
                   {t("taxRegions.create.header")}
                 </Heading>
-                <Text size="small" className="text-ui-fg-subtle">
+                <Text size="small" className="text-ui-fg-subtle" data-testid="tax-region-create-form-hint">
                   {t("taxRegions.create.hint")}
                 </Text>
               </div>
@@ -138,12 +138,12 @@ export const TaxRegionCreateForm = ({ parentId }: TaxRegionCreateFormProps) => {
                     name="country_code"
                     render={({ field }) => {
                       return (
-                        <Form.Item>
-                          <Form.Label>{t("fields.country")}</Form.Label>
-                          <Form.Control>
-                            <CountrySelect {...field} />
+                        <Form.Item data-testid="tax-region-create-form-country-item">
+                          <Form.Label data-testid="tax-region-create-form-country-label">{t("fields.country")}</Form.Label>
+                          <Form.Control data-testid="tax-region-create-form-country-control">
+                            <CountrySelect {...field} data-testid="tax-region-create-form-country-select" />
                           </Form.Control>
-                          <Form.ErrorMessage />
+                          <Form.ErrorMessage data-testid="tax-region-create-form-country-error" />
                         </Form.Item>
                       )
                     }}
@@ -152,11 +152,11 @@ export const TaxRegionCreateForm = ({ parentId }: TaxRegionCreateFormProps) => {
                     control={form.control}
                     name="provider_id"
                     render={({ field }) => (
-                      <Form.Item>
-                        <Form.Label>
+                      <Form.Item data-testid="tax-region-create-form-provider-item">
+                        <Form.Label data-testid="tax-region-create-form-provider-label">
                           {t("taxRegions.fields.taxProvider")}
                         </Form.Label>
-                        <Form.Control>
+                        <Form.Control data-testid="tax-region-create-form-provider-control">
                           <Combobox
                             {...field}
                             options={taxProviders.options}
@@ -165,30 +165,32 @@ export const TaxRegionCreateForm = ({ parentId }: TaxRegionCreateFormProps) => {
                               taxProviders.onSearchValueChange
                             }
                             fetchNextPage={taxProviders.fetchNextPage}
+                            data-testid="tax-region-create-form-provider-combobox"
                           />
                         </Form.Control>
-                        <Form.ErrorMessage />
+                        <Form.ErrorMessage data-testid="tax-region-create-form-provider-error" />
                       </Form.Item>
                     )}
                   />
                 </div>
               </div>
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-x-1">
-                  <Heading level="h2" className="!txt-compact-small-plus">
+              <div className="flex flex-col gap-4" data-testid="tax-region-create-form-default-tax-rate-section">
+                <div className="flex items-center gap-x-1" data-testid="tax-region-create-form-default-tax-rate-header">
+                  <Heading level="h2" className="!txt-compact-small-plus" data-testid="tax-region-create-form-default-tax-rate-label">
                     {t("taxRegions.fields.defaultTaxRate.label")}
                   </Heading>
                   <Text
                     size="small"
                     leading="compact"
                     className="text-ui-fg-muted"
+                    data-testid="tax-region-create-form-default-tax-rate-optional"
                   >
                     ({t("fields.optional")})
                   </Text>
                   <Tooltip
                     content={t("taxRegions.fields.defaultTaxRate.tooltip")}
                   >
-                    <InformationCircleSolid className="text-ui-fg-muted" />
+                    <InformationCircleSolid className="text-ui-fg-muted" data-testid="tax-region-create-form-default-tax-rate-tooltip" />
                   </Tooltip>
                 </div>
                 <div className="flex flex-col gap-y-4">
@@ -198,12 +200,12 @@ export const TaxRegionCreateForm = ({ parentId }: TaxRegionCreateFormProps) => {
                       name="name"
                       render={({ field }) => {
                         return (
-                          <Form.Item>
-                            <Form.Label>{t("fields.name")}</Form.Label>
-                            <Form.Control>
-                              <Input {...field} />
+                          <Form.Item data-testid="tax-region-create-form-name-item">
+                            <Form.Label data-testid="tax-region-create-form-name-label">{t("fields.name")}</Form.Label>
+                            <Form.Control data-testid="tax-region-create-form-name-control">
+                              <Input {...field} data-testid="tax-region-create-form-name-input" />
                             </Form.Control>
-                            <Form.ErrorMessage />
+                            <Form.ErrorMessage data-testid="tax-region-create-form-name-error" />
                           </Form.Item>
                         )
                       }}
@@ -213,11 +215,11 @@ export const TaxRegionCreateForm = ({ parentId }: TaxRegionCreateFormProps) => {
                       name="rate"
                       render={({ field: { value, onChange, ...field } }) => {
                         return (
-                          <Form.Item>
-                            <Form.Label>
+                          <Form.Item data-testid="tax-region-create-form-rate-item">
+                            <Form.Label data-testid="tax-region-create-form-rate-label">
                               {t("taxRegions.fields.taxRate")}
                             </Form.Label>
-                            <Form.Control>
+                            <Form.Control data-testid="tax-region-create-form-rate-control">
                               <PercentageInput
                                 {...field}
                                 value={value?.value}
@@ -228,9 +230,10 @@ export const TaxRegionCreateForm = ({ parentId }: TaxRegionCreateFormProps) => {
                                     float: values?.float,
                                   })
                                 }
+                                data-testid="tax-region-create-form-rate-input"
                               />
                             </Form.Control>
-                            <Form.ErrorMessage />
+                            <Form.ErrorMessage data-testid="tax-region-create-form-rate-error" />
                           </Form.Item>
                         )
                       }}
@@ -240,14 +243,14 @@ export const TaxRegionCreateForm = ({ parentId }: TaxRegionCreateFormProps) => {
                       name="code"
                       render={({ field }) => {
                         return (
-                          <Form.Item>
-                            <Form.Label>
+                          <Form.Item data-testid="tax-region-create-form-code-item">
+                            <Form.Label data-testid="tax-region-create-form-code-label">
                               {t("taxRegions.fields.taxCode")}
                             </Form.Label>
-                            <Form.Control>
-                              <Input {...field} />
+                            <Form.Control data-testid="tax-region-create-form-code-control">
+                              <Input {...field} data-testid="tax-region-create-form-code-input" />
                             </Form.Control>
-                            <Form.ErrorMessage />
+                            <Form.ErrorMessage data-testid="tax-region-create-form-code-error" />
                           </Form.Item>
                         )
                       }}
@@ -258,14 +261,14 @@ export const TaxRegionCreateForm = ({ parentId }: TaxRegionCreateFormProps) => {
             </div>
           </div>
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="tax-region-create-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="tax-region-create-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
+            <Button size="small" type="submit" isLoading={isPending} data-testid="tax-region-create-form-save-button">
               {t("actions.save")}
             </Button>
           </div>
