@@ -1,4 +1,4 @@
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from "@medusajs/types"
 import { Button, Checkbox } from "@medusajs/ui"
 import { keepPreviousData } from "@tanstack/react-query"
 import {
@@ -50,6 +50,7 @@ type TargetFormProps = {
 function initRowSelection(state: TaxRateRuleReference[]) {
   return state.reduce((acc, reference) => {
     acc[reference.value] = true
+    
     return acc
   }, {} as RowSelectionState)
 }
@@ -956,6 +957,5 @@ const useCleanupSearchParams = () => {
     return () => {
       setSearchParams({})
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 }

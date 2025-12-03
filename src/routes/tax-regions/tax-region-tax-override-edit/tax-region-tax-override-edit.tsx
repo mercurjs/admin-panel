@@ -1,19 +1,17 @@
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from "@medusajs/types"
 import { Heading } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { useParams } from "react-router-dom"
 
-import { RouteDrawer } from "../../../components/modals"
-import { useProductTypes } from "../../../hooks/api/product-types"
-import { useProducts } from "../../../hooks/api/products"
 import { TaxRateRuleReferenceType } from "../common/constants"
 import {
   DISPLAY_OVERRIDE_ITEMS_LIMIT,
   TaxRegionTaxOverrideEditForm,
 } from "./components/tax-region-tax-override-edit-form"
-import { InitialRuleValues } from "./types"
-import { useShippingOptions, useTaxRate } from "../../../hooks/api"
-import { TaxRateRuleReference } from "../common/schemas"
+import type { InitialRuleValues } from "./types"
+import type { ExtendedAdminTaxRate } from "@custom-types/tax-rates"
+import { useProductTypes, useProducts, useShippingOptions, useTaxRate } from "@hooks/api"
+import { RouteDrawer } from "@components/modals"
 
 export const TaxRegionTaxOverrideEdit = () => {
   const { t } = useTranslation()
@@ -52,7 +50,7 @@ export const TaxRegionTaxOverrideEdit = () => {
 }
 
 const useDefaultRulesValues = (
-  taxRate?: HttpTypes.AdminTaxRate
+  taxRate?: ExtendedAdminTaxRate
 ): { initialValues: InitialRuleValues; isPending: boolean } => {
   const rules = taxRate?.rules || []
 
@@ -68,102 +66,62 @@ const useDefaultRulesValues = (
   }
 
   rules
-    .sort((a, b) => a.created_at.localeCompare(b.created_at)) // preffer newer rules for display
+    .sort((a, b) => (a.created_at && b.created_at ? a.created_at.localeCompare(b.created_at) : 0)) // prefer newer rules for display
     .forEach((rule) => {
-      const reference = rule.reference as TaxRateRuleReferenceType
-      idsByReferenceType[reference]?.push(rule.reference_id)
+      const reference = rule.reference
+      if (reference in idsByReferenceType) {
+        idsByReferenceType[reference as TaxRateRuleReferenceType]?.push(rule.reference_id)
+      }
     })
 
-  const queries = [
-    {
-      ids: idsByReferenceType[TaxRateRuleReferenceType.PRODUCT],
-      hook: useProducts,
-      key: TaxRateRuleReferenceType.PRODUCT,
-      getResult: (result: HttpTypes.AdminProductListResponse) =>
-        result.products.map((product) => ({
-          label: product.title,
-          value: product.id,
-        })),
-    },
-    // {
-    //   ids: idsByReferenceType[TaxRateRuleReferenceType.PRODUCT_COLLECTION],
-    //   hook: useCollections,
-    //   key: TaxRateRuleReferenceType.PRODUCT_COLLECTION,
-    //   getResult: (result: HttpTypes.AdminCollectionListResponse) =>
-    //     result.collections.map((collection) => ({
-    //       label: collection.title!,
-    //       value: collection.id!,
-    //     })),
-    // },
-    // {
-    //   ids: idsByReferenceType[TaxRateRuleReferenceType.PRODUCT_TAG],
-    //   hook: useProductTags,
-    //   key: TaxRateRuleReferenceType.PRODUCT_TAG,
-    //   getResult: (result: any) =>
-    //     result.tags.map((tag: any) => ({
-    //       label: tag.value,
-    //       value: tag.id,
-    //     })),
-    // },
-    {
-      ids: idsByReferenceType[TaxRateRuleReferenceType.PRODUCT_TYPE],
-      hook: useProductTypes,
-      key: TaxRateRuleReferenceType.PRODUCT_TYPE,
-      getResult: (result: HttpTypes.AdminProductTypeListResponse) =>
-        result.product_types.map((productType) => ({
-          label: productType.value,
-          value: productType.id,
-        })),
-    },
-    {
-      ids: idsByReferenceType[TaxRateRuleReferenceType.SHIPPING_OPTION],
-      hook: useShippingOptions,
-      key: TaxRateRuleReferenceType.SHIPPING_OPTION,
-      getResult: (result: HttpTypes.AdminShippingOptionListResponse) =>
-        result.shipping_options.map((shippingOption) => ({
-          label: shippingOption.name,
-          value: shippingOption.id,
-        })),
-    },
-    // {
-    //   ids: idsByReferenceType[TaxRateRuleReferenceType.CUSTOMER_GROUP],
-    //   hook: useCustomerGroups,
-    //   key: TaxRateRuleReferenceType.CUSTOMER_GROUP,
-    //   getResult: (
-    //     result: HttpTypes.PaginatedResponse<{
-    //       customer_groups: HttpTypes.AdminCustomerGroup[]
-    //     }>
-    //   ) =>
-    //     result.customer_groups.map((customerGroup) => ({
-    //       label: customerGroup.name!,
-    //       value: customerGroup.id,
-    //     })),
-    // },
-  ]
+  const productIds = idsByReferenceType[TaxRateRuleReferenceType.PRODUCT]
+  const productTypeIds = idsByReferenceType[TaxRateRuleReferenceType.PRODUCT_TYPE]
+  const shippingOptionIds = idsByReferenceType[TaxRateRuleReferenceType.SHIPPING_OPTION]
 
-  const queryResults = queries.map(({ ids, hook }) => {
-    const enabled = ids.length > 0
-
-    return {
-      result: hook(
+  const queryResults = [
+    {
+      result: useProducts(
         {
-          /**
-           * Limit fetch to 10 resources for display
-           */
           id:
-            ids.length > DISPLAY_OVERRIDE_ITEMS_LIMIT
-              ? ids.slice(0, DISPLAY_OVERRIDE_ITEMS_LIMIT)
-              : ids,
+            productIds.length > DISPLAY_OVERRIDE_ITEMS_LIMIT
+              ? productIds.slice(0, DISPLAY_OVERRIDE_ITEMS_LIMIT)
+              : productIds,
           limit: DISPLAY_OVERRIDE_ITEMS_LIMIT,
         },
-        { enabled }
+        { enabled: productIds.length > 0 }
       ),
-      enabled,
-    }
-  })
+      enabled: productIds.length > 0,
+    },
+    {
+      result: useProductTypes(
+        {
+          id:
+            productTypeIds.length > DISPLAY_OVERRIDE_ITEMS_LIMIT
+              ? productTypeIds.slice(0, DISPLAY_OVERRIDE_ITEMS_LIMIT)
+              : productTypeIds,
+          limit: DISPLAY_OVERRIDE_ITEMS_LIMIT,
+        },
+        { enabled: productTypeIds.length > 0 }
+      ),
+      enabled: productTypeIds.length > 0,
+    },
+    {
+      result: useShippingOptions(
+        {
+          id:
+            shippingOptionIds.length > DISPLAY_OVERRIDE_ITEMS_LIMIT
+              ? shippingOptionIds.slice(0, DISPLAY_OVERRIDE_ITEMS_LIMIT)
+              : shippingOptionIds,
+          limit: DISPLAY_OVERRIDE_ITEMS_LIMIT,
+        },
+        { enabled: shippingOptionIds.length > 0 }
+      ),
+      enabled: shippingOptionIds.length > 0,
+    },
+  ]
 
   if (!taxRate) {
-    return { isPending: true }
+    return { isPending: true, initialValues: { product: [], product_type: [], shipping_option: [] }}
   }
 
   const isPending = queryResults.some(
@@ -171,7 +129,7 @@ const useDefaultRulesValues = (
   )
 
   if (isPending) {
-    return { isPending }
+    return { isPending: true, initialValues: { product: [], product_type: [], shipping_option: [] }}
   }
 
   queryResults.forEach(({ result, enabled }) => {
@@ -180,32 +138,59 @@ const useDefaultRulesValues = (
     }
   })
 
-  const initialRulesValues: InitialRuleValues = queries.reduce(
-    (acc, { key, getResult }, index) => {
-      let initialValues: TaxRateRuleReference[] = []
+  const initialRulesValues: InitialRuleValues = {
+    [TaxRateRuleReferenceType.PRODUCT]: [],
+    [TaxRateRuleReferenceType.PRODUCT_TYPE]: [],
+    [TaxRateRuleReferenceType.SHIPPING_OPTION]: [],
+  }
 
-      if (queryResults[index].enabled) {
-        const fetchedEntityList = getResult(queryResults[index].result)
-
-        const entityIdMap = new Map(
-          fetchedEntityList.map((entity) => [entity.value, entity])
-        )
-
-        const initialIds = idsByReferenceType[key]
-
-        initialValues = initialIds.map((id) => ({
+  const productsResult = queryResults[0]
+  if (productsResult.enabled) {
+    // product data is available but TS can't narrow the union type
+    const result = productsResult.result as HttpTypes.AdminProductListResponse
+    if (result.products) {
+      const productMap = new Map(
+        result.products.map((product) => [product.id, product.title])
+      )
+      initialRulesValues.product = 
+        idsByReferenceType[TaxRateRuleReferenceType.PRODUCT].map((id) => ({
           value: id,
-          label: entityIdMap.get(id)?.label || "",
+          label: productMap.get(id) || "",
         }))
-      }
+    }
+  }
 
-      return {
-        ...acc,
-        [key]: initialValues,
-      }
-    },
-    {} as InitialRuleValues
-  )
+  const productTypesResult = queryResults[1]
+  if (productTypesResult.enabled) {
+    // Product type data is available but TS can't narrow the union type
+    const result = productTypesResult.result as HttpTypes.AdminProductTypeListResponse
+    if (result.product_types) {
+      const productTypeMap = new Map(
+        result.product_types.map((type) => [type.id, type.value])
+      )
+      initialRulesValues.product_type = 
+        idsByReferenceType[TaxRateRuleReferenceType.PRODUCT_TYPE].map((id) => ({
+          value: id,
+          label: productTypeMap.get(id) || "",
+        }))
+    }
+  }
+
+  const shippingOptionsResult = queryResults[2]
+  if (shippingOptionsResult.enabled) {
+    // shipping option data is available but TS can't narrow the union type
+    const result = shippingOptionsResult.result as HttpTypes.AdminShippingOptionListResponse
+    if (result.shipping_options) {
+      const shippingOptionMap = new Map(
+        result.shipping_options.map((option) => [option.id, option.name])
+      )
+      initialRulesValues.shipping_option = 
+        idsByReferenceType[TaxRateRuleReferenceType.SHIPPING_OPTION].map((id) => ({
+          value: id,
+          label: shippingOptionMap.get(id) || "",
+        }))
+    }
+  }
 
   return { initialValues: initialRulesValues, isPending: false }
 }

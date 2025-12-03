@@ -1,28 +1,31 @@
-import { FetchError } from "@medusajs/js-sdk"
-import { HttpTypes } from "@medusajs/types"
-import {
+import type { FetchError } from "@medusajs/js-sdk"
+import type { HttpTypes } from "@medusajs/types"
+import type {
   QueryKey,
   UseMutationOptions,
-  UseQueryOptions,
+  UseQueryOptions} from "@tanstack/react-query";
+import {
   useMutation,
   useQuery,
 } from "@tanstack/react-query"
-import { sdk } from "../../lib/client"
-import { queryClient } from "../../lib/query-client"
-import { queryKeysFactory } from "../../lib/query-key-factory"
+
 import { taxRegionsQueryKeys } from "./tax-regions"
+import type { ExtendedAdminTaxRateResponse } from "@custom-types/tax-rates"
+import { queryKeysFactory } from "@lib/query-key-factory";
+import { sdk } from "@lib/client";
+import { queryClient } from "@lib/query-client";
 
 const TAX_RATES_QUERY_KEY = "tax_rates" as const
 export const taxRatesQueryKeys = queryKeysFactory(TAX_RATES_QUERY_KEY)
 
 export const useTaxRate = (
   id: string,
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
   options?: Omit<
     UseQueryOptions<
-      HttpTypes.AdminTaxRateResponse,
+      ExtendedAdminTaxRateResponse,
       FetchError,
-      HttpTypes.AdminTaxRateResponse,
+      ExtendedAdminTaxRateResponse,
       QueryKey
     >,
     "queryFn" | "queryKey"
@@ -30,7 +33,7 @@ export const useTaxRate = (
 ) => {
   const { data, ...rest } = useQuery({
     queryKey: taxRatesQueryKeys.detail(id),
-    queryFn: async () => sdk.admin.taxRate.retrieve(id, query),
+    queryFn: async () => sdk.admin.taxRate.retrieve(id, query) as Promise<ExtendedAdminTaxRateResponse>,
     ...options,
   })
 
@@ -38,7 +41,7 @@ export const useTaxRate = (
 }
 
 export const useTaxRates = (
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
   options?: Omit<
     UseQueryOptions<
       HttpTypes.AdminTaxRateListResponse,

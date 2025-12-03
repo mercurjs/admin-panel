@@ -280,6 +280,7 @@ export const TaxRegionCreateTaxOverrideForm = ({
           shouldDirty: true,
         })
         setIsOpen(modalId, false)
+        
         return
       }
 
@@ -345,6 +346,7 @@ export const TaxRegionCreateTaxOverrideForm = ({
     .filter((option) => watchedEnabledRules[option.value])
     .sort((a, b) => {
       const orderArray = Array.from(displayOrder)
+
       return orderArray.indexOf(b.value) - orderArray.indexOf(a.value)
     })
 
@@ -525,13 +527,7 @@ export const TaxRegionCreateTaxOverrideForm = ({
                         <Form.Field
                           control={form.control}
                           name={ruleType.value}
-                          render={({
-                            field: {
-                              value: _value,
-                              onChange: _onChange,
-                              ...field
-                            },
-                          }) => {
+                          render={({ field }) => {
                             return (
                               <Form.Item className="space-y-0">
                                 <Form.Label className="sr-only">
@@ -637,6 +633,7 @@ export const TaxRegionCreateTaxOverrideForm = ({
                                               index={index}
                                               label={field.label}
                                               onRemove={remove}
+                                              value={field.value}
                                             />
                                           )
                                         })}
