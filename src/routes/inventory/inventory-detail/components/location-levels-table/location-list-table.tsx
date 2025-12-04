@@ -39,7 +39,7 @@ export const ItemLocationListTable = ({
   }
 
   const { table } = useDataTable({
-    data: (inventory_levels ?? []) as ExtendedLocationLevel[],
+    data: (inventory_levels ?? []) as ExtendedInventoryItemLevel[],
     columns,
     count,
     enablePagination: true,
