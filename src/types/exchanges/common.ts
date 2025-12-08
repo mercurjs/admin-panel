@@ -24,3 +24,12 @@ export interface ExtendedAdminExchangeResponse {
 export type ExtendedAdminExchangeListResponse = PaginatedResponse<{
   exchanges: ExtendedAdminExchange[];
 }>;
+export interface AdminAddExchangeOutboundItemsPayload {
+  items: {
+    variant_id: string;
+    quantity: number;
+    reason?: string;
+    description?: string;
+    internal_note?: string;
+  }[];
+}

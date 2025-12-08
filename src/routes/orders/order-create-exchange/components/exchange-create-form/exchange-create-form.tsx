@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PencilSquare } from "@medusajs/icons"
-import { AdminExchange, AdminOrder, AdminOrderPreview } from "@medusajs/types"
+import type { AdminOrder, AdminOrderPreview } from "@medusajs/types"
 import {
   Button,
   CurrencyInput,
@@ -144,17 +144,18 @@ export const ExchangeCreateForm = ({
 
           return {
             item_id: i.id,
-            variant_id: i.variant_id,
             quantity: i.detail.return_requested_quantity,
             note: inboundAction?.internal_note,
             reason_id: inboundAction?.details?.reason_id as string | undefined,
           }
         }),
-        outbound_items: outboundPreviewItems.map((i) => ({
-          item_id: i.id,
-          variant_id: i.variant_id,
-          quantity: i.detail.quantity,
-        })),
+        outbound_items: outboundPreviewItems
+          .filter((i): i is typeof i & { variant_id: string } => !!i.variant_id)
+          .map((i) => ({
+            item_id: i.id,
+            variant_id: i.variant_id,
+            quantity: i.detail.quantity,
+          })),
         inbound_option_id: inboundShippingMethod
           ? inboundShippingMethod.shipping_option_id
           : "",
