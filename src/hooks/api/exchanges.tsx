@@ -63,7 +63,7 @@ export const useExchanges = (
 export const useCreateExchange = (
   orderId: string,
   options?: UseMutationOptions<
-    HttpTypes.AdminExchangeResponse,
+    ExtendedAdminExchangeResponse,
     FetchError,
     HttpTypes.AdminCreateExchange
   >
@@ -71,7 +71,7 @@ export const useCreateExchange = (
   return useMutation({
     mutationFn: (payload: HttpTypes.AdminCreateExchange) =>
       sdk.admin.exchange.create(payload),
-    onSuccess: (data: any, variables: any, context: any) => {
+    onSuccess: (data: ExtendedAdminExchangeResponse, variables: HttpTypes.AdminCreateExchange, context: unknown) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
       })
@@ -93,11 +93,11 @@ export const useCreateExchange = (
 export const useCancelExchange = (
   id: string,
   orderId: string,
-  options?: UseMutationOptions<HttpTypes.AdminExchangeResponse, FetchError>
+  options?: UseMutationOptions<ExtendedAdminExchangeResponse, FetchError, void>
 ) => {
   return useMutation({
     mutationFn: () => sdk.admin.exchange.cancel(id),
-    onSuccess: (data: any, variables: any, context: any) => {
+    onSuccess: (data: ExtendedAdminExchangeResponse, variables: void, context: unknown) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
       })

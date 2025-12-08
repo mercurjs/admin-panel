@@ -57,7 +57,6 @@ export const ExchangeCreate = () => {
         const { exchange: createdExchange } = await createExchange({
           order_id: preview.id,
         })
-
         setActiveExchangeId(createdExchange.id)
       } catch (e) {
         toast.error(getErrorMessage(e))
