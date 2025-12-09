@@ -13,6 +13,7 @@ import { queryClient } from "@lib/query-client"
 import { queryKeysFactory } from "@lib/query-key-factory"
 import { ordersQueryKeys } from "./orders"
 import { returnsQueryKeys } from "./returns"
+import type { AdminAddClaimOutboundItemsPayload } from "@custom-types/claims"
 
 const CLAIMS_QUERY_KEY = "claims" as const
 export const claimsQueryKeys = queryKeysFactory(CLAIMS_QUERY_KEY)
@@ -374,13 +375,13 @@ export const useAddClaimOutboundItems = (
   options?: UseMutationOptions<
     HttpTypes.AdminClaimResponse,
     FetchError,
-    HttpTypes.AdminAddClaimOutboundItems
+    AdminAddClaimOutboundItemsPayload
   >
 ) => {
   return useMutation({
-    mutationFn: (payload: HttpTypes.AdminAddClaimOutboundItems) =>
-      sdk.admin.claim.addOutboundItems(id, payload),
-    onSuccess: (data: HttpTypes.AdminClaimResponse, variables: HttpTypes.AdminAddClaimOutboundItems, context: unknown) => {
+    mutationFn: (payload: AdminAddClaimOutboundItemsPayload) =>
+      sdk.admin.claim.addOutboundItems(id, payload as unknown as HttpTypes.AdminAddClaimOutboundItems),
+    onSuccess: (data: HttpTypes.AdminClaimResponse, variables: AdminAddClaimOutboundItemsPayload, context: unknown) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
       })

@@ -32,6 +32,7 @@ import { ItemPlaceholder } from "./item-placeholder"
 import { CreateClaimSchemaType } from "./schema"
 import { useOrderShippingOptions } from "../../../../../hooks/api/orders"
 import { getFormattedShippingOptionLocationName } from "../../../../../lib/shipping-options"
+import { AdminProductVariantListResponseWithInventory } from "@custom-types/product"
 
 type ClaimOutboundSectionProps = {
   order: AdminOrder
@@ -162,7 +163,7 @@ export const ClaimOutboundSection = ({
   const showOutboundItemsPlaceholder = !outboundItems.length
 
   const onItemsSelected = async () => {
-    itemsToAdd.length &&
+    if (itemsToAdd.length) {
       (await addOutboundItem(
         {
           items: itemsToAdd.map((variantId) => ({
@@ -176,6 +177,7 @@ export const ClaimOutboundSection = ({
           },
         }
       ))
+    }
 
     for (const itemToRemove of itemsToRemove) {
       const action = previewOutboundItems
@@ -202,7 +204,7 @@ export const ClaimOutboundSection = ({
         (a) => a.action === "SHIPPING_ADD" && !a.return_id
       )
 
-      return action && !!!action?.return_id
+      return action && !!action?.return_id
     })
 
     const promises = outboundShippingMethods
@@ -238,6 +240,10 @@ export const ClaimOutboundSection = ({
 
     const allItemsHaveLocation = outboundItems
       .map((i) => {
+        if (!i.variant_id) {
+          return true
+        }
+
         const item = variantItemMap.get(i.variant_id)
         if (!item?.variant_id || !item?.variant) {
           return true
@@ -267,14 +273,13 @@ export const ClaimOutboundSection = ({
 
       const variantIds = outboundItems
         .map((item) => item?.variant_id)
-        .filter(Boolean)
+        .filter((id): id is string => Boolean(id))
 
-      const variants = (
-        await sdk.admin.productVariant.list({
-          id: variantIds,
-          fields: "*inventory.location_levels",
-        })
-      ).variants
+
+      const { variants } = (await sdk.admin.productVariant.list({
+        id: variantIds,
+        fields: "*inventory.location_levels",
+      })) as AdminProductVariantListResponseWithInventory
 
       variants.forEach((variant) => {
         ret[variant.id] = variant.inventory?.[0]?.location_levels || []
@@ -303,10 +308,10 @@ export const ClaimOutboundSection = ({
             <StackedFocusModal.Header />
 
             <AddClaimOutboundItemsTable
-              selectedItems={outboundItems.map((i) => i.variant_id)}
+              selectedItems={outboundItems.map((i) => i.variant_id).filter((id): id is string => Boolean(id))}
               currencyCode={order.currency_code}
               onSelectionChange={(finalSelection) => {
-                const alreadySelected = outboundItems.map((i) => i.variant_id)
+                const alreadySelected = outboundItems.map((i) => i.variant_id).filter((id): id is string => Boolean(id))
 
                 itemsToAdd = finalSelection.filter(
                   (selection) => !alreadySelected.includes(selection)
@@ -345,11 +350,20 @@ export const ClaimOutboundSection = ({
       {showOutboundItemsPlaceholder && <ItemPlaceholder />}
 
       {outboundItems.map(
-        (item, index) =>
-          variantOutboundMap.get(item.variant_id) && (
+        (item, index) => {
+          if (!item.variant_id) {
+            return null
+          }
+          
+          const previewItem = variantOutboundMap.get(item.variant_id)
+          if (!previewItem) {
+            return null
+          }
+
+          return (
             <ClaimOutboundItem
               key={item.id}
-              previewItem={variantOutboundMap.get(item.variant_id)!}
+              previewItem={previewItem}
               currencyCode={order.currency_code}
               form={form}
               onRemove={() => {
@@ -384,6 +398,7 @@ export const ClaimOutboundSection = ({
               index={index}
             />
           )
+        }
       )}
       {!showOutboundItemsPlaceholder && (
         <div className="mt-8 flex flex-col gap-y-4">

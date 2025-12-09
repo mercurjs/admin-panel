@@ -107,18 +107,18 @@ function ClaimInboundItem({
             groups={[
               {
                 actions: [
-                  !showReturnReason && {
+                 ...(!showReturnReason ? [{
                     label: t("actions.addReason"),
                     onClick: () =>
                       form.setValue(`inbound_items.${index}.reason_id`, ""),
                     icon: <ChatBubble />,
-                  },
-                  !showNote && {
+                  }] : []),
+                  ...(!showNote? [{
                     label: t("actions.addNote"),
                     onClick: () =>
                       form.setValue(`inbound_items.${index}.note`, ""),
                     icon: <DocumentText />,
-                  },
+                  }] : []),
                   {
                     label: t("actions.remove"),
                     onClick: onRemove,
