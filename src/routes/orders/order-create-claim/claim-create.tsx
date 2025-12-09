@@ -26,10 +26,10 @@ export const ClaimCreate = () => {
   const [activeClaimId, setActiveClaimId] = useState<string>()
   const { mutateAsync: createClaim } = useCreateClaim(order.id)
 
-  const { claim } = useClaim(activeClaimId!, undefined, {
+  const { claim } = useClaim(activeClaimId ?? "", undefined, {
     enabled: !!activeClaimId,
   })
-  const { return: orderReturn } = useReturn(claim?.return_id!, undefined, {
+  const { return: orderReturn } = useReturn(claim?.return_id ?? "", undefined, {
     enabled: !!claim?.return_id,
   })
 
