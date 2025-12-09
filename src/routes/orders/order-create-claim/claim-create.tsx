@@ -23,7 +23,7 @@ export const ClaimCreate = () => {
   })
 
   const { order: preview } = useOrderPreview(id!)
-  const [activeClaimId, setActiveClaimId] = useState<string>()
+  const [activeClaimId, setActiveClaimId] = useState<string | undefined>()
   const { mutateAsync: createClaim } = useCreateClaim(order.id)
 
   const { claim } = useClaim(activeClaimId ?? "", undefined, {

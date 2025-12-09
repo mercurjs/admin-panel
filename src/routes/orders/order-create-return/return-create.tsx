@@ -26,7 +26,7 @@ export const ReturnCreate = () => {
 
   const { order: preview } = useOrderPreview(id!, undefined, {})
 
-  const [activeReturnId, setActiveReturnId] = useState()
+  const [activeReturnId, setActiveReturnId] = useState<string | undefined>()
 
   const { mutateAsync: initiateReturn } = useInitiateReturn(order.id)
 
