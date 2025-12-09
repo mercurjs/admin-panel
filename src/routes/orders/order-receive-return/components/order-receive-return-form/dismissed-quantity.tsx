@@ -2,11 +2,11 @@ import { useMemo, useState } from "react"
 import { HeartBroken } from "@medusajs/icons"
 import type { UseFormReturn } from "react-hook-form"
 import { useTranslation } from "react-i18next"
+import type { z } from "zod"
 
-import type { AdminOrderLineItem } from "@medusajs/types"
 import { Button, Input, Popover, toast } from "@medusajs/ui"
 
-import { ReceiveReturnSchema } from "./constants"
+import type { ReceiveReturnSchema } from "./constants"
 import { Form } from "../../../../../components/common/form"
 import {
   useAddDismissItems,
@@ -14,13 +14,14 @@ import {
   useUpdateDismissItem,
 } from "../../../../../hooks/api/returns"
 import { getErrorMessage } from "@utils/error-helper"
+import type { OrderLineItemWithActions } from "./order-receive-return-form"
 
 type DismissedQuantityProps = {
   returnId: string
   orderId: string
   index: number
-  item: AdminOrderLineItem
-  form: UseFormReturn<typeof ReceiveReturnSchema>
+  item: OrderLineItemWithActions
+  form: UseFormReturn<z.infer<typeof ReceiveReturnSchema>>
 }
 
 function DismissedQuantity({
@@ -57,10 +58,16 @@ function DismissedQuantity({
       (a) => a.action === "RECEIVE_DAMAGED_RETURN_ITEM"
     )
 
-    return [receivedAction?.details.quantity, dismissedAction?.details.quantity]
+    const receivedQty = receivedAction?.details?.quantity
+    const dismissedQty = dismissedAction?.details?.quantity
+
+    return [
+      typeof receivedQty === "number" ? receivedQty : undefined,
+      typeof dismissedQty === "number" ? dismissedQty : undefined,
+    ]
   }, [item])
 
-  const onDismissedQuantityChanged = async (value: number | null) => {
+  const onDismissedQuantityChanged = async (value: number | null | undefined) => {
     // TODO: if out of bounds prevent sending and notify user
 
     const action = item.actions?.find(
@@ -138,7 +145,7 @@ function DismissedQuantity({
                       min={0}
                       max={item.quantity}
                       type="number"
-                      value={value}
+                      value={value ?? ""}
                       className="bg-ui-bg-field-component text-right [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                       onChange={(e) => {
                         const value =

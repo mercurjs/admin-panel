@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ArrowRight } from "@medusajs/icons"
-import { AdminOrder, AdminReturn } from "@medusajs/types"
+import type { AdminOrder, AdminReturn, AdminOrderLineItem, AdminOrderChangeAction } from "@medusajs/types"
 import { Alert, Button, Input, Switch, Text, toast } from "@medusajs/ui"
 import { useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import * as zod from "zod"
+import type * as zod from "zod"
 
 import { Form } from "../../../../../components/common/form"
 import { Thumbnail } from "../../../../../components/common/thumbnail"
@@ -24,6 +24,10 @@ import { ReceiveReturnSchema } from "./constants"
 import DismissedQuantity from "./dismissed-quantity"
 import { getErrorMessage } from "@utils/error-helper"
 
+export type OrderLineItemWithActions = AdminOrderLineItem & {
+  actions?: AdminOrderChangeAction[]
+}
+
 type OrderAllocateItemsFormProps = {
   order: AdminOrder
   preview: AdminOrder
@@ -41,8 +45,8 @@ export function OrderReceiveReturnForm({
   /**
    * Items on the preview order that are part of the return we are receiving currently.
    */
-  const previewItems = useMemo(() => {
-    const idsMap = {}
+  const previewItems: OrderLineItemWithActions[] = useMemo(() => {
+    const idsMap: Record<string, boolean> = {}
 
     orderReturn.items.forEach((i) => (idsMap[i.item_id] = true))
 
@@ -73,7 +77,7 @@ export function OrderReceiveReturnForm({
   )
 
   const { stock_location } = useStockLocation(
-    orderReturn.location_id,
+    orderReturn.location_id ?? "",
     undefined,
     {
       enabled: !!orderReturn.location_id,
@@ -81,8 +85,10 @@ export function OrderReceiveReturnForm({
   )
 
   const itemsMap = useMemo(() => {
-    const ret = {}
+    const ret: Record<string, AdminOrderLineItem> = {}
+
     order.items.forEach((i) => (ret[i.id] = i))
+
     return ret
   }, [order.items])
 
@@ -109,14 +115,17 @@ export function OrderReceiveReturnForm({
           (a) => a.action === "RECEIVE_DAMAGED_RETURN_ITEM"
         )
 
+        const receivedQuantity = receivedAction?.details?.quantity
+        const dismissedQuantity = dismissedAction?.details?.quantity
+
         form.setValue(
           `items.${index}.quantity`,
-          receivedAction?.details.quantity,
+          typeof receivedQuantity === "number" ? receivedQuantity : undefined,
           { shouldTouch: true, shouldDirty: true }
         )
         form.setValue(
           `items.${index}.dismissed_quantity`,
-          dismissedAction?.details.quantity,
+          typeof dismissedQuantity === "number" ? dismissedQuantity : undefined,
           { shouldTouch: true, shouldDirty: true }
         )
       })
@@ -134,23 +143,26 @@ export function OrderReceiveReturnForm({
 
       toast.success(t("general.success"), {
         description: t("orders.returns.receive.toast.success"),
-        dismissLabel: t("actions.close"),
       })
     } catch (e) {
       toast.error(t("general.error"), {
         description: getErrorMessage(e),
-        dismissLabel: t("actions.close"),
       })
     }
   })
 
   const handleQuantityChange = async (
     itemId: string,
-    value: number | null,
+    value: number | null | undefined,
     index: number
   ) => {
     const item = previewItems?.find((i) => i.id === itemId)
-    const action = item?.actions?.find(
+    
+    if (!item) {
+      return
+    }
+
+    const action = item.actions?.find(
       (a) => a.action === "RECEIVE_RETURN_ITEM"
     )
 
@@ -182,7 +194,7 @@ export function OrderReceiveReturnForm({
 
     try {
       if (action) {
-        if (value === null || value === 0) {
+        if (value === null || value === 0 || value === undefined) {
           await removeReceiveItem(action.id)
 
           return
@@ -280,7 +292,7 @@ export function OrderReceiveReturnForm({
                                 min={0}
                                 max={item.quantity}
                                 type="number"
-                                value={value}
+                                value={value ?? ""}
                                 className="bg-ui-bg-field-component text-right [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                 onChange={(e) => {
                                   const value =
