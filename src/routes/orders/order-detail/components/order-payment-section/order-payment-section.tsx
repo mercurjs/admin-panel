@@ -338,7 +338,7 @@ const CreditLine = ({
             ) : (
               "-"
             )}
-            
+
           </Text>
         </div>
         <div className="hidden items-center justify-end sm:flex">

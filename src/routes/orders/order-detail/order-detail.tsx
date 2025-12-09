@@ -14,10 +14,10 @@ import { OrderCustomerSection } from "./components/order-customer-section";
 import { OrderFulfillmentSection } from "./components/order-fulfillment-section";
 import { OrderGeneralSection } from "./components/order-general-section";
 import { OrderPaymentSection } from "./components/order-payment-section";
+import { OrderRemainingOrdersGroupSection } from "./components/order-remaining-orders-group-section";
 import { OrderSummarySection } from "./components/order-summary-section";
 import { DEFAULT_FIELDS } from "./constants";
-import { orderLoader } from "./loader";
-import { OrderRemainingOrdersGroupSection } from "./components/order-remaining-orders-group-section";
+import type { orderLoader } from "./loader";
 
 export const OrderDetail = () => {
   const initialData = useLoaderData() as Awaited<
@@ -35,7 +35,7 @@ export const OrderDetail = () => {
     },
     {
       initialData,
-    }
+    },
   );
 
   // TODO: Retrieve endpoints don't have an order ability, so a JS sort until this is available
@@ -54,7 +54,7 @@ export const OrderDetail = () => {
   }
 
   const { order: orderPreview, isLoading: isPreviewLoading } = useOrderPreview(
-    id!
+    id!,
   );
 
   if (isLoading || !order || isPreviewLoading) {
