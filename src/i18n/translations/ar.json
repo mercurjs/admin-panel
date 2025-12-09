@@ -3215,49 +3215,5 @@
   },
   "commissionLines": {
     "domain": "خطوط العمولة"
-  },
-  "payoutRequests": {
-    "domain": "طلبات الدفع",
-    "general": "معلومات عامة",
-    "seller": "معلومات البائع",
-    "earnings": "أرباح التاجر",
-    "acceptedBy": "تم القبول بواسطة",
-    "proofOfTransfer": "تأكيد التحويل",
-    "viewTransferConfirmation": "عرض ملف تأكيد التحويل",
-    "status": {
-      "pending": "قيد الانتظار",
-      "approved": "معتمد",
-      "rejected": "مرفوض",
-      "paid": "مدفوع",
-      "posted": "منشور"
-    },
-    "approve": "اعتماد",
-    "reject": "رفض",
-    "rejectPrompt": "يرجى تقديم سبب الرفض:",
-    "approveSuccess": "تم اعتماد طلب الدفع بنجاح",
-    "approveError": "فشل اعتماد طلب الدفع",
-    "rejectSuccess": "تم رفض طلب الدفع",
-    "rejectError": "فشل رفض طلب الدفع",
-    "markPaidSuccess": "تم وضع علامة على طلب الدفع كمدفوع",
-    "markPaidError": "فشل وضع علامة على طلب الدفع كمدفوع",
-    "totalEarnings": "إجمالي الأرباح",
-    "totalPaidOut": "إجمالي المدفوع",
-    "acceptedAmount": "المبلغ المقبول",
-    "availableBalance": "الرصيد المتاح",
-    "pendingAmount": "المبلغ المعلق",
-    "list": {
-      "noRecordsMessage": "لم يتم العثور على طلبات دفع"
-    },
-    "markAsPaid": {
-      "invalidFileType": "نوع الملف غير صالح. يُسمح فقط بملفات PDF.",
-      "fileTooLarge": "حجم الملف يتجاوز حد 10 ميجابايت.",
-      "fileRequired": "إثبات التحويل مطلوب.",
-      "title": "وضع علامة على الدفع كمدفوع",
-      "proofOfTransfer": "إثبات التحويل (PDF)",
-      "fileHint": "قم برفع مستند تأكيد التحويل البنكي (PDF فقط، بحد أقصى 10 ميجابايت)",
-      "notePlaceholder": "أضف ملاحظة اختيارية حول هذا الدفع...",
-      "submit": "تأكيد الدفع",
-      "button": "وضع علامة كمدفوع"
-    }
   }
 }
