@@ -3100,7 +3100,6 @@
     "createdAt": "تم الإنشاء في",
     "updatedAt": "تم التحديث في",
     "revokedAt": "تم الإلغاء في",
-    "paidAt": "تم الدفع في",
     "true": "صحيح",
     "false": "خطأ",
     "giftCard": "بطاقة هدايا",
@@ -3144,8 +3143,7 @@
     "startDate": "تاريخ البدء",
     "endDate": "تاريخ الانتهاء",
     "draft": "مسودة",
-    "values": "القيم",
-    "seller": "البائع"
+    "values": "القيم"
   },
   "dateTime": {
     "years_one": "سنة",
@@ -3199,7 +3197,23 @@
     "product-update": "تحديث المنتج"
   },
   "sellers": {
-    "domain": "البائعون"
+    "domain": "البائعون",
+    "fields": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "description": "الوصف",
+      "address": "العنوان",
+      "address_line": "سطر العنوان",
+      "postal_code": "الرمز البريدي",
+      "city": "المدينة",
+      "country_code": "رمز الدولة",
+      "tax_id": "الرقم الضريبي"
+    },
+    "edit": {
+      "header": "تحرير البائع",
+      "successToast": "تم تحديث البائع {{name}} بنجاح."
+    }
   },
   "messages": {
     "domain": "الرسائل"
