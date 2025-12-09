@@ -1,26 +1,28 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { AdminPromotion } from "@medusajs/types"
-import { Button, CurrencyInput, Input, RadioGroup, Text } from "@medusajs/ui"
-import { useForm, useWatch } from "react-hook-form"
-import { Trans, useTranslation } from "react-i18next"
-import { useEffect } from "react"
-import * as zod from "zod"
+import { useEffect } from "react";
 
-import { Form } from "../../../../../components/common/form"
-import { DeprecatedPercentageInput } from "../../../../../components/inputs/percentage-input"
-import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
-import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import { useUpdatePromotion } from "../../../../../hooks/api/promotions"
+import { AdminPromotion } from "@medusajs/types";
+import { Button, CurrencyInput, Input, RadioGroup, Text } from "@medusajs/ui";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, useWatch } from "react-hook-form";
+import { Trans, useTranslation } from "react-i18next";
+import * as zod from "zod";
+
+import { Form } from "../../../../../components/common/form";
+import { SwitchBox } from "../../../../../components/common/switch-box";
+import { DeprecatedPercentageInput } from "../../../../../components/inputs/percentage-input";
+import { RouteDrawer, useRouteModal } from "../../../../../components/modals";
+import { KeyboundForm } from "../../../../../components/utilities/keybound-form";
+import { useUpdatePromotion } from "../../../../../hooks/api/promotions";
+import { useDocumentDirection } from "../../../../../hooks/use-document-direction";
 import {
   currencies,
   getCurrencySymbol,
-} from "../../../../../lib/data/currencies"
-import { SwitchBox } from "../../../../../components/common/switch-box"
-import { useDocumentDirection } from "../../../../../hooks/use-document-direction"
+} from "../../../../../lib/data/currencies";
 
 type EditPromotionFormProps = {
-  promotion: AdminPromotion
-}
+  promotion: AdminPromotion;
+};
 
 const EditPromotionSchema = zod.object({
   is_automatic: zod.string().toLowerCase(),
@@ -31,13 +33,14 @@ const EditPromotionSchema = zod.object({
   value: zod.number().min(0).or(zod.string().min(1)),
   allocation: zod.enum(["each", "across"]),
   target_type: zod.enum(["order", "shipping_methods", "items"]),
-})
+  max_quantity: zod.number().min(1).optional().nullable(),
+});
 
 export const EditPromotionDetailsForm = ({
   promotion,
 }: EditPromotionFormProps) => {
-  const { t } = useTranslation()
-  const { handleSuccess } = useRouteModal()
+  const { t } = useTranslation();
+  const { handleSuccess } = useRouteModal();
 
   const form = useForm<zod.infer<typeof EditPromotionSchema>>({
     defaultValues: {
@@ -49,25 +52,31 @@ export const EditPromotionDetailsForm = ({
       allocation: promotion.application_method!.allocation,
       value_type: promotion.application_method!.type,
       target_type: promotion.application_method!.target_type,
+      max_quantity: promotion.application_method?.max_quantity ?? 1,
     },
     resolver: zodResolver(EditPromotionSchema),
-  })
+  });
 
   const watchValueType = useWatch({
     control: form.control,
     name: "value_type",
-  })
+  });
 
-  const isFixedValueType = watchValueType === "fixed"
+  const isFixedValueType = watchValueType === "fixed";
 
-  const { mutateAsync, isPending } = useUpdatePromotion(promotion.id)
+  const watchAllocation = useWatch({
+    control: form.control,
+    name: "allocation",
+  });
+
+  const { mutateAsync, isPending } = useUpdatePromotion(promotion.id);
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    const value = parseFloat(data.value)
+    const value = parseFloat(data.value.toString());
 
     if (isNaN(value) || value < 0) {
-      form.setError("value", { message: t("promotions.form.value.invalid") })
-      return
+      form.setError("value", { message: t("promotions.form.value.invalid") });
+      return;
     }
 
     await mutateAsync(
@@ -77,37 +86,41 @@ export const EditPromotionDetailsForm = ({
         status: data.status,
         is_tax_inclusive: data.is_tax_inclusive,
         application_method: {
-          value: parseFloat(data.value),
+          value: value,
           type: data.value_type as any,
           allocation: data.allocation as any,
+          max_quantity: data.max_quantity,
         },
       },
       {
         onSuccess: () => {
-          handleSuccess()
+          handleSuccess();
         },
-      }
-    )
-  })
+      },
+    );
+  });
 
   const allocationWatchValue = useWatch({
     control: form.control,
     name: "value_type",
-  })
+  });
 
   useEffect(() => {
     if (!(allocationWatchValue === "fixed" && promotion.type === "standard")) {
-      form.setValue("is_tax_inclusive", false)
+      form.setValue("is_tax_inclusive", false);
     }
-  }, [allocationWatchValue, form, promotion])
-  const direction = useDocumentDirection()
+  }, [allocationWatchValue, form, promotion]);
+  const direction = useDocumentDirection();
   return (
     <RouteDrawer.Form form={form} data-testid="promotion-edit-details-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex flex-1 flex-col overflow-hidden"
       >
-        <RouteDrawer.Body className="flex flex-1 flex-col gap-y-8 overflow-y-auto" data-testid="promotion-edit-details-form-body">
+        <RouteDrawer.Body
+          className="flex flex-1 flex-col gap-y-8 overflow-y-auto"
+          data-testid="promotion-edit-details-form-body"
+        >
           <div className="flex flex-col gap-y-8">
             <Form.Field
               control={form.control}
@@ -115,7 +128,9 @@ export const EditPromotionDetailsForm = ({
               render={({ field }) => {
                 return (
                   <Form.Item data-testid="promotion-edit-details-form-status-item">
-                    <Form.Label data-testid="promotion-edit-details-form-status-label">{t("promotions.form.status.label")}</Form.Label>
+                    <Form.Label data-testid="promotion-edit-details-form-status-label">
+                      {t("promotions.form.status.label")}
+                    </Form.Label>
                     <Form.Control data-testid="promotion-edit-details-form-status-control">
                       <RadioGroup
                         dir={direction}
@@ -129,7 +144,7 @@ export const EditPromotionDetailsForm = ({
                           value={"draft"}
                           label={t("promotions.form.status.draft.title")}
                           description={t(
-                            "promotions.form.status.draft.description"
+                            "promotions.form.status.draft.description",
                           )}
                           data-testid="promotion-edit-details-form-status-option-draft"
                         />
@@ -138,7 +153,7 @@ export const EditPromotionDetailsForm = ({
                           value={"active"}
                           label={t("promotions.form.status.active.title")}
                           description={t(
-                            "promotions.form.status.active.description"
+                            "promotions.form.status.active.description",
                           )}
                           data-testid="promotion-edit-details-form-status-option-active"
                         />
@@ -147,7 +162,7 @@ export const EditPromotionDetailsForm = ({
                           value={"inactive"}
                           label={t("promotions.form.status.inactive.title")}
                           description={t(
-                            "promotions.form.status.inactive.description"
+                            "promotions.form.status.inactive.description",
                           )}
                           data-testid="promotion-edit-details-form-status-option-inactive"
                         />
@@ -155,7 +170,7 @@ export const EditPromotionDetailsForm = ({
                     </Form.Control>
                     <Form.ErrorMessage data-testid="promotion-edit-details-form-status-error" />
                   </Form.Item>
-                )
+                );
               }}
             />
 
@@ -165,7 +180,9 @@ export const EditPromotionDetailsForm = ({
               render={({ field }) => {
                 return (
                   <Form.Item data-testid="promotion-edit-details-form-method-item">
-                    <Form.Label data-testid="promotion-edit-details-form-method-label">{t("promotions.form.method.label")}</Form.Label>
+                    <Form.Label data-testid="promotion-edit-details-form-method-label">
+                      {t("promotions.form.method.label")}
+                    </Form.Label>
                     <Form.Control data-testid="promotion-edit-details-form-method-control">
                       <RadioGroup
                         dir={direction}
@@ -179,7 +196,7 @@ export const EditPromotionDetailsForm = ({
                           value={"false"}
                           label={t("promotions.form.method.code.title")}
                           description={t(
-                            "promotions.form.method.code.description"
+                            "promotions.form.method.code.description",
                           )}
                           data-testid="promotion-edit-details-form-method-option-code"
                         />
@@ -187,7 +204,7 @@ export const EditPromotionDetailsForm = ({
                           value={"true"}
                           label={t("promotions.form.method.automatic.title")}
                           description={t(
-                            "promotions.form.method.automatic.description"
+                            "promotions.form.method.automatic.description",
                           )}
                           data-testid="promotion-edit-details-form-method-option-automatic"
                         />
@@ -195,7 +212,7 @@ export const EditPromotionDetailsForm = ({
                     </Form.Control>
                     <Form.ErrorMessage data-testid="promotion-edit-details-form-method-error" />
                   </Form.Item>
-                )
+                );
               }}
             />
 
@@ -216,13 +233,18 @@ export const EditPromotionDetailsForm = ({
                 render={({ field }) => {
                   return (
                     <Form.Item data-testid="promotion-edit-details-form-code-item">
-                      <Form.Label data-testid="promotion-edit-details-form-code-label">{t("promotions.form.code.title")}</Form.Label>
+                      <Form.Label data-testid="promotion-edit-details-form-code-label">
+                        {t("promotions.form.code.title")}
+                      </Form.Label>
                       <Form.Control data-testid="promotion-edit-details-form-code-control">
-                        <Input {...field} data-testid="promotion-edit-details-form-code-input" />
+                        <Input
+                          {...field}
+                          data-testid="promotion-edit-details-form-code-input"
+                        />
                       </Form.Control>
                       <Form.ErrorMessage data-testid="promotion-edit-details-form-code-error" />
                     </Form.Item>
-                  )
+                  );
                 }}
               />
 
@@ -262,10 +284,10 @@ export const EditPromotionDetailsForm = ({
                             <RadioGroup.ChoiceBox
                               value={"fixed"}
                               label={t(
-                                "promotions.form.value_type.fixed.title"
+                                "promotions.form.value_type.fixed.title",
                               )}
                               description={t(
-                                "promotions.form.value_type.fixed.description"
+                                "promotions.form.value_type.fixed.description",
                               )}
                               data-testid="promotion-edit-details-form-value-type-option-fixed"
                             />
@@ -273,10 +295,10 @@ export const EditPromotionDetailsForm = ({
                             <RadioGroup.ChoiceBox
                               value={"percentage"}
                               label={t(
-                                "promotions.form.value_type.percentage.title"
+                                "promotions.form.value_type.percentage.title",
                               )}
                               description={t(
-                                "promotions.form.value_type.percentage.description"
+                                "promotions.form.value_type.percentage.description",
                               )}
                               data-testid="promotion-edit-details-form-value-type-option-percentage"
                             />
@@ -284,7 +306,7 @@ export const EditPromotionDetailsForm = ({
                         </Form.Control>
                         <Form.ErrorMessage data-testid="promotion-edit-details-form-value-type-error" />
                       </Form.Item>
-                    )
+                    );
                   }}
                 />
                 <Form.Field
@@ -292,10 +314,10 @@ export const EditPromotionDetailsForm = ({
                   name="value"
                   render={({ field: { onChange, ...field } }) => {
                     const currencyCode =
-                      promotion.application_method?.currency_code ?? "USD"
+                      promotion.application_method?.currency_code ?? "USD";
 
                     const currencyInfo =
-                      currencies[currencyCode?.toUpperCase() || "USD"]
+                      currencies[currencyCode?.toUpperCase() || "USD"];
 
                     return (
                       <Form.Item data-testid="promotion-edit-details-form-value-item">
@@ -330,8 +352,8 @@ export const EditPromotionDetailsForm = ({
                                 onChange(
                                   e.target.value === ""
                                     ? null
-                                    : parseFloat(e.target.value)
-                                )
+                                    : parseFloat(e.target.value),
+                                );
                               }}
                               data-testid="promotion-edit-details-form-value-percentage-input"
                             />
@@ -339,7 +361,7 @@ export const EditPromotionDetailsForm = ({
                         </Form.Control>
                         <Form.ErrorMessage data-testid="promotion-edit-details-form-value-error" />
                       </Form.Item>
-                    )
+                    );
                   }}
                 />
                 <Form.Field
@@ -363,7 +385,7 @@ export const EditPromotionDetailsForm = ({
                               value={"each"}
                               label={t("promotions.form.allocation.each.title")}
                               description={t(
-                                "promotions.form.allocation.each.description"
+                                "promotions.form.allocation.each.description",
                               )}
                               data-testid="promotion-edit-details-form-allocation-option-each"
                             />
@@ -371,10 +393,10 @@ export const EditPromotionDetailsForm = ({
                             <RadioGroup.ChoiceBox
                               value={"across"}
                               label={t(
-                                "promotions.form.allocation.across.title"
+                                "promotions.form.allocation.across.title",
                               )}
                               description={t(
-                                "promotions.form.allocation.across.description"
+                                "promotions.form.allocation.across.description",
                               )}
                               data-testid="promotion-edit-details-form-allocation-option-across"
                             />
@@ -382,10 +404,53 @@ export const EditPromotionDetailsForm = ({
                         </Form.Control>
                         <Form.ErrorMessage data-testid="promotion-edit-details-form-allocation-error" />
                       </Form.Item>
-                    )
+                    );
                   }}
                 />
               </>
+            )}
+
+            {((promotion.type === "standard" && watchAllocation === "each") ||
+              promotion.type === "buyget") && (
+              <Form.Field
+                control={form.control}
+                name="max_quantity"
+                render={() => {
+                  return (
+                    <Form.Item data-testid="promotion-edit-details-form-max-quantity-item">
+                      <Form.Label data-testid="promotion-edit-details-form-max-quantity-label">
+                        {t("promotions.form.max_quantity.title")}
+                      </Form.Label>
+
+                      <Form.Control data-testid="promotion-edit-details-form-max-quantity-control">
+                        <Input
+                          {...form.register("max_quantity", {
+                            valueAsNumber: true,
+                          })}
+                          type="number"
+                          min={1}
+                          placeholder="3"
+                          data-testid="promotion-edit-details-form-max-quantity-input"
+                        />
+                      </Form.Control>
+
+                      <Text
+                        size="small"
+                        leading="compact"
+                        className="text-ui-fg-subtle"
+                        data-testid="promotion-edit-details-form-max-quantity-description"
+                      >
+                        <Trans
+                          t={t}
+                          i18nKey="promotions.form.max_quantity.description"
+                          components={[<br key="break" />]}
+                        />
+                      </Text>
+                      <Form.ErrorMessage data-testid="promotion-edit-details-form-max-quantity-error" />
+                    </Form.Item>
+                  );
+                }}
+              />
             )}
           </div>
         </RouteDrawer.Body>
@@ -393,17 +458,26 @@ export const EditPromotionDetailsForm = ({
         <RouteDrawer.Footer data-testid="promotion-edit-details-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary" data-testid="promotion-edit-details-form-cancel-button">
+              <Button
+                size="small"
+                variant="secondary"
+                data-testid="promotion-edit-details-form-cancel-button"
+              >
                 {t("actions.cancel")}
               </Button>
             </RouteDrawer.Close>
 
-            <Button size="small" type="submit" isLoading={isPending} data-testid="promotion-edit-details-form-save-button">
+            <Button
+              size="small"
+              type="submit"
+              isLoading={isPending}
+              data-testid="promotion-edit-details-form-save-button"
+            >
               {t("actions.save")}
             </Button>
           </div>
         </RouteDrawer.Footer>
       </KeyboundForm>
     </RouteDrawer.Form>
-  )
-}
+  );
+};
