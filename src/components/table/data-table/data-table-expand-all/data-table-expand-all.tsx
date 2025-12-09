@@ -16,6 +16,7 @@ export const DataTableExpandAll = ({
 
   return (
     <Tooltip
+      side="bottom"
       content={
         isAllExpanded ? t("general.collapseAll") : t("general.expandAll")
       }
