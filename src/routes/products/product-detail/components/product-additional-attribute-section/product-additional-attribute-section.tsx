@@ -1,33 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { InformationCircleSolid, PencilSquare } from "@medusajs/icons";
-import {
-  Button,
-  Container,
-  Heading,
-  Label,
-  Table,
-  Tooltip,
-  toast,
-} from "@medusajs/ui";
+import { InformationCircleSolid, PencilSquare } from '@medusajs/icons';
+import { Button, Container, Heading, Label, Table, Tooltip, toast } from '@medusajs/ui';
 
-import { FormProvider, useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { FormProvider, useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
 
-import { ActionMenu } from "../../../../../components/common/action-menu";
-import { RouteDrawer } from "../../../../../components/modals";
-import {
-  useProduct,
-  useProductAttributes,
-  useUpdateProduct,
-} from "../../../../../hooks/api";
-import { FormComponents } from "./components/form-components";
+import { ActionMenu } from '@components/common/action-menu';
+import { RouteDrawer } from '@components/modals';
+import { useProduct, useProductAttributes, useUpdateProduct } from '@hooks/api';
+import { FormComponents } from '@routes/products/product-detail/components/product-additional-attribute-section/components/form-components';
 
 export const ProductAdditionalAttributeSection = () => {
   const { id } = useParams();
   const [open, setOpen] = useState(false);
   const { product, isLoading: isProductLoading } = useProduct(id!, {
-    fields: "attribute_values.*,attribute_values.attribute.*",
+    fields: 'attribute_values.*,attribute_values.attribute.*'
   });
 
   const { data, isLoading } = useProductAttributes(id!);
@@ -37,56 +25,52 @@ export const ProductAdditionalAttributeSection = () => {
   const { mutate: updateProduct } = useUpdateProduct(id!);
 
   const form = useForm<any>({
-    defaultValues: {},
+    defaultValues: {}
   });
 
   // Reset form when product data is loaded
   useEffect(() => {
     if (product?.attribute_values) {
-      product.attribute_values.forEach((curr: any) => {
-        form.setValue(curr.attribute_id, curr.value);
-      });
+      product.attribute_values
+        .filter((curr: any) => curr && curr.attribute_id)
+        .forEach((curr: any) => {
+          form.setValue(curr.attribute_id, curr.value);
+        });
     }
   }, [product?.attribute_values, form]);
 
   const onSubmit = (data: any) => {
-    const formattedData = Object.keys(data).map((key) => {
-      const attribute = attributes.find(
-        (a: any) => a.id === key && a.ui_component === "select",
-      );
-      const value = attribute?.possible_values?.find(
-        (pv: any) => pv.id === data[key],
-      )?.value;
+    const formattedData = Object.keys(data).map(key => {
+      const attribute = attributes.find((a: any) => a.id === key && a.ui_component === 'select');
+      const value = attribute?.possible_values?.find((pv: any) => pv.id === data[key])?.value;
 
       return (
         value && {
-          [key]: value,
+          [key]: value
         }
       );
     });
     const payload = {
       ...data,
-      ...Object.assign({}, ...formattedData.filter(Boolean)),
+      ...Object.assign({}, ...formattedData.filter(Boolean))
     };
 
-    const values = Object.keys(payload).reduce(
-      (acc: Array<Record<string, string>>, key) => {
-        acc.push({ attribute_id: key, value: payload[key] });
-        return acc;
-      },
-      [],
-    );
+    const values = Object.keys(payload).reduce((acc: Array<Record<string, string>>, key) => {
+      acc.push({ attribute_id: key, value: payload[key] });
+
+      return acc;
+    }, []);
 
     updateProduct(
       {
-        additional_data: { values },
+        additional_data: { values }
       },
       {
         onSuccess: () => {
-          toast.success("Product updated successfully");
+          toast.success('Product updated successfully');
           setOpen(false);
-        },
-      },
+        }
+      }
     );
   };
 
@@ -114,12 +98,12 @@ export const ProductAdditionalAttributeSection = () => {
                 {
                   actions: [
                     {
-                      label: "Edit",
+                      label: 'Edit',
                       onClick: () => setOpen(true),
-                      icon: <PencilSquare />,
-                    },
-                  ],
-                },
+                      icon: <PencilSquare />
+                    }
+                  ]
+                }
               ]}
               data-testid="product-additional-attributes-action-menu"
             />
@@ -131,23 +115,25 @@ export const ProductAdditionalAttributeSection = () => {
           >
             <Table data-testid="product-additional-attributes-table">
               <Table.Body data-testid="product-additional-attributes-table-body">
-                {product?.attribute_values?.map((attribute: any) => (
-                  <Table.Row
-                    key={attribute?.id}
-                    data-testid={`product-additional-attribute-row-${attribute?.id}`}
-                  >
-                    <Table.Cell
-                      data-testid={`product-additional-attribute-name-cell-${attribute?.id}`}
+                {product?.attribute_values
+                  ?.filter((attribute: any) => attribute && attribute.attribute_id)
+                  .map((attribute: any) => (
+                    <Table.Row
+                      key={attribute?.id}
+                      data-testid={`product-additional-attribute-row-${attribute?.id}`}
                     >
-                      {attribute?.attribute?.name}
-                    </Table.Cell>
-                    <Table.Cell
-                      data-testid={`product-additional-attribute-value-cell-${attribute?.id}`}
-                    >
-                      {attribute?.value}
-                    </Table.Cell>
-                  </Table.Row>
-                ))}
+                      <Table.Cell
+                        data-testid={`product-additional-attribute-name-cell-${attribute?.id}`}
+                      >
+                        {attribute?.attribute?.name}
+                      </Table.Cell>
+                      <Table.Cell
+                        data-testid={`product-additional-attribute-value-cell-${attribute?.id}`}
+                      >
+                        {attribute?.value}
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
               </Table.Body>
             </Table>
           </div>
@@ -194,9 +180,7 @@ export const ProductAdditionalAttributeSection = () => {
                         </Tooltip>
                       )}
                     </Label>
-                    <div
-                      data-testid={`product-additional-attribute-input-${a.id}`}
-                    >
+                    <div data-testid={`product-additional-attribute-input-${a.id}`}>
                       <FormComponents
                         attribute={a}
                         field={{
@@ -205,7 +189,7 @@ export const ProductAdditionalAttributeSection = () => {
                           defaultValue: form.getValues(a.id),
                           onChange: (e: any) => {
                             form.setValue(a.id, e.target.value);
-                          },
+                          }
                         }}
                         data-testid={`product-additional-attribute-input-${a.id}-component`}
                       />

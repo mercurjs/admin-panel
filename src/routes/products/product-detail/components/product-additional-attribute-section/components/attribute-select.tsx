@@ -1,27 +1,27 @@
-import { Select } from "@medusajs/ui";
+import { Select } from '@medusajs/ui';
 
 export const AttributeSelect = ({
   values,
   field,
-  "data-testid": dataTestId,
+  'data-testid': dataTestId
 }: {
   values: any[];
   field: any;
-  "data-testid"?: string;
+  'data-testid'?: string;
 }) => {
   const handleChange = (value: string) => {
     field.onChange({
       target: {
         name: field.name,
-        value: value,
-      },
+        value: value
+      }
     });
   };
 
   return (
     <div data-testid={dataTestId ? `${dataTestId}-wrapper` : undefined}>
       <Select
-        onValueChange={(value) => handleChange(value)}
+        onValueChange={value => handleChange(value)}
         value={field.value}
         data-testid={dataTestId}
       >
@@ -34,20 +34,18 @@ export const AttributeSelect = ({
             data-testid={dataTestId ? `${dataTestId}-value` : undefined}
           />
         </Select.Trigger>
-        <Select.Content
-          data-testid={dataTestId ? `${dataTestId}-content` : undefined}
-        >
-          {values?.map(({ id, attribute_id, value }) => (
-            <Select.Item
-              key={`select-option-${attribute_id}-${id}`}
-              value={value}
-              data-testid={
-                dataTestId ? `${dataTestId}-option-${id}` : undefined
-              }
-            >
-              {value}
-            </Select.Item>
-          ))}
+        <Select.Content data-testid={dataTestId ? `${dataTestId}-content` : undefined}>
+          {values
+            ?.filter(v => v && v.attribute_id)
+            .map(({ id, attribute_id, value }) => (
+              <Select.Item
+                key={`select-option-${attribute_id}-${id}`}
+                value={value}
+                data-testid={dataTestId ? `${dataTestId}-option-${id}` : undefined}
+              >
+                {value}
+              </Select.Item>
+            ))}
         </Select.Content>
       </Select>
     </div>
