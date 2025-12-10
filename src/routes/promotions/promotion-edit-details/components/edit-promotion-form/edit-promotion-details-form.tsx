@@ -69,6 +69,10 @@ export const EditPromotionDetailsForm = ({
     name: "allocation",
   });
 
+  const shouldShowMaxQuantity =
+    (promotion.type === "standard" && watchAllocation === "each") ||
+    promotion.type === "buyget";
+
   const { mutateAsync, isPending } = useUpdatePromotion(promotion.id);
 
   const handleSubmit = form.handleSubmit(async (data) => {
@@ -410,8 +414,7 @@ export const EditPromotionDetailsForm = ({
               </>
             )}
 
-            {((promotion.type === "standard" && watchAllocation === "each") ||
-              promotion.type === "buyget") && (
+            {shouldShowMaxQuantity && (
               <Form.Field
                 control={form.control}
                 name="max_quantity"
