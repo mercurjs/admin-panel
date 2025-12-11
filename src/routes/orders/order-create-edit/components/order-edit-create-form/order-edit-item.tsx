@@ -103,27 +103,6 @@ function OrderEditItem({ item, currencyCode, orderId }: OrderEditItemProps) {
     }
   }
 
-  const onDuplicate = async () => {
-    if (!item.variant_id) {
-      toast.error(t("orders.edits.duplicateItemErrorToast"))
-      
-      return
-    }
-
-    try {
-      await addItems({
-        items: [
-          {
-            variant_id: item.variant_id,
-            quantity: item.quantity,
-          },
-        ],
-      })
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "An error occurred")
-    }
-  }
-
   return (
     <div
       key={item.quantity}
@@ -203,15 +182,6 @@ function OrderEditItem({ item, currencyCode, orderId }: OrderEditItemProps) {
 
           <ActionMenu
             groups={[
-              {
-                actions: [
-                  {
-                    label: t("actions.duplicate"),
-                    onClick: onDuplicate,
-                    icon: <DocumentSeries />,
-                  },
-                ],
-              },
               {
                 actions: [
                   !isItemRemoved
