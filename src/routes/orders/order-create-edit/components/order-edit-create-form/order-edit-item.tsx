@@ -167,6 +167,8 @@ function OrderEditItem({ item, currencyCode, orderId }: OrderEditItemProps) {
 
                 if (payload) {
                   onUpdate(payload)
+                } else if (payload === 0) {
+                  onRemove()
                 }
               }}
               data-testid={`order-edit-item-${item.id}-quantity-input`}
