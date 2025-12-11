@@ -1899,6 +1899,10 @@
         "across": {
           "title": "Sur tous les articles",
           "description": "Applique la valeur sur tous les articles"
+        },
+        "once": {
+          "title": "Une fois",
+          "description": "Limiter la remise à la quantité maximale"
         }
       },
       "code": {

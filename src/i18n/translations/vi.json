@@ -2124,6 +2124,10 @@
         "across": {
           "title": "Toàn bộ",
           "description": "Áp dụng giá trị cho tất cả mục hàng"
+        },
+        "once": {
+          "title": "Một lần",
+          "description": "Giới hạn giảm giá tới số lượng tối đa"
         }
       },
       "code": {

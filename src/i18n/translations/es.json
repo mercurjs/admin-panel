@@ -2162,6 +2162,10 @@
         "across": {
           "title": "A través de",
           "description": "Aplica el valor a través de los artículos"
+        },
+        "once": {
+          "title": "Una vez",
+          "description": "Limitar el descuento a la cantidad máxima"
         }
       },
       "code": {

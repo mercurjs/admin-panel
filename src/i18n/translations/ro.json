@@ -2021,6 +2021,10 @@
         "across": {
           "title": "Peste tot",
           "description": "Aplică valoarea articolelor"
+        },
+        "once": {
+          "title": "O dată",
+          "description": "Limitează discountul la cantitatea maximă"
         }
       },
       "code": {

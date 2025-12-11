@@ -2093,6 +2093,10 @@
                 "across": {
                     "title": "Di Seluruh",
                     "description": "Terapkan nilai di seluruh item"
+                },
+                "once": {
+                    "title": "Sekali",
+                    "description": "Batasi diskon hingga kuantitas maksimum"
                 }
             },
             "code": {

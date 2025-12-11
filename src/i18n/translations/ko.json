@@ -2095,6 +2095,10 @@
         "across": {
           "title": "전체",
           "description": "항목 전체에 값 적용"
+        },
+        "once": {
+          "title": "한 번",
+          "description": "할인을 최대 수량까지 제한"
         }
       },
       "code": {

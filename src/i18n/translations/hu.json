@@ -2080,6 +2080,10 @@
         "across": {
           "title": "Keresztül",
           "description": "Értéket alkalmaz a tételeken keresztül"
+        },
+        "once": {
+          "title": "Egyszer",
+          "description": "Korlátozza a kedvezményt a max mennyiségre"
         }
       },
       "code": {

@@ -2124,6 +2124,10 @@
           "across": {
             "title": "Napříč",
             "description": "Aplikuje hodnotu napříč položkami"
+          },
+          "once": {
+            "title": "Jednou",
+            "description": "Omezit slevu na max. množství"
           }
         },
         "code": {

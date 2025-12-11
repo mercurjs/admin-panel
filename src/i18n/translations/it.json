@@ -1910,6 +1910,10 @@
         "across": {
           "title": "Insieme",
           "description": "Applica valore su articoli"
+        },
+        "once": {
+          "title": "Una volta",
+          "description": "Limita lo sconto alla quantità massima"
         }
       },
       "code": {

@@ -2028,6 +2028,10 @@
         "across": {
           "title": "Genel",
           "description": "Değeri ürünler arasında uygular"
+        },
+        "once": {
+          "title": "Bir kez",
+          "description": "İndirimi azami miktarla sınırla"
         }
       },
       "code": {

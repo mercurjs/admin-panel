@@ -2200,6 +2200,10 @@
         "across": {
           "title": "Przez",
           "description": "Stosuje wartość do wszystkich elementów"
+        },
+        "once": {
+          "title": "Raz",
+          "description": "Ogranicz rabat do maksymalnej ilości"
         }
       },
       "code": {

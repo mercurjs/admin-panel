@@ -1923,6 +1923,10 @@
         "across": {
           "title": "全体",
           "description": "アイテム全体に値を適用します。"
+        },
+        "once": {
+          "title": "1回",
+          "description": "割引を最大数量までに制限"
         }
       },
       "code": {

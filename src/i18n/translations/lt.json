@@ -2082,6 +2082,10 @@
         "across": {
           "title": "Visoms",
           "description": "Taikoma visoms prekėms"
+        },
+        "once": {
+          "title": "Kartą",
+          "description": "Riboti nuolaidą iki maks. kiekio"
         }
       },
       "code": {

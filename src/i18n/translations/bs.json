@@ -2092,6 +2092,10 @@
         "across": {
           "title": "Na sve",
           "description": "Primjenjuje vrijednost na sve proizvode"
+        },
+        "once": {
+          "title": "Jednom",
+          "description": "Ograniči popust na maksimalnu količinu"
         }
       },
       "code": {
