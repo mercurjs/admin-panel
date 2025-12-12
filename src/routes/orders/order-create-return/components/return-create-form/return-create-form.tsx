@@ -409,6 +409,8 @@ export const ReturnCreateForm = ({
     <RouteFocusModal.Form
       form={form}
       onClose={(isSubmitSuccessful) => {
+        if(isSubmitSuccessful === undefined) return
+
         if (!isSubmitSuccessful) {
           cancelReturnRequest()
         }
