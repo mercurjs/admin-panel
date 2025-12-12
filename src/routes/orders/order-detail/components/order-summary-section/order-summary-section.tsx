@@ -48,7 +48,11 @@ import { useOrderPreview } from "../../../../../hooks/api/orders"
 import { useMarkPaymentCollectionAsPaid } from "../../../../../hooks/api/payment-collections"
 import { useReservationItems } from "../../../../../hooks/api/reservations"
 import { useReturns } from "../../../../../hooks/api/returns"
+import { ordersQueryKeys } from "../../../../../hooks/api/orders"
+import { returnsQueryKeys } from "../../../../../hooks/api/returns"
 import { useDate } from "../../../../../hooks/use-date"
+import { sdk } from "../../../../../lib/client"
+import { queryClient } from "../../../../../lib/query-client"
 import { getTotalCreditLines } from "../../../../../lib/credit-line"
 import { formatCurrency } from "../../../../../lib/format-currency"
 import { getReservationsLimitCount } from "../../../../../lib/orders"
@@ -99,6 +103,51 @@ export const OrderSummarySection = ({
   )
 
   const showReturns = !!receivableReturns.length
+
+  const handleCancelReturn = async (returnId: string) => {
+    if (!returnId) {
+      return
+    }
+
+    const res = await prompt({
+      title: t("orders.returns.cancel.title"),
+      description: t("orders.returns.cancel.description"),
+      confirmText: t("actions.confirm"),
+      cancelText: t("actions.cancel"),
+      variant: "confirmation",
+    })
+
+    if (!res) {
+      return
+    }
+
+    try {
+      await sdk.client.fetch(`/admin/returns/${returnId}/cancel`, {
+        method: "POST",
+      })
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.details(),
+      })
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.preview(order.id),
+        refetchType: "all",
+      })
+
+      queryClient.invalidateQueries({
+        queryKey: returnsQueryKeys.details(),
+      })
+
+      queryClient.invalidateQueries({
+        queryKey: returnsQueryKeys.lists(),
+      })
+
+      toast.success(t("orders.returns.toast.canceledSuccessfully"))
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
 
   /**
    * Show Allocation button only if there are unfulfilled items that don't have reservations
@@ -197,50 +246,93 @@ export const OrderSummarySection = ({
 
       {(showAllocateButton || showReturns || showPayment || showRefund) && (
         <div className="bg-ui-bg-subtle flex items-center justify-end gap-x-2 rounded-b-xl px-4 py-4">
-          {showReturns &&
-            (receivableReturns.length === 1 ? (
-              <Button asChild variant="secondary" size="small">
-                <Link
-                  to={`/orders/${order.id}/returns/${receivableReturns[0].id}/receive`}
-                >
-                  {t("orders.returns.receive.action")}
-                </Link>
-              </Button>
-            ) : (
-              <ActionMenu
-                groups={[
-                  {
-                    actions: receivableReturns.map((r) => {
-                      let id = r.id
-                      let returnType = "Return"
-
-                      if (r.exchange_id) {
-                        id = r.exchange_id
-                        returnType = "Exchange"
-                      }
-
-                      if (r.claim_id) {
-                        id = r.claim_id
-                        returnType = "Claim"
-                      }
-
-                      return {
-                        label: t("orders.returns.receive.receiveItems", {
-                          id: `#${id.slice(-7)}`,
-                          returnType,
-                        }),
-                        icon: <ArrowLongRight />,
-                        to: `/orders/${order.id}/returns/${r.id}/receive`,
-                      }
-                    }),
-                  },
-                ]}
-              >
-                <Button variant="secondary" size="small">
-                  {t("orders.returns.receive.action")}
+          {showReturns && (
+            <>
+              {receivableReturns.length === 1 ? (
+                <Button asChild variant="secondary" size="small">
+                  <Link
+                    to={`/orders/${order.id}/returns/${receivableReturns[0].id}/receive`}
+                  >
+                    {t("orders.returns.receive.action")}
+                  </Link>
                 </Button>
-              </ActionMenu>
-            ))}
+              ) : (
+                <ActionMenu
+                  groups={[
+                    {
+                      actions: receivableReturns.map((r) => {
+                        let id = r.id
+                        let returnType = "Return"
+
+                        if (r.exchange_id) {
+                          id = r.exchange_id
+                          returnType = "Exchange"
+                        }
+
+                        if (r.claim_id) {
+                          id = r.claim_id
+                          returnType = "Claim"
+                        }
+
+                        return {
+                          label: t("orders.returns.receive.receiveItems", {
+                            id: `#${id.slice(-7)}`,
+                            returnType,
+                          }),
+                          icon: <ArrowLongRight />,
+                          to: `/orders/${order.id}/returns/${r.id}/receive`,
+                        }
+                      }),
+                    },
+                  ]}
+                >
+                  <Button variant="secondary" size="small">
+                    {t("orders.returns.receive.action")}
+                  </Button>
+                </ActionMenu>
+              )}
+              {receivableReturns.length === 1 ? (
+                <Button
+                  variant="secondary"
+                  size="small"
+                  onClick={() => handleCancelReturn(receivableReturns[0].id)}
+                >
+                  {t("actions.cancel")}
+                </Button>
+              ) : (
+                <ActionMenu
+                  groups={[
+                    {
+                      actions: receivableReturns.map((r) => {
+                        let id = r.id
+                        let returnType = "Return"
+
+                        if (r.exchange_id) {
+                          id = r.exchange_id
+                          returnType = "Exchange"
+                        }
+
+                        if (r.claim_id) {
+                          id = r.claim_id
+                          returnType = "Claim"
+                        }
+
+                        return {
+                          label: `${returnType} #${id.slice(-7)}`,
+                          icon: <ArrowLongRight />,
+                          onClick: () => handleCancelReturn(r.id),
+                        }
+                      }),
+                    },
+                  ]}
+                >
+                  <Button variant="secondary" size="small">
+                    {t("actions.cancel")}
+                  </Button>
+                </ActionMenu>
+              )}
+            </>
+          )}
 
           {showAllocateButton && (
             <Button asChild variant="secondary" size="small">
@@ -1080,9 +1172,9 @@ const ReturnBreakdown = ({
           key={item.id}
           className="txt-compact-small-plus text-ui-fg-subtle bg-ui-bg-subtle flex flex-row justify-between gap-y-2 border-t-2 border-dotted px-6 py-4"
         >
-          <div className="flex items-center gap-2">
-            <ArrowDownRightMini className="text-ui-fg-muted" />
-            <Text size="small">
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <ArrowDownRightMini className="text-ui-fg-muted shrink-0" />
+            <Text size="small" className="min-w-0 truncate">
               {t(
                 `orders.returns.${
                   isRequested ? "returnRequestedInfo" : "returnReceivedInfo"
@@ -1096,14 +1188,14 @@ const ReturnBreakdown = ({
 
             {item?.note && (
               <Tooltip content={item.note}>
-                <DocumentText className="text-ui-tag-neutral-icon ml-1 inline" />
+                <DocumentText className="text-ui-tag-neutral-icon ml-1 inline shrink-0" />
               </Tooltip>
             )}
 
             {item?.reason && (
               <Badge
                 size="2xsmall"
-                className="cursor-default select-none capitalize"
+                className="cursor-default select-none shrink-0 capitalize"
                 rounded="full"
               >
                 {item?.reason?.label}
