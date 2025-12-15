@@ -88,7 +88,7 @@ function ClaimOutboundItem({
               }}
             />
             <Text className="txt-small text-ui-fg-subtle">
-              {t("fields.qty")}
+              / {previewItem.quantity} {t("fields.qty")}
             </Text>
           </div>
 

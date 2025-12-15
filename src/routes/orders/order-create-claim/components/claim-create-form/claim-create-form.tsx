@@ -598,9 +598,9 @@ export const ClaimCreateForm = ({
 
               <StackedFocusModal id="inbound-items">
                 <StackedFocusModal.Trigger asChild>
-                  <a className="focus-visible:shadow-borders-focus transition-fg txt-compact-small-plus cursor-pointer text-blue-500 outline-none hover:text-blue-400">
+                  <Button variant="secondary" size="small">
                     {t("actions.addItems")}
-                  </a>
+                  </Button>
                 </StackedFocusModal.Trigger>
                 <StackedFocusModal.Content>
                   <StackedFocusModal.Header />
@@ -650,7 +650,7 @@ export const ClaimCreateForm = ({
                 </StackedFocusModal.Content>
               </StackedFocusModal>
             </div>
-            {showInboundItemsPlaceholder && <ItemPlaceholder />}
+            {showInboundItemsPlaceholder && <ItemPlaceholder type="inbound" />}
             {inboundItems.map(
               (item, index) =>
                 previewItemsMap.get(item.item_id) &&
@@ -813,7 +813,7 @@ export const ClaimCreateForm = ({
             />
 
             {/* TOTALS SECTION*/}
-            <div className="mt-8 border-y border-dotted py-4">
+            <div className="mt-8 border-y py-4">
               <div className="mb-2 flex items-center justify-between">
                 <span className="txt-small text-ui-fg-subtle">
                   {t("orders.returns.inboundTotal")}
@@ -864,12 +864,12 @@ export const ClaimCreateForm = ({
                     <IconButton
                       onClick={() => setIsShippingInboundPriceEdit(true)}
                       variant="transparent"
-                      className="text-ui-fg-muted"
+                      className="text-ui-fg-muted h-5 flex justify-center items-center"
                       disabled={
                         showInboundItemsPlaceholder || !inboundShippingOptionId
                       }
                     >
-                      <PencilSquare />
+                      <PencilSquare className="h-4 w-4" />
                     </IconButton>
                   )}
 
@@ -939,13 +939,13 @@ export const ClaimCreateForm = ({
                     <IconButton
                       onClick={() => setIsShippingOutboundPriceEdit(true)}
                       variant="transparent"
-                      className="text-ui-fg-muted"
+                      className="text-ui-fg-muted h-5 flex justify-center items-center"
                       disabled={
                         showOutboundItemsPlaceholder ||
                         !outboundShippingOptionId
                       }
                     >
-                      <PencilSquare />
+                      <PencilSquare className="h-4 w-4" />
                     </IconButton>
                   )}
 
@@ -1005,7 +1005,7 @@ export const ClaimCreateForm = ({
                 </span>
               </div>
 
-              <div className="mt-4 flex items-center justify-between border-t border-dotted pt-4">
+              <div className="mt-4 flex items-center justify-between">
                 <span className="txt-small font-medium">
                   {t("orders.claims.refundAmount")}
                 </span>
