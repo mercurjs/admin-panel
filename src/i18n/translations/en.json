@@ -1245,7 +1245,7 @@
     },
     "claims": {
       "create": "Create Claim",
-      "confirm": "Confirm Claim",
+      "confirm": "Confirm",
       "confirmText": "You are about to confirm a Claim. This action cannot be undone.",
       "manage": "Manage Claim",
       "outbound": "Outbound",
@@ -1267,7 +1267,7 @@
         }
       },
       "cancel": {
-        "title": "Cancel Claim",
+        "title": "Cancel",
         "description": "Are you sure you want to cancel the claim?"
       },
       "tooltips": {
