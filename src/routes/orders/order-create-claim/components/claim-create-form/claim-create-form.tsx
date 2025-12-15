@@ -751,6 +751,7 @@ export const ClaimCreateForm = ({
                               )}
                             />
                           </Form.Control>
+                          <Form.ErrorMessage />
                         </Form.Item>
                       )
                     }}
