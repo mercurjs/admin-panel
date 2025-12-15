@@ -1264,6 +1264,9 @@
       "outboundTotal": "Outbound total",
       "outboundShipping": "Outbound shipping",
       "outboundShippingHint": "Choose which method you want to use.",
+      "noAddedItems": "No added items",
+      "noAddedItemsHintInbound": "Add at least one item from the order to create the claim.",
+      "noAddedItemsHintOutbound": "You can optionally add items you want to send as replacements",
       "refundAmount": "Estimated difference",
       "activeChangeError": "There is an active order change on this order. Please finish or discard the previous change.",
       "actions": {
