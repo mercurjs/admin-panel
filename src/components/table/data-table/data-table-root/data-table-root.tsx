@@ -1,24 +1,11 @@
-import {
-  ComponentPropsWithoutRef,
-  Fragment,
-  UIEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ComponentPropsWithoutRef, Fragment, UIEvent, useEffect, useRef, useState } from 'react';
 
-import { CommandBar, Table, clx } from "@medusajs/ui";
+import { clx, CommandBar, Table } from '@medusajs/ui';
+import { ColumnDef, flexRender, Table as ReactTable, Row } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-import {
-  ColumnDef,
-  Table as ReactTable,
-  Row,
-  flexRender,
-} from "@tanstack/react-table";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-
-import { NoResults } from "../../../common/empty-table-content";
+import { NoResults } from '../../../common/empty-table-content';
 
 type BulkCommand = {
   label: string;
@@ -62,7 +49,7 @@ export interface DataTableRootProps<TData> {
   /**
    * The layout of the table
    */
-  layout?: "fill" | "fit";
+  layout?: 'fill' | 'fit';
 }
 
 /**
@@ -88,15 +75,15 @@ export const DataTableRoot = <TData,>({
   count = 0,
   noResults = false,
   noHeader = false,
-  layout = "fit",
+  layout = 'fit'
 }: DataTableRootProps<TData>) => {
   const { t } = useTranslation();
   const [showStickyBorder, setShowStickyBorder] = useState(false);
 
   const scrollableRef = useRef<HTMLDivElement>(null);
 
-  const hasSelect = columns.find((c) => c.id === "select");
-  const hasActions = columns.find((c) => c.id === "actions");
+  const hasSelect = columns.find(c => c.id === 'select');
+  const hasActions = columns.find(c => c.id === 'actions');
   const hasCommandBar = commands && commands.length > 0;
 
   const rowSelection = table.getState().rowSelection;
@@ -115,7 +102,7 @@ export const DataTableRoot = <TData,>({
     }
   };
 
-  const handleAction = async (action: BulkCommand["action"]) => {
+  const handleAction = async (action: BulkCommand['action']) => {
     await action(rowSelection).then(() => {
       table.resetRowSelection();
     });
@@ -127,42 +114,39 @@ export const DataTableRoot = <TData,>({
 
   return (
     <div
-      className={clx("flex w-full flex-col overflow-hidden", {
-        "flex flex-1 flex-col": layout === "fill",
+      className={clx('flex w-full flex-col overflow-hidden', {
+        'flex flex-1 flex-col': layout === 'fill'
       })}
     >
       <div
         ref={scrollableRef}
         onScroll={handleHorizontalScroll}
-        className={clx("w-full", {
-          "min-h-0 flex-grow overflow-auto": layout === "fill",
-          "overflow-x-auto": layout === "fit",
+        className={clx('w-full', {
+          'min-h-0 flex-grow overflow-auto': layout === 'fill',
+          'overflow-x-auto': layout === 'fit'
         })}
       >
         {!noResults ? (
           <Table className="relative w-full">
             {!noHeader && (
               <Table.Header className="border-t-0">
-                {table.getHeaderGroups().map((headerGroup) => {
+                {table.getHeaderGroups().map(headerGroup => {
                   return (
                     <Table.Row
                       key={headerGroup.id}
                       className={clx({
-                        "relative border-b-0 [&_th:last-of-type]:w-[1%] [&_th:last-of-type]:whitespace-nowrap":
+                        'relative border-b-0 [&_th:last-of-type]:w-[1%] [&_th:last-of-type]:whitespace-nowrap':
                           hasActions,
-                        "[&_th:first-of-type]:w-[1%] [&_th:first-of-type]:whitespace-nowrap":
-                          hasSelect,
+                        '[&_th:first-of-type]:w-[1%] [&_th:first-of-type]:whitespace-nowrap':
+                          hasSelect
                       })}
                     >
                       {headerGroup.headers.map((header, index) => {
-                        const isActionHeader = header.id === "actions";
-                        const isSelectHeader = header.id === "select";
-                        const isSpecialHeader =
-                          isActionHeader || isSelectHeader;
+                        const isActionHeader = header.id === 'actions';
+                        const isSelectHeader = header.id === 'select';
+                        const isSpecialHeader = isActionHeader || isSelectHeader;
 
-                        const firstHeader = headerGroup.headers.findIndex(
-                          (h) => h.id !== "select",
-                        );
+                        const firstHeader = headerGroup.headers.findIndex(h => h.id !== 'select');
                         const isFirstHeader =
                           firstHeader !== -1
                             ? header.id === headerGroup.headers[firstHeader].id
@@ -176,25 +160,17 @@ export const DataTableRoot = <TData,>({
                             key={header.id}
                             data-testid={`data-table-header-${header.id}`}
                             style={{
-                              width: !isSpecialHeader
-                                ? `${colWidth}%`
-                                : undefined,
+                              width: !isSpecialHeader ? `${colWidth}%` : undefined
                             }}
                             className={clx({
                               "sticky left-0 bg-ui-bg-subtle after:absolute after:inset-y-0 after:right-0 after:h-full after:w-px after:bg-transparent after:content-['']":
                                 isStickyHeader,
-                              "left-[68px]":
-                                isStickyHeader && hasSelect && !isSelectHeader,
-                              "after:bg-ui-border-base":
-                                showStickyBorder &&
-                                isStickyHeader &&
-                                !isSpecialHeader,
+                              'left-[68px]': isStickyHeader && hasSelect && !isSelectHeader,
+                              'after:bg-ui-border-base':
+                                showStickyBorder && isStickyHeader && !isSpecialHeader
                             })}
                           >
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+                            {flexRender(header.column.columnDef.header, header.getContext())}
                           </Table.HeaderCell>
                         );
                       })}
@@ -204,7 +180,7 @@ export const DataTableRoot = <TData,>({
               </Table.Header>
             )}
             <Table.Body className="border-b-0">
-              {table.getRowModel().rows.map((row) => {
+              {table.getRowModel().rows.map(row => {
                 const to = navigateTo ? navigateTo(row) : undefined;
                 const isRowDisabled = hasSelect && !row.getCanSelect();
 
@@ -216,27 +192,23 @@ export const DataTableRoot = <TData,>({
                   <Table.Row
                     key={row.id}
                     data-selected={row.getIsSelected()}
-                    data-testid={`data-table-row-${row.id}`}
+                    data-testid={`data-table-row-${row.index}`}
                     className={clx(
-                      "group/row group relative transition-fg [&_td:last-of-type]:w-[1%] [&_td:last-of-type]:whitespace-nowrap",
-                      "has-[[data-row-link]:focus-visible]:bg-ui-bg-base-hover",
+                      'group/row group relative transition-fg [&_td:last-of-type]:w-[1%] [&_td:last-of-type]:whitespace-nowrap',
+                      'has-[[data-row-link]:focus-visible]:bg-ui-bg-base-hover',
                       {
-                        "bg-ui-bg-subtle hover:bg-ui-bg-subtle-hover": isOdd,
-                        "cursor-pointer": !!to,
-                        "bg-ui-bg-highlight hover:bg-ui-bg-highlight-hover":
-                          row.getIsSelected(),
-                        "!hover:bg-ui-bg-disabled !bg-ui-bg-disabled":
-                          isRowDisabled,
-                      },
+                        'bg-ui-bg-subtle hover:bg-ui-bg-subtle-hover': isOdd,
+                        'cursor-pointer': !!to,
+                        'bg-ui-bg-highlight hover:bg-ui-bg-highlight-hover': row.getIsSelected(),
+                        '!hover:bg-ui-bg-disabled !bg-ui-bg-disabled': isRowDisabled
+                      }
                     )}
                   >
                     {cells.map((cell, index) => {
                       const visibleCells = row.getVisibleCells();
-                      const isSelectCell = cell.column.id === "select";
+                      const isSelectCell = cell.column.id === 'select';
 
-                      const firstCell = visibleCells.findIndex(
-                        (h) => h.column.id !== "select",
-                      );
+                      const firstCell = visibleCells.findIndex(h => h.column.id !== 'select');
                       const isFirstCell =
                         firstCell !== -1
                           ? cell.column.id === visibleCells[firstCell].column.id
@@ -249,17 +221,11 @@ export const DataTableRoot = <TData,>({
                        * to indicate the depth of the row.
                        */
                       const depthOffset =
-                        row.depth > 0 && isFirstCell
-                          ? row.depth * 14 + 24
-                          : undefined;
+                        row.depth > 0 && isFirstCell ? row.depth * 14 + 24 : undefined;
 
-                      const hasLeftOffset =
-                        isStickyCell && hasSelect && !isSelectCell;
+                      const hasLeftOffset = isStickyCell && hasSelect && !isSelectCell;
 
-                      const Inner = flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      );
+                      const Inner = flexRender(cell.column.columnDef.cell, cell.getContext());
 
                       const isTabableLink = isFirstCell && !!to;
                       const shouldRenderAsLink = !!to && !isSelectCell;
@@ -267,23 +233,20 @@ export const DataTableRoot = <TData,>({
                       return (
                         <Table.Cell
                           key={cell.id}
-                          data-testid={`data-table-cell-${row.id}-${cell.column.id}`}
+                          data-testid={`data-table-cell-${row.index}-${cell.column.id}`}
                           className={clx({
-                            "!pe-0 !ps-0": shouldRenderAsLink,
+                            '!pe-0 !ps-0': shouldRenderAsLink,
                             "sticky left-0 bg-ui-bg-base transition-fg after:absolute after:inset-y-0 after:right-0 after:h-full after:w-px after:bg-transparent after:content-[''] group-hover/row:bg-ui-bg-base-hover group-has-[[data-row-link]:focus-visible]:bg-ui-bg-base-hover group-data-[selected=true]/row:bg-ui-bg-highlight group-data-[selected=true]/row:group-hover/row:bg-ui-bg-highlight-hover":
                               isStickyCell,
-                            "bg-ui-bg-subtle group-hover/row:bg-ui-bg-subtle-hover":
+                            'bg-ui-bg-subtle group-hover/row:bg-ui-bg-subtle-hover':
                               isOdd && isStickyCell,
-                            "left-[68px]": hasLeftOffset,
-                            "after:bg-ui-border-base":
+                            'left-[68px]': hasLeftOffset,
+                            'after:bg-ui-border-base':
                               showStickyBorder && isStickyCell && !isSelectCell,
-                            "!hover:bg-ui-bg-disabled !bg-ui-bg-disabled":
-                              isRowDisabled,
+                            '!hover:bg-ui-bg-disabled !bg-ui-bg-disabled': isRowDisabled
                           })}
                           style={{
-                            paddingLeft: depthOffset
-                              ? `${depthOffset}px`
-                              : undefined,
+                            paddingLeft: depthOffset ? `${depthOffset}px` : undefined
                           }}
                         >
                           {shouldRenderAsLink ? (
@@ -292,23 +255,20 @@ export const DataTableRoot = <TData,>({
                               className="size-full outline-none"
                               data-row-link
                               tabIndex={isTabableLink ? 0 : -1}
-                              data-testid={`data-table-row-link-${row.id}`}
+                              data-testid={`data-table-row-link-${row.index}`}
                             >
                               <div
-                                className={clx(
-                                  "flex size-full items-center pe-6",
-                                  {
-                                    "ps-6": isTabableLink && !hasLeftOffset,
-                                  },
-                                )}
-                                data-testid={`data-table-cell-content-${row.id}-${cell.column.id}`}
+                                className={clx('flex size-full items-center pe-6', {
+                                  'ps-6': isTabableLink && !hasLeftOffset
+                                })}
+                                data-testid={`data-table-cell-content-${row.index}-${cell.column.id}`}
                               >
                                 {Inner}
                               </div>
                             </Link>
                           ) : (
                             <div
-                              data-testid={`data-table-cell-content-${row.id}-${cell.column.id}`}
+                              data-testid={`data-table-cell-content-${row.index}-${cell.column.id}`}
                             >
                               {Inner}
                             </div>
@@ -322,14 +282,14 @@ export const DataTableRoot = <TData,>({
             </Table.Body>
           </Table>
         ) : (
-          <div className={clx({ "border-b": layout === "fit" })}>
+          <div className={clx({ 'border-b': layout === 'fit' })}>
             <NoResults />
           </div>
         )}
       </div>
       {pagination && (
         <div
-          className={clx({ "border-t": layout === "fill" })}
+          className={clx({ 'border-t': layout === 'fill' })}
           data-testid="data-table-pagination-container"
         >
           <Pagination
@@ -351,8 +311,8 @@ export const DataTableRoot = <TData,>({
         >
           <CommandBar.Bar data-testid="data-table-command-bar-bar">
             <CommandBar.Value data-testid="data-table-command-bar-value">
-              {t("general.countSelected", {
-                count: Object.keys(rowSelection).length,
+              {t('general.countSelected', {
+                count: Object.keys(rowSelection).length
               })}
             </CommandBar.Value>
             <CommandBar.Seperator data-testid="data-table-command-bar-separator" />
@@ -363,7 +323,7 @@ export const DataTableRoot = <TData,>({
                     label={command.label}
                     shortcut={command.shortcut}
                     action={() => handleAction(command.action)}
-                    data-testid={`data-table-command-bar-command-${index}-${command.label.toLowerCase().replace(/\s+/g, "-")}`}
+                    data-testid={`data-table-command-bar-command-${index}-${command.label.toLowerCase().replace(/\s+/g, '-')}`}
                   />
                   {index < commands.length - 1 && (
                     <CommandBar.Seperator
@@ -380,20 +340,17 @@ export const DataTableRoot = <TData,>({
   );
 };
 
-type PaginationProps = Omit<
-  ComponentPropsWithoutRef<typeof Table.Pagination>,
-  "translations"
->;
+type PaginationProps = Omit<ComponentPropsWithoutRef<typeof Table.Pagination>, 'translations'>;
 
 const Pagination = (props: PaginationProps) => {
   const { t } = useTranslation();
 
   const translations = {
-    of: t("general.of"),
-    results: t("general.results"),
-    pages: t("general.pages"),
-    prev: t("general.prev"),
-    next: t("general.next"),
+    of: t('general.of'),
+    results: t('general.results'),
+    pages: t('general.pages'),
+    prev: t('general.prev'),
+    next: t('general.next')
   };
 
   return (
