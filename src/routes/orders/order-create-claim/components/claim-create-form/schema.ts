@@ -18,7 +18,11 @@ export const ClaimCreateSchema = z.object({
       quantity: z.number(),
     })
   ),
-  location_id: z.string().optional(),
+  location_id: z
+    .string({
+      required_error: i18n.t("orders.claims.validation.chooseLocation"),
+    })
+    .min(1, i18n.t("orders.claims.validation.chooseLocation")),
   inbound_option_id: z.string().nullish(),
   outbound_option_id: z.string().nullish(),
   send_notification: z.boolean().optional(),
