@@ -1,14 +1,17 @@
+import i18n from "i18next"
 import { z } from "zod"
 
 export const ClaimCreateSchema = z.object({
-  inbound_items: z.array(
-    z.object({
-      item_id: z.string(),
-      quantity: z.number(),
-      reason_id: z.string().nullish(),
-      note: z.string().nullish(),
-    })
-  ),
+  inbound_items: z
+    .array(
+      z.object({
+        item_id: z.string(),
+        quantity: z.number(),
+        reason_id: z.string().nullish(),
+        note: z.string().nullish(),
+      })
+    )
+    .min(1, i18n.t("orders.claims.validation.addAtLeastOneItem")),
   outbound_items: z.array(
     z.object({
       item_id: z.string(), // TODO: variant id?
