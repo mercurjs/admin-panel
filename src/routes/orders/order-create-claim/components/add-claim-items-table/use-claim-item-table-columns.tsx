@@ -8,7 +8,6 @@ import {
   ProductHeader,
 } from "../../../../../components/table/table-cells/product/product-cell"
 import { getStylizedAmount } from "../../../../../lib/money-amount-helpers"
-import { getReturnableQuantity } from "../../../../../lib/rma"
 
 const columnHelper = createColumnHelper<any>()
 
@@ -60,26 +59,34 @@ export const useClaimItemTableColumns = (currencyCode: string) => {
           />
         ),
       }),
-      columnHelper.accessor("variant.sku", {
+      columnHelper.accessor("variant_title", {
+        header: t("fields.variant"),
+      }),
+      columnHelper.accessor("variant_sku", {
         header: t("fields.sku"),
         cell: ({ getValue }) => {
           return getValue() || "-"
         },
       }),
-      columnHelper.accessor("variant.title", {
-        header: t("fields.variant"),
-      }),
-      columnHelper.accessor("quantity", {
-        header: () => (
-          <div className="flex size-full items-center overflow-hidden text-right">
-            <span className="truncate">{t("fields.quantity")}</span>
-          </div>
-        ),
+      columnHelper.display({
+        id: "category",
+        header: t("fields.category"),
         cell: ({ row }) => {
-          return getReturnableQuantity(row.original)
+          const categoryName =
+            row.original.variant?.product?.categories?.[0]?.name || "-"
+          return categoryName
         },
       }),
-      columnHelper.accessor("refundable_total", {
+      columnHelper.display({
+        id: "collection",
+        header: t("fields.collection"),
+        cell: ({ row }) => {
+          const collectionTitle =
+            row.original.variant?.product?.collection?.title || "-"
+          return collectionTitle
+        },
+      }),
+      columnHelper.accessor("unit_price", {
         header: () => (
           <div className="flex size-full items-center justify-end overflow-hidden text-right">
             <span className="truncate">{t("fields.price")}</span>

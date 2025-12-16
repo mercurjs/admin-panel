@@ -584,6 +584,9 @@
       "collection": {
         "label": "Collection"
       },
+      "category": {
+        "label": "Category"
+      },
       "categories": {
         "label": "Categories"
       },

@@ -18,12 +18,12 @@ export const ClaimCreate = () => {
   const { t } = useTranslation()
 
   const { order } = useOrder(id!, {
-    fields: DEFAULT_FIELDS,
+    fields: `${DEFAULT_FIELDS},*items.variant.product.collection,*items.variant.product.categories`,
   })
 
   const { order: preview } = useOrderPreview(id!)
   const [activeClaimId, setActiveClaimId] = useState<string>()
-  const { mutateAsync: createClaim } = useCreateClaim(order.id)
+  const { mutateAsync: createClaim } = useCreateClaim(order?.id)
 
   const { claim } = useClaim(activeClaimId!, undefined, {
     enabled: !!activeClaimId,

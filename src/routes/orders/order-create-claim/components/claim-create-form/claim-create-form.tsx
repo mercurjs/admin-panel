@@ -651,10 +651,21 @@ export const ClaimCreateForm = ({
               </StackedFocusModal>
             </div>
             {showInboundItemsPlaceholder && (
-              <ItemPlaceholder
-                type="inbound"
-                hasError={!!form.formState.errors.inbound_items}
-              />
+              <>
+                <ItemPlaceholder
+                  type="inbound"
+                  hasError={!!form.formState.errors.inbound_items}
+                />
+                <Form.Field
+                  control={form.control}
+                  name="inbound_items"
+                  render={() => (
+                    <Form.Item className="mt-4">
+                      <Form.ErrorMessage />
+                    </Form.Item>
+                  )}
+                />
+              </>
             )}
             {inboundItems.map(
               (item, index) =>
@@ -709,15 +720,6 @@ export const ClaimCreateForm = ({
                   />
                 )
             )}
-            <Form.Field
-              control={form.control}
-              name="inbound_items"
-              render={() => (
-                <Form.Item className="mt-4">
-                  <Form.ErrorMessage />
-                </Form.Item>
-              )}
-            />
             {!showInboundItemsPlaceholder && (
               <div className="mt-8 flex flex-col gap-y-4">
                 {/* LOCATION*/}

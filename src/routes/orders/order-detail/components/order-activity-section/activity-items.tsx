@@ -99,14 +99,14 @@ function ActivityItems(props: ActivityItemsProps) {
 
                   return (
                     <div className="flex items-center gap-x-3" key={item.id}>
-                      <Text size="small" className="text-ui-fg-subtle">
+                      <Text className="txt-compact-xsmall-plus text-ui-fg-subtle">
                         {item.quantity}x
                       </Text>
 
-                      <Thumbnail src={originalItem?.thumbnail} />
+                      <Thumbnail src={originalItem?.thumbnail} size="small" showBorder={false} />
 
-                      <Text className="txt-compact-small text-ui-fg-subtle truncate">
-                        {`${originalItem?.variant_title} · ${originalItem?.product_title}`}
+                      <Text className="txt-compact-xsmall-plus text-ui-fg-subtle truncate">
+                        {`${originalItem?.variant_title} · ${originalItem?.variant_sku}`}
                       </Text>
                     </div>
                   )
