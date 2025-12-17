@@ -16,6 +16,7 @@ import {
   AdminProductResponse,
   AdminProductUpdate,
   ExtendedAdminProductListParams,
+  AdminProductListResponse,
 } from "../../types/product/common.ts";
 
 const PRODUCTS_QUERY_KEY = "products" as const;
@@ -275,7 +276,7 @@ export const useDeleteVariantLazy = (
 
 export const useProduct = (
   id: string,
-  query?: Record<string, any>,
+  query?: Record<string, unknown>,
   options?: Omit<
     UseQueryOptions<
       AdminProductResponse,
@@ -287,7 +288,7 @@ export const useProduct = (
   >
 ) => {
   const { data, ...rest } = useQuery({
-    queryFn: () => sdk.admin.product.retrieve(id, query),
+    queryFn: async () => sdk.admin.product.retrieve(id, query) as Promise<AdminProductResponse>,
     queryKey: productsQueryKeys.detail(id, query),
     ...options,
   });
@@ -299,16 +300,16 @@ export const useProducts = (
   query?: ExtendedAdminProductListParams,
   options?: Omit<
     UseQueryOptions<
-      HttpTypes.AdminProductListResponse,
+      AdminProductListResponse,
       FetchError,
-      HttpTypes.AdminProductListResponse,
+      AdminProductListResponse,
       QueryKey
     >,
     "queryFn" | "queryKey"
   >
 ) => {
   const { data, ...rest } = useQuery({
-    queryFn: () => sdk.admin.product.list(query),
+    queryFn: async () => sdk.admin.product.list(query) as Promise<AdminProductListResponse>,
     queryKey: productsQueryKeys.list(query),
     ...options,
   });
@@ -346,7 +347,7 @@ export const useUpdateProduct = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload) => sdk.admin.product.update(id, payload),
+    mutationFn: async (payload) => sdk.admin.product.update(id, payload) as Promise<AdminProductResponse>,
     onSuccess: async (data, variables, context) => {
       await queryClient.invalidateQueries({
         queryKey: productsQueryKeys.lists(),

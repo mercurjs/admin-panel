@@ -1,11 +1,10 @@
 import { Button, Text, Tooltip, clx, toast, usePrompt } from "@medusajs/ui"
 import { Collapsible as RadixCollapsible } from "radix-ui"
 
-import { PropsWithChildren, ReactNode, useMemo, useState } from "react"
+import { type PropsWithChildren, type ReactNode, useMemo, useState } from "react"
 
-import {
+import type {
   AdminClaim,
-  AdminExchange,
   AdminFulfillment,
   AdminOrder,
   AdminOrderChange,
@@ -13,26 +12,27 @@ import {
 } from "@medusajs/types"
 import { useTranslation } from "react-i18next"
 
-import { AdminOrderLineItem } from "@medusajs/types"
-import { By } from "../../../../../components/common/user-link"
+import type { AdminOrderLineItem } from "@medusajs/types"
 import {
   useCancelOrderTransfer,
   useCustomer,
   useOrderChanges,
   useOrderLineItems,
-} from "../../../../../hooks/api"
-import { useCancelClaim, useClaims } from "../../../../../hooks/api/claims"
+} from "@hooks/api"
+import { useCancelClaim, useClaims } from "@hooks/api/claims"
 import {
   useCancelExchange,
   useExchanges,
-} from "../../../../../hooks/api/exchanges"
-import { useCancelReturn, useReturns } from "../../../../../hooks/api/returns"
-import { useDate } from "../../../../../hooks/use-date"
-import { getFormattedAddress } from "../../../../../lib/addresses"
-import { getStylizedAmount } from "../../../../../lib/money-amount-helpers"
-import { getPaymentsFromOrder } from "../../../../../lib/orders"
+} from "@hooks/api/exchanges"
+import { useCancelReturn, useReturns } from "@hooks/api/returns"
+import { useDate } from "@hooks/use-date"
+import { getFormattedAddress } from "@lib/addresses"
+import { getStylizedAmount } from "@lib/money-amount-helpers"
+import { getPaymentsFromOrder } from "@lib/orders"
 import ActivityItems from "./activity-items"
 import ChangeDetailsTooltip from "./change-details-tooltip"
+import type { ExtendedAdminExchange } from "@custom-types/exchanges"
+import { By } from "@components/common/user-link"
 
 type OrderTimelineProps = {
   order: AdminOrder
@@ -107,10 +107,9 @@ type Activity = {
   title: string
   timestamp: string | Date
   children?: ReactNode
-  itemsToSend?: (
+  itemsToSend?:
     | AdminClaim["additional_items"]
-    | AdminExchange["additional_items"]
-  )[]
+    | ExtendedAdminExchange["additional_items"]
   itemsToReturn?: AdminReturn["items"]
   itemsMap?: Map<string, AdminOrderLineItem>
 }
@@ -174,7 +173,7 @@ const useActivityItems = (order: AdminOrder): Activity[] => {
     order_id: order.id,
     fields: "*additional_items",
   })
-
+  
   const payments = getPaymentsFromOrder(order)
 
   const notes = []
@@ -544,7 +543,7 @@ type OrderActivityItemProps = PropsWithChildren<{
   isFirst?: boolean
   itemsToSend?:
     | AdminClaim["additional_items"]
-    | AdminExchange["additional_items"]
+    | ExtendedAdminExchange["additional_items"]
   itemsToReturn?: AdminReturn["items"]
   itemsMap?: Map<string, AdminOrderLineItem>
 }>
@@ -890,7 +889,7 @@ const ExchangeBody = ({
   exchange,
   exchangeReturn,
 }: {
-  exchange: AdminExchange
+  exchange: ExtendedAdminExchange
   exchangeReturn?: AdminReturn
 }) => {
   const prompt = usePrompt()

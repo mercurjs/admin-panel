@@ -1,12 +1,11 @@
+import { useInventoryItemLevels } from "@hooks/api"
+import { useLocationListTableColumns } from "./use-location-list-table-columns"
+import { useLocationLevelTableQuery } from "./use-location-list-table-query"
 import type { ExtendedInventoryItemLevel } from "@custom-types/inventory";
 
 import { _DataTable } from "@components/table/data-table";
 
-import { useInventoryItemLevels } from "@hooks/api";
 import { useDataTable } from "@hooks/use-data-table";
-
-import { useLocationListTableColumns } from "./use-location-list-table-columns";
-import { useLocationLevelTableQuery } from "./use-location-list-table-query";
 
 const PAGE_SIZE = 20;
 const PREFIX = "invlvl";

@@ -8,6 +8,7 @@ import { useOrder, useOrderPreview } from "../../../hooks/api/orders"
 import { DEFAULT_FIELDS } from "../order-detail/constants"
 import { OrderEditCreateForm } from "./components/order-edit-create-form"
 import { useCreateOrderEdit } from "../../../hooks/api/order-edits"
+import { getErrorMessage } from "@utils/error-helper"
 
 let IS_REQUEST_RUNNING = false
 
@@ -45,7 +46,7 @@ export const OrderEditCreate = () => {
           order_id: preview.id,
         })
       } catch (e) {
-        toast.error(e.message)
+        toast.error(getErrorMessage(e))
         navigate(`/orders/${preview.id}`, { replace: true })
       } finally {
         IS_REQUEST_RUNNING = false

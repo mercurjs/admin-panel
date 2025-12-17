@@ -37,6 +37,7 @@ export const AddReturnItemsTable = ({
   const [rowSelection, setRowSelection] = useState<RowSelectionState>(
     selectedItems.reduce((acc, id) => {
       acc[id] = true
+      
       return acc
     }, {} as RowSelectionState)
   )

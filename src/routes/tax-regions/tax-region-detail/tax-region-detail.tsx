@@ -4,7 +4,6 @@ import { useState } from "react"
 import { SingleColumnPage } from "../../../components/layout/pages"
 import { useTaxRegion } from "../../../hooks/api/tax-regions"
 import { TaxRegionDetailSection } from "./components/tax-region-detail-section"
-import { TaxRegionProvinceSection } from "./components/tax-region-province-section"
 
 import { SingleColumnPageSkeleton } from "../../../components/common/skeleton"
 import { useExtension } from "../../../providers/extension-provider"
@@ -12,6 +11,7 @@ import { TaxRegionOverrideSection } from "./components/tax-region-override-secti
 import { TaxRegionSublevelAlert } from "./components/tax-region-sublevel-alert"
 import { TaxRegionProviderSection } from "./tax-region-provider-section"
 import { taxRegionLoader } from "./loader"
+import { TaxRegionProvinceSection } from "./components/tax-region-province-section"
 
 export const TaxRegionDetail = () => {
   const { id } = useParams()

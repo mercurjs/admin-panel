@@ -9,6 +9,7 @@ import { useOrder, useOrderPreview } from "../../../hooks/api/orders"
 import { useReturn } from "../../../hooks/api/returns"
 import { DEFAULT_FIELDS } from "../order-detail/constants"
 import { ClaimCreateForm } from "./components/claim-create-form"
+import { getErrorMessage } from "@utils/error-helper"
 
 let IS_REQUEST_RUNNING = false
 
@@ -22,13 +23,13 @@ export const ClaimCreate = () => {
   })
 
   const { order: preview } = useOrderPreview(id!)
-  const [activeClaimId, setActiveClaimId] = useState<string>()
+  const [activeClaimId, setActiveClaimId] = useState<string | undefined>()
   const { mutateAsync: createClaim } = useCreateClaim(order.id)
 
-  const { claim } = useClaim(activeClaimId!, undefined, {
+  const { claim } = useClaim(activeClaimId ?? "", undefined, {
     enabled: !!activeClaimId,
   })
-  const { return: orderReturn } = useReturn(claim?.return_id!, undefined, {
+  const { return: orderReturn } = useReturn(claim?.return_id ?? "", undefined, {
     enabled: !!claim?.return_id,
   })
 
@@ -59,7 +60,7 @@ export const ClaimCreate = () => {
 
         setActiveClaimId(createdClaim.id)
       } catch (e) {
-        toast.error(e.message)
+        toast.error(getErrorMessage(e))
         navigate(`/orders/${preview.id}`, { replace: true })
       } finally {
         IS_REQUEST_RUNNING = false

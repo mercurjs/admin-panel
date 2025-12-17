@@ -14,7 +14,6 @@ import {
 } from "@medusajs/icons"
 import {
   AdminClaim,
-  AdminExchange,
   AdminOrder,
   AdminOrderLineItem,
   AdminOrderPreview,
@@ -43,6 +42,7 @@ import { ActionMenu } from "../../../../../components/common/action-menu"
 import DisplayId from "../../../../../components/common/display-id/display-id"
 import { Thumbnail } from "../../../../../components/common/thumbnail"
 import { useClaims } from "../../../../../hooks/api/claims"
+import type { ExtendedAdminExchange } from "../../../../../types/exchanges"
 import { useExchanges } from "../../../../../hooks/api/exchanges"
 import { useOrderPreview } from "../../../../../hooks/api/orders"
 import { useMarkPaymentCollectionAsPaid } from "../../../../../hooks/api/payment-collections"
@@ -392,7 +392,7 @@ const Item = ({
   reservation?: AdminReservation
   returns: AdminReturn[]
   claims: AdminClaim[]
-  exchanges: AdminExchange[]
+  exchanges: ExtendedAdminExchange[]
 }) => {
   const { t } = useTranslation()
 
@@ -1179,7 +1179,7 @@ const ExchangeBreakdown = ({
   exchange,
   itemId,
 }: {
-  exchange: AdminExchange
+  exchange: ExtendedAdminExchange
   itemId: string
 }) => {
   const { t } = useTranslation()

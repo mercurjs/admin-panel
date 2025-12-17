@@ -109,17 +109,17 @@ function ReturnItem({
             groups={[
               {
                 actions: [
-                  !showReturnReason && {
+                  ...(!showReturnReason ? [{
                     label: t("actions.addReason"),
                     onClick: () =>
                       form.setValue(`items.${index}.reason_id`, ""),
                     icon: <ChatBubble />,
-                  },
-                  !showNote && {
+                  }] : []),
+                  ...(!showNote ? [{
                     label: t("actions.addNote"),
                     onClick: () => form.setValue(`items.${index}.note`, ""),
                     icon: <DocumentText />,
-                  },
+                  }] : []),
                   {
                     label: t("actions.remove"),
                     onClick: onRemove,

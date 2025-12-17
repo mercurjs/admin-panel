@@ -10,6 +10,7 @@ import { ReturnCreateForm } from "./components/return-create-form"
 import { useOrder, useOrderPreview } from "../../../hooks/api/orders"
 import { useInitiateReturn, useReturn } from "../../../hooks/api/returns"
 import { DEFAULT_FIELDS } from "../order-detail/constants"
+import { getErrorMessage } from "@utils/error-helper"
 
 let IS_REQUEST_RUNNING = false
 
@@ -25,11 +26,11 @@ export const ReturnCreate = () => {
 
   const { order: preview } = useOrderPreview(id!, undefined, {})
 
-  const [activeReturnId, setActiveReturnId] = useState()
+  const [activeReturnId, setActiveReturnId] = useState<string | undefined>()
 
   const { mutateAsync: initiateReturn } = useInitiateReturn(order.id)
 
-  const { return: activeReturn } = useReturn(activeReturnId, undefined, {
+  const { return: activeReturn } = useReturn(activeReturnId ?? "", undefined, {
     enabled: !!activeReturnId,
   })
 
@@ -57,7 +58,7 @@ export const ReturnCreate = () => {
         setActiveReturnId(orderReturn.id)
       } catch (e) {
         navigate(`/orders/${order.id}`, { replace: true })
-        toast.error(e.message)
+        toast.error(getErrorMessage(e))
       } finally {
         IS_REQUEST_RUNNING = false
       }

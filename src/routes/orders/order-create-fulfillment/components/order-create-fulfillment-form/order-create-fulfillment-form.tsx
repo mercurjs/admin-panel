@@ -23,6 +23,7 @@ import {
   useShippingOptions,
 } from "../../../../../hooks/api"
 import { getReservationsLimitCount } from "../../../../../lib/orders"
+import { getErrorMessage } from "@utils/error-helper"
 import { sdk } from "../../../../../lib/client"
 import { useComboboxData } from "../../../../../hooks/use-combobox-data"
 import { Combobox } from "../../../../../components/inputs/combobox"
@@ -155,7 +156,7 @@ export function OrderCreateFulfillmentForm({
       toast.success(t("orders.fulfillment.toast.created"))
       handleSuccess(`/orders/${order.id}`)
     } catch (e) {
-      toast.error(e.message)
+      toast.error(getErrorMessage(e))
     }
   })
 

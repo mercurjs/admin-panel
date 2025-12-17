@@ -68,6 +68,7 @@ export const useLocationListTableColumns = () => {
   return useMemo(
     () => [
       columnHelper.display({
+
         id: "location",
         header: t("fields.location"),
         cell: ({ row }) => {
@@ -139,6 +140,7 @@ export const useLocationListTableColumns = () => {
       columnHelper.action({
         actions: (ctx) => {
           const level = ctx.row.original;
+          
           return [
             [
               {

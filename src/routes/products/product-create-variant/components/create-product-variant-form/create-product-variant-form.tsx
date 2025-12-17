@@ -104,10 +104,10 @@ export const CreateProductVariantForm = ({
 
   const tabOrder = useMemo(() => {
     if (inventoryTabEnabled) {
-      return [Tab.DETAIL, Tab.PRICE, Tab.INVENTORY] as const
+      return [Tab.DETAIL, Tab.PRICE, Tab.INVENTORY]
     }
 
-    return [Tab.DETAIL, Tab.PRICE] as const
+    return [Tab.DETAIL, Tab.PRICE]
   }, [inventoryTabEnabled])
 
   useEffect(() => {
@@ -219,17 +219,22 @@ export const CreateProductVariantForm = ({
               return undefined
             }
 
-            const ret: AdminCreateProductVariantPrice = {}
             const amount = castNumber(value)
+            let currency_code: string
+            let rules: AdminCreateProductVariantPrice["rules"] | undefined
 
             if (currencyOrRegion.startsWith("reg_")) {
-              ret.rules = { region_id: currencyOrRegion }
-              ret.currency_code = regionsCurrencyMap[currencyOrRegion]
+              rules = { region_id: currencyOrRegion }
+              currency_code = regionsCurrencyMap[currencyOrRegion]
             } else {
-              ret.currency_code = currencyOrRegion
+              currency_code = currencyOrRegion
             }
 
-            ret.amount = amount
+            const ret: AdminCreateProductVariantPrice = {
+              currency_code,
+              amount,
+              ...(rules && { rules }),
+            }
 
             return ret
           })

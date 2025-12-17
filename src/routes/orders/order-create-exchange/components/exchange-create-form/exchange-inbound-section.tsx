@@ -33,6 +33,7 @@ import { ItemPlaceholder } from "../../../order-create-claim/components/claim-cr
 import { AddExchangeInboundItemsTable } from "../add-exchange-inbound-items-table"
 import { ExchangeInboundItem } from "./exchange-inbound-item"
 import { CreateExchangeSchemaType } from "./schema"
+import { AdminProductVariantListResponseWithInventory } from "@custom-types/product"
 
 type ExchangeInboundSectionProps = {
   order: AdminOrder
@@ -67,7 +68,7 @@ export const ExchangeInboundSection = ({
    */
   const { mutateAsync: updateReturn } = useUpdateReturn(
     preview?.order_change?.return_id!,
-    order.id
+    order.id,
   )
 
   const { mutateAsync: addInboundShipping } = useAddExchangeInboundShipping(
@@ -165,12 +166,13 @@ export const ExchangeInboundSection = ({
           const returnItemAction = i.actions?.find(
             (a) => a.action === "RETURN_ITEM"
           )
+          const reasonId = returnItemAction?.details?.reason_id
 
           update(ind, {
             ...inboundItems[ind],
             quantity: i.detail.return_requested_quantity,
             note: returnItemAction?.internal_note,
-            reason_id: returnItemAction?.details?.reason_id as string,
+            reason_id: typeof reasonId === "string" ? reasonId : undefined,
           })
         }
       } else {
@@ -210,8 +212,8 @@ export const ExchangeInboundSection = ({
   const showInboundItemsPlaceholder = !inboundItems.length
 
   const onItemsSelected = async () => {
-    itemsToAdd.length &&
-      (await addInboundItem(
+    if (itemsToAdd.length) {
+      await addInboundItem(
         {
           items: itemsToAdd.map((id) => ({
             id,
@@ -223,7 +225,8 @@ export const ExchangeInboundSection = ({
             toast.error(error.message)
           },
         }
-      ))
+      )
+    }
 
     for (const itemToRemove of itemsToRemove) {
       const actionId = previewInboundItems
@@ -314,14 +317,12 @@ export const ExchangeInboundSection = ({
 
       const variantIds = inboundItems
         .map((item) => item?.variant_id)
-        .filter(Boolean)
+        .filter((id): id is string => Boolean(id))
 
-      const variants = (
-        await sdk.admin.productVariant.list({
-          id: variantIds,
-          fields: "*inventory.location_levels",
-        })
-      ).variants
+      const { variants } = (await sdk.admin.productVariant.list({
+        id: variantIds,
+        fields: "*inventory.location_levels",
+      })) as AdminProductVariantListResponseWithInventory
 
       variants.forEach((variant) => {
         ret[variant.id] = variant.inventory?.[0]?.location_levels || []

@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
 import { useMemo } from "react"
 import { useForm } from "react-hook-form"
@@ -12,6 +11,7 @@ import { useUpdateProductVariantsBatch } from "../../../hooks/api/products"
 import { useRegions } from "../../../hooks/api/regions"
 import { castNumber } from "../../../lib/cast-number"
 import { VariantPricingForm } from "../common/variant-pricing-form"
+import type { AdminProductWithPriceRules } from "@custom-types/product"
 
 export const UpdateVariantPricesSchema = zod.object({
   variants: zod.array(
@@ -31,7 +31,7 @@ export const PricingEdit = ({
   product,
   variantId,
 }: {
-  product: HttpTypes.AdminProduct
+  product: AdminProductWithPriceRules
   variantId?: string
 }) => {
   const { t } = useTranslation()
@@ -41,11 +41,12 @@ export const PricingEdit = ({
   const { regions } = useRegions({ limit: 9999 })
   const regionsCurrencyMap = useMemo(() => {
     if (!regions?.length) {
-      return {}
+      return {} as Record<string, string>
     }
 
-    return regions.reduce((acc, reg) => {
+    return regions.reduce<Record<string, string>>((acc, reg) => {
       acc[reg.id] = reg.currency_code
+      
       return acc
     }, {})
   }, [regions])
@@ -56,45 +57,54 @@ export const PricingEdit = ({
 
   const form = useForm<UpdateVariantPricesSchemaType>({
     defaultValues: {
-      variants: variants?.map((variant: any) => ({
+      variants: variants?.map((variant) => ({
         title: variant.title,
-        prices: variant.prices.reduce((acc: any, price: any) => {
+        prices: variant.prices?.reduce<Record<string, number>>((acc, price) => {
           if (price.rules?.region_id) {
             acc[price.rules.region_id] = price.amount
           } else {
             acc[price.currency_code] = price.amount
           }
+
           return acc
-        }, {}),
-      })) as any,
+        }, {}) ?? {},
+      })),
     },
 
     resolver: zodResolver(UpdateVariantPricesSchema, {}),
   })
 
   const handleSubmit = form.handleSubmit(async (values) => {
+    if (!variants) {
+      return
+    }
+
     const reqData = values.variants.map((variant, ind) => ({
       id: variants[ind].id,
       prices: Object.entries(variant.prices || {})
         .filter(
-          ([_, value]) => value !== "" && typeof value !== "undefined" // deleted cells
+          (entry): entry is [string, string | number] => {
+            const [, value] = entry
+
+            return value !== "" && typeof value !== "undefined"
+          }
         )
-        .map(([currencyCodeOrRegionId, value]: any) => {
+        .map(([currencyCodeOrRegionId, value]) => {
           const regionId = currencyCodeOrRegionId.startsWith("reg_")
             ? currencyCodeOrRegionId
             : undefined
           const currencyCode = currencyCodeOrRegionId.startsWith("reg_")
-            ? regionsCurrencyMap[regionId]
+            ? (regionId ? regionsCurrencyMap[regionId] : currencyCodeOrRegionId)
             : currencyCodeOrRegionId
 
-          let existingId = undefined
+          let existingId: string | undefined = undefined
 
           if (regionId) {
-            existingId = variants?.[ind]?.prices?.find(
-              (p) => p.rules["region_id"] === regionId
+            existingId = variants[ind]?.prices?.find(
+              (p) => p.rules?.["region_id"] === regionId
             )?.id
           } else {
-            existingId = variants?.[ind]?.prices?.find(
+            existingId = variants[ind]?.prices?.find(
               (p) =>
                 p.currency_code === currencyCode &&
                 Object.keys(p.rules ?? {}).length === 0

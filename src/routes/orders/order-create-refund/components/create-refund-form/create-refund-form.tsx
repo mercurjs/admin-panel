@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from "@medusajs/types"
 import {
   Button,
   CurrencyInput,
@@ -12,6 +12,7 @@ import { useEffect, useMemo, useState } from "react"
 import { formatValue } from "react-currency-input-field"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
+import i18n from "i18next"
 import { useSearchParams } from "react-router-dom"
 import * as zod from "zod"
 import { Form } from "../../../../../components/common/form"
@@ -23,17 +24,27 @@ import { formatCurrency } from "../../../../../lib/format-currency"
 import { getLocaleAmount } from "../../../../../lib/money-amount-helpers"
 import { getPaymentsFromOrder } from "../../../../../lib/orders"
 import { useDocumentDirection } from "../../../../../hooks/use-document-direction"
-import { formatProvider } from "../../../../../lib/format-provider.ts"
+import { formatProvider } from "../../../../../lib/format-provider"
 
 type CreateRefundFormProps = {
   order: HttpTypes.AdminOrder
 }
 
+// If amount.float is sent as 0 or undefined, then full refund is made. Making the amount field non nullable to avoid user confusion.
 const CreateRefundSchema = zod.object({
-  amount: zod.object({
-    value: zod.string().or(zod.number()),
-    float: zod.number().or(zod.null()),
-  }),
+  amount: zod
+    .object({
+      value: zod.string(),
+      float: zod.number(),
+    })
+    .refine(
+      (data) => {
+        return data.value && data.value.trim() !== "" && data.float > 0
+      },
+      {
+        message: i18n.t('orders.payment.refundAmountWarning'),
+      }
+    ),
   note: zod.string().optional(),
   refund_reason_id: zod.string().optional(),
 })
@@ -51,7 +62,6 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
   const payments = getPaymentsFromOrder(order)
   const payment = payments.find((p) => p.id === paymentId)
   const paymentAmount = payment?.amount || 0
-
   const currency = useMemo(
     () => currencies[order.currency_code.toUpperCase()],
     [order.currency_code]
@@ -85,22 +95,43 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
     })
   }, [payment?.id || ""])
 
-  const { mutateAsync, isPending } = useRefundPayment(order.id, payment?.id!)
+  const { mutateAsync, isPending } = useRefundPayment(
+    order.id,
+    payment?.id ?? "",
+  )
 
   const handleSubmit = form.handleSubmit(async (data) => {
+    if (!payment || !paymentId) {
+      toast.error(t("orders.payment.selectPaymentToRefund"))
+      
+      return
+    }
+
+
     await mutateAsync(
       {
-        amount: data.amount.float!,
+        amount: data.amount.float,
         note: data.note,
         refund_reason_id: data.refund_reason_id,
       },
       {
         onSuccess: () => {
+          if (!payment?.currency_code) {
+            toast.success(
+              t("orders.payment.refundPaymentSuccess", {
+                amount: data.amount.float
+              })
+            ) 
+            handleSuccess()
+
+            return
+          }
+
           toast.success(
             t("orders.payment.refundPaymentSuccess", {
               amount: formatCurrency(
-                data.amount.float!,
-                payment?.currency_code!
+                data.amount.float,
+                payment.currency_code
               ),
             })
           )
@@ -181,7 +212,7 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
                     payment!.currency_code
                   )}
                 </span>
-                <span> - </span>
+                <span> - </span>
                 <span>(#{payment!.id.substring(23)})</span>
               </div>
             )}
@@ -191,7 +222,7 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
               name="amount"
               rules={{
                 required: true,
-                min: 0,
+                min: 0.01,
                 max: paymentAmount,
               }}
               render={({ field: { onChange, ...field } }) => {
@@ -202,22 +233,27 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
                     <Form.Control>
                       <CurrencyInput
                         {...field}
-                        min={0}
+                        min={0.01}
+                        max={paymentAmount}
                         placeholder={formatValue({
-                          value: "0",
+                          value: "0.01",
                           decimalScale: currency.decimal_digits,
                         })}
                         decimalScale={currency.decimal_digits}
                         symbol={currency.symbol_native}
                         code={currency.code}
                         value={field.value.value}
-                        onValueChange={(_value, _name, values) =>
-                          onChange({
+                        onValueChange={(_value, _name, values) => {
+                          const newValue = {
                             value: values?.value ?? "",
-                            float: values?.float ?? null,
-                          })
-                        }
-                        autoFocus
+                            float: values?.float ?? 0,
+                          }
+                          onChange(newValue)
+                        }}
+                        onBlur={() => {
+                          field.onBlur()
+                          form.trigger("amount")
+                        }}
                       />
                     </Form.Control>
 
@@ -263,7 +299,7 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
 
             <Form.Field
               control={form.control}
-              name={`note`}
+              name='note'
               render={({ field }) => {
                 return (
                   <Form.Item>

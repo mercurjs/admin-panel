@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PencilSquare } from "@medusajs/icons"
-import { AdminExchange, AdminOrder, AdminOrderPreview } from "@medusajs/types"
+import type { AdminOrder, AdminOrderPreview } from "@medusajs/types"
 import {
   Button,
   CurrencyInput,
@@ -25,6 +25,7 @@ import { CreateExchangeSchemaType, ExchangeCreateSchema } from "./schema"
 
 import { AdminReturn } from "@medusajs/types"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form/keybound-form.tsx"
+import { getErrorMessage } from "@utils/error-helper"
 import {
   useCancelExchangeRequest,
   useExchangeConfirmRequest,
@@ -34,10 +35,11 @@ import {
 import { currencies } from "../../../../../lib/data/currencies"
 import { ExchangeInboundSection } from "./exchange-inbound-section.tsx"
 import { ExchangeOutboundSection } from "./exchange-outbound-section"
+import type { ExtendedAdminExchange } from "@custom-types/exchanges/common.ts"
 
 type ReturnCreateFormProps = {
   order: AdminOrder
-  exchange: AdminExchange
+  exchange: ExtendedAdminExchange
   preview: AdminOrderPreview
   orderReturn?: AdminReturn
 }
@@ -139,16 +141,18 @@ export const ExchangeCreateForm = ({
           const inboundAction = i.actions?.find(
             (a) => a.action === "RETURN_ITEM"
           )
+          const reasonId = inboundAction?.details?.reason_id
 
           return {
             item_id: i.id,
-            variant_id: i.variant_id,
             quantity: i.detail.return_requested_quantity,
             note: inboundAction?.internal_note,
-            reason_id: inboundAction?.details?.reason_id as string | undefined,
+            reason_id: typeof reasonId === "string" ? reasonId : undefined,
           }
         }),
-        outbound_items: outboundPreviewItems.map((i) => ({
+        outbound_items: outboundPreviewItems
+          .filter((i): i is typeof i & { variant_id: string } => !!i.variant_id)
+          .map((i) => ({
           item_id: i.id,
           variant_id: i.variant_id,
           quantity: i.detail.quantity,
@@ -178,13 +182,19 @@ export const ExchangeCreateForm = ({
 
   useEffect(() => {
     if (inboundShipping) {
-      setCustomInboundShippingAmount(inboundShipping.total)
+      setCustomInboundShippingAmount({
+        value: inboundShipping.total.toString(),
+        float: inboundShipping.total,
+      })
     }
   }, [inboundShipping])
 
   useEffect(() => {
     if (outboundShipping) {
-      setCustomOutboundShippingAmount(outboundShipping.total)
+      setCustomOutboundShippingAmount({
+        value: outboundShipping.total.toString(),
+        float: outboundShipping.total,
+      })
     }
   }, [outboundShipping])
 
@@ -212,7 +222,7 @@ export const ExchangeCreateForm = ({
       handleSuccess()
     } catch (e) {
       toast.error(t("general.error"), {
-        description: e.message,
+        description: getErrorMessage(e),
       })
     }
   })

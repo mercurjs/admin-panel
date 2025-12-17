@@ -1126,7 +1126,8 @@
       "createRefundWrongQuantity": "Quantity should be a number between 1 and {{number}}",
       "refundAmount": "Refund {{ amount }}",
       "paymentLink": "Copy payment link for {{ amount }}",
-      "selectPaymentToRefund": "Select payment to refund"
+      "selectPaymentToRefund": "Select payment to refund",
+      "refundAmountWarning": "Refund amount must be greater than 0"
     },
     "edits": {
       "title": "Edit order",

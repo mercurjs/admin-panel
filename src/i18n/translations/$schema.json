@@ -4220,6 +4220,9 @@
             },
             "selectPaymentToRefund": {
               "type": "string"
+            },
+            "refundAmountWarning": {
+              "type": "string"
             }
           },
           "required": [
@@ -4243,7 +4246,8 @@
             "createRefundWrongQuantity",
             "refundAmount",
             "paymentLink",
-            "selectPaymentToRefund"
+            "selectPaymentToRefund",
+            "refundAmountWarning"
           ],
           "additionalProperties": false
         },

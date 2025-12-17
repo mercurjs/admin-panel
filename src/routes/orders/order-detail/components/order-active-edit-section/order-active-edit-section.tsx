@@ -8,9 +8,10 @@ import {
   useConfirmOrderEdit,
 } from "../../../../../hooks/api/order-edits"
 import { useMemo } from "react"
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from "@medusajs/types"
 import { Thumbnail } from "../../../../../components/common/thumbnail"
 import { useNavigate } from "react-router-dom"
+import { getErrorMessage } from "@utils/error-helper"
 
 type OrderActiveEditSectionProps = {
   order: HttpTypes.AdminOrder
@@ -101,7 +102,7 @@ export const OrderActiveEditSection = ({
 
       toast.success(t("orders.edits.toast.confirmedSuccessfully"))
     } catch (e) {
-      toast.error(e.message)
+      toast.error(getErrorMessage(e))
     }
   }
 
@@ -111,7 +112,7 @@ export const OrderActiveEditSection = ({
 
       toast.success(t("orders.edits.toast.canceledSuccessfully"))
     } catch (e) {
-      toast.error(e.message)
+      toast.error(getErrorMessage(e))
     }
   }
 

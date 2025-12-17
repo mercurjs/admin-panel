@@ -5,7 +5,7 @@ import { createDataTableColumnHelper } from "@medusajs/ui";
 import { useTranslation } from "react-i18next";
 
 import { DescriptionCell } from "../../../components/table/table-cells/sales-channel/description-cell";
-import { AdminRefundReason } from "../../../types/refund-reasons/common";
+import type { AdminRefundReason } from "@custom-types/refund-reasons";
 
 const columnHelper = createDataTableColumnHelper<AdminRefundReason>();
 

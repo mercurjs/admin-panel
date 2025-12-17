@@ -11,37 +11,36 @@ import {
   useInitiateReceiveReturn,
   useReturn,
 } from "../../../hooks/api/returns"
+import { getErrorMessage } from "@utils/error-helper"
 
 let IS_REQUEST_RUNNING = false
 
 export function OrderReceiveReturn() {
-  const { id, return_id } = useParams()
+  const { id: order_id, return_id } = useParams()
   const { t } = useTranslation()
   const navigate = useNavigate()
 
-  /**
-   * HOOKS
-   */
+  const id = order_id ?? ""
+  const returnId = return_id ?? ""
 
-  const { order } = useOrder(id!, { fields: "+currency_code,*items" })
-  const { order: preview } = useOrderPreview(id!)
-  const { return: orderReturn } = useReturn(return_id, {
+  const { order } = useOrder(id, { fields: "+currency_code,*items" }, { enabled: !!id })
+  const { order: preview } = useOrderPreview(id, {}, { enabled: !!id })
+  const { return: orderReturn } = useReturn(returnId, {
     fields: "*items.item,*items.item.variant,*items.item.variant.product",
+  }, 
+  {
+    enabled: !!returnId,
   }) // TODO: fix API needs to return 404 if return not exists and not an empty object
 
-  /**
-   * MUTATIONS
-   */
-
   const { mutateAsync: initiateReceiveReturn } = useInitiateReceiveReturn(
-    return_id,
-    id
+    returnId,
+    id,
   )
 
-  const { mutateAsync: addReceiveItems } = useAddReceiveItems(return_id, id)
+  const { mutateAsync: addReceiveItems } = useAddReceiveItems(returnId, id)
 
   useEffect(() => {
-    ;(async function () {
+    (async function () {
       if (IS_REQUEST_RUNNING || !preview) {
         return
       }
@@ -51,6 +50,7 @@ export function OrderReceiveReturn() {
           navigate(`/orders/${id}`, { replace: true })
           toast.error(t("orders.returns.activeChangeError"))
         }
+
         return
       }
 
@@ -66,7 +66,7 @@ export function OrderReceiveReturn() {
           })),
         })
       } catch (e) {
-        toast.error(e.message)
+        toast.error(getErrorMessage(e))
       } finally {
         IS_REQUEST_RUNNING = false
       }

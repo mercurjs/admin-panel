@@ -81,6 +81,7 @@ export const ProductCreateForm = ({
     return regions.reduce(
       (acc, reg) => {
         acc[reg.id] = reg.currency_code
+        
         return acc
       },
       {} as Record<string, string>
@@ -148,7 +149,7 @@ export const ProductCreateForm = ({
       normalizeProductFormValues({
         ...payload,
         media: uploadedMedia,
-        status: (isDraftSubmission ? "draft" : "published") as any,
+        status: (isDraftSubmission ? "draft" : "published"),
         regionsCurrencyMap,
       }),
       {
@@ -210,7 +211,6 @@ export const ProductCreateForm = ({
     }
 
     setTabState({ ...currentState })
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- we only want this effect to run when the tab changes
   }, [tab])
 
   return (

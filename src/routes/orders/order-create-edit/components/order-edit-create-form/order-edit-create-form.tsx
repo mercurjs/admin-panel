@@ -18,6 +18,7 @@ import {
 import { getStylizedAmount } from "../../../../../lib/money-amount-helpers"
 import { OrderEditItemsSection } from "./order-edit-items-section"
 import { CreateOrderEditSchemaType, OrderEditCreateSchema } from "./schema"
+import { getErrorMessage } from "@utils/error-helper"
 
 type ReturnCreateFormProps = {
   order: AdminOrder
@@ -78,7 +79,7 @@ export const OrderEditCreateForm = ({
       handleSuccess()
     } catch (e) {
       toast.error(t("general.error"), {
-        description: e.message,
+        description: getErrorMessage(e),
       })
     }
   })

@@ -13,12 +13,12 @@ import {
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
-import { ActionMenu } from "../../../../../components/common/action-menu"
-import { useUpdateProduct } from "../../../../../hooks/api/products"
-import { HttpTypes } from "@medusajs/types"
+import { ActionMenu } from "@components/common/action-menu"
+import { useUpdateProduct } from "@hooks/api/products"
+import type { AdminProduct } from "@custom-types/product"
 
 type ProductMedisaSectionProps = {
-  product: HttpTypes.AdminProduct 
+  product: AdminProduct
 }
 
 export const ProductMediaSection = ({ product }: ProductMedisaSectionProps) => {
@@ -31,7 +31,9 @@ export const ProductMediaSection = ({ product }: ProductMedisaSectionProps) => {
   const handleCheckedChange = (id: string) => {
     setSelection((prev) => {
       if (prev[id]) {
-        const { [id]: _, ...rest } = prev
+        const rest = { ...prev }
+        delete rest[id]
+
         return rest
       } else {
         return { ...prev, [id]: true }
@@ -133,10 +135,10 @@ export const ProductMediaSection = ({ product }: ProductMedisaSectionProps) => {
                     </Tooltip>
                   </div>
                 )}
-                <Link to={`media`} state={{ curr: index }} data-testid={`product-media-link-${i.id}`}>
+                <Link to="media" state={{ curr: index }} data-testid={`product-media-link-${i.id}`}>
                   <img
                     src={i.url}
-                    alt={`${product.title} image`}
+                    alt={product.title}
                     className="size-full object-cover"
                     data-testid={`product-media-image-${i.id}`}
                   />
@@ -194,10 +196,10 @@ type Media = {
   isThumbnail: boolean
 }
 
-const getMedia = (product: Product) => {
+const getMedia = (product: AdminProduct) => {
   const { images = [], thumbnail } = product
 
-  const media: Media[] = images.map((image) => ({
+  const media: Media[] = (images || []).map((image) => ({
     id: image.id,
     url: image.url,
     isThumbnail: image.url === thumbnail,

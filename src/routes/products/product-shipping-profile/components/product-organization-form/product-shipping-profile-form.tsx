@@ -1,4 +1,4 @@
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from "@medusajs/types"
 import { Button, toast } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import * as zod from "zod"
@@ -13,11 +13,10 @@ import { sdk } from "../../../../../lib/client"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect } from "react"
+import type { AdminProduct } from "@custom-types/product"
 
 type ProductShippingProfileFormProps = {
-  product: HttpTypes.AdminProduct & {
-    shipping_profile?: HttpTypes.AdminShippingProfile
-  }
+  product: AdminProduct
 }
 
 const ProductShippingProfileSchema = zod.object({

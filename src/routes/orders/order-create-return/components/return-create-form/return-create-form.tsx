@@ -1,11 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PencilSquare } from "@medusajs/icons"
-import {
+import type {
   AdminOrder,
   AdminOrderPreview,
   AdminReturn,
   InventoryLevelDTO,
 } from "@medusajs/types"
+import type { AdminProductVariantListResponseWithInventory } from "@custom-types/product"
 import {
   Alert,
   Button,
@@ -27,6 +28,7 @@ import {
   useRouteModal,
   useStackedModal,
 } from "../../../../../components/modals"
+import { getErrorMessage } from "@utils/error-helper"
 
 import { Form } from "../../../../../components/common/form"
 import { Combobox } from "../../../../../components/inputs/combobox"
@@ -175,15 +177,19 @@ export const ReturnCreateForm = ({
       )
 
       return Promise.resolve({
-        items: previewItems.map((i) => ({
-          item_id: i.id,
-          quantity: i.detail.return_requested_quantity,
-          note: i.actions?.find((a) => a.action === "RETURN_ITEM")
-            ?.internal_note,
-          reason_id: i.actions?.find((a) => a.action === "RETURN_ITEM")?.details
-            ?.reason_id,
-        })),
-        option_id: method ? method.shipping_option_id : "",
+        items: previewItems.map((i) => {
+          const returnAction = i.actions?.find((a) => a.action === "RETURN_ITEM")
+          const reasonId = returnAction?.details?.reason_id
+          
+          return {
+            item_id: i.id,
+            variant_id: i.variant_id,
+            quantity: i.detail.return_requested_quantity,
+            note: returnAction?.internal_note,
+            reason_id: typeof reasonId === "string" ? reasonId : undefined,
+          }
+        }),
+        option_id: method ? method.shipping_option_id : null,
         location_id: activeReturn?.location_id,
         send_notification: false,
       })
@@ -221,12 +227,13 @@ export const ReturnCreateForm = ({
           const returnItemAction = i.actions?.find(
             (a) => a.action === "RETURN_ITEM"
           )
+          const reasonId = returnItemAction?.details?.reason_id
 
           update(ind, {
             ...items[ind],
             quantity: i.detail.return_requested_quantity,
             note: returnItemAction?.internal_note,
-            reason_id: returnItemAction?.details?.reason_id,
+            reason_id: typeof reasonId === "string" ? reasonId : undefined,
           })
         }
       } else {
@@ -249,7 +256,7 @@ export const ReturnCreateForm = ({
     if (method) {
       form.setValue("option_id", method.shipping_option_id!)
     } else {
-      form.setValue("option_id", "")
+      form.setValue("option_id", null)
     }
   }, [preview.shipping_methods])
 
@@ -277,8 +284,7 @@ export const ReturnCreateForm = ({
       handleSuccess()
     } catch (e) {
       toast.error(t("general.error"), {
-        description: e.message,
-        dismissLabel: t("actions.close"),
+        description: getErrorMessage(e),
       })
     }
   })
@@ -294,17 +300,18 @@ export const ReturnCreateForm = ({
     setIsOpen("items", false)
   }
 
-  const onLocationChange = async (selectedLocationId: string) => {
+  const onLocationChange = async (selectedLocationId?: string | null) => {
     await updateReturnRequest({ location_id: selectedLocationId })
   }
 
   const onShippingOptionChange = async (
     selectedOptionId: string | undefined
   ) => {
-    const promises = preview.shipping_methods
+    const actionIds = preview.shipping_methods
       .map((s) => s.actions?.find((a) => a.action === "SHIPPING_ADD")?.id)
-      .filter(Boolean)
-      .map(deleteReturnShipping)
+      .filter((id): id is string => Boolean(id))
+
+    const promises = actionIds.map((id) => deleteReturnShipping(id))
 
     await Promise.all(promises)
 
@@ -315,7 +322,7 @@ export const ReturnCreateForm = ({
 
   useEffect(() => {
     if (isShippingPriceEdit) {
-      document.getElementById("js-shipping-input").focus()
+      document?.getElementById("js-shipping-input")?.focus()
     }
   }, [isShippingPriceEdit])
 
@@ -356,33 +363,22 @@ export const ReturnCreateForm = ({
         return ret
       }
 
-      (
-        await Promise.all(
-          items.map(async (_i) => {
-            const item = itemsMap.get(_i.item_id)
+      const variantIds = items
+        .map((item) => item?.variant_id)
+        .filter((id): id is string => Boolean(id))
 
-            if (!item.variant_id) {
-              return undefined
-            }
-            return await sdk.admin.product.retrieveVariant(
-              item.product_id,
-              item.variant_id,
-              { fields: "*inventory,*inventory.location_levels" }
-            )
-          })
-        )
-      )
-        .filter((it) => it?.variant)
-        .forEach((item) => {
-          const { variant } = item
-          const levels = variant.inventory[0]?.location_levels
+      if (!variantIds.length) {
+        return ret
+      }
 
-          if (!levels) {
-            return
-          }
+      const { variants } = (await sdk.admin.productVariant.list({
+        id: variantIds,
+        fields: "*inventory.location_levels",
+      })) as AdminProductVariantListResponseWithInventory
 
-          ret[variant.id] = levels
-        })
+      variants.forEach((variant) => {
+        ret[variant.id] = variant.inventory?.[0]?.location_levels || []
+      })
 
       return ret
     }
@@ -472,11 +468,19 @@ export const ReturnCreateForm = ({
             )}
             {items
               .filter((item) => !!previewItemsMap.get(item.item_id))
-              .map((item, index) => (
+              .map((item, index) => {
+                const orderItem = itemsMap.get(item.item_id)
+                const previewItem = previewItemsMap.get(item.item_id)
+                
+                if (!orderItem || !previewItem) {
+                  return null
+                }
+
+                return (
                 <ReturnItem
                   key={item.id}
-                  item={itemsMap.get(item.item_id)!}
-                  previewItem={previewItemsMap.get(item.item_id)}
+                  item={orderItem}
+                  previewItem={previewItem}
                   currencyCode={order.currency_code}
                   form={form}
                   onRemove={() => {
@@ -513,7 +517,8 @@ export const ReturnCreateForm = ({
                   }}
                   index={index}
                 />
-              ))}
+                )
+              })}
             {!showPlaceholder && (
               <div className="mt-8 flex flex-col gap-y-4">
                 {/* LOCATION*/}
@@ -581,7 +586,7 @@ export const ReturnCreateForm = ({
                           <Form.Control>
                             <Combobox
                               allowClear
-                              value={value}
+                              value={value ?? undefined}
                               onChange={(v) => {
                                 onChange(v)
                                 onShippingOptionChange(v)
@@ -663,21 +668,24 @@ export const ReturnCreateForm = ({
                       id="js-shipping-input"
                       onBlur={() => {
                         let actionId
+                        let shippingOptionId
 
                         preview.shipping_methods.forEach((s) => {
                           if (s.actions) {
                             for (const a of s.actions) {
                               if (a.action === "SHIPPING_ADD") {
                                 actionId = a.id
+                                shippingOptionId = s.shipping_option_id
                               }
                             }
                           }
                         })
 
-                        if (actionId) {
+                        if (actionId && shippingOptionId) {
                           updateReturnShipping({
                             actionId,
-                            custom_amount: customShippingAmount.float,
+                            shipping_option_id: shippingOptionId,
+                            custom_amount: customShippingAmount.float ?? undefined,
                           })
                         }
                         setIsShippingPriceEdit(false)

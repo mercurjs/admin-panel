@@ -1,5 +1,5 @@
-import { HttpTypes } from "@medusajs/types"
 import { useQueryParams } from "../../use-query-params"
+import type { AdminRefundReasonListParams } from "@custom-types/refund-reasons"
 
 type UseRefundReasonTableQueryProps = {
   prefix?: string
@@ -16,7 +16,7 @@ export const useRefundReasonTableQuery = ({
   )
 
   const { offset, q, order, created_at, updated_at } = queryObject
-  const searchParams: HttpTypes.AdminRefundReasonListParams = {
+  const searchParams: AdminRefundReasonListParams = {
     limit: pageSize,
     offset: offset ? Number(offset) : 0,
     order,

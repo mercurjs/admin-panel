@@ -49,6 +49,57 @@ export const normalizeProductFormValues = (
   }
 }
 
+type InventoryItem = {
+  inventory_item_id: string
+  required_quantity: number
+}
+
+type PriceItem = {
+  currency_code: string
+  amount: number
+  rules?: { region_id: string }
+}
+
+const normalizeInventoryItem = (
+  item: { inventory_item_id: string; required_quantity?: number | string | null }
+): InventoryItem | null => {
+  const quantity = item.required_quantity
+    ? castNumber(item.required_quantity)
+    : null
+
+  if (!item.inventory_item_id || !quantity) {
+    return null
+  }
+
+  return {
+    ...item,
+    required_quantity: quantity,
+  }
+}
+
+const normalizePriceItem = (
+  key: string,
+  value: number | string | undefined,
+  regionsCurrencyMap: Record<string, string>
+): PriceItem | null => {
+  if (value === "" || value === undefined) {
+    return null
+  }
+
+  if (key.startsWith("reg_")) {
+    return {
+      currency_code: regionsCurrencyMap[key],
+      amount: castNumber(value),
+      rules: { region_id: key },
+    }
+  }
+
+  return {
+    currency_code: key,
+    amount: castNumber(value),
+  }
+}
+
 export const normalizeVariants = (
   variants: ProductCreateSchemaType["variants"],
   regionsCurrencyMap: Record<string, string>
@@ -60,47 +111,12 @@ export const normalizeVariants = (
     manage_inventory: !!variant.manage_inventory,
     allow_backorder: !!variant.allow_backorder,
     variant_rank: variant.variant_rank,
-    inventory_items: variant
-      .inventory!.map((i) => {
-        const quantity = i.required_quantity
-          ? castNumber(i.required_quantity)
-          : null
-
-        if (!i.inventory_item_id || !quantity) {
-          return false
-        }
-
-        return {
-          ...i,
-          required_quantity: quantity,
-        }
-      })
-      .filter(
-        (
-          item
-        ): item is { required_quantity: number; inventory_item_id: string } =>
-          item !== false
-      ),
+    inventory_items: (variant.inventory || [])
+      .map(normalizeInventoryItem)
+      .filter((item): item is InventoryItem => item !== null),
     prices: Object.entries(variant.prices || {})
-      .map(([key, value]: any) => {
-        if (value === "" || value === undefined) {
-          return undefined
-        }
-
-        if (key.startsWith("reg_")) {
-          return {
-            currency_code: regionsCurrencyMap[key],
-            amount: castNumber(value),
-            rules: { region_id: key },
-          }
-        } else {
-          return {
-            currency_code: key,
-            amount: castNumber(value),
-          }
-        }
-      })
-      .filter((v) => !!v),
+      .map(([key, value]) => normalizePriceItem(key, value, regionsCurrencyMap))
+      .filter((price): price is PriceItem => price !== null),
   }))
 }
 

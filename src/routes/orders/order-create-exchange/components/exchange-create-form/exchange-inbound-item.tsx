@@ -107,24 +107,24 @@ function ExchangeInboundItem({
             groups={[
               {
                 actions: [
-                  !showReturnReason && {
+                  ...(!showReturnReason ? [{
                     label: t("actions.addReason"),
                     onClick: () =>
                       form.setValue(`inbound_items.${index}.reason_id`, ""),
                     icon: <ChatBubble />,
-                  },
-                  !showNote && {
+                  }] : []),
+                  ...(!showNote ? [{
                     label: t("actions.addNote"),
                     onClick: () =>
                       form.setValue(`inbound_items.${index}.note`, ""),
                     icon: <DocumentText />,
-                  },
+                  }] : []),
                   {
                     label: t("actions.remove"),
                     onClick: onRemove,
                     icon: <XCircle />,
                   },
-                ].filter(Boolean),
+                ],
               },
             ]}
           />
@@ -146,7 +146,7 @@ function ExchangeInboundItem({
                 <Form.Field
                   control={form.control}
                   name={`inbound_items.${index}.reason_id`}
-                  render={({ field: { ref, value, onChange, ...field } }) => {
+                  render={({ field: { value, onChange, ...field } }) => {
                     return (
                       <Form.Item>
                         <Form.Control>
@@ -201,7 +201,7 @@ function ExchangeInboundItem({
                 <Form.Field
                   control={form.control}
                   name={`inbound_items.${index}.note`}
-                  render={({ field: { ref, ...field } }) => {
+                  render={({ field: { ...field } }) => {
                     return (
                       <Form.Item>
                         <Form.Control>

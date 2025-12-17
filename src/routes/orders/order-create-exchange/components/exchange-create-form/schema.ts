@@ -4,6 +4,7 @@ export const ExchangeCreateSchema = z.object({
   inbound_items: z.array(
     z.object({
       item_id: z.string(),
+      variant_id: z.string().nullish(),
       quantity: z.number(),
       reason_id: z.string().nullish(),
       note: z.string().nullish(),
@@ -13,6 +14,7 @@ export const ExchangeCreateSchema = z.object({
     z.object({
       item_id: z.string(),
       quantity: z.number(),
+      variant_id: z.string(),
     })
   ),
   location_id: z.string().optional(),

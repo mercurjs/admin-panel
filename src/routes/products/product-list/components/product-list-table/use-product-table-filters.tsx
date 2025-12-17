@@ -1,13 +1,13 @@
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { createDataTableFilterHelper } from "@medusajs/ui"
-import { HttpTypes } from "@medusajs/types"
 import { useDataTableDateFilters } from "../../../../../components/data-table/helpers/general/use-data-table-date-filters"
 import { useProductTypes } from "../../../../../hooks/api/product-types"
 import { useProductTags } from "../../../../../hooks/api"
 import { useSalesChannels } from "../../../../../hooks/api/sales-channels"
+import type { ExtendedAdminProductListParams } from "@custom-types/product"
 
-const filterHelper = createDataTableFilterHelper<HttpTypes.AdminProduct>()
+const filterHelper = createDataTableFilterHelper<ExtendedAdminProductListParams>()
 
 /**
  * Hook to create filters in the format expected by @medusajs/ui DataTable
