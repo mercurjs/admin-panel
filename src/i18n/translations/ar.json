@@ -1553,7 +1553,7 @@
     },
     "delete": {
       "confirmation": "أنت على وشك حذف موقع المخزون {{name}}. لا يمكن التراجع عن هذا الإجراء.",
-      "successToast": "Location \"{{name}}\" was successfully deleted."
+      "successToast": "تم حذف الموقع \"{{name}}\" بنجاح."
     },
     "fulfillmentProviders": {
       "header": "مزودي التنفيذ",
@@ -1683,8 +1683,8 @@
         "count": {
           "shipping_one": "{{count}} خيار شحن",
           "shipping_other": "{{count}} خيارات شحن",
-          "pickup_one": "{{count}} pickup option",
-          "pickup_other": "{{count}} pickup options",
+          "pickup_one": "{{count}} خيار استلام",
+          "pickup_other": "{{count}} خيارات استلام",
           "returns_one": "{{count}} خيار إرجاع",
           "returns_other": "{{count}} خيارات إرجاع"
         },
