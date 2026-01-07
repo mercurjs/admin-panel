@@ -1047,7 +1047,7 @@
     },
     "transfer": {
       "title": "העבר בעלות",
-      "requestSuccess": "בקשת העברת הזמנה נשלחה ל: {{email}}.",
+      "requestSuccess": "בקשת העברת הזמנה נשלחה ל{{customerDetails}}.",
       "currentOwner": "בעלים נוכחי",
       "newOwner": "בעלים חדש",
       "currentOwnerDescription": "הלקוח הקשור כרגע להזמנה זו.",

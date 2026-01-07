@@ -960,7 +960,7 @@
     },
     "transfer": {
       "title": "Trasferisci proprietà",
-      "requestSuccess": "Richiesta di trasferimento ordine inviata a: {{email}}.",
+      "requestSuccess": "Richiesta di trasferimento ordine inviata a {{customerDetails}}.",
       "currentOwner": "Proprietario attuale",
       "newOwner": "Nuovo proprietario",
       "currentOwnerDescription": "Il cliente attualmente associato a questo ordine.",

@@ -1072,7 +1072,7 @@
     },
     "transfer": {
       "title": "Převod vlastnictví",
-      "requestSuccess": "Žádost o převod objednávky byla odeslána na: {{email}}.",
+      "requestSuccess": "Žádost o převod objednávky byla odeslána na {{customerDetails}}.",
       "currentOwner": "Současný vlastník",
       "newOwner": "Nový vlastník",
       "currentOwnerDescription": "Zákazník aktuálně spojený s touto objednávkou.",

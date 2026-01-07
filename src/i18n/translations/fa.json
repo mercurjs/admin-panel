@@ -1004,7 +1004,7 @@
     },
     "transfer": {
       "title": "انتقال مالکیت",
-      "requestSuccess": "درخواست انتقال سفارش به {{email}} ارسال شد.",
+      "requestSuccess": "درخواست انتقال سفارش به {{customerDetails}} ارسال شد.",
       "currentOwner": "مالک فعلی",
       "newOwner": "مالک جدید",
       "currentOwnerDescription": "مشتری که در حال حاضر به این سفارش مرتبط است.",

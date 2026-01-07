@@ -1022,7 +1022,8 @@
     },
     "transfer": {
       "title": "Прехвърляне на собственост",
-      "requestSuccess": "Заявката за прехвърляне на поръчката беше изпратена до: {{email}}.",
+<｜tool▁sep｜>new_string
+      "requestSuccess": "Заявката за прехвърляне на поръчката беше изпратена до {{customerDetails}}.",
       "currentOwner": "Текущ собственик",
       "newOwner": "Нов собственик",
       "currentOwnerDescription": "Клиентът, свързан с тази поръчка в момента.",

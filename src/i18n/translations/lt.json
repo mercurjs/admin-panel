@@ -1045,7 +1045,7 @@
     },
     "transfer": {
       "title": "Perleisti nuosavybę",
-      "requestSuccess": "Užsakymo nuosavybės perleidimo prašymas išsiųstas į {{email}}.",
+      "requestSuccess": "Užsakymo nuosavybės perleidimo prašymas išsiųstas į {{customerDetails}}.",
       "currentOwner": "Dabartinis savininkas",
       "newOwner": "Naujas savininkas",
       "currentOwnerDescription": "Pirkėjas jau susietas su šiuo užsakymu.",

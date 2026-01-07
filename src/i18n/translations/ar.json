@@ -1022,7 +1022,7 @@
     },
     "transfer": {
       "title": "نقل الملكية",
-      "requestSuccess": "تم إرسال طلب نقل الطلب إلى: {{email}}.",
+      "requestSuccess": "تم إرسال طلب نقل الطلب إلى {{customerDetails}}.",
       "currentOwner": "المالك الحالي",
       "newOwner": "المالك الجديد",
       "currentOwnerDescription": "العميل المرتبط حاليًا بهذا الطلب.",

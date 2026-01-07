@@ -1118,7 +1118,7 @@
     },
     "transfer": {
       "title": "Transferir propiedad",
-      "requestSuccess": "Solicitud de transferencia de pedido enviada a: {{email}}.",
+      "requestSuccess": "Solicitud de transferencia de pedido enviada a {{customerDetails}}.",
       "currentOwner": "Propietario actual",
       "newOwner": "Nuevo propietario",
       "currentOwnerDescription": "El cliente actualmente relacionado con este pedido.",

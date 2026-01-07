@@ -1047,7 +1047,7 @@
     },
     "transfer": {
       "title": "Transfer kepemilikan",
-      "requestSuccess": "Permintaan transfer pesanan dikirim ke: {{email}}.",
+      "requestSuccess": "Permintaan transfer pesanan dikirim ke {{customerDetails}}.",
       "currentOwner": "Pemilik saat ini",
       "newOwner": "Pemilik baru",
       "currentOwnerDescription": "Pelanggan yang saat ini terkait dengan pesanan ini.",

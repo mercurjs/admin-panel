@@ -1004,7 +1004,7 @@
     },
     "transfer": {
       "title": "Transferați proprietatea",
-      "requestSuccess": "Solicitare de transfer de comandă trimisă la: {{email}}.",
+      "requestSuccess": "Solicitarea de transfer de comandă a fost trimisă către {{customerDetails}}.",
       "currentOwner": "Actual proprietar",
       "newOwner": "Noul proprietar",
       "currentOwnerDescription": "Clientul se referă în prezent la această comandă.",

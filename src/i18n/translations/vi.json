@@ -1072,7 +1072,7 @@
     },
     "transfer": {
       "title": "Chuyển quyền sở hữu",
-      "requestSuccess": "Yêu cầu chuyển đơn hàng đã được gửi đến: {{email}}.",
+      "requestSuccess": "Yêu cầu chuyển đơn hàng đã được gửi đến {{customerDetails}}.",
       "currentOwner": "Chủ sở hữu hiện tại",
       "newOwner": "Chủ sở hữu mới",
       "currentOwnerDescription": "Khách hàng hiện đang liên quan đến đơn hàng này.",

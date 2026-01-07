@@ -1047,7 +1047,7 @@
     },
     "transfer": {
       "title": "转移所有权",
-      "requestSuccess": "订单转移请求已发送至：{{email}}。",
+      "requestSuccess": "转移请求已发送至 {{customerDetails}}。",
       "currentOwner": "当前所有者",
       "newOwner": "新所有者",
       "currentOwnerDescription": "当前与此订单关联的客户。",

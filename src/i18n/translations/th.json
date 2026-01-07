@@ -948,7 +948,7 @@
     },
     "transfer": {
       "title": "โอนกรรมสิทธิ์",
-      "requestSuccess": "คำขอโอนคำสั่งซื้อถูกส่งไปที่: {{email}}",
+      "requestSuccess": "คำขอโอนคำสั่งซื้อถูกส่งไปยัง {{customerDetails}}",
       "currentOwner": "เจ้าของปัจจุบัน",
       "newOwner": "เจ้าของใหม่",
       "currentOwnerDescription": "ลูกค้าปัจจุบันที่เกี่ยวข้องกับคำสั่งซื้อนี้",

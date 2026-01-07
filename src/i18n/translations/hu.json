@@ -1043,7 +1043,7 @@
     },
     "transfer": {
       "title": "Rendelés átadása",
-      "requestSuccess": "Rendelésátadási kérelem elküldve: {{email}}.",
+      "requestSuccess": "Rendelésátadási kérelem elküldve {{customerDetails}} részére.",
       "currentOwner": "Jelenlegi tulajdonos",
       "newOwner": "Új tulajdonos",
       "currentOwnerDescription": "A rendelés jelenlegi tulajdonosa.",

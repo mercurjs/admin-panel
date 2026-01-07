@@ -1004,7 +1004,7 @@
     },
     "transfer": {
       "title": "Пренесете ја сопственоста",
-      "requestSuccess": "Барањето за пренос на нарачка испратено до: {{email}}.",
+      "requestSuccess": "Барањето за пренос на нарачка испратено до {{customerDetails}}.",
       "currentOwner": "Тековен сопственик",
       "newOwner": "Нов сопственик",
       "currentOwnerDescription": "Клиентот во моментов е поврзан со оваа нарачка.",

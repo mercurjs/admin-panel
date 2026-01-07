@@ -948,7 +948,7 @@
     },
     "transfer": {
       "title": "Eigentumsübertragung",
-      "requestSuccess": "Anfrage zur Eigentumsübertragung an: {{email}}.",
+      "requestSuccess": "Anfrage zur Eigentumsübertragung wurde an {{customerDetails}} gesendet.",
       "currentOwner": "Aktueller Besitzer",
       "newOwner": "Neuer Besitzer",
       "currentOwnerDescription": "Der Kunde, der derzeit mit dieser Bestellung verbunden ist.",

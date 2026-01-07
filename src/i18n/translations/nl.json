@@ -1043,7 +1043,7 @@
     },
     "transfer": {
       "title": "Eigendom overdragen",
-      "requestSuccess": "Overdrachtsverzoek voor bestelling verzonden naar: {{email}}.",
+      "requestSuccess": "Overdrachtsverzoek voor bestelling verzonden naar {{customerDetails}}.",
       "currentOwner": "Huidige eigenaar",
       "newOwner": "Nieuwe eigenaar",
       "currentOwnerDescription": "De klant die momenteel aan deze bestelling is gekoppeld.",

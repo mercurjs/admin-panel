@@ -1012,7 +1012,7 @@
     },
     "transfer": {
       "title": "Mülkiyeti Devret",
-      "requestSuccess": "Sipariş devri talebi şu kişiye gönderildi: {{email}}.",
+      "requestSuccess": "Sipariş devri talebi {{customerDetails}} adresine gönderildi.",
       "currentOwner": "Mevcut Sahip",
       "newOwner": "Yeni Sahip",
       "currentOwnerDescription": "Bu siparişle şu anda ilişkili olan müşteri.",

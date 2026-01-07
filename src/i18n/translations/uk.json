@@ -954,7 +954,7 @@
     },
     "transfer": {
       "title": "Передати право власності",
-      "requestSuccess": "Запит на передачу замовлення надіслано на: {{email}}.",
+      "requestSuccess": "Запит на передачу замовлення надіслано до {{customerDetails}}.",
       "currentOwner": "Поточний власник",
       "newOwner": "Новий власник",
       "currentOwnerDescription": "Клієнт, який наразі пов'язаний з цим замовленням.",
