@@ -1170,7 +1170,7 @@
       },
       "billingAddress": {
         "title": "Edit billing address",
-        "requestSuccess": "Order billing address updated.",
+        "requestSuccess": "Billing address was successfully updated.",
         "validation": {
           "addressRequired": "Please enter an address",
           "countryRequired": "Please select a country"
