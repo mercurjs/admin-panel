@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { HttpTypes } from '@medusajs/types';
-import { Button, Input, toast } from '@medusajs/ui';
+import { Button, Input, Text, toast } from '@medusajs/ui';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import * as zod from 'zod';
@@ -54,7 +54,8 @@ export function CreateOrderTransferForm({ order }: CreateOrderTransferFormProps)
       await mutateAsync({
         customer_id: data.customer_id
       });
-      toast.success(t('orders.transfer.requestSuccess', { email: order.email }));
+      const customer = customers.options.find(option => option.value === data.customer_id);
+      toast.success(t('orders.transfer.requestSuccess', { customerDetails: customer?.label }));
       handleSuccess();
     } catch (error) {
       toast.error((error as Error).message);
@@ -74,7 +75,7 @@ export function CreateOrderTransferForm({ order }: CreateOrderTransferFormProps)
           className="flex-1 overflow-auto"
           data-testid="order-request-transfer-body"
         >
-          <div className="flex flex-col gap-y-8">
+          <div className="flex flex-col gap-y-6">
             <div
               className="flex justify-center"
               data-testid="order-request-transfer-header-section"
@@ -87,15 +88,18 @@ export function CreateOrderTransferForm({ order }: CreateOrderTransferFormProps)
               render={({ field }) => {
                 return (
                   <Form.Item data-testid="order-request-transfer-current-customer-item">
-                    <Form.Label data-testid="order-request-transfer-current-customer-label">
-                      {t('orders.transfer.currentOwner')}
-                    </Form.Label>
-                    <span
-                      className="txt-small text-ui-fg-muted"
-                      data-testid="order-request-transfer-current-customer-hint"
-                    >
-                      {t('orders.transfer.currentOwnerDescription')}
-                    </span>
+                    <div>
+                      <Form.Label data-testid="order-request-transfer-current-customer-label">
+                        {t('orders.transfer.currentOwner')}
+                      </Form.Label>
+                      <Text
+                        size="small"
+                        className="text-ui-fg-subtle"
+                        data-testid="order-request-transfer-new-customer-hint"
+                      >
+                        {t('orders.transfer.currentOwnerDescription')}
+                      </Text>
+                    </div>
 
                     <Form.Control data-testid="order-request-transfer-current-customer-control">
                       <Input
@@ -118,15 +122,18 @@ export function CreateOrderTransferForm({ order }: CreateOrderTransferFormProps)
               render={({ field }) => {
                 return (
                   <Form.Item data-testid="order-request-transfer-new-customer-item">
-                    <Form.Label data-testid="order-request-transfer-new-customer-label">
-                      {t('orders.transfer.newOwner')}
-                    </Form.Label>
-                    <span
-                      className="txt-small text-ui-fg-muted"
-                      data-testid="order-request-transfer-new-customer-hint"
-                    >
-                      {t('orders.transfer.newOwnerDescription')}
-                    </span>
+                    <div>
+                      <Form.Label data-testid="order-request-transfer-new-customer-label">
+                        {t('orders.transfer.newOwner')}
+                      </Form.Label>
+                      <Text
+                        size="small"
+                        className="text-ui-fg-subtle"
+                        data-testid="order-request-transfer-new-customer-hint"
+                      >
+                        {t('orders.transfer.newOwnerDescription')}
+                      </Text>
+                    </div>
 
                     <Form.Control data-testid="order-request-transfer-new-customer-control">
                       <Combobox
