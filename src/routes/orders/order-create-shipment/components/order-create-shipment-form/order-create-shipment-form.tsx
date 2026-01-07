@@ -1,15 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AdminFulfillment, AdminOrder } from '@medusajs/types';
-import { Button, Heading, Input, Switch, toast } from '@medusajs/ui';
+import { Button, Divider, Heading, Input, Switch, toast } from '@medusajs/ui';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import * as zod from 'zod';
 
 import { Form } from '../../../../../components/common/form';
+import { HandleInput } from '../../../../../components/inputs/handle-input';
 import { RouteFocusModal, useRouteModal } from '../../../../../components/modals';
 import { KeyboundForm } from '../../../../../components/utilities/keybound-form';
 import { useCreateOrderShipment } from '../../../../../hooks/api';
-import { CreateShipmentSchema } from './constants';
+import { CreateShipmentSchema, defaultLabelValues } from './constants';
 
 type OrderCreateFulfillmentFormProps = {
   order: AdminOrder;
@@ -27,12 +28,24 @@ export function OrderCreateShipmentForm({ order, fulfillment }: OrderCreateFulfi
 
   const form = useForm<zod.infer<typeof CreateShipmentSchema>>({
     defaultValues: {
-      send_notification: !order.no_notification
+      send_notification: !order.no_notification,
+      labels:
+        fulfillment?.labels && fulfillment.labels.length > 0
+          ? fulfillment.labels.map(l => ({
+              tracking_number: l.tracking_number,
+              tracking_url: l.tracking_url,
+              label_url: l.label_url
+            }))
+          : [defaultLabelValues]
     },
     resolver: zodResolver(CreateShipmentSchema)
   });
 
-  const { fields: labels, append } = useFieldArray({
+  const {
+    fields: labels,
+    append,
+    remove
+  } = useFieldArray({
     name: 'labels',
     control: form.control
   });
@@ -42,8 +55,8 @@ export function OrderCreateShipmentForm({ order, fulfillment }: OrderCreateFulfi
       .filter(l => !!l.tracking_number)
       .map(l => ({
         tracking_number: l.tracking_number,
-        tracking_url: '#',
-        label_url: '#'
+        tracking_url: l.tracking_url || undefined,
+        label_url: l.label_url || undefined
       }));
 
     await createShipment(
@@ -52,7 +65,7 @@ export function OrderCreateShipmentForm({ order, fulfillment }: OrderCreateFulfi
           id: i.line_item_id,
           quantity: i.quantity
         })),
-        labels: [...addedLabels, ...(fulfillment?.labels || [])],
+        labels: [...addedLabels],
         no_notification: !data.send_notification
       },
       {
@@ -82,64 +95,115 @@ export function OrderCreateShipmentForm({ order, fulfillment }: OrderCreateFulfi
           className="flex h-full w-full flex-col items-center divide-y overflow-y-auto"
           data-testid="order-create-shipment-body"
         >
-          <div className="flex size-full flex-col items-center overflow-auto p-16">
+          <div className="flex size-full flex-col items-center overflow-auto p-4 sm:p-16">
             <div className="flex w-full max-w-[736px] flex-col justify-center px-2 pb-2">
-              <div className="flex flex-col divide-y">
+              <div className="flex flex-col">
                 <div className="flex flex-1 flex-col">
-                  <Heading
-                    className="mb-4"
-                    data-testid="order-create-shipment-heading"
-                  >
-                    {t('orders.shipment.title')}
-                  </Heading>
-
-                  {labels.map((label, index) => (
-                    <Form.Field
-                      key={label.id}
-                      control={form.control}
-                      name={`labels.${index}.tracking_number`}
-                      render={({ field }) => {
-                        return (
-                          <Form.Item
-                            className="mb-4"
-                            data-testid={`order-create-shipment-tracking-item-${index}`}
-                          >
-                            {index === 0 && (
-                              <Form.Label data-testid="order-create-shipment-tracking-label">
-                                {t('orders.shipment.trackingNumber')}
-                              </Form.Label>
-                            )}
-                            <Form.Control
-                              data-testid={`order-create-shipment-tracking-control-${index}`}
-                            >
-                              <Input
-                                {...field}
-                                placeholder="123-456-789"
-                                data-testid={`order-create-shipment-tracking-input-${index}`}
-                              />
-                            </Form.Control>
-                            <Form.ErrorMessage
-                              data-testid={`order-create-shipment-tracking-error-${index}`}
-                            />
-                          </Form.Item>
-                        );
+                  <div className="mb-9 flex flex-col justify-between gap-y-4 sm:flex-row sm:items-center">
+                    <Heading
+                      level="h2"
+                      data-testid="order-create-shipment-heading"
+                    >
+                      {t('orders.shipment.title')}
+                    </Heading>
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        if (labels.length === 2) {
+                          remove(labels.length - 1);
+                        } else {
+                          append(defaultLabelValues);
+                        }
                       }}
-                    />
-                  ))}
+                      variant="secondary"
+                      data-testid="order-create-shipment-add-tracking-button"
+                    >
+                      {t(
+                        labels.length === 2
+                          ? 'orders.shipment.hideTracking'
+                          : 'orders.shipment.addTracking'
+                      )}
+                    </Button>
+                  </div>
 
-                  <Button
-                    type="button"
-                    onClick={() => append({ tracking_number: '' })}
-                    className="self-end"
-                    variant="secondary"
-                    data-testid="order-create-shipment-add-tracking-button"
-                  >
-                    {t('orders.shipment.addTracking')}
-                  </Button>
+                  <div className="flex flex-col gap-y-8">
+                    {labels.map((label, index) => (
+                      <div key={label.id}>
+                        <Form.Field
+                          control={form.control}
+                          name={`labels.${index}.tracking_number`}
+                          render={({ field }) => {
+                            return (
+                              <Form.Item
+                                className="mb-4"
+                                data-testid={`order-create-shipment-tracking-item-${index}`}
+                              >
+                                <Form.Label
+                                  optional
+                                  data-testid="order-create-shipment-tracking-label"
+                                >
+                                  {t('orders.shipment.trackingNumber')}
+                                </Form.Label>
+                                <Form.Control
+                                  data-testid={`order-create-shipment-tracking-control-${index}`}
+                                >
+                                  <Input
+                                    {...field}
+                                    data-testid={`order-create-shipment-tracking-input-${index}`}
+                                  />
+                                </Form.Control>
+                                <Form.ErrorMessage
+                                  data-testid={`order-create-shipment-tracking-error-${index}`}
+                                />
+                              </Form.Item>
+                            );
+                          }}
+                        />
+                        <Form.Field
+                          control={form.control}
+                          name={`labels.${index}.tracking_url`}
+                          render={({ field }) => {
+                            return (
+                              <Form.Item
+                                data-testid={`order-create-shipment-tracking-item-${index}`}
+                              >
+                                <Form.Label
+                                  optional
+                                  data-testid="order-create-shipment-tracking-label"
+                                >
+                                  {t('orders.shipment.trackingUrl')}
+                                </Form.Label>
+                                <Form.Control
+                                  data-testid={`order-create-shipment-tracking-control-${index}`}
+                                >
+                                  <HandleInput
+                                    {...field}
+                                    data-testid={`order-create-shipment-tracking-input-${index}`}
+                                  />
+                                </Form.Control>
+                                <Form.ErrorMessage
+                                  data-testid={`order-create-shipment-tracking-error-${index}`}
+                                />
+                              </Form.Item>
+                            );
+                          }}
+                        />
+                        {index !== labels.length - 1 && (
+                          <Divider
+                            variant="dashed"
+                            className="mt-8"
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-
+                <Divider
+                  variant="dashed"
+                  className="mt-8"
+                />
                 <div
-                  className="mt-8 pt-8"
+                  className="pt-8"
                   data-testid="order-create-shipment-notification-section"
                 >
                   <Form.Field
@@ -148,10 +212,7 @@ export function OrderCreateShipmentForm({ order, fulfillment }: OrderCreateFulfi
                     render={({ field: { onChange, value, ...field } }) => {
                       return (
                         <Form.Item data-testid="order-create-shipment-notification-item">
-                          <div className="flex items-center justify-between">
-                            <Form.Label data-testid="order-create-shipment-notification-label">
-                              {t('orders.shipment.sendNotification')}
-                            </Form.Label>
+                          <div className="flex gap-x-3 rounded-lg bg-ui-bg-component p-3 shadow-elevation-card-rest">
                             <Form.Control data-testid="order-create-shipment-notification-control">
                               <Form.Control>
                                 <Switch
@@ -164,13 +225,18 @@ export function OrderCreateShipmentForm({ order, fulfillment }: OrderCreateFulfi
                                 />
                               </Form.Control>
                             </Form.Control>
+                            <div>
+                              <Form.Label data-testid="order-create-shipment-notification-label">
+                                {t('orders.shipment.sendNotification')}
+                              </Form.Label>
+                              <Form.Hint
+                                className="!mt-1"
+                                data-testid="order-create-shipment-notification-hint"
+                              >
+                                {t('orders.shipment.sendNotificationHint')}
+                              </Form.Hint>
+                            </div>
                           </div>
-                          <Form.Hint
-                            className="!mt-1"
-                            data-testid="order-create-shipment-notification-hint"
-                          >
-                            {t('orders.shipment.sendNotificationHint')}
-                          </Form.Hint>
                           <Form.ErrorMessage data-testid="order-create-shipment-notification-error" />
                         </Form.Item>
                       );
@@ -195,9 +261,9 @@ export function OrderCreateShipmentForm({ order, fulfillment }: OrderCreateFulfi
             size="small"
             type="submit"
             isLoading={isMutating}
-            data-testid="order-create-shipment-save-button"
+            data-testid="order-create-shipment-confirm-button"
           >
-            {t('actions.save')}
+            {t('actions.confirm')}
           </Button>
         </RouteFocusModal.Footer>
       </KeyboundForm>
