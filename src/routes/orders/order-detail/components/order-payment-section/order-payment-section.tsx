@@ -43,7 +43,7 @@ export const OrderPaymentSection = ({
     .filter(Boolean) as HttpTypes.AdminRefund[]
 
   return (
-    <Container className="divide-y divide-dashed p-0">
+    <Container className="divide-y divide-dashed p-0" data-testid="order-payment-section">
       <Header order={order} />
 
       <PaymentBreakdown
@@ -64,10 +64,10 @@ const Header = ({ order }: { order: HttpTypes.AdminOrder }) => {
   const { label, color } = getOrderPaymentStatus(t, order.payment_status)
 
   return (
-    <div className="flex items-center justify-between px-6 py-4">
-      <Heading level="h2">{t("orders.payment.title")}</Heading>
+    <div className="flex items-center justify-between px-6 py-4" data-testid="order-payment-header">
+      <Heading level="h2" data-testid="order-payment-heading">{t("orders.payment.title")}</Heading>
 
-      <StatusBadge color={color} className="text-nowrap">
+      <StatusBadge color={color} className="text-nowrap" data-testid="order-payment-status-badge">
         {label}
       </StatusBadge>
     </div>
@@ -194,18 +194,19 @@ const Payment = ({
   ) ?? 0
 
   return (
-    <div className="divide-y divide-dashed">
-      <div className="text-ui-fg-subtle grid grid-cols-[1fr_1fr_1fr_20px] items-center gap-x-4 px-6 py-4 sm:grid-cols-[1fr_1fr_1fr_1fr_20px]">
+    <div className="divide-y divide-dashed" data-testid={`order-payment-${payment.id}`}>
+      <div className="text-ui-fg-subtle grid grid-cols-[1fr_1fr_1fr_20px] items-center gap-x-4 px-6 py-4 sm:grid-cols-[1fr_1fr_1fr_1fr_20px]" data-testid={`order-payment-${payment.id}-row`}>
         <div className="w-full min-w-[60px] overflow-hidden">
           <Text
             size="small"
             leading="compact"
             weight="plus"
             className="truncate"
+            data-testid={`order-payment-${payment.id}-id`}
           >
             <DisplayId id={payment.id} />
           </Text>
-          <Text size="small" leading="compact">
+          <Text size="small" leading="compact" data-testid={`order-payment-${payment.id}-date`}>
             {payment.created_at ? (
               format(
                 new Date(payment.created_at),
@@ -217,17 +218,17 @@ const Payment = ({
           </Text>
         </div>
         <div className="hidden items-center justify-end sm:flex">
-          <Text size="small" leading="compact" className="capitalize">
+          <Text size="small" leading="compact" className="capitalize" data-testid={`order-payment-${payment.id}-provider`}>
             {payment.provider_id}
           </Text>
         </div>
         <div className="flex items-center justify-end">
-          <StatusBadge color={color} className="text-nowrap">
+          <StatusBadge color={color} className="text-nowrap" data-testid={`order-payment-${payment.id}-status`}>
             {status}
           </StatusBadge>
         </div>
         <div className="flex items-center justify-end">
-          <Text size="small" leading="compact">
+          <Text size="small" leading="compact" data-testid={`order-payment-${payment.id}-amount`}>
             {getLocaleAmount(payment.amount as number, payment.currency_code)}
           </Text>
         </div>
@@ -247,10 +248,11 @@ const Payment = ({
               ],
             },
           ]}
+          data-testid={`order-payment-${payment.id}-action-menu`}
         />
       </div>
       {showCapture && (
-        <div className="bg-ui-bg-subtle flex items-center justify-between px-6 py-4">
+        <div className="bg-ui-bg-subtle flex items-center justify-between px-6 py-4" data-testid={`order-payment-${payment.id}-capture-section`}>
           <div className="flex items-center gap-x-2">
             <ArrowDownRightMini className="text-ui-fg-muted shrink-0" />
             <Text size="small" leading="compact">
@@ -266,6 +268,7 @@ const Payment = ({
             size="small"
             variant="secondary"
             onClick={handleCapture}
+            data-testid={`order-payment-${payment.id}-capture-button`}
           >
             <span className="hidden sm:block">
               {t("orders.payment.capture")}
@@ -400,7 +403,7 @@ const PaymentBreakdown = ({
   )[]
 
   return (
-    <div className="flex flex-col divide-y divide-dashed">
+    <div className="flex flex-col divide-y divide-dashed" data-testid="order-payment-breakdown">
       {entries.map(({ type, event }) => {
         switch (type) {
           case "payment":
@@ -443,8 +446,8 @@ const Total = ({ order }: { order: AdminOrder }) => {
   const totalPending = getTotalPending(order.payment_collections)
 
   return (
-    <div className="flex flex-col gap-y-4 px-6 py-4">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-y-4 px-6 py-4" data-testid="order-payment-total">
+      <div className="flex items-center justify-between" data-testid="order-payment-total-paid">
         <Text size="small" weight="plus" leading="compact">
           {t("orders.payment.totalPaidByCustomer")}
         </Text>
@@ -458,7 +461,7 @@ const Total = ({ order }: { order: AdminOrder }) => {
       </div>
 
       {order.status !== "canceled" && totalPending > 0 && (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between" data-testid="order-payment-total-pending">
           <Text size="small" weight="plus" leading="compact">
             Total pending
           </Text>

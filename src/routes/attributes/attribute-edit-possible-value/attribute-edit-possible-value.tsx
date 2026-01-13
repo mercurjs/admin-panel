@@ -8,7 +8,7 @@ import {
   Label,
 } from "@medusajs/ui";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -59,6 +59,8 @@ export const EditPossibleValue = () => {
     (pv: { id: string }) => pv.id === possibleValueId
   );
 
+  const originalMetadataRef = useRef<Record<string, unknown>>({});
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,7 +72,10 @@ export const EditPossibleValue = () => {
 
   useEffect(() => {
     if (possibleValue) {
-      const metadataArray = Object.entries(possibleValue.metadata || {}).map(
+      const originalMetadata = possibleValue.metadata || {};
+      originalMetadataRef.current = originalMetadata;
+
+      const metadataArray = Object.entries(originalMetadata).map(
         ([key, value]) => ({ key, value: String(value) })
       );
       form.reset({
@@ -89,20 +94,28 @@ export const EditPossibleValue = () => {
         if (item.key.trim() !== "" && item.value.trim() !== "") {
           acc[item.key] = item.value;
         }
-        
+
         return acc;
       },
       {} as Record<string, unknown>
     );
 
+    const finalMetadata: Record<string, unknown> = { ...transformedMetadata };
+
+    const originalKeys = Object.keys(originalMetadataRef.current);
+    const newKeys = Object.keys(transformedMetadata);
+
+    originalKeys.forEach((key) => {
+      if (!newKeys.includes(key)) {
+        finalMetadata[key] = "";
+      }
+    });
+
     await mutateAsync(
       {
         value: data.value,
         rank: data.rank,
-        metadata:
-          Object.keys(transformedMetadata).length > 0
-            ? transformedMetadata
-            : {},
+        metadata: finalMetadata,
       },
       {
         onSuccess: () => {

@@ -11,6 +11,7 @@ export const ConfigurableOrderListTable = () => {
       adapter={orderAdapter}
       heading={t("orders.domain")}
       layout="fill"
+      data-testid="orders-configurable-table"
     />
   )
 }

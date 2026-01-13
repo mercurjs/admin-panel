@@ -205,47 +205,49 @@ export function OrderAllocateItemsForm({ order }: OrderAllocateItemsFormProps) {
     form.formState.errors?.root?.quantityNotAllocated?.message
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="order-allocate-items-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex h-full flex-col overflow-hidden"
       >
-        <RouteFocusModal.Header />
-        <RouteFocusModal.Body className="flex h-full w-full flex-col items-center divide-y overflow-y-auto">
+        <RouteFocusModal.Header data-testid="order-allocate-items-header" />
+        <RouteFocusModal.Body className="flex h-full w-full flex-col items-center divide-y overflow-y-auto" data-testid="order-allocate-items-body">
           <div className="flex size-full flex-col items-center overflow-auto p-16">
             <div className="flex w-full max-w-[736px] flex-col justify-center px-2 pb-2">
               <div className="flex flex-col gap-8 divide-y divide-dashed">
-                <Heading>{t("orders.allocateItems.title")}</Heading>
+                <Heading data-testid="order-allocate-items-heading">{t("orders.allocateItems.title")}</Heading>
                 <div className="flex-1 divide-y divide-dashed pt-8">
                   <Form.Field
                     control={form.control}
                     name="location_id"
                     render={({ field: { onChange, ref, ...field } }) => {
                       return (
-                        <Form.Item>
+                        <Form.Item data-testid="order-allocate-items-location-item">
                           <div className="flex items-center gap-3">
                             <div className="flex-1">
-                              <Form.Label>{t("fields.location")}</Form.Label>
-                              <Form.Hint>
+                              <Form.Label data-testid="order-allocate-items-location-label">{t("fields.location")}</Form.Label>
+                              <Form.Hint data-testid="order-allocate-items-location-hint">
                                 {t("orders.allocateItems.locationDescription")}
                               </Form.Hint>
                             </div>
                             <div className="flex-1">
-                              <Form.Control>
+                              <Form.Control data-testid="order-allocate-items-location-control">
                                 <Select
                                   dir={direction}
                                   onValueChange={onChange}
                                   {...field}
+                                  data-testid="order-allocate-items-location-select"
                                 >
                                   <Select.Trigger
                                     className="bg-ui-bg-base"
                                     ref={ref}
+                                    data-testid="order-allocate-items-location-trigger"
                                   >
                                     <Select.Value />
                                   </Select.Trigger>
-                                  <Select.Content>
+                                  <Select.Content data-testid="order-allocate-items-location-content">
                                     {stock_locations.map((l) => (
-                                      <Select.Item key={l.id} value={l.id}>
+                                      <Select.Item key={l.id} value={l.id} data-testid={`order-allocate-items-location-option-${l.id}`}>
                                         {l.name}
                                       </Select.Item>
                                     ))}
@@ -254,19 +256,19 @@ export function OrderAllocateItemsForm({ order }: OrderAllocateItemsFormProps) {
                               </Form.Control>
                             </div>
                           </div>
-                          <Form.ErrorMessage />
+                          <Form.ErrorMessage data-testid="order-allocate-items-location-error" />
                         </Form.Item>
                       )
                     }}
                   />
 
-                  <Form.Item className="mt-8 pt-8">
+                  <Form.Item className="mt-8 pt-8" data-testid="order-allocate-items-items-item">
                     <div className="flex flex-row items-center">
                       <div className="flex-1">
-                        <Form.Label>
+                        <Form.Label data-testid="order-allocate-items-items-label">
                           {t("orders.allocateItems.itemsToAllocate")}
                         </Form.Label>
-                        <Form.Hint>
+                        <Form.Hint data-testid="order-allocate-items-items-hint">
                           {t("orders.allocateItems.itemsToAllocateDesc")}
                         </Form.Hint>
                       </div>
@@ -277,6 +279,7 @@ export function OrderAllocateItemsForm({ order }: OrderAllocateItemsFormProps) {
                           placeholder={t("orders.allocateItems.search")}
                           autoComplete="off"
                           type="search"
+                          data-testid="order-allocate-items-search-input"
                         />
                       </div>
                     </div>
@@ -304,10 +307,10 @@ export function OrderAllocateItemsForm({ order }: OrderAllocateItemsFormProps) {
             </div>
           </div>
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="order-allocate-items-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="order-allocate-items-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
@@ -316,6 +319,7 @@ export function OrderAllocateItemsForm({ order }: OrderAllocateItemsFormProps) {
               type="submit"
               isLoading={isMutating}
               disabled={!selectedLocationId || disableSubmit}
+              data-testid="order-allocate-items-submit-button"
             >
               {t("orders.allocateItems.action")}
             </Button>

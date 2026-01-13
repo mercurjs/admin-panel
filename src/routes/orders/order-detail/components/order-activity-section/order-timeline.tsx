@@ -48,7 +48,7 @@ export const OrderTimeline = ({ order }: OrderTimelineProps) => {
 
   if (items.length <= 3) {
     return (
-      <div className="flex flex-col gap-y-0.5">
+      <div className="flex flex-col gap-y-0.5" data-testid="order-timeline">
         {items.map((item, index) => {
           return (
             <OrderActivityItem
@@ -73,7 +73,7 @@ export const OrderTimeline = ({ order }: OrderTimelineProps) => {
   const firstItem = items[items.length - 1]
 
   return (
-    <div className="flex flex-col gap-y-0.5">
+    <div className="flex flex-col gap-y-0.5" data-testid="order-timeline">
       {lastItems.map((item, index) => {
         return (
           <OrderActivityItem
@@ -561,8 +561,8 @@ const OrderActivityItem = ({
   const { getFullDate, getRelativeDate } = useDate()
 
   return (
-    <div className="grid grid-cols-[20px_1fr] items-start gap-2">
-      <div className="flex size-full flex-col items-center gap-y-0.5">
+    <div className="grid grid-cols-[20px_1fr] items-start gap-2" data-testid="order-activity-item">
+      <div className="flex size-full flex-col items-center gap-y-0.5" data-testid="order-activity-item-indicator">
         <div className="flex size-5 items-center justify-center">
           <div className="bg-ui-bg-base shadow-borders-base flex size-2.5 items-center justify-center rounded-full">
             <div className="bg-ui-tag-neutral-icon size-1.5 rounded-full" />
@@ -574,6 +574,7 @@ const OrderActivityItem = ({
         className={clx({
           "pb-4": !isFirst,
         })}
+        data-testid="order-activity-item-content"
       >
         <div className="flex items-center justify-between">
           {itemsToSend?.length || itemsToReturn?.length ? (
@@ -585,7 +586,7 @@ const OrderActivityItem = ({
               itemsMap={itemsMap}
             />
           ) : (
-            <Text size="small" leading="compact" weight="plus">
+            <Text size="small" leading="compact" weight="plus" data-testid="order-activity-item-title">
               {title}
             </Text>
           )}
@@ -597,6 +598,7 @@ const OrderActivityItem = ({
                 size="small"
                 leading="compact"
                 className="text-ui-fg-subtle text-right"
+                data-testid="order-activity-item-timestamp"
               >
                 {getRelativeDate(timestamp)}
               </Text>

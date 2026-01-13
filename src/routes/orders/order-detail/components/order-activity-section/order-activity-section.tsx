@@ -11,10 +11,10 @@ export const OrderActivitySection = ({ order }: OrderActivityProps) => {
   const { t } = useTranslation()
 
   return (
-    <Container className="flex flex-col gap-y-8 px-6 py-4">
+    <Container className="flex flex-col gap-y-8 px-6 py-4" data-testid="order-activity-section">
       <div className="flex flex-col gap-y-4">
-        <div className="flex items-center justify-between">
-          <Heading level="h2">{t("orders.activity.header")}</Heading>
+        <div className="flex items-center justify-between" data-testid="order-activity-header">
+          <Heading level="h2" data-testid="order-activity-heading">{t("orders.activity.header")}</Heading>
         </div>
         {/* TODO: Re-add when we have support for notes */}
         {/* <OrderNoteForm order={order} /> */}

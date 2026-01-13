@@ -19,11 +19,11 @@ export const OrderRemainingOrdersGroupSection = () => {
   const { orders } = order_sets?.[0] || {};
 
   return (
-    <Container>
-      <Heading level="h2" className="text-lg font-medium">
+    <Container data-testid="order-remaining-orders-group-section">
+      <Heading level="h2" className="text-lg font-medium" data-testid="order-remaining-orders-group-heading">
         Remaining orders group
       </Heading>
-      <div>
+      <div data-testid="order-remaining-orders-group-list">
         {orders?.map((order: any) => {
           const items =
             order.items.length > 1
@@ -37,16 +37,18 @@ export const OrderRemainingOrdersGroupSection = () => {
               onClick={() => {
                 navigate(`/orders/${order.id}`);
               }}
+              data-testid={`order-remaining-orders-group-item-${order.id}`}
             >
               <div className="w-full relative">
                 <div className="flex items-center justify-between gap-2">
                   <Heading
                     level="h3"
                     className="text-md font-medium w-1/3 truncate"
+                    data-testid={`order-remaining-orders-group-item-${order.id}-heading`}
                   >
                     #{order.display_id}
                   </Heading>
-                  <div className="flex w-2/3">
+                  <div className="flex w-2/3" data-testid={`order-remaining-orders-group-item-${order.id}-badges`}>
                     <Badge className="scale-75 -mr-8">
                       <span className="text-xs mr-2">Payment</span>
                       <PaymentStatusBadge
@@ -59,7 +61,7 @@ export const OrderRemainingOrdersGroupSection = () => {
                     </Badge>
                   </div>
                 </div>
-                <Text className="truncate">{items}</Text>
+                <Text className="truncate" data-testid={`order-remaining-orders-group-item-${order.id}-items`}>{items}</Text>
               </div>
             </Button>
           );

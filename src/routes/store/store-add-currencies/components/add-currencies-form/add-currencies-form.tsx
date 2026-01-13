@@ -142,7 +142,7 @@ export const AddCurrenciesForm = ({
         supported_currencies: currencies.map((c) => ({
           currency_code: c,
           is_default: c === defaultCurrency,
-          is_tax_inclusive: data.pricePreferences[c],
+          is_tax_inclusive: data.pricePreferences[c] ?? false,
         })),
       },
       {

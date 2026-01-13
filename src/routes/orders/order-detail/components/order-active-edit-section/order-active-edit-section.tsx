@@ -126,12 +126,13 @@ export const OrderActiveEditSection = ({
           "repeating-linear-gradient(-45deg, rgb(212, 212, 216, 0.15), rgb(212, 212, 216,.15) 10px, transparent 10px, transparent 20px)",
       }}
       className="-m-4 mb-1 border-b border-l p-4"
+      data-testid="order-active-edit-section"
     >
       <Container className="flex items-center justify-between p-0">
         <div className="flex w-full flex-col divide-y divide-dashed">
-          <div className="flex items-center gap-2 px-6 py-4">
+          <div className="flex items-center gap-2 px-6 py-4" data-testid="order-active-edit-header">
             <ExclamationCircleSolid className="text-blue-500" />
-            <Heading level="h2">
+            <Heading level="h2" data-testid="order-active-edit-heading">
               {t(
                 isPending
                   ? "orders.edits.panel.titlePending"
@@ -166,12 +167,13 @@ export const OrderActiveEditSection = ({
             </div>
           )}
 
-          <div className="bg-ui-bg-subtle flex items-center justify-end gap-x-2 rounded-b-xl px-4 py-4">
+          <div className="bg-ui-bg-subtle flex items-center justify-end gap-x-2 rounded-b-xl px-4 py-4" data-testid="order-active-edit-actions">
             {isPending ? (
               <Button
                 size="small"
                 variant="secondary"
                 onClick={() => navigate(`/orders/${order.id}/edits`)}
+                data-testid="order-active-edit-continue-button"
               >
                 {t("actions.continueEdit")}
               </Button>
@@ -180,6 +182,7 @@ export const OrderActiveEditSection = ({
                 size="small"
                 variant="secondary"
                 onClick={onConfirmOrderEdit}
+                data-testid="order-active-edit-confirm-button"
               >
                 {t("actions.forceConfirm")}
               </Button>
@@ -188,6 +191,7 @@ export const OrderActiveEditSection = ({
               size="small"
               variant="secondary"
               onClick={onCancelOrderEdit}
+              data-testid="order-active-edit-cancel-button"
             >
               {t("actions.cancel")}
             </Button>

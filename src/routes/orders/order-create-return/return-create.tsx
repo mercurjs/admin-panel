@@ -67,7 +67,7 @@ export const ReturnCreate = () => {
   }, [preview])
 
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="order-create-return-modal">
       {activeReturn && preview && order && (
         <ReturnCreateForm
           order={order}

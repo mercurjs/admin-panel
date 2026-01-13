@@ -11,7 +11,7 @@ type OrderCustomerSectionProps = {
 
 export const OrderCustomerSection = ({ order }: OrderCustomerSectionProps) => {
   return (
-    <Container className="divide-y p-0">
+    <Container className="divide-y p-0" data-testid="order-customer-section">
       <Header />
       <CustomerInfo.ID data={order} />
       <CustomerInfo.Contact data={order} />
@@ -25,8 +25,8 @@ const Header = () => {
   const { t } = useTranslation()
 
   return (
-    <div className="flex items-center justify-between px-6 py-4">
-      <Heading level="h2">{t("fields.customer")}</Heading>
+    <div className="flex items-center justify-between px-6 py-4" data-testid="order-customer-header">
+      <Heading level="h2" data-testid="order-customer-heading">{t("fields.customer")}</Heading>
       <ActionMenu
         groups={[
           {
@@ -62,6 +62,7 @@ const Header = () => {
             ],
           },
         ]}
+        data-testid="order-customer-action-menu"
       />
     </div>
   )

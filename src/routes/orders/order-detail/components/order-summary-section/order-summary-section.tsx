@@ -188,7 +188,7 @@ export const OrderSummarySection = ({
   }
 
   return (
-    <Container className="divide-y divide-dashed p-0">
+    <Container className="divide-y divide-dashed p-0" data-testid="order-summary-section">
       <Header order={order} orderPreview={orderPreview} />
       <ItemBreakdown order={order} reservations={reservations!} />
       <CostBreakdown order={order} />
@@ -196,10 +196,10 @@ export const OrderSummarySection = ({
       <Total order={order} />
 
       {(showAllocateButton || showReturns || showPayment || showRefund) && (
-        <div className="bg-ui-bg-subtle flex items-center justify-end gap-x-2 rounded-b-xl px-4 py-4">
+        <div className="bg-ui-bg-subtle flex items-center justify-end gap-x-2 rounded-b-xl px-4 py-4" data-testid="order-summary-actions">
           {showReturns &&
             (receivableReturns.length === 1 ? (
-              <Button asChild variant="secondary" size="small">
+              <Button asChild variant="secondary" size="small" data-testid="order-summary-receive-return-button">
                 <Link
                   to={`/orders/${order.id}/returns/${receivableReturns[0].id}/receive`}
                 >
@@ -235,6 +235,7 @@ export const OrderSummarySection = ({
                     }),
                   },
                 ]}
+                data-testid="order-summary-receive-returns-menu"
               >
                 <Button variant="secondary" size="small">
                   {t("orders.returns.receive.action")}
@@ -243,7 +244,7 @@ export const OrderSummarySection = ({
             ))}
 
           {showAllocateButton && (
-            <Button asChild variant="secondary" size="small">
+            <Button asChild variant="secondary" size="small" data-testid="order-summary-allocate-items-button">
               <Link to="allocate-items">
                 {t("orders.allocateItems.action")}
               </Link>
@@ -262,13 +263,14 @@ export const OrderSummarySection = ({
               size="small"
               variant="secondary"
               onClick={() => handleMarkAsPaid(unpaidPaymentCollection)}
+              data-testid="order-summary-mark-as-paid-button"
             >
               {t("orders.payment.markAsPaid")}
             </Button>
           )}
 
           {showRefund && (
-            <Button size="small" variant="secondary" asChild>
+            <Button size="small" variant="secondary" asChild data-testid="order-summary-refund-button">
               <Link to={`/orders/${order.id}/refund`}>
                 {t("orders.payment.refundAmount", {
                   amount: getStylizedAmount(
@@ -306,8 +308,8 @@ const Header = ({
     orderPreview?.order_change?.status === "pending"
 
   return (
-    <div className="flex items-center justify-between px-6 py-4">
-      <Heading level="h2">{t("fields.summary")}</Heading>
+    <div className="flex items-center justify-between px-6 py-4" data-testid="order-summary-header">
+      <Heading level="h2" data-testid="order-summary-heading">{t("fields.summary")}</Heading>
       <ActionMenu
         groups={[
           {
@@ -374,6 +376,7 @@ const Header = ({
             ],
           },
         ]}
+        data-testid="order-summary-action-menu"
       />
     </div>
   )
@@ -408,34 +411,35 @@ const Item = ({
       <div
         key={item.id}
         className="text-ui-fg-subtle grid grid-cols-2 items-center gap-x-4 px-6 py-4"
+        data-testid={`order-summary-item-${item.id}`}
       >
-        <div className="flex items-start gap-x-4">
+        <div className="flex items-start gap-x-4" data-testid={`order-summary-item-${item.id}-info`}>
           <Thumbnail src={item.thumbnail} />
           <div>
-            <Text size="small" leading="compact" className="text-ui-fg-base">
+            <Text size="small" leading="compact" className="text-ui-fg-base" data-testid={`order-summary-item-${item.id}-title`}>
               {item.title}
             </Text>
 
             {item.variant_sku && (
-              <div className="flex items-center gap-x-1">
+              <div className="flex items-center gap-x-1" data-testid={`order-summary-item-${item.id}-sku`}>
                 <Text size="small">{item.variant_sku}</Text>
                 <Copy content={item.variant_sku} className="text-ui-fg-muted" />
               </div>
             )}
-            <Text size="small">
+            <Text size="small" data-testid={`order-summary-item-${item.id}-options`}>
               {item.variant?.options?.map((o) => o.value).join(" · ")}
             </Text>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 items-center gap-x-4">
+        <div className="grid grid-cols-3 items-center gap-x-4" data-testid={`order-summary-item-${item.id}-pricing`}>
           <div className="flex items-center justify-end gap-x-4">
-            <Text size="small">
+            <Text size="small" data-testid={`order-summary-item-${item.id}-unit-price`}>
               {getLocaleAmount(item.unit_price, currencyCode)}
             </Text>
           </div>
 
-          <div className="flex items-center gap-x-2">
+          <div className="flex items-center gap-x-2" data-testid={`order-summary-item-${item.id}-quantity`}>
             <div className="w-fit min-w-[27px]">
               <Text size="small">
                 <span className="tabular-nums">{item.quantity}</span>x
@@ -447,6 +451,7 @@ const Item = ({
                 <StatusBadge
                   color={reservation ? "green" : "orange"}
                   className="text-nowrap"
+                  data-testid={`order-summary-item-${item.id}-reservation-badge`}
                 >
                   {reservation
                     ? t("orders.reservations.allocatedLabel")
@@ -457,7 +462,7 @@ const Item = ({
           </div>
 
           <div className="flex items-center justify-end">
-            <Text size="small" className="pt-[1px]">
+            <Text size="small" className="pt-[1px]" data-testid={`order-summary-item-${item.id}-subtotal`}>
               {getLocaleAmount(item.subtotal || 0, currencyCode)}
             </Text>
           </div>
@@ -513,7 +518,7 @@ const ItemBreakdown = ({
   )
 
   return (
-    <div>
+    <div data-testid="order-summary-items-breakdown">
       {order.items?.map((item) => {
         const reservation = reservationsMap.get(item.id)
 
@@ -601,7 +606,7 @@ const CostBreakdown = ({
   const hasTaxes = !!Object.keys(taxCodes).length
 
   return (
-    <div className="text-ui-fg-subtle flex flex-col gap-y-2 px-6 py-4">
+    <div className="text-ui-fg-subtle flex flex-col gap-y-2 px-6 py-4" data-testid="order-summary-cost-breakdown">
       <Cost
         label={t("orders.summary.itemSubtotal")}
         value={getLocaleAmount(order.item_subtotal, order.currency_code)}
@@ -776,7 +781,7 @@ const DiscountAndTotalBreakdown = ({
   const hasCreditLines = creditLines.length > 0
 
   return (
-    <div className="text-ui-fg-subtle flex flex-col gap-y-2 px-6 py-4">
+    <div className="text-ui-fg-subtle flex flex-col gap-y-2 px-6 py-4" data-testid="order-summary-discount-breakdown">
       <Cost
         label={
           <div
@@ -784,6 +789,7 @@ const DiscountAndTotalBreakdown = ({
             className={clx("flex items-center gap-1", {
               "cursor-pointer": hasDiscount,
             })}
+            data-testid="order-summary-discount-toggle"
           >
             <span>{t("orders.summary.discountTotal")}</span>
             {hasDiscount && (
@@ -1218,8 +1224,8 @@ const Total = ({ order }: { order: AdminOrder }) => {
   const { t } = useTranslation()
 
   return (
-    <div className=" flex flex-col gap-y-2 px-6 py-4">
-      <div className="text-ui-fg-base flex items-center justify-between">
+    <div className=" flex flex-col gap-y-2 px-6 py-4" data-testid="order-summary-total">
+      <div className="text-ui-fg-base flex items-center justify-between" data-testid="order-summary-paid-total">
         <Text className="text-ui-fg-subtle" size="small" leading="compact">
           {t("fields.paidTotal")}
         </Text>
@@ -1246,7 +1252,7 @@ const Total = ({ order }: { order: AdminOrder }) => {
         </div>
       )}
 
-      <div className="text-ui-fg-base flex items-center justify-between">
+      <div className="text-ui-fg-base flex items-center justify-between" data-testid="order-summary-outstanding-amount">
         <Text
           className="text-ui-fg-subtle text-semibold"
           size="small"

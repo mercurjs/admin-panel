@@ -23,9 +23,9 @@ export const OrderRequestTransfer = () => {
   }
 
   return (
-    <RouteDrawer>
-      <RouteDrawer.Header>
-        <Heading>{t("orders.transfer.title")}</Heading>
+    <RouteDrawer data-testid="order-request-transfer-drawer">
+      <RouteDrawer.Header data-testid="order-request-transfer-header">
+        <Heading data-testid="order-request-transfer-heading">{t("orders.transfer.title")}</Heading>
       </RouteDrawer.Header>
 
       {order && <CreateOrderTransferForm order={order} />}

@@ -98,19 +98,20 @@ export const OrderEditCreateForm = ({
           })
         }
       }}
+      data-testid="order-edit-create-form"
     >
       <KeyboundForm onSubmit={handleSubmit} className="flex h-full flex-col">
-        <RouteFocusModal.Header />
+        <RouteFocusModal.Header data-testid="order-edit-create-header" />
 
-        <RouteFocusModal.Body className="flex size-full justify-center overflow-y-auto">
+        <RouteFocusModal.Body className="flex size-full justify-center overflow-y-auto" data-testid="order-edit-create-body">
           <div className="mt-16 w-[720px] max-w-[100%] px-4 md:p-0">
-            <Heading level="h1">{t("orders.edits.create")}</Heading>
+            <Heading level="h1" data-testid="order-edit-create-heading">{t("orders.edits.create")}</Heading>
 
             <OrderEditItemsSection preview={preview} order={order} />
 
             {/* TOTALS SECTION*/}
-            <div className="mt-8 border-y border-dotted py-4">
-              <div className="mb-2 flex items-center justify-between">
+            <div className="mt-8 border-y border-dotted py-4" data-testid="order-edit-create-totals">
+              <div className="mb-2 flex items-center justify-between" data-testid="order-edit-create-current-total">
                 <span className="txt-small text-ui-fg-subtle">
                   {t("orders.edits.currentTotal")}
                 </span>
@@ -120,7 +121,7 @@ export const OrderEditCreateForm = ({
                 </span>
               </div>
 
-              <div className="mb-2 flex items-center justify-between">
+              <div className="mb-2 flex items-center justify-between" data-testid="order-edit-create-new-total">
                 <span className="txt-small text-ui-fg-subtle">
                   {t("orders.edits.newTotal")}
                 </span>
@@ -130,7 +131,7 @@ export const OrderEditCreateForm = ({
                 </span>
               </div>
 
-              <div className="mt-4 flex items-center justify-between border-t border-dotted pt-4">
+              <div className="mt-4 flex items-center justify-between border-t border-dotted pt-4" data-testid="order-edit-create-refund-amount">
                 <span className="txt-small font-medium">
                   {t("orders.exchanges.refundAmount")}
                 </span>
@@ -149,17 +150,17 @@ export const OrderEditCreateForm = ({
               name="note"
               render={({ field }) => {
                 return (
-                  <Form.Item>
+                  <Form.Item data-testid="order-edit-create-note-item">
                     <div className="mt-8 flex">
                       <div className="block flex-1">
-                        <Form.Label>{t("fields.note")}</Form.Label>
-                        <Form.Hint className="!mt-1">
+                        <Form.Label data-testid="order-edit-create-note-label">{t("fields.note")}</Form.Label>
+                        <Form.Hint className="!mt-1" data-testid="order-edit-create-note-hint">
                           {t("orders.edits.noteHint")}
                         </Form.Hint>
                       </div>
                       <div className="w-full flex-1 flex-grow">
-                        <Form.Control>
-                          <Input {...field} placeholder={t("fields.note")} />
+                        <Form.Control data-testid="order-edit-create-note-control">
+                          <Input {...field} placeholder={t("fields.note")} data-testid="order-edit-create-note-input" />
                         </Form.Control>
                       </div>
                     </div>
@@ -169,33 +170,34 @@ export const OrderEditCreateForm = ({
             />
 
             {/* SEND NOTIFICATION*/}
-            <div className="bg-ui-bg-field mt-8 rounded-lg border py-2 pl-2 pr-4">
+            <div className="bg-ui-bg-field mt-8 rounded-lg border py-2 pl-2 pr-4" data-testid="order-edit-create-notification">
               <Form.Field
                 control={form.control}
                 name="send_notification"
                 render={({ field: { onChange, value, ...field } }) => {
                   return (
-                    <Form.Item>
+                    <Form.Item data-testid="order-edit-create-notification-item">
                       <div className="flex items-center">
-                        <Form.Control className="mr-4 self-start">
+                        <Form.Control className="mr-4 self-start" data-testid="order-edit-create-notification-control">
                           <Switch
                             dir="ltr"
                             className="mt-[2px] rtl:rotate-180"
                             checked={!!value}
                             onCheckedChange={onChange}
                             {...field}
+                            data-testid="order-edit-create-notification-switch"
                           />
                         </Form.Control>
                         <div className="block">
-                          <Form.Label>
+                          <Form.Label data-testid="order-edit-create-notification-label">
                             {t("orders.returns.sendNotification")}
                           </Form.Label>
-                          <Form.Hint className="!mt-1">
+                          <Form.Hint className="!mt-1" data-testid="order-edit-create-notification-hint">
                             {t("orders.returns.sendNotificationHint")}
                           </Form.Hint>
                         </div>
                       </div>
-                      <Form.ErrorMessage />
+                      <Form.ErrorMessage data-testid="order-edit-create-notification-error" />
                     </Form.Item>
                   )
                 }}
@@ -205,11 +207,11 @@ export const OrderEditCreateForm = ({
             <div className="p-8" />
           </div>
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="order-edit-create-footer">
           <div className="flex w-full items-center justify-end gap-x-4">
             <div className="flex items-center justify-end gap-x-2">
               <RouteFocusModal.Close asChild>
-                <Button type="button" variant="secondary" size="small">
+                <Button type="button" variant="secondary" size="small" data-testid="order-edit-create-cancel-button">
                   {t("orders.edits.cancel")}
                 </Button>
               </RouteFocusModal.Close>
@@ -219,6 +221,7 @@ export const OrderEditCreateForm = ({
                 variant="primary"
                 size="small"
                 isLoading={isRequestRunning}
+                data-testid="order-edit-create-confirm-button"
               >
                 {t("orders.edits.confirm")}
               </Button>

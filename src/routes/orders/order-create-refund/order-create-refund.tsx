@@ -19,9 +19,9 @@ export const OrderCreateRefund = () => {
   const loyaltyPlugin = getLoyaltyPlugin(plugins)
 
   return (
-    <RouteDrawer>
-      <RouteDrawer.Header>
-        <Heading>{t("orders.payment.createRefund")}</Heading>
+    <RouteDrawer data-testid="order-create-refund-drawer">
+      <RouteDrawer.Header data-testid="order-create-refund-header">
+        <Heading data-testid="order-create-refund-heading">{t("orders.payment.createRefund")}</Heading>
       </RouteDrawer.Header>
 
       {order && !loyaltyPlugin && <CreateRefundForm order={order} />}

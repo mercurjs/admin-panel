@@ -24,6 +24,7 @@ const buyGetHiddenFields = [
 const freeShippingHiddenFields = [
   ...commonHiddenFields,
   "application_method.value",
+  "application_method.allocation",
   "is_tax_inclusive",
 ]
 

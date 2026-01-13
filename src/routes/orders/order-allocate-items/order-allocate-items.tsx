@@ -19,7 +19,7 @@ export function OrderAllocateItems() {
   const ready = !isLoading && order
 
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="order-allocate-items-modal">
       {ready && <OrderAllocateItemsForm order={order} />}
     </RouteFocusModal>
   )

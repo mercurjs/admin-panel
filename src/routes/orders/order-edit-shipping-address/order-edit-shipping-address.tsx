@@ -20,9 +20,9 @@ export const OrderEditShippingAddress = () => {
   }
 
   return (
-    <RouteDrawer>
-      <RouteDrawer.Header>
-        <Heading>{t("orders.edit.shippingAddress.title")}</Heading>
+    <RouteDrawer data-testid="order-edit-shipping-address-drawer">
+      <RouteDrawer.Header data-testid="order-edit-shipping-address-header">
+        <Heading data-testid="order-edit-shipping-address-heading">{t("orders.edit.shippingAddress.title")}</Heading>
       </RouteDrawer.Header>
 
       {order && <EditOrderShippingAddressForm order={order} />}

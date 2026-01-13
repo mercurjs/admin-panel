@@ -21,7 +21,7 @@ export function OrderCreateFulfillment() {
   const ready = !isLoading && order;
 
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="order-create-fulfillment-modal">
       {ready && (
         <OrderCreateFulfillmentForm
           order={order}

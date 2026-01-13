@@ -61,24 +61,24 @@ export function EditOrderShippingAddressForm({
   })
 
   return (
-    <RouteDrawer.Form form={form}>
+    <RouteDrawer.Form form={form} data-testid="order-edit-shipping-address-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex size-full flex-col overflow-hidden"
       >
-        <RouteDrawer.Body className="flex-1 overflow-auto">
+        <RouteDrawer.Body className="flex-1 overflow-auto" data-testid="order-edit-shipping-address-body">
           <div className="flex flex-col gap-4">
             <Form.Field
               control={form.control}
               name="address_1"
               render={({ field }) => {
                 return (
-                  <Form.Item>
-                    <Form.Label>{t("fields.address")}</Form.Label>
-                    <Form.Control>
-                      <Input size="small" {...field} />
+                  <Form.Item data-testid="order-edit-shipping-address-address1-item">
+                    <Form.Label data-testid="order-edit-shipping-address-address1-label">{t("fields.address")}</Form.Label>
+                    <Form.Control data-testid="order-edit-shipping-address-address1-control">
+                      <Input size="small" {...field} data-testid="order-edit-shipping-address-address1-input" />
                     </Form.Control>
-                    <Form.ErrorMessage />
+                    <Form.ErrorMessage data-testid="order-edit-shipping-address-address1-error" />
                   </Form.Item>
                 )
               }}
@@ -88,12 +88,12 @@ export function EditOrderShippingAddressForm({
               name="address_2"
               render={({ field }) => {
                 return (
-                  <Form.Item>
-                    <Form.Label optional>{t("fields.address2")}</Form.Label>
-                    <Form.Control>
-                      <Input size="small" {...field} />
+                  <Form.Item data-testid="order-edit-shipping-address-address2-item">
+                    <Form.Label optional data-testid="order-edit-shipping-address-address2-label">{t("fields.address2")}</Form.Label>
+                    <Form.Control data-testid="order-edit-shipping-address-address2-control">
+                      <Input size="small" {...field} data-testid="order-edit-shipping-address-address2-input" />
                     </Form.Control>
-                    <Form.ErrorMessage />
+                    <Form.ErrorMessage data-testid="order-edit-shipping-address-address2-error" />
                   </Form.Item>
                 )
               }}
@@ -103,12 +103,12 @@ export function EditOrderShippingAddressForm({
               name="postal_code"
               render={({ field }) => {
                 return (
-                  <Form.Item>
-                    <Form.Label optional>{t("fields.postalCode")}</Form.Label>
-                    <Form.Control>
-                      <Input size="small" {...field} />
+                  <Form.Item data-testid="order-edit-shipping-address-postal-code-item">
+                    <Form.Label optional data-testid="order-edit-shipping-address-postal-code-label">{t("fields.postalCode")}</Form.Label>
+                    <Form.Control data-testid="order-edit-shipping-address-postal-code-control">
+                      <Input size="small" {...field} data-testid="order-edit-shipping-address-postal-code-input" />
                     </Form.Control>
-                    <Form.ErrorMessage />
+                    <Form.ErrorMessage data-testid="order-edit-shipping-address-postal-code-error" />
                   </Form.Item>
                 )
               }}
@@ -118,12 +118,12 @@ export function EditOrderShippingAddressForm({
               name="city"
               render={({ field }) => {
                 return (
-                  <Form.Item>
-                    <Form.Label optional>{t("fields.city")}</Form.Label>
-                    <Form.Control>
-                      <Input size="small" {...field} />
+                  <Form.Item data-testid="order-edit-shipping-address-city-item">
+                    <Form.Label optional data-testid="order-edit-shipping-address-city-label">{t("fields.city")}</Form.Label>
+                    <Form.Control data-testid="order-edit-shipping-address-city-control">
+                      <Input size="small" {...field} data-testid="order-edit-shipping-address-city-input" />
                     </Form.Control>
-                    <Form.ErrorMessage />
+                    <Form.ErrorMessage data-testid="order-edit-shipping-address-city-error" />
                   </Form.Item>
                 )
               }}
@@ -133,12 +133,12 @@ export function EditOrderShippingAddressForm({
               name="country_code"
               render={({ field }) => {
                 return (
-                  <Form.Item>
-                    <Form.Label>{t("fields.country")}</Form.Label>
-                    <Form.Control>
-                      <CountrySelect {...field} disabled />
+                  <Form.Item data-testid="order-edit-shipping-address-country-item">
+                    <Form.Label data-testid="order-edit-shipping-address-country-label">{t("fields.country")}</Form.Label>
+                    <Form.Control data-testid="order-edit-shipping-address-country-control">
+                      <CountrySelect {...field} disabled data-testid="order-edit-shipping-address-country-select" />
                     </Form.Control>
-                    <Form.ErrorMessage />
+                    <Form.ErrorMessage data-testid="order-edit-shipping-address-country-error" />
                   </Form.Item>
                 )
               }}
@@ -148,12 +148,12 @@ export function EditOrderShippingAddressForm({
               name="province"
               render={({ field }) => {
                 return (
-                  <Form.Item>
-                    <Form.Label optional>{t("fields.state")}</Form.Label>
-                    <Form.Control>
-                      <Input size="small" {...field} />
+                  <Form.Item data-testid="order-edit-shipping-address-province-item">
+                    <Form.Label optional data-testid="order-edit-shipping-address-province-label">{t("fields.state")}</Form.Label>
+                    <Form.Control data-testid="order-edit-shipping-address-province-control">
+                      <Input size="small" {...field} data-testid="order-edit-shipping-address-province-input" />
                     </Form.Control>
-                    <Form.ErrorMessage />
+                    <Form.ErrorMessage data-testid="order-edit-shipping-address-province-error" />
                   </Form.Item>
                 )
               }}
@@ -163,12 +163,12 @@ export function EditOrderShippingAddressForm({
               name="company"
               render={({ field }) => {
                 return (
-                  <Form.Item>
-                    <Form.Label optional>{t("fields.company")}</Form.Label>
-                    <Form.Control>
-                      <Input size="small" {...field} />
+                  <Form.Item data-testid="order-edit-shipping-address-company-item">
+                    <Form.Label optional data-testid="order-edit-shipping-address-company-label">{t("fields.company")}</Form.Label>
+                    <Form.Control data-testid="order-edit-shipping-address-company-control">
+                      <Input size="small" {...field} data-testid="order-edit-shipping-address-company-input" />
                     </Form.Control>
-                    <Form.ErrorMessage />
+                    <Form.ErrorMessage data-testid="order-edit-shipping-address-company-error" />
                   </Form.Item>
                 )
               }}
@@ -178,12 +178,12 @@ export function EditOrderShippingAddressForm({
               name="phone"
               render={({ field }) => {
                 return (
-                  <Form.Item>
-                    <Form.Label optional>{t("fields.phone")}</Form.Label>
-                    <Form.Control>
-                      <Input size="small" {...field} />
+                  <Form.Item data-testid="order-edit-shipping-address-phone-item">
+                    <Form.Label optional data-testid="order-edit-shipping-address-phone-label">{t("fields.phone")}</Form.Label>
+                    <Form.Control data-testid="order-edit-shipping-address-phone-control">
+                      <Input size="small" {...field} data-testid="order-edit-shipping-address-phone-input" />
                     </Form.Control>
-                    <Form.ErrorMessage />
+                    <Form.ErrorMessage data-testid="order-edit-shipping-address-phone-error" />
                   </Form.Item>
                 )
               }}
@@ -191,10 +191,10 @@ export function EditOrderShippingAddressForm({
           </div>
         </RouteDrawer.Body>
 
-        <RouteDrawer.Footer>
+        <RouteDrawer.Footer data-testid="order-edit-shipping-address-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button variant="secondary" size="small">
+              <Button variant="secondary" size="small" data-testid="order-edit-shipping-address-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteDrawer.Close>
@@ -204,6 +204,7 @@ export function EditOrderShippingAddressForm({
               type="submit"
               variant="primary"
               size="small"
+              data-testid="order-edit-shipping-address-save-button"
             >
               {t("actions.save")}
             </Button>

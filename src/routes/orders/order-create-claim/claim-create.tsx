@@ -70,7 +70,7 @@ export const ClaimCreate = () => {
   }, [preview])
 
   return (
-    <RouteFocusModal>
+    <RouteFocusModal data-testid="order-create-claim-modal">
       {claim && preview && order && (
         <ClaimCreateForm
           order={order}

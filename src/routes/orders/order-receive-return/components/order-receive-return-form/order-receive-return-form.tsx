@@ -209,12 +209,12 @@ export function OrderReceiveReturnForm({
   }
 
   return (
-    <RouteDrawer.Form form={form} onClose={onFormClose}>
+    <RouteDrawer.Form form={form} onClose={onFormClose} data-testid="order-receive-return-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex size-full flex-col overflow-hidden"
       >
-        <RouteDrawer.Body className="flex size-full flex-col overflow-auto">
+        <RouteDrawer.Body className="flex size-full flex-col overflow-auto" data-testid="order-receive-return-body">
           <div className="flex justify-between">
             <div>
               {stock_location && (
@@ -335,47 +335,48 @@ export function OrderReceiveReturnForm({
             {t("orders.returns.receive.inventoryWarning")}
           </Alert>
 
-          <div className="bg-ui-bg-subtle shadow-elevation-card-rest my-2 rounded-xl p-3">
+          <div className="bg-ui-bg-subtle shadow-elevation-card-rest my-2 rounded-xl p-3" data-testid="order-receive-return-notification">
             <Form.Field
               control={form.control}
               name="send_notification"
               render={({ field: { onChange, value, ...field } }) => {
                 return (
-                  <Form.Item>
+                  <Form.Item data-testid="order-receive-return-notification-item">
                     <div className="flex items-center gap-3">
-                      <Form.Control>
+                      <Form.Control data-testid="order-receive-return-notification-control">
                         <Switch
                           dir="ltr"
                           className="mt-1 self-start rtl:rotate-180"
                           checked={!!value}
                           onCheckedChange={onChange}
                           {...field}
+                          data-testid="order-receive-return-notification-switch"
                         />
                       </Form.Control>
                       <div className="flex flex-col">
-                        <Form.Label>
+                        <Form.Label data-testid="order-receive-return-notification-label">
                           {t("orders.returns.sendNotification")}
                         </Form.Label>
-                        <Form.Hint className="!mt-1">
+                        <Form.Hint className="!mt-1" data-testid="order-receive-return-notification-hint">
                           {t("orders.returns.receive.sendNotificationHint")}
                         </Form.Hint>
                       </div>
                     </div>
-                    <Form.ErrorMessage />
+                    <Form.ErrorMessage data-testid="order-receive-return-notification-error" />
                   </Form.Item>
                 )
               }}
             />
           </div>
         </RouteDrawer.Body>
-        <RouteDrawer.Footer className="overflow-hidden">
+        <RouteDrawer.Footer className="overflow-hidden" data-testid="order-receive-return-footer">
           <div className="flex items-center gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary">
+              <Button size="small" variant="secondary" data-testid="order-receive-return-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={false}>
+            <Button size="small" type="submit" isLoading={false} data-testid="order-receive-return-save-button">
               {t("actions.save")}
             </Button>
           </div>
