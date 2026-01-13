@@ -9,6 +9,7 @@ import type {
   DateComparisonOperator,
   NumericalComparisonOperator
 } from '@medusajs/types';
+import { Badge } from '@medusajs/ui';
 import type { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 
@@ -123,6 +124,18 @@ export const AddReturnItemsTable = ({
     }
   });
 
+  const selectedCount = Object.keys(rowSelection).length;
+  const filterBarContent =
+    selectedCount > 0 ? (
+      <Badge
+        size="2xsmall"
+        rounded="full"
+        color="blue"
+      >
+        {t('general.countSelected', { count: selectedCount })}
+      </Badge>
+    ) : null;
+
   return (
     <div className="flex size-full flex-col overflow-hidden">
       <_DataTable
@@ -141,6 +154,7 @@ export const AddReturnItemsTable = ({
         ]}
         prefix={PREFIX}
         queryObject={raw}
+        filterBarContent={filterBarContent}
       />
     </div>
   );
