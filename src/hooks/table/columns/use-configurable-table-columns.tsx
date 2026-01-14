@@ -66,7 +66,7 @@ export function useConfigurableTableColumns<TData = any>(
             }
           }
 
-          const dataTestId = `${entity}-table-cell-${row.id}-${apiColumn.field}-value`
+          const dataTestId = `${entity}-table-cell-${row.index}-${apiColumn.field}-value`
           const rendered = renderer(value, row.original, apiColumn, t, dataTestId)
 
           // If the rendered value is a string or number, wrap it in a span with data-testid

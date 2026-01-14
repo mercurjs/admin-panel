@@ -260,6 +260,7 @@ export function OrderCreateFulfillmentForm({
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex h-full flex-col"
+        data-testid="order-create-fulfillment-form"
       >
         <RouteFocusModal.Header data-testid="order-create-fulfillment-header" />
 
@@ -267,7 +268,10 @@ export function OrderCreateFulfillmentForm({
           className="flex size-full justify-center overflow-y-auto"
           data-testid="order-create-fulfillment-body"
         >
-          <div className="flex size-full w-[752px] max-w-[100%] flex-col gap-8 px-4 pt-16">
+          <div
+            className="flex size-full w-[752px] max-w-[100%] flex-col gap-8 px-4 pt-16"
+            data-testid="order-create-fulfillment-form-content"
+          >
             <Heading level="h2">{t('orders.fulfillment.create')}</Heading>
             {hasNoFulfillableItems ? (
               <NoRecords
@@ -375,9 +379,14 @@ export function OrderCreateFulfillmentForm({
                                       data-testid="order-create-fulfillment-shipping-trigger"
                                     >
                                       {isShippingOptionsLoading ? (
-                                        <span className="text-right">{t('labels.loading')}...</span>
+                                        <span
+                                          className="text-right"
+                                          data-testid="order-create-fulfillment-form-shipping-select-loading"
+                                        >
+                                          {t('labels.loading')}...
+                                        </span>
                                       ) : (
-                                        <Select.Value />
+                                        <Select.Value data-testid="order-create-fulfillment-form-shipping-select-value" />
                                       )}
                                     </Select.Trigger>
                                     <Select.Content data-testid="order-create-fulfillment-shipping-content">
@@ -408,8 +417,16 @@ export function OrderCreateFulfillmentForm({
                         dismissible
                         data-testid="order-create-fulfillment-shipping-warning"
                       >
-                        <span className="-mt-[3px] block font-medium">{t('labels.beaware')}</span>
-                        <span className="text-ui-fg-muted">
+                        <span
+                          className="-mt-[3px] block font-medium"
+                          data-testid="order-create-fulfillment-form-shipping-warning-title"
+                        >
+                          {t('labels.beaware')}
+                        </span>
+                        <span
+                          className="text-ui-fg-muted"
+                          data-testid="order-create-fulfillment-form-shipping-warning-message"
+                        >
                           {t('orders.fulfillment.differentOptionSelected')}
                         </span>
                       </Alert>
@@ -476,7 +493,10 @@ export function OrderCreateFulfillmentForm({
                       render={({ field: { onChange, value, ...field } }) => {
                         return (
                           <Form.Item data-testid="order-create-fulfillment-notification-item">
-                            <div className="flex gap-x-3 rounded-lg bg-ui-bg-component p-3 shadow-elevation-card-rest">
+                            <div
+                              className="flex gap-x-3 rounded-lg bg-ui-bg-component p-3 shadow-elevation-card-rest"
+                              data-testid="order-create-fulfillment-form-notification-control"
+                            >
                               <Form.Control data-testid="order-create-fulfillment-notification-control">
                                 <Form.Control>
                                   <Switch
@@ -515,7 +535,10 @@ export function OrderCreateFulfillmentForm({
         </RouteFocusModal.Body>
         {!hasNoFulfillableItems && (
           <RouteFocusModal.Footer data-testid="order-create-fulfillment-footer">
-            <div className="flex items-center justify-end gap-x-2">
+            <div
+              className="flex items-center justify-end gap-x-2"
+              data-testid="order-create-fulfillment-form-footer-actions"
+            >
               <RouteFocusModal.Close asChild>
                 <Button
                   size="small"

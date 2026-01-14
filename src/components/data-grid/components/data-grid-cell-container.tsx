@@ -6,6 +6,7 @@ import { get } from "react-hook-form"
 
 import { DataGridCellContainerProps, DataGridErrorRenderProps } from "../types"
 import { DataGridRowErrorIndicator } from "./data-grid-row-error-indicator"
+import { useDataGridContext } from "../context"
 
 export const DataGridCellContainer = ({
   isAnchor,
@@ -21,11 +22,17 @@ export const DataGridCellContainer = ({
   rowErrors,
   outerComponent,
 }: DataGridCellContainerProps & DataGridErrorRenderProps<any>) => {
+  const context = useDataGridContext()
   const error = get(errors, field)
   const hasError = !!error
+  
+  const fieldName = field.replace(/\./g, '-').replace(/\[|\]/g, '')
+  const dataTestId = context.dataTestId
+    ? `${context.dataTestId}-cell-${fieldName}`
+    : undefined
 
   return (
-    <div className="group/container relative size-full">
+    <div className="group/container relative size-full" data-testid={dataTestId ? `${dataTestId}-container` : undefined}>
       <div
         className={clx(
           "bg-ui-bg-base group/cell relative flex size-full items-center gap-x-2 px-4 py-2.5 outline-none",
@@ -39,6 +46,7 @@ export const DataGridCellContainer = ({
           }
         )}
         tabIndex={-1}
+        data-testid={dataTestId}
         {...innerProps}
       >
         <ErrorMessage

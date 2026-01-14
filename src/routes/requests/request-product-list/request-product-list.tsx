@@ -75,12 +75,13 @@ export const RequestProductList = () => {
             </Table.Row>
           </Table.Header>
           <Table.Body data-testid="request-product-list-table-body">
-            {requests?.map((request) => {
+            {requests?.map((request, index) => {
               return (
                 <ProductRequestsRow
                   request={request}
                   handleDetail={handleDetail}
                   key={request.id}
+                  index={index}
                 />
               );
             })}
@@ -109,29 +110,31 @@ export const RequestProductList = () => {
 const ProductRequestsRow = ({
   request,
   handleDetail,
+  index,
 }: {
   request: AdminRequest;
   handleDetail: (request: AdminRequest) => void;
+  index: number;
 }) => {
   const navigate = useNavigate();
   const requestData = request.data as ProductDTO;
 
   return (
-    <Table.Row key={request.id} data-testid={`request-product-list-table-row-${request.id}`}>
-      <Table.Cell data-testid={`request-product-list-table-row-${request.id}-product`}>{requestData.title}</Table.Cell>
-      <Table.Cell data-testid={`request-product-list-table-row-${request.id}-submitted-by`}>{request.seller?.name}</Table.Cell>
-      <Table.Cell data-testid={`request-product-list-table-row-${request.id}-variants`}>
+    <Table.Row key={request.id} data-testid={`request-product-list-table-row-${index}`}>
+      <Table.Cell data-testid={`request-product-list-table-row-${index}-product`}>{requestData.title}</Table.Cell>
+      <Table.Cell data-testid={`request-product-list-table-row-${index}-submitted-by`}>{request.seller?.name}</Table.Cell>
+      <Table.Cell data-testid={`request-product-list-table-row-${index}-variants`}>
         {requestData.variants?.length || 0}
         {" variant(s)"}
       </Table.Cell>
-      <Table.Cell data-testid={`request-product-list-table-row-${request.id}-date`}>
+      <Table.Cell data-testid={`request-product-list-table-row-${index}-date`}>
         <div className="flex items-center gap-2">
           <History />
           {formatDate(request.created_at!)}
         </div>
       </Table.Cell>
-      <Table.Cell data-testid={`request-product-list-table-row-${request.id}-status`}>{getRequestStatusBadge(request.status!)}</Table.Cell>
-      <Table.Cell data-testid={`request-product-list-table-row-${request.id}-actions`}>
+      <Table.Cell data-testid={`request-product-list-table-row-${index}-status`}>{getRequestStatusBadge(request.status!)}</Table.Cell>
+      <Table.Cell data-testid={`request-product-list-table-row-${index}-actions`}>
         {request.status === "pending" ? (
           <RequestMenu
             handleDetail={() => {

@@ -81,23 +81,23 @@ export const OrderReturnRequestsPage = () => {
             </Table.Row>
           </Table.Header>
           <Table.Body data-testid="request-return-list-table-body">
-            {requests?.map((request) => {
+            {requests?.map((request, index) => {
               return (
-                <Table.Row key={request.id} data-testid={`request-return-list-table-row-${request.id}`}>
-                  <Table.Cell data-testid={`request-return-list-table-row-${request.id}-order-id`}>{request.order?.id}</Table.Cell>
-                  <Table.Cell data-testid={`request-return-list-table-row-${request.id}-customer`}>{`${request.order?.customer?.first_name} ${request.order?.customer?.last_name}`}</Table.Cell>
-                  <Table.Cell data-testid={`request-return-list-table-row-${request.id}-seller`}>{request.seller?.name}</Table.Cell>
-                  <Table.Cell data-testid={`request-return-list-table-row-${request.id}-reason`}>{request.customer_note}</Table.Cell>
-                  <Table.Cell data-testid={`request-return-list-table-row-${request.id}-escalated-date`}>
+                <Table.Row key={request.id} data-testid={`request-return-list-table-row-${index}`}>
+                  <Table.Cell data-testid={`request-return-list-table-row-${index}-order-id`}>{request.order?.id}</Table.Cell>
+                  <Table.Cell data-testid={`request-return-list-table-row-${index}-customer`}>{`${request.order?.customer?.first_name} ${request.order?.customer?.last_name}`}</Table.Cell>
+                  <Table.Cell data-testid={`request-return-list-table-row-${index}-seller`}>{request.seller?.name}</Table.Cell>
+                  <Table.Cell data-testid={`request-return-list-table-row-${index}-reason`}>{request.customer_note}</Table.Cell>
+                  <Table.Cell data-testid={`request-return-list-table-row-${index}-escalated-date`}>
                     <div className="flex items-center gap-2">
                       <History />
                       {formatDate(request.vendor_reviewer_date)}
                     </div>
                   </Table.Cell>
-                  <Table.Cell data-testid={`request-return-list-table-row-${request.id}-status`}>
+                  <Table.Cell data-testid={`request-return-list-table-row-${index}-status`}>
                     {getRequestStatusBadge(request.status!)}
                   </Table.Cell>
-                  <Table.Cell data-testid={`request-return-list-table-row-${request.id}-actions`}>
+                  <Table.Cell data-testid={`request-return-list-table-row-${index}-actions`}>
                     <ReturnRequestMenu
                       handleDetail={handleDetail}
                       request={request}

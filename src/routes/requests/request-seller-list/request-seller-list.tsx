@@ -74,30 +74,30 @@ export const RequestSellerList = () => {
             </Table.Row>
           </Table.Header>
           <Table.Body data-testid="request-seller-list-table-body">
-            {requests?.map((request) => {
+            {requests?.map((request, index) => {
               const requestData = request.data as Record<string, unknown>;
 
               return (
-                <Table.Row key={request.id} data-testid={`request-seller-list-table-row-${request.id}`}>
-                  <Table.Cell data-testid={`request-seller-list-table-row-${request.id}-name`}>
+                <Table.Row key={request.id} data-testid={`request-seller-list-table-row-${index}`}>
+                  <Table.Cell data-testid={`request-seller-list-table-row-${index}-name`}>
                     {
                       (requestData.seller as Record<string, unknown>)
                         ?.name as string
                     }
                   </Table.Cell>
-                  <Table.Cell data-testid={`request-seller-list-table-row-${request.id}-email`}>
+                  <Table.Cell data-testid={`request-seller-list-table-row-${index}-email`}>
                     {(requestData.provider_identity_id as string) ?? "N/A"}
                   </Table.Cell>
-                  <Table.Cell data-testid={`request-seller-list-table-row-${request.id}-date`}>
+                  <Table.Cell data-testid={`request-seller-list-table-row-${index}-date`}>
                     <div className="flex items-center gap-2">
                       <History />
                       {formatDate(request.created_at!)}
                     </div>
                   </Table.Cell>
-                  <Table.Cell data-testid={`request-seller-list-table-row-${request.id}-status`}>
+                  <Table.Cell data-testid={`request-seller-list-table-row-${index}-status`}>
                     {getRequestStatusBadge(request.status!)}
                   </Table.Cell>
-                  <Table.Cell data-testid={`request-seller-list-table-row-${request.id}-actions`}>
+                  <Table.Cell data-testid={`request-seller-list-table-row-${index}-actions`}>
                     <RequestMenu
                       handleDetail={handleDetail}
                       request={request}

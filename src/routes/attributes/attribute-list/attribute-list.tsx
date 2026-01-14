@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { DataTableTableWithTestIds } from '@components/data-table/components/data-table-table-with-test-ids';
 import { SingleColumnLayout } from '@components/layout/single-column';
 import { useAttributes } from '@hooks/api/attributes.tsx';
 import { useAttributeTableColumns } from '@hooks/table/columns/use-attribute-table-columns.tsx';
@@ -434,7 +435,7 @@ export const AttributeList = () => {
                         Updated At
                       </DropdownMenu.Item>
                     </div>
-                    <DropdownMenu.Separator />
+                    <DropdownMenu.Separator data-testid="attribute-list-sort-dropdown-separator" />
                     <div className="px-2 py-1">
                       <DropdownMenu.Item
                         onClick={() => handleSortOrderChange('asc')}
@@ -463,7 +464,7 @@ export const AttributeList = () => {
                 </DropdownMenu>
               </div>
             </DataTable.Toolbar>
-            <DataTable.Table data-testid="attribute-list-table-content" />
+            <DataTableTableWithTestIds instance={table} />
             <DataTable.Pagination data-testid="attribute-list-table-pagination" />
           </DataTable>
         </div>

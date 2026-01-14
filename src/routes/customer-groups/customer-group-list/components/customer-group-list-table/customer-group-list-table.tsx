@@ -67,31 +67,33 @@ export const CustomerGroupListTable = () => {
       }}
     >
       <Container className="overflow-hidden p-0" data-testid="customer-group-list-container">
-        <DataTable
-          data={customer_groups}
-          columns={columns}
-          filters={filters}
-          heading={t("customerGroups.domain")}
-          rowCount={count}
-          getRowId={(row) => row.id}
-          rowHref={(row) => `/customer-groups/${row.id}`}
-          action={{
-            label: t("actions.create"),
-            to: "/customer-groups/create",
-          }}
-          emptyState={{
-            empty: {
-              heading: t("customerGroups.list.empty.heading"),
-              description: t("customerGroups.list.empty.description"),
-            },
-            filtered: {
-              heading: t("customerGroups.list.filtered.heading"),
-              description: t("customerGroups.list.filtered.description"),
-            },
-          }}
-          pageSize={PAGE_SIZE}
-          isLoading={isPending}
-        />
+        <div data-testid="customer-group-list-table">
+          <DataTable
+            data={customer_groups}
+            columns={columns}
+            filters={filters}
+            heading={t("customerGroups.domain")}
+            rowCount={count}
+            getRowId={(row) => row.id}
+            rowHref={(row) => `/customer-groups/${row.id}`}
+            action={{
+              label: t("actions.create"),
+              to: "/customer-groups/create",
+            }}
+            emptyState={{
+              empty: {
+                heading: t("customerGroups.list.empty.heading"),
+                description: t("customerGroups.list.empty.description"),
+              },
+              filtered: {
+                heading: t("customerGroups.list.filtered.heading"),
+                description: t("customerGroups.list.filtered.description"),
+              },
+            }}
+            pageSize={PAGE_SIZE}
+            isLoading={isPending}
+          />
+        </div>
       </Container>
     </SingleColumnPage>
   )

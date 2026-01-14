@@ -70,13 +70,15 @@ export const ProductCreateVariantsForm = ({
   }, [variants])
 
   return (
-    <div className="flex size-full flex-col divide-y overflow-hidden">
-      <DataGrid
-        columns={columns}
-        data={variantData}
-        state={form}
-        onEditingChange={(editing) => setCloseOnEscape(!editing)}
-      />
+    <div className="flex size-full flex-col divide-y overflow-hidden" data-testid="product-create-variants-form">
+      <div data-testid="product-create-variants-form-datagrid">
+        <DataGrid
+          columns={columns}
+          data={variantData}
+          state={form}
+          onEditingChange={(editing) => setCloseOnEscape(!editing)}
+        />
+      </div>
     </div>
   )
 }

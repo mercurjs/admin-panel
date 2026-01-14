@@ -144,10 +144,10 @@ export const PriceListDetailsForm = ({ form }: PriceListDetailsFormProps) => {
                         onValueChange={onChange}
                         data-testid="price-list-details-form-status-select"
                       >
-                        <Select.Trigger ref={ref}>
-                          <Select.Value />
+                        <Select.Trigger ref={ref} data-testid="price-list-details-form-status-trigger">
+                          <Select.Value data-testid="price-list-details-form-status-value" />
                         </Select.Trigger>
-                        <Select.Content>
+                        <Select.Content data-testid="price-list-details-form-status-content">
                           <Select.Item value="active" data-testid="price-list-details-form-status-option-active">
                             {t("priceLists.fields.status.options.active")}
                           </Select.Item>

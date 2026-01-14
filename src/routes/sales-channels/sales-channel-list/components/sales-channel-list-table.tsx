@@ -58,23 +58,25 @@ export const SalesChannelListTable = () => {
 
   return (
     <Container className="p-0" data-testid="sales-channel-list-table-container">
-      <DataTable
-        data={sales_channels_data}
-        columns={columns}
-        rowCount={count}
-        getRowId={(row) => row.id}
-        pageSize={PAGE_SIZE}
-        filters={filters}
-        isLoading={isPending}
-        emptyState={emptyState}
-        heading={t("salesChannels.domain")}
-        subHeading={t("salesChannels.subtitle")}
-        action={{
-          label: t("actions.create"),
-          to: "/settings/sales-channels/create",
-        }}
-        rowHref={(row) => `/settings/sales-channels/${row.id}`}
-      />
+      <div data-testid="sales-channel-list-table">
+        <DataTable
+          data={sales_channels_data}
+          columns={columns}
+          rowCount={count}
+          getRowId={(row) => row.id}
+          pageSize={PAGE_SIZE}
+          filters={filters}
+          isLoading={isPending}
+          emptyState={emptyState}
+          heading={t("salesChannels.domain")}
+          subHeading={t("salesChannels.subtitle")}
+          action={{
+            label: t("actions.create"),
+            to: "/settings/sales-channels/create",
+          }}
+          rowHref={(row) => `/settings/sales-channels/${row.id}`}
+        />
+      </div>
     </Container>
   )
 }

@@ -90,25 +90,27 @@ export const CreateCategoryNesting = ({
   const ready = !isPending && !!product_categories
 
   return (
-    <CategoryTree
-      value={shouldFreeze ? snapshot : value}
-      enableDrag={(item) => item.id === ID}
-      onChange={handleChange}
-      renderValue={(item) => {
-        if (item.id === ID) {
-          return (
-            <div className="flex items-center gap-x-3">
-              <span>{item.name}</span>
-              <Badge size="2xsmall" color="blue">
-                {t("categories.fields.new.label")}
-              </Badge>
-            </div>
-          )
-        }
+    <div data-testid="category-create-form-nesting">
+      <CategoryTree
+        value={shouldFreeze ? snapshot : value}
+        enableDrag={(item) => item.id === ID}
+        onChange={handleChange}
+        renderValue={(item) => {
+          if (item.id === ID) {
+            return (
+              <div className="flex items-center gap-x-3" data-testid="category-create-form-nesting-new-item">
+                <span>{item.name}</span>
+                <Badge size="2xsmall" color="blue" data-testid="category-create-form-nesting-new-badge">
+                  {t("categories.fields.new.label")}
+                </Badge>
+              </div>
+            )
+          }
 
-        return item.name
-      }}
-      isLoading={!ready}
-    />
+          return item.name
+        }}
+        isLoading={!ready}
+      />
+    </div>
   )
 }

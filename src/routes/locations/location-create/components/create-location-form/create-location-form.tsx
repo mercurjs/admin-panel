@@ -103,18 +103,18 @@ export const CreateLocationForm = () => {
                   }}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4" data-testid="location-create-form-address-fields">
                 <Form.Field
                   control={form.control}
                   name="address.address_1"
                   render={({ field }) => {
                     return (
-                      <Form.Item>
-                        <Form.Label>{t("fields.address")}</Form.Label>
-                        <Form.Control>
-                          <Input size="small" {...field} />
+                      <Form.Item data-testid="location-create-form-address-1-item">
+                        <Form.Label data-testid="location-create-form-address-1-label">{t("fields.address")}</Form.Label>
+                        <Form.Control data-testid="location-create-form-address-1-control">
+                          <Input size="small" {...field} data-testid="location-create-form-address-1-input" />
                         </Form.Control>
-                        <Form.ErrorMessage />
+                        <Form.ErrorMessage data-testid="location-create-form-address-1-error" />
                       </Form.Item>
                     )
                   }}
@@ -124,12 +124,12 @@ export const CreateLocationForm = () => {
                   name="address.address_2"
                   render={({ field }) => {
                     return (
-                      <Form.Item>
-                        <Form.Label optional>{t("fields.address2")}</Form.Label>
-                        <Form.Control>
-                          <Input size="small" {...field} />
+                      <Form.Item data-testid="location-create-form-address-2-item">
+                        <Form.Label optional data-testid="location-create-form-address-2-label">{t("fields.address2")}</Form.Label>
+                        <Form.Control data-testid="location-create-form-address-2-control">
+                          <Input size="small" {...field} data-testid="location-create-form-address-2-input" />
                         </Form.Control>
-                        <Form.ErrorMessage />
+                        <Form.ErrorMessage data-testid="location-create-form-address-2-error" />
                       </Form.Item>
                     )
                   }}
@@ -139,14 +139,14 @@ export const CreateLocationForm = () => {
                   name="address.postal_code"
                   render={({ field }) => {
                     return (
-                      <Form.Item>
-                        <Form.Label optional>
+                      <Form.Item data-testid="location-create-form-postal-code-item">
+                        <Form.Label optional data-testid="location-create-form-postal-code-label">
                           {t("fields.postalCode")}
                         </Form.Label>
-                        <Form.Control>
-                          <Input size="small" {...field} />
+                        <Form.Control data-testid="location-create-form-postal-code-control">
+                          <Input size="small" {...field} data-testid="location-create-form-postal-code-input" />
                         </Form.Control>
-                        <Form.ErrorMessage />
+                        <Form.ErrorMessage data-testid="location-create-form-postal-code-error" />
                       </Form.Item>
                     )
                   }}
@@ -156,12 +156,12 @@ export const CreateLocationForm = () => {
                   name="address.city"
                   render={({ field }) => {
                     return (
-                      <Form.Item>
-                        <Form.Label optional>{t("fields.city")}</Form.Label>
-                        <Form.Control>
-                          <Input size="small" {...field} />
+                      <Form.Item data-testid="location-create-form-city-item">
+                        <Form.Label optional data-testid="location-create-form-city-label">{t("fields.city")}</Form.Label>
+                        <Form.Control data-testid="location-create-form-city-control">
+                          <Input size="small" {...field} data-testid="location-create-form-city-input" />
                         </Form.Control>
-                        <Form.ErrorMessage />
+                        <Form.ErrorMessage data-testid="location-create-form-city-error" />
                       </Form.Item>
                     )
                   }}
@@ -171,12 +171,12 @@ export const CreateLocationForm = () => {
                   name="address.country_code"
                   render={({ field }) => {
                     return (
-                      <Form.Item>
-                        <Form.Label>{t("fields.country")}</Form.Label>
-                        <Form.Control>
-                          <CountrySelect {...field} />
+                      <Form.Item data-testid="location-create-form-country-item">
+                        <Form.Label data-testid="location-create-form-country-label">{t("fields.country")}</Form.Label>
+                        <Form.Control data-testid="location-create-form-country-control">
+                          <CountrySelect {...field} data-testid="location-create-form-country-input" />
                         </Form.Control>
-                        <Form.ErrorMessage />
+                        <Form.ErrorMessage data-testid="location-create-form-country-error" />
                       </Form.Item>
                     )
                   }}
@@ -186,12 +186,12 @@ export const CreateLocationForm = () => {
                   name="address.province"
                   render={({ field }) => {
                     return (
-                      <Form.Item>
-                        <Form.Label optional>{t("fields.state")}</Form.Label>
-                        <Form.Control>
-                          <Input size="small" {...field} />
+                      <Form.Item data-testid="location-create-form-province-item">
+                        <Form.Label optional data-testid="location-create-form-province-label">{t("fields.state")}</Form.Label>
+                        <Form.Control data-testid="location-create-form-province-control">
+                          <Input size="small" {...field} data-testid="location-create-form-province-input" />
                         </Form.Control>
-                        <Form.ErrorMessage />
+                        <Form.ErrorMessage data-testid="location-create-form-province-error" />
                       </Form.Item>
                     )
                   }}
@@ -201,12 +201,12 @@ export const CreateLocationForm = () => {
                   name="address.company"
                   render={({ field }) => {
                     return (
-                      <Form.Item>
-                        <Form.Label optional>{t("fields.company")}</Form.Label>
-                        <Form.Control>
-                          <Input size="small" {...field} />
+                      <Form.Item data-testid="location-create-form-company-item">
+                        <Form.Label optional data-testid="location-create-form-company-label">{t("fields.company")}</Form.Label>
+                        <Form.Control data-testid="location-create-form-company-control">
+                          <Input size="small" {...field} data-testid="location-create-form-company-input" />
                         </Form.Control>
-                        <Form.ErrorMessage />
+                        <Form.ErrorMessage data-testid="location-create-form-company-error" />
                       </Form.Item>
                     )
                   }}
@@ -216,12 +216,12 @@ export const CreateLocationForm = () => {
                   name="address.phone"
                   render={({ field }) => {
                     return (
-                      <Form.Item>
-                        <Form.Label optional>{t("fields.phone")}</Form.Label>
-                        <Form.Control>
-                          <Input size="small" {...field} />
+                      <Form.Item data-testid="location-create-form-phone-item">
+                        <Form.Label optional data-testid="location-create-form-phone-label">{t("fields.phone")}</Form.Label>
+                        <Form.Control data-testid="location-create-form-phone-control">
+                          <Input size="small" {...field} data-testid="location-create-form-phone-input" />
                         </Form.Control>
-                        <Form.ErrorMessage />
+                        <Form.ErrorMessage data-testid="location-create-form-phone-error" />
                       </Form.Item>
                     )
                   }}

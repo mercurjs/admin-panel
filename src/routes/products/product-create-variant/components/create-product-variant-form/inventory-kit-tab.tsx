@@ -51,16 +51,16 @@ function InventoryKitTab({ form }: InventoryKitTabProps) {
   }
 
   return (
-    <div className="flex flex-col items-center p-16">
+    <div className="flex flex-col items-center p-16" data-testid="product-variant-create-form-inventory-kit-tab">
       <div className="flex w-full max-w-[720px] flex-col gap-y-8">
         <div id="organize" className="flex flex-col gap-y-8">
-          <Heading>{t("products.create.inventory.heading")}</Heading>
+          <Heading data-testid="product-variant-create-form-inventory-kit-heading">{t("products.create.inventory.heading")}</Heading>
 
           <div className="grid gap-y-4">
             <div className="flex items-start justify-between gap-x-4">
               <div className="flex flex-col">
-                <Form.Label>{form.getValues("title")}</Form.Label>
-                <Form.Hint>{t("products.create.inventory.label")}</Form.Hint>
+                <Form.Label data-testid="product-variant-create-form-inventory-kit-variant-label">{form.getValues("title")}</Form.Label>
+                <Form.Hint data-testid="product-variant-create-form-inventory-kit-hint">{t("products.create.inventory.label")}</Form.Hint>
               </div>
               <Button
                 size="small"
@@ -72,6 +72,7 @@ function InventoryKitTab({ form }: InventoryKitTabProps) {
                     required_quantity: "",
                   })
                 }}
+                data-testid="product-variant-create-form-inventory-kit-add-button"
               >
                 {t("actions.add")}
               </Button>
@@ -80,6 +81,7 @@ function InventoryKitTab({ form }: InventoryKitTabProps) {
               <li
                 key={inventoryItem.id}
                 className="bg-ui-bg-component shadow-elevation-card-rest grid grid-cols-[1fr_28px] items-center gap-1.5 rounded-xl p-1.5"
+                data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}`}
               >
                 <div className="grid grid-cols-[min-content,1fr] items-center gap-1.5">
                   <div className="flex items-center px-2 py-1.5">
@@ -88,6 +90,7 @@ function InventoryKitTab({ form }: InventoryKitTabProps) {
                       weight="plus"
                       className="text-ui-fg-subtle"
                       htmlFor={`inventory.${inventoryIndex}.inventory_item_id`}
+                      data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-item-label`}
                     >
                       {t("fields.item")}
                     </Label>
@@ -98,8 +101,8 @@ function InventoryKitTab({ form }: InventoryKitTabProps) {
                     name={`inventory.${inventoryIndex}.inventory_item_id`}
                     render={({ field }) => {
                       return (
-                        <Form.Item>
-                          <Form.Control>
+                        <Form.Item data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-item-field`}>
+                          <Form.Control data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-item-control`}>
                             <Combobox
                               {...field}
                               options={items.options.map((o) => ({
@@ -116,8 +119,10 @@ function InventoryKitTab({ form }: InventoryKitTabProps) {
                               placeholder={t(
                                 "products.create.inventory.itemPlaceholder"
                               )}
+                              data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-item-combobox`}
                             />
                           </Form.Control>
+                          <Form.ErrorMessage data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-item-error`} />
                         </Form.Item>
                       )
                     }}
@@ -129,6 +134,7 @@ function InventoryKitTab({ form }: InventoryKitTabProps) {
                       weight="plus"
                       className="text-ui-fg-subtle"
                       htmlFor={`inventory.${inventoryIndex}.required_quantity`}
+                      data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-quantity-label`}
                     >
                       {t("fields.quantity")}
                     </Label>
@@ -138,8 +144,8 @@ function InventoryKitTab({ form }: InventoryKitTabProps) {
                     name={`inventory.${inventoryIndex}.required_quantity`}
                     render={({ field: { onChange, value, ...field } }) => {
                       return (
-                        <Form.Item>
-                          <Form.Control>
+                        <Form.Item data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-quantity-field`}>
+                          <Form.Control data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-quantity-control`}>
                             <Input
                               type="number"
                               className="bg-ui-bg-field-component"
@@ -158,9 +164,10 @@ function InventoryKitTab({ form }: InventoryKitTabProps) {
                               placeholder={t(
                                 "products.create.inventory.quantityPlaceholder"
                               )}
+                              data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-quantity-input`}
                             />
                           </Form.Control>
-                          <Form.ErrorMessage />
+                          <Form.ErrorMessage data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-quantity-error`} />
                         </Form.Item>
                       )
                     }}
@@ -172,6 +179,7 @@ function InventoryKitTab({ form }: InventoryKitTabProps) {
                   variant="transparent"
                   className="text-ui-fg-muted"
                   onClick={() => inventory.remove(inventoryIndex)}
+                  data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-remove-button`}
                 >
                   <XMarkMini />
                 </IconButton>

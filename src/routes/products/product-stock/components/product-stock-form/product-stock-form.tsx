@@ -139,10 +139,10 @@ export const ProductStockForm = ({
   })
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="product-stock-form">
       <KeyboundForm onSubmit={onSubmit} className="flex size-full flex-col">
-        <RouteFocusModal.Header />
-        <RouteFocusModal.Body className="flex flex-col overflow-hidden">
+        <RouteFocusModal.Header data-testid="product-stock-form-header" />
+        <RouteFocusModal.Body className="flex flex-col overflow-hidden" data-testid="product-stock-form-body">
           <DataGrid
             state={form}
             columns={columns}
@@ -151,16 +151,17 @@ export const ProductStockForm = ({
             onEditingChange={(editing) => setCloseOnEscape(!editing)}
             disableInteractions={isPending || isPromptOpen}
             multiColumnSelection={true}
+            data-testid="product-stock-form-data-grid"
           />
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="product-stock-form-footer">
           <div className="flex items-center justify-end gap-2">
             <RouteFocusModal.Close asChild>
-              <Button variant="secondary" size="small" type="button">
+              <Button variant="secondary" size="small" type="button" data-testid="product-stock-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
-            <Button type="submit" size="small" isLoading={isPending}>
+            <Button type="submit" size="small" isLoading={isPending} data-testid="product-stock-form-save-button">
               {t("actions.save")}
             </Button>
           </div>

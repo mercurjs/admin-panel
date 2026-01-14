@@ -133,8 +133,14 @@ export function OrderCreateFulfillmentItem({
   };
 
   return (
-    <div className="relative rounded-xl bg-ui-bg-component shadow-elevation-card-rest">
-      <div className="flex flex-row items-center">
+    <div
+      className="relative rounded-xl bg-ui-bg-component shadow-elevation-card-rest"
+      data-testid={`order-create-fulfillment-item-${item.id}`}
+    >
+      <div
+        className="flex flex-row items-center"
+        data-testid={`order-create-fulfillment-item-${item.id}-content`}
+      >
         <div className="ml-3 inline-flex items-center">
           {disabled ? (
             <Tooltip
@@ -142,7 +148,10 @@ export function OrderCreateFulfillmentItem({
               side="top"
               className="text-center"
             >
-              <InformationCircleSolid className="text-ui-tag-orange-icon" />
+              <InformationCircleSolid
+                className="text-ui-tag-orange-icon"
+                data-testid={`order-create-fulfillment-item-${item.id}-disabled-indicator`}
+              />
             </Tooltip>
           ) : (
             <Checkbox
@@ -159,13 +168,23 @@ export function OrderCreateFulfillmentItem({
             'flex flex-1 flex-col gap-x-4 gap-y-2 py-2 pl-4 pr-3 text-sm sm:flex-row',
             disabled && 'pointer-events-none text-ui-fg-disabled'
           )}
+          data-testid={`order-create-fulfillment-item-${item.id}-details`}
         >
-          <div className="flex flex-1 items-center gap-x-4">
+          <div
+            className="flex flex-1 items-center gap-x-4"
+            data-testid={`order-create-fulfillment-item-${item.id}-info`}
+          >
             <div className={clx(disabled && 'opacity-50')}>
-              <Thumbnail src={item.thumbnail} />
+              <Thumbnail
+                src={item.thumbnail}
+                data-testid={`order-create-fulfillment-item-${item.id}-thumbnail`}
+              />
             </div>
-            <div className="flex flex-col">
-              <div>
+            <div
+              className="flex flex-col"
+              data-testid={`order-create-fulfillment-item-${item.id}-text`}
+            >
+              <div data-testid={`order-create-fulfillment-item-${item.id}-title`}>
                 <Text
                   className="txt-small"
                   as="span"
@@ -173,25 +192,44 @@ export function OrderCreateFulfillmentItem({
                 >
                   {item.title}
                 </Text>{' '}
-                {item.variant_sku && <span>({item.variant_sku})</span>}
+                {item.variant_sku && (
+                  <span data-testid={`order-create-fulfillment-item-${item.id}-sku`}>
+                    ({item.variant_sku})
+                  </span>
+                )}
               </div>
               <Text
                 as="div"
                 className={clx('txt-small text-ui-fg-subtle', disabled && 'text-ui-fg-disabled')}
+                data-testid={`order-create-fulfillment-item-${item.id}-variant-title`}
               >
                 {item.variant_title}
               </Text>
             </div>
           </div>
 
-          <div className="flex flex-1 items-center gap-x-4">
+          <div
+            className="flex flex-1 items-center gap-x-4"
+            data-testid={`order-create-fulfillment-item-${item.id}-quantities`}
+          >
             <Divider
               orientation="vertical"
               className="h-4"
             />
-            <div className="text-small flex flex-1 flex-col">
-              <span className="font-medium">{t('orders.fulfillment.available')}</span>
-              <span className={clx('text-ui-fg-subtle', disabled && 'text-ui-fg-disabled')}>
+            <div
+              className="text-small flex flex-1 flex-col"
+              data-testid={`order-create-fulfillment-item-${item.id}-available`}
+            >
+              <span
+                className="font-medium"
+                data-testid={`order-create-fulfillment-item-${item.id}-available-label`}
+              >
+                {t('orders.fulfillment.available')}
+              </span>
+              <span
+                className={clx('text-ui-fg-subtle', disabled && 'text-ui-fg-disabled')}
+                data-testid={`order-create-fulfillment-item-${item.id}-available-value`}
+              >
                 {availableQuantity || 'N/A'}
               </span>
             </div>
@@ -199,13 +237,27 @@ export function OrderCreateFulfillmentItem({
               orientation="vertical"
               className="h-4"
             />
-            <div className="flex flex-1 items-center gap-x-1">
+            <div
+              className="flex flex-1 items-center gap-x-1"
+              data-testid={`order-create-fulfillment-item-${item.id}-in-stock`}
+            >
               <div className="flex flex-col">
-                <span className="font-medium">{t('orders.fulfillment.inStock')}</span>
-                <span className={clx('text-ui-fg-subtle', disabled && 'text-ui-fg-disabled')}>
+                <span
+                  className="font-medium"
+                  data-testid={`order-create-fulfillment-item-${item.id}-in-stock-label`}
+                >
+                  {t('orders.fulfillment.inStock')}
+                </span>
+                <span
+                  className={clx('text-ui-fg-subtle', disabled && 'text-ui-fg-disabled')}
+                  data-testid={`order-create-fulfillment-item-${item.id}-in-stock-value`}
+                >
                   {inStockQuantity || 'N/A'}{' '}
                   {inStockQuantity && (
-                    <span className="font-medium text-red-500">
+                    <span
+                      className="font-medium text-red-500"
+                      data-testid={`order-create-fulfillment-item-${item.id}-in-stock-reserved`}
+                    >
                       -{form.getValues(`quantity.${item.id}`)}
                     </span>
                   )}
@@ -213,15 +265,23 @@ export function OrderCreateFulfillmentItem({
               </div>
             </div>
 
-            <div className="flex items-center gap-1">
+            <div
+              className="flex items-center gap-1"
+              data-testid={`order-create-fulfillment-item-${item.id}-quantity-input-section`}
+            >
               <Form.Field
                 control={form.control}
                 name={`quantity.${item.id}`}
                 rules={{ required: true, min: minValue, max: maxValue }}
                 render={({ field }) => {
                   return (
-                    <Form.Item className={clx(disabled && 'opacity-50')}>
-                      <Form.Control>
+                    <Form.Item
+                      className={clx(disabled && 'opacity-50')}
+                      data-testid={`order-create-fulfillment-item-${item.id}-quantity-item`}
+                    >
+                      <Form.Control
+                        data-testid={`order-create-fulfillment-item-${item.id}-quantity-control`}
+                      >
                         <Input
                           className="txt-small w-[50px] rounded-lg bg-ui-bg-base text-right [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                           type="number"
@@ -245,9 +305,13 @@ export function OrderCreateFulfillmentItem({
                               }
                             }
                           }}
+                          data-testid={`order-create-fulfillment-item-${item.id}-quantity-input`}
                         />
                       </Form.Control>
-                      <Form.ErrorMessage className="absolute -right-4 translate-x-full" />
+                      <Form.ErrorMessage
+                        className="absolute -right-4 translate-x-full"
+                        data-testid={`order-create-fulfillment-item-${item.id}-quantity-error`}
+                      />
                     </Form.Item>
                   );
                 }}
@@ -255,6 +319,7 @@ export function OrderCreateFulfillmentItem({
 
               <span
                 className={clx('shrink-0 text-ui-fg-subtle', disabled && 'text-ui-fg-disabled')}
+                data-testid={`order-create-fulfillment-item-${item.id}-quantity-label`}
               >
                 / {item.quantity} {t('fields.qty')}
               </span>

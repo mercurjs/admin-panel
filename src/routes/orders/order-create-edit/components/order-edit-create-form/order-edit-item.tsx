@@ -128,34 +128,35 @@ function OrderEditItem({ item, currencyCode, orderId }: OrderEditItemProps) {
     <div
       key={item.quantity}
       className="bg-ui-bg-subtle shadow-elevation-card-rest my-2 rounded-xl "
+      data-testid={`order-edit-item-${item.id}`}
     >
-      <div className="flex flex-col items-center gap-x-2 gap-y-2 p-3 text-sm md:flex-row">
-        <div className="flex flex-1 items-center justify-between">
-          <div className="flex flex-row items-center gap-x-3">
-            <Thumbnail src={item.thumbnail} />
+      <div className="flex flex-col items-center gap-x-2 gap-y-2 p-3 text-sm md:flex-row" data-testid={`order-edit-item-${item.id}-content`}>
+        <div className="flex flex-1 items-center justify-between" data-testid={`order-edit-item-${item.id}-info`}>
+          <div className="flex flex-row items-center gap-x-3" data-testid={`order-edit-item-${item.id}-details`}>
+            <Thumbnail src={item.thumbnail} data-testid={`order-edit-item-${item.id}-thumbnail`} />
 
-            <div className="flex flex-col">
-              <div>
+            <div className="flex flex-col" data-testid={`order-edit-item-${item.id}-text`}>
+              <div data-testid={`order-edit-item-${item.id}-title`}>
                 <Text className="txt-small" as="span" weight="plus">
                   {item.title}{" "}
                 </Text>
 
-                {item.variant_sku && <span>({item.variant_sku})</span>}
+                {item.variant_sku && <span data-testid={`order-edit-item-${item.id}-sku`}>({item.variant_sku})</span>}
               </div>
-              <Text as="div" className="text-ui-fg-subtle txt-small">
+              <Text as="div" className="text-ui-fg-subtle txt-small" data-testid={`order-edit-item-${item.id}-subtitle`}>
                 {item.subtitle}
               </Text>
             </div>
           </div>
 
           {isAddedItem && (
-            <Badge size="2xsmall" rounded="full" color="blue" className="mr-1">
+            <Badge size="2xsmall" rounded="full" color="blue" className="mr-1" data-testid={`order-edit-item-${item.id}-new-badge`}>
               {t("general.new")}
             </Badge>
           )}
 
           {isItemRemoved ? (
-            <Badge size="2xsmall" rounded="full" color="red" className="mr-1">
+            <Badge size="2xsmall" rounded="full" color="red" className="mr-1" data-testid={`order-edit-item-${item.id}-removed-badge`}>
               {t("general.removed")}
             </Badge>
           ) : (
@@ -165,6 +166,7 @@ function OrderEditItem({ item, currencyCode, orderId }: OrderEditItemProps) {
                 rounded="full"
                 color="orange"
                 className="mr-1"
+                data-testid={`order-edit-item-${item.id}-modified-badge`}
               >
                 {t("general.modified")}
               </Badge>
@@ -172,8 +174,8 @@ function OrderEditItem({ item, currencyCode, orderId }: OrderEditItemProps) {
           )}
         </div>
 
-        <div className="flex flex-1 justify-between">
-          <div className="flex flex-grow items-center gap-2">
+        <div className="flex flex-1 justify-between" data-testid={`order-edit-item-${item.id}-actions`}>
+          <div className="flex flex-grow items-center gap-2" data-testid={`order-edit-item-${item.id}-quantity`}>
             <Input
               className="bg-ui-bg-base txt-small w-[67px] rounded-lg [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               type="number"
@@ -188,13 +190,14 @@ function OrderEditItem({ item, currencyCode, orderId }: OrderEditItemProps) {
                   onUpdate(payload)
                 }
               }}
+              data-testid={`order-edit-item-${item.id}-quantity-input`}
             />
-            <Text className="txt-small text-ui-fg-subtle">
+            <Text className="txt-small text-ui-fg-subtle" data-testid={`order-edit-item-${item.id}-quantity-label`}>
               {t("fields.qty")}
             </Text>
           </div>
 
-          <div className="text-ui-fg-subtle txt-small mr-2 flex flex-shrink-0">
+          <div className="text-ui-fg-subtle txt-small mr-2 flex flex-shrink-0" data-testid={`order-edit-item-${item.id}-total`}>
             <MoneyAmountCell currencyCode={currencyCode} amount={item.total} />
           </div>
 
@@ -227,6 +230,7 @@ function OrderEditItem({ item, currencyCode, orderId }: OrderEditItemProps) {
                 ].filter(Boolean),
               },
             ]}
+            data-testid={`order-edit-item-${item.id}-action-menu`}
           />
         </div>
       </div>

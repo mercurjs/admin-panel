@@ -269,14 +269,15 @@ export const ProductCreateVariantsSection = ({
   }
 
   return (
-    <div id="variants" className="flex flex-col gap-y-8">
-      <div className="flex flex-col gap-y-6">
-        <Heading level="h2">{t("products.create.variants.header")}</Heading>
+    <div id="variants" className="flex flex-col gap-y-8" data-testid="product-create-variants-section">
+      <div className="flex flex-col gap-y-6" data-testid="product-create-variants-section-header">
+        <Heading level="h2" data-testid="product-create-variants-section-heading">{t("products.create.variants.header")}</Heading>
         <SwitchBox
           control={form.control}
           name="enable_variants"
           label={t("products.create.variants.subHeadingTitle")}
           description={t("products.create.variants.subHeadingDescription")}
+          data-testid="product-create-variants-section-enable-switch"
           onCheckedChange={(checked) => {
             if (checked) {
               form.setValue("options", [
@@ -321,16 +322,17 @@ export const ProductCreateVariantsSection = ({
                               values: [],
                             })
                           }}
+                          data-testid="product-create-variants-section-add-option-button"
                         >
                           {t("actions.add")}
                         </Button>
                       </div>
                       {showInvalidOptionsMessage && (
-                        <Alert dismissible variant="error">
+                        <Alert dismissible variant="error" data-testid="product-create-variants-section-options-error">
                           {t("products.create.errors.options")}
                         </Alert>
                       )}
-                      <ul className="flex flex-col gap-y-4">
+                      <ul className="flex flex-col gap-y-4" data-testid="product-create-variants-section-options-list">
                         {options.fields.map((option, index) => {
                           const hasError =
                             !!form.formState.errors.options?.[index]
@@ -344,6 +346,7 @@ export const ProductCreateVariantsSection = ({
                                     hasError,
                                 }
                               )}
+                              data-testid={`product-create-variants-section-option-${index}`}
                             >
                               <div className="grid grid-cols-[min-content,1fr] items-center gap-1.5">
                                 <div className="flex items-center px-2 py-1.5">
@@ -364,6 +367,7 @@ export const ProductCreateVariantsSection = ({
                                   placeholder={t(
                                     "products.fields.options.optionTitlePlaceholder"
                                   )}
+                                  data-testid={`product-create-variants-section-option-title-input-${index}`}
                                 />
                                 <div className="flex items-center px-2 py-1.5">
                                   <Label
@@ -396,6 +400,7 @@ export const ProductCreateVariantsSection = ({
                                         placeholder={t(
                                           "products.fields.options.variantionsPlaceholder"
                                         )}
+                                        data-testid={`product-create-variants-section-option-values-input-${index}`}
                                       />
                                     )
                                   }}
@@ -408,6 +413,7 @@ export const ProductCreateVariantsSection = ({
                                 className="text-ui-fg-muted"
                                 disabled={index === 0}
                                 onClick={() => handleRemoveOption(index)}
+                                data-testid={`product-create-variants-section-option-remove-${index}`}
                               >
                                 <XMarkMini />
                               </IconButton>
@@ -432,23 +438,25 @@ export const ProductCreateVariantsSection = ({
                 </Hint>
               </div>
               {!showInvalidOptionsMessage && showInvalidVariantsMessage && (
-                <Alert dismissible variant="error">
+                <Alert dismissible variant="error" data-testid="product-create-variants-section-variants-error">
                   {t("products.create.errors.variants")}
                 </Alert>
               )}
               {variants.fields.length > 0 ? (
-                <div className="overflow-hidden rounded-xl border">
+                <div className="overflow-hidden rounded-xl border" data-testid="product-create-variants-section-variants-list">
                   <div
                     className="bg-ui-bg-component text-ui-fg-subtle grid items-center gap-3 border-b px-6 py-2.5"
                     style={{
                       gridTemplateColumns: `20px 28px repeat(${watchedOptions.length}, 1fr)`,
                     }}
+                    data-testid="product-create-variants-section-variants-header"
                   >
                     <div>
                       <Checkbox
                         className="relative"
                         checked={getCheckboxState(watchedVariants)}
                         onCheckedChange={onCheckboxChange}
+                        data-testid="product-create-variants-section-variants-select-all"
                       />
                     </div>
                     <div />
@@ -491,6 +499,7 @@ export const ProductCreateVariantsSection = ({
                                         {...field}
                                         checked={value}
                                         onCheckedChange={onChange}
+                                        data-testid={`product-create-variants-section-variant-checkbox-${index}`}
                                       />
                                     </Form.Control>
                                   </Form.Item>
@@ -510,7 +519,7 @@ export const ProductCreateVariantsSection = ({
                   />
                 </div>
               ) : (
-                <Alert>
+                <Alert data-testid="product-create-variants-section-variants-empty-alert">
                   {t("products.create.variants.productVariants.alert")}
                 </Alert>
               )}

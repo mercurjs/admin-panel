@@ -217,12 +217,13 @@ export const PriceListConfigurationForm = ({
                           {t("operators.in")}
                         </div>
                       </div>
-                      <div className="flex items-center gap-1.5 px-1.5">
-                        <StackedDrawer id={STACKED_MODAL_ID}>
+                      <div className="flex items-center gap-1.5 px-1.5" data-testid="price-list-configuration-customer-groups-dropdown">
+                        <StackedDrawer id={STACKED_MODAL_ID} data-testid="price-list-configuration-customer-groups-stacked-drawer">
                           <StackedDrawer.Trigger asChild>
                             <button
                               type="button"
                               className="bg-ui-bg-field shadow-borders-base txt-compact-small text-ui-fg-muted flex flex-1 items-center gap-x-2 rounded-md px-2 py-1.5"
+                              data-testid="price-list-configuration-customer-groups-search-button"
                             >
                               <MagnifyingGlass />
                               {t(
@@ -231,20 +232,20 @@ export const PriceListConfigurationForm = ({
                             </button>
                           </StackedDrawer.Trigger>
                           <StackedDrawer.Trigger asChild>
-                            <Button variant="secondary">
+                            <Button variant="secondary" data-testid="price-list-configuration-customer-groups-browse-button">
                               {t("actions.browse")}
                             </Button>
                           </StackedDrawer.Trigger>
-                          <StackedDrawer.Content>
-                            <StackedDrawer.Header>
+                          <StackedDrawer.Content data-testid="price-list-configuration-customer-groups-drawer-content">
+                            <StackedDrawer.Header data-testid="price-list-configuration-customer-groups-drawer-header">
                               <StackedDrawer.Title asChild>
-                                <Heading>
+                                <Heading data-testid="price-list-configuration-customer-groups-drawer-title">
                                   {t(
                                     "priceLists.fields.customerAvailability.header"
                                   )}
                                 </Heading>
                               </StackedDrawer.Title>
-                              <StackedDrawer.Description className="sr-only">
+                              <StackedDrawer.Description className="sr-only" data-testid="price-list-configuration-customer-groups-drawer-description">
                                 {t(
                                   "priceLists.fields.customerAvailability.hint"
                                 )}
@@ -259,7 +260,7 @@ export const PriceListConfigurationForm = ({
                         </StackedDrawer>
                       </div>
                       {fields.length > 0 ? (
-                        <div className="flex flex-col gap-y-1.5">
+                        <div className="flex flex-col gap-y-1.5" data-testid="price-list-configuration-customer-groups-list">
                           <Divider variant="dashed" />
                           <div className="flex flex-col gap-y-1.5 px-1.5">
                             {fields.map((field, index) => {
@@ -267,8 +268,9 @@ export const PriceListConfigurationForm = ({
                                 <div
                                   key={field.cg_id}
                                   className="bg-ui-bg-field-component shadow-borders-base flex items-center justify-between gap-2 rounded-md px-2 py-0.5"
+                                  data-testid={`price-list-configuration-customer-groups-item-${index}`}
                                 >
-                                  <Text size="small" leading="compact">
+                                  <Text size="small" leading="compact" data-testid={`price-list-configuration-customer-groups-item-${index}-name`}>
                                     {field.name}
                                   </Text>
                                   <IconButton
@@ -276,6 +278,7 @@ export const PriceListConfigurationForm = ({
                                     variant="transparent"
                                     type="button"
                                     onClick={() => remove(index)}
+                                    data-testid={`price-list-configuration-customer-groups-item-${index}-remove-button`}
                                   >
                                     <XMark />
                                   </IconButton>

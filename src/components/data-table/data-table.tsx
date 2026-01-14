@@ -22,6 +22,7 @@ import { useQueryParams } from "../../hooks/use-query-params"
 import { ActionMenu } from "../common/action-menu"
 import { ViewPills } from "../table/view-selector"
 import { useFeatureFlag } from "../../providers/feature-flag-provider"
+import { DataTableTableWithTestIds } from "./components/data-table-table-with-test-ids"
 
 // Types for column visibility and ordering
 type VisibilityState = Record<string, boolean>
@@ -58,6 +59,7 @@ type DataTableActionMenuGroupProps = {
 
 type DataTableActionMenuProps = {
   groups: DataTableActionMenuGroupProps[]
+  "data-testid"?: string
 }
 
 interface DataTableProps<TData> {
@@ -414,7 +416,7 @@ export const DataTable = <TData,>({
                 />
               </div>
             )}
-            {actionMenu && <ActionMenu variant="primary" {...actionMenu} data-testid="data-table-action-menu" />}
+            {actionMenu && <ActionMenu variant="primary" {...actionMenu} data-testid={actionMenu["data-testid"] || "data-table-action-menu"} />}
             {actions && actions.length > 0 && (
               <div data-testid="data-table-actions">
                 <DataTableActions actions={actions} />
@@ -425,7 +427,7 @@ export const DataTable = <TData,>({
         </div>
       </UiDataTable.Toolbar>
       <div data-testid="data-table-table">
-        <UiDataTable.Table emptyState={emptyState} />
+        <DataTableTableWithTestIds instance={instance} emptyState={emptyState} />
       </div>
       {enablePagination && (
         <div data-testid="data-table-pagination">
