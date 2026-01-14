@@ -25,16 +25,19 @@
       }
     }
   },
-  "plugins": ["react", "jsx-a11y", "import", "@typescript-eslint"],
+  "plugins": ["react", "react-hooks", "jsx-a11y", "import", "@typescript-eslint"],
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
+    "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:jsx-a11y/recommended"
   ],
   "ignorePatterns": ["node_modules/", "dist/", "build/"],
   "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
     "react/jsx-curly-brace-presence": "warn",
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/consistent-type-imports": [
