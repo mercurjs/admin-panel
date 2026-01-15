@@ -87,6 +87,7 @@
     "@medusajs/admin-vite-plugin": "2.10.3",
     "@medusajs/types": "2.10.3",
     "@medusajs/ui-preset": "2.10.3",
+    "@tanstack/eslint-plugin-query": "^5.91.2",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/lodash": "^4.17.20",
     "@types/node": "^20.11.15",

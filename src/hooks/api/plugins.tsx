@@ -1,13 +1,10 @@
-import type { FetchError } from "@medusajs/js-sdk";
-import type { HttpTypes } from "@medusajs/types";
+import { sdk } from '@lib/client';
+import { queryKeysFactory } from '@lib/query-key-factory';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes } from '@medusajs/types';
+import { useQuery, type QueryKey, type UseQueryOptions } from '@tanstack/react-query';
 
-import type { QueryKey, UseQueryOptions } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
-
-import { sdk } from "@lib/client";
-import { queryKeysFactory } from "@lib/query-key-factory";
-
-const PLUGINS_QUERY_KEY = "plugins" as const;
+const PLUGINS_QUERY_KEY = 'plugins' as const;
 export const pluginsQueryKeys = queryKeysFactory(PLUGINS_QUERY_KEY);
 
 export const usePlugins = (
@@ -20,13 +17,13 @@ export const usePlugins = (
       HttpTypes.AdminPluginsListResponse,
       QueryKey
     >,
-    "queryKey" | "queryFn"
-  >,
+    'queryKey' | 'queryFn'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.plugin.list(),
     queryKey: pluginsQueryKeys.list(),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };

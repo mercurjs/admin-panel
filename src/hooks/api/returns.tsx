@@ -1,20 +1,19 @@
-import type { FetchError } from "@medusajs/js-sdk";
-import type { HttpTypes } from "@medusajs/types";
+import { sdk } from '@lib/client';
+import { queryClient } from '@lib/query-client';
+import { queryKeysFactory } from '@lib/query-key-factory';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes } from '@medusajs/types';
+import {
+  useMutation,
+  useQuery,
+  type QueryKey,
+  type UseMutationOptions,
+  type UseQueryOptions
+} from '@tanstack/react-query';
 
-import type {
-  QueryKey,
-  UseMutationOptions,
-  UseQueryOptions,
-} from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { ordersQueryKeys } from './orders';
 
-import { sdk } from "@lib/client";
-import { queryClient } from "@lib/query-client";
-import { queryKeysFactory } from "@lib/query-key-factory";
-
-import { ordersQueryKeys } from "./orders";
-
-const RETURNS_QUERY_KEY = "returns" as const;
+const RETURNS_QUERY_KEY = 'returns' as const;
 export const returnsQueryKeys = queryKeysFactory(RETURNS_QUERY_KEY);
 
 export const useReturn = (
@@ -26,13 +25,13 @@ export const useReturn = (
     // @todo fix any type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     UseQueryOptions<any, FetchError, any, QueryKey>,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: async () => sdk.admin.return.retrieve(id, query),
     queryKey: returnsQueryKeys.detail(id, query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -47,13 +46,13 @@ export const useReturns = (
       HttpTypes.AdminReturnsResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: async () => sdk.admin.return.list(query),
     queryKey: returnsQueryKeys.list(query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -65,7 +64,7 @@ export const useInitiateReturn = (
     HttpTypes.AdminReturnResponse,
     FetchError,
     HttpTypes.AdminInitiateReturnRequest
-  >,
+  >
 ) =>
   useMutation({
     mutationFn: (payload: HttpTypes.AdminInitiateReturnRequest) =>
@@ -74,25 +73,25 @@ export const useInitiateReturn = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useCancelReturn = (
   id: string,
   orderId: string,
-  options?: UseMutationOptions<HttpTypes.AdminReturnResponse, FetchError>,
+  options?: UseMutationOptions<HttpTypes.AdminReturnResponse, FetchError>
 ) =>
   useMutation({
     mutationFn: () => sdk.admin.return.cancel(id),
@@ -100,23 +99,23 @@ export const useCancelReturn = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.preview(orderId),
-        refetchType: "all", // We want preview to be updated in the cache immediately
+        refetchType: 'all' // We want preview to be updated in the cache immediately
       });
 
       queryClient.invalidateQueries({
-        queryKey: returnsQueryKeys.details(),
+        queryKey: returnsQueryKeys.details()
       });
       queryClient.invalidateQueries({
-        queryKey: returnsQueryKeys.lists(),
+        queryKey: returnsQueryKeys.lists()
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 /**
@@ -130,7 +129,7 @@ export const useConfirmReturnRequest = (
     HttpTypes.AdminReturnResponse,
     FetchError,
     HttpTypes.AdminConfirmReturnRequest
-  >,
+  >
 ) =>
   useMutation({
     mutationFn: (payload: HttpTypes.AdminConfirmReturnRequest) =>
@@ -139,28 +138,28 @@ export const useConfirmReturnRequest = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       queryClient.invalidateQueries({
-        queryKey: returnsQueryKeys.details(),
+        queryKey: returnsQueryKeys.details()
       });
       queryClient.invalidateQueries({
-        queryKey: returnsQueryKeys.lists(),
+        queryKey: returnsQueryKeys.lists()
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useCancelReturnRequest = (
   id: string,
   orderId: string,
-  options?: UseMutationOptions<HttpTypes.AdminReturnResponse, FetchError>,
+  options?: UseMutationOptions<HttpTypes.AdminReturnResponse, FetchError>
 ) =>
   useMutation({
     mutationFn: () => sdk.admin.return.cancelRequest(id),
@@ -168,25 +167,25 @@ export const useCancelReturnRequest = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.preview(orderId),
-        refetchType: "all", // We want preview to be updated in the cache immediately
+        refetchType: 'all' // We want preview to be updated in the cache immediately
       });
 
       queryClient.invalidateQueries({
-        queryKey: returnsQueryKeys.details(),
+        queryKey: returnsQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: returnsQueryKeys.lists(),
+        queryKey: returnsQueryKeys.lists()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useAddReturnItem = (
@@ -196,7 +195,7 @@ export const useAddReturnItem = (
     HttpTypes.AdminReturnResponse,
     FetchError,
     HttpTypes.AdminAddReturnItems
-  >,
+  >
 ) =>
   useMutation({
     mutationFn: (payload: HttpTypes.AdminAddReturnItems) =>
@@ -205,16 +204,16 @@ export const useAddReturnItem = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useUpdateReturnItem = (
@@ -224,7 +223,7 @@ export const useUpdateReturnItem = (
     HttpTypes.AdminReturnResponse,
     FetchError,
     HttpTypes.AdminUpdateReturnItems & { actionId: string }
-  >,
+  >
 ) =>
   useMutation({
     mutationFn: ({
@@ -236,48 +235,43 @@ export const useUpdateReturnItem = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useRemoveReturnItem = (
   id: string,
   orderId: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminReturnResponse,
-    FetchError,
-    string
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminReturnResponse, FetchError, string>
 ) =>
   useMutation({
-    mutationFn: (actionId: string) =>
-      sdk.admin.return.removeReturnItem(id, actionId),
+    mutationFn: (actionId: string) => sdk.admin.return.removeReturnItem(id, actionId),
     // @todo fix any type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       queryClient.invalidateQueries({
-        queryKey: returnsQueryKeys.details(),
+        queryKey: returnsQueryKeys.details()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useUpdateReturn = (
@@ -287,23 +281,23 @@ export const useUpdateReturn = (
     HttpTypes.AdminReturnResponse,
     FetchError,
     HttpTypes.AdminUpdateReturnRequest
-  >,
+  >
 ) =>
   useMutation({
     mutationFn: (payload: HttpTypes.AdminUpdateReturnRequest) =>
       sdk.admin.return.updateRequest(id, payload),
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useAddReturnShipping = (
@@ -313,7 +307,7 @@ export const useAddReturnShipping = (
     HttpTypes.AdminReturnResponse,
     FetchError,
     HttpTypes.AdminAddReturnShipping
-  >,
+  >
 ) =>
   useMutation({
     mutationFn: (payload: HttpTypes.AdminAddReturnShipping) =>
@@ -322,16 +316,16 @@ export const useAddReturnShipping = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useUpdateReturnShipping = (
@@ -341,7 +335,7 @@ export const useUpdateReturnShipping = (
     HttpTypes.AdminReturnResponse,
     FetchError,
     HttpTypes.AdminAddReturnShipping
-  >,
+  >
 ) =>
   useMutation({
     mutationFn: ({
@@ -353,48 +347,43 @@ export const useUpdateReturnShipping = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useDeleteReturnShipping = (
   id: string,
   orderId: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminReturnResponse,
-    FetchError,
-    string
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminReturnResponse, FetchError, string>
 ) =>
   useMutation({
-    mutationFn: (actionId: string) =>
-      sdk.admin.return.deleteReturnShipping(id, actionId),
+    mutationFn: (actionId: string) => sdk.admin.return.deleteReturnShipping(id, actionId),
     // @todo fix any type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       queryClient.invalidateQueries({
-        queryKey: returnsQueryKeys.details(),
+        queryKey: returnsQueryKeys.details()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 /**
@@ -408,7 +397,7 @@ export const useInitiateReceiveReturn = (
     HttpTypes.AdminReturnResponse,
     FetchError,
     HttpTypes.AdminInitiateReceiveReturn
-  >,
+  >
 ) =>
   useMutation({
     mutationFn: (payload: HttpTypes.AdminInitiateReceiveReturn) =>
@@ -417,16 +406,16 @@ export const useInitiateReceiveReturn = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useAddReceiveItems = (
@@ -436,7 +425,7 @@ export const useAddReceiveItems = (
     HttpTypes.AdminReturnResponse,
     FetchError,
     HttpTypes.AdminReceiveItems
-  >,
+  >
 ) =>
   useMutation({
     mutationFn: (payload: HttpTypes.AdminReceiveItems) =>
@@ -445,16 +434,16 @@ export const useAddReceiveItems = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useUpdateReceiveItem = (
@@ -464,7 +453,7 @@ export const useUpdateReceiveItem = (
     HttpTypes.AdminReturnResponse,
     FetchError,
     HttpTypes.AdminUpdateReceiveItems & { actionId: string }
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: ({
@@ -476,27 +465,23 @@ export const useUpdateReceiveItem = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
 export const useRemoveReceiveItems = (
   id: string,
   orderId: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminReturnResponse,
-    FetchError,
-    string
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminReturnResponse, FetchError, string>
 ) =>
   useMutation({
     mutationFn: (actionId: string) => {
@@ -506,16 +491,16 @@ export const useRemoveReceiveItems = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useAddDismissItems = (
@@ -525,7 +510,7 @@ export const useAddDismissItems = (
     HttpTypes.AdminReturnResponse,
     FetchError,
     HttpTypes.AdminDismissItems
-  >,
+  >
 ) =>
   useMutation({
     mutationFn: (payload: HttpTypes.AdminDismissItems) =>
@@ -534,16 +519,16 @@ export const useAddDismissItems = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useUpdateDismissItem = (
@@ -553,7 +538,7 @@ export const useUpdateDismissItem = (
     HttpTypes.AdminReturnResponse,
     FetchError,
     HttpTypes.AdminUpdateDismissItems & { actionId: string }
-  >,
+  >
 ) =>
   useMutation({
     mutationFn: ({
@@ -565,26 +550,22 @@ export const useUpdateDismissItem = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useRemoveDismissItem = (
   id: string,
   orderId: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminReturnResponse,
-    FetchError,
-    string
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminReturnResponse, FetchError, string>
 ) =>
   useMutation({
     mutationFn: (actionId: string) => {
@@ -594,16 +575,16 @@ export const useRemoveDismissItem = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useConfirmReturnReceive = (
@@ -613,7 +594,7 @@ export const useConfirmReturnReceive = (
     HttpTypes.AdminReturnResponse,
     FetchError,
     HttpTypes.AdminConfirmReceiveReturn
-  >,
+  >
 ) =>
   useMutation({
     mutationFn: (payload: HttpTypes.AdminConfirmReceiveReturn) =>
@@ -622,28 +603,28 @@ export const useConfirmReturnReceive = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       queryClient.invalidateQueries({
-        queryKey: returnsQueryKeys.details(),
+        queryKey: returnsQueryKeys.details()
       });
       queryClient.invalidateQueries({
-        queryKey: returnsQueryKeys.lists(),
+        queryKey: returnsQueryKeys.lists()
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useCancelReceiveReturn = (
   id: string,
   orderId: string,
-  options?: UseMutationOptions<HttpTypes.AdminReturnResponse, FetchError>,
+  options?: UseMutationOptions<HttpTypes.AdminReturnResponse, FetchError>
 ) =>
   useMutation({
     mutationFn: () => sdk.admin.return.cancelReceive(id),
@@ -651,21 +632,21 @@ export const useCancelReceiveReturn = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.preview(orderId),
-        refetchType: "all", // We want preview to be updated in the cache immediately
+        refetchType: 'all' // We want preview to be updated in the cache immediately
       });
 
       queryClient.invalidateQueries({
-        queryKey: returnsQueryKeys.details(),
+        queryKey: returnsQueryKeys.details()
       });
       queryClient.invalidateQueries({
-        queryKey: returnsQueryKeys.lists(),
+        queryKey: returnsQueryKeys.lists()
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });

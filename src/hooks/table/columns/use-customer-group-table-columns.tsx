@@ -1,14 +1,9 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import type { HttpTypes } from "@medusajs/types";
-
-import { createColumnHelper } from "@tanstack/react-table";
-import { useTranslation } from "react-i18next";
-
-import {
-  TextCell,
-  TextHeader,
-} from "@components/table/table-cells/common/text-cell";
+import { TextCell, TextHeader } from '@components/table/table-cells/common/text-cell';
+import type { HttpTypes } from '@medusajs/types';
+import { createColumnHelper } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
 
 const columnHelper = createColumnHelper<HttpTypes.AdminCustomerGroup>();
 
@@ -17,19 +12,19 @@ export const useCustomerGroupTableColumns = () => {
 
   return useMemo(
     () => [
-      columnHelper.accessor("name", {
-        header: () => <TextHeader text={t("fields.name")} />,
-        cell: ({ getValue }) => <TextCell text={getValue() || "-"} />,
+      columnHelper.accessor('name', {
+        header: () => <TextHeader text={t('fields.name')} />,
+        cell: ({ getValue }) => <TextCell text={getValue() || '-'} />
       }),
-      columnHelper.accessor("customers", {
-        header: () => <TextHeader text={t("customers.domain")} />,
+      columnHelper.accessor('customers', {
+        header: () => <TextHeader text={t('customers.domain')} />,
         cell: ({ getValue }) => {
           const count = getValue()?.length ?? 0;
 
           return <TextCell text={count} />;
-        },
-      }),
+        }
+      })
     ],
-    [t],
+    [t]
   );
 };

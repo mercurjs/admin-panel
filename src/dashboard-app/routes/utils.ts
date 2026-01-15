@@ -1,23 +1,19 @@
-import type { ComponentType } from "react";
+import type { ComponentType } from 'react';
 
-import type { LoaderFunction, RouteObject } from "react-router-dom";
+import { ErrorBoundary } from '@components/utilities/error-boundary';
+import type { LoaderFunction, RouteObject } from 'react-router-dom';
 
-import { ErrorBoundary } from "@components/utilities/error-boundary";
-
-import type { RouteModule } from "@/dashboard-app";
-import type { RouteExtension } from "@/dashboard-app/types.ts";
+import type { RouteModule } from '@/dashboard-app';
+import type { RouteExtension } from '@/dashboard-app/types.ts';
 
 /**
  * Used to test if a route is a settings route.
  */
 const settingsRouteRegex = /^\/settings\//;
 
-export const getRouteExtensions = (
-  module: RouteModule,
-  type: "settings" | "core",
-) => {
-  return module.routes.filter((route) => {
-    if (type === "settings") {
+export const getRouteExtensions = (module: RouteModule, type: 'settings' | 'core') => {
+  return module.routes.filter(route => {
+    if (type === 'settings') {
       return settingsRouteRegex.test(route.path);
     }
 
@@ -31,7 +27,7 @@ export const getRouteExtensions = (
  */
 const createBranchRoute = (segment: string): RouteObject => ({
   path: segment,
-  children: [],
+  children: []
 });
 
 /**
@@ -41,9 +37,9 @@ const createBranchRoute = (segment: string): RouteObject => ({
 const createLeafRoute = (
   Component: ComponentType,
   loader?: LoaderFunction,
-  handle?: object,
+  handle?: object
 ): RouteObject => ({
-  path: "",
+  path: '',
   ErrorBoundary: ErrorBoundary,
   async lazy() {
     const result: {
@@ -61,7 +57,7 @@ const createLeafRoute = (
     }
 
     return result;
-  },
+  }
 });
 
 /**
@@ -73,7 +69,7 @@ const createParallelRoute = (
   path: string,
   Component: ComponentType,
   loader?: LoaderFunction,
-  handle?: object,
+  handle?: object
 ) => ({
   path,
   async lazy() {
@@ -92,7 +88,7 @@ const createParallelRoute = (
     }
 
     return result;
-  },
+  }
 });
 
 /**
@@ -102,11 +98,11 @@ const createParallelRoute = (
  */
 const processParallelRoutes = (
   parallelRoutes: RouteExtension[] | undefined,
-  currentFullPath: string,
+  currentFullPath: string
 ): RouteObject[] | undefined => {
   return parallelRoutes
     ?.map(({ path, Component, loader, handle }) => {
-      const childPath = path?.replace(currentFullPath, "").replace(/^\/+/, "");
+      const childPath = path?.replace(currentFullPath, '').replace(/^\/+/, '');
       if (!childPath) {
         return null;
       }
@@ -132,23 +128,21 @@ const addRoute = (
   handle?: object,
   parallelRoutes?: RouteExtension[],
   fullPath?: string,
-  componentPath?: string,
+  componentPath?: string
 ) => {
   if (!pathSegments.length) {
     return;
   }
 
   const [currentSegment, ...remainingSegments] = pathSegments;
-  let route = currentLevel.find((r) => r.path === currentSegment);
+  let route = currentLevel.find(r => r.path === currentSegment);
 
   if (!route) {
     route = createBranchRoute(currentSegment);
     currentLevel.push(route);
   }
 
-  const currentFullPath = fullPath
-    ? `${fullPath}/${currentSegment}`
-    : currentSegment;
+  const currentFullPath = fullPath ? `${fullPath}/${currentSegment}` : currentSegment;
 
   const isComponentSegment = currentFullPath === componentPath;
 
@@ -175,7 +169,7 @@ const addRoute = (
         undefined,
         undefined,
         undefined,
-        currentFullPath,
+        currentFullPath
       );
     }
   } else {
@@ -188,7 +182,7 @@ const addRoute = (
       handle,
       parallelRoutes,
       currentFullPath,
-      componentPath,
+      componentPath
     );
   }
 };
@@ -199,27 +193,15 @@ const addRoute = (
  * @param ignore - Optional path prefix to ignore when processing routes
  * @returns An array of route objects forming a route tree
  */
-export const createRouteMap = (
-  routes: RouteExtension[],
-  ignore?: string,
-): RouteObject[] => {
+export const createRouteMap = (routes: RouteExtension[], ignore?: string): RouteObject[] => {
   const root: RouteObject[] = [];
 
   routes.forEach(({ path, Component, loader, handle, children }) => {
     const cleanedPath = ignore
-      ? path.replace(ignore, "").replace(/^\/+/, "")
-      : path.replace(/^\/+/, "");
-    const pathSegments = cleanedPath.split("/").filter(Boolean);
-    addRoute(
-      pathSegments,
-      Component,
-      root,
-      loader,
-      handle,
-      children,
-      undefined,
-      path,
-    );
+      ? path.replace(ignore, '').replace(/^\/+/, '')
+      : path.replace(/^\/+/, '');
+    const pathSegments = cleanedPath.split('/').filter(Boolean);
+    addRoute(pathSegments, Component, root, loader, handle, children, undefined, path);
   });
 
   return root;

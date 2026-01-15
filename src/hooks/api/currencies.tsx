@@ -1,13 +1,10 @@
-import type { FetchError } from "@medusajs/js-sdk";
-import type { HttpTypes } from "@medusajs/types";
+import { sdk } from '@lib/client';
+import { queryKeysFactory } from '@lib/query-key-factory';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes } from '@medusajs/types';
+import { useQuery, type QueryKey, type UseQueryOptions } from '@tanstack/react-query';
 
-import type { QueryKey, UseQueryOptions } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
-
-import { sdk } from "@lib/client";
-import { queryKeysFactory } from "@lib/query-key-factory";
-
-const CURRENCIES_QUERY_KEY = "currencies" as const;
+const CURRENCIES_QUERY_KEY = 'currencies' as const;
 const currenciesQueryKeys = queryKeysFactory(CURRENCIES_QUERY_KEY);
 
 export const useCurrencies = (
@@ -19,13 +16,13 @@ export const useCurrencies = (
       HttpTypes.AdminCurrencyListResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.currency.list(query),
     queryKey: currenciesQueryKeys.list(query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -41,13 +38,13 @@ export const useCurrency = (
       HttpTypes.AdminCurrencyResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryKey: currenciesQueryKeys.detail(id),
     queryFn: async () => sdk.admin.currency.retrieve(id, query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };

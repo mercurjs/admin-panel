@@ -1,39 +1,36 @@
-import type { FetchError } from "@medusajs/js-sdk";
-import type { HttpTypes } from "@medusajs/types";
+import { sdk } from '@lib/client';
+import { queryClient } from '@lib/query-client';
+import { queryKeysFactory } from '@lib/query-key-factory';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes } from '@medusajs/types';
+import {
+  useMutation,
+  useQuery,
+  type QueryKey,
+  type UseMutationOptions,
+  type UseQueryOptions
+} from '@tanstack/react-query';
 
-import type {
-  QueryKey,
-  UseMutationOptions,
-  UseQueryOptions,
-} from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
-
-import { sdk } from "@lib/client";
-import { queryClient } from "@lib/query-client";
-import { queryKeysFactory } from "@lib/query-key-factory";
-
-const SHIPPING_PROFILE_QUERY_KEY = "shipping_profile" as const;
-export const shippingProfileQueryKeys = queryKeysFactory(
-  SHIPPING_PROFILE_QUERY_KEY,
-);
+const SHIPPING_PROFILE_QUERY_KEY = 'shipping_profile' as const;
+export const shippingProfileQueryKeys = queryKeysFactory(SHIPPING_PROFILE_QUERY_KEY);
 
 export const useCreateShippingProfile = (
   options?: UseMutationOptions<
     HttpTypes.AdminShippingProfileResponse,
     FetchError,
     HttpTypes.AdminCreateShippingProfile
-  >,
+  >
 ) => {
   return useMutation({
-    mutationFn: (payload) => sdk.admin.shippingProfile.create(payload),
+    mutationFn: payload => sdk.admin.shippingProfile.create(payload),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
-        queryKey: shippingProfileQueryKeys.lists(),
+        queryKey: shippingProfileQueryKeys.lists()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -49,13 +46,13 @@ export const useShippingProfile = (
       HttpTypes.AdminShippingProfileResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.shippingProfile.retrieve(id, query),
     queryKey: shippingProfileQueryKeys.detail(id, query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -70,13 +67,13 @@ export const useShippingProfiles = (
       HttpTypes.AdminShippingProfileListResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.shippingProfile.list(query),
     queryKey: shippingProfileQueryKeys.list(query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -88,21 +85,21 @@ export const useUpdateShippingProfile = (
     HttpTypes.AdminShippingProfileResponse,
     FetchError,
     HttpTypes.AdminUpdateShippingProfile
-  >,
+  >
 ) => {
   const { data, ...rest } = useMutation({
-    mutationFn: (payload) => sdk.admin.shippingProfile.update(id, payload),
+    mutationFn: payload => sdk.admin.shippingProfile.update(id, payload),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
-        queryKey: shippingProfileQueryKeys.detail(id),
+        queryKey: shippingProfileQueryKeys.detail(id)
       });
       queryClient.invalidateQueries({
-        queryKey: shippingProfileQueryKeys.lists(),
+        queryKey: shippingProfileQueryKeys.lists()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -110,24 +107,20 @@ export const useUpdateShippingProfile = (
 
 export const useDeleteShippingProfile = (
   id: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminShippingProfileDeleteResponse,
-    FetchError,
-    void
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminShippingProfileDeleteResponse, FetchError, void>
 ) => {
   return useMutation({
     mutationFn: () => sdk.admin.shippingProfile.delete(id),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
-        queryKey: shippingProfileQueryKeys.detail(id),
+        queryKey: shippingProfileQueryKeys.detail(id)
       });
       queryClient.invalidateQueries({
-        queryKey: shippingProfileQueryKeys.lists(),
+        queryKey: shippingProfileQueryKeys.lists()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };

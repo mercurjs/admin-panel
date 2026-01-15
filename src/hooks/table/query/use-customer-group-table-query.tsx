@@ -1,6 +1,5 @@
-import type { HttpTypes } from "@medusajs/types";
-
-import { useQueryParams } from "@hooks/use-query-params";
+import { useQueryParams } from '@hooks/use-query-params';
+import type { HttpTypes } from '@medusajs/types';
 
 type UseCustomerGroupTableQueryProps = {
   prefix?: string;
@@ -9,11 +8,11 @@ type UseCustomerGroupTableQueryProps = {
 
 export const useCustomerGroupTableQuery = ({
   prefix,
-  pageSize = 20,
+  pageSize = 20
 }: UseCustomerGroupTableQueryProps) => {
   const queryObject = useQueryParams(
-    ["offset", "q", "has_account", "order", "created_at", "updated_at"],
-    prefix,
+    ['offset', 'q', 'has_account', 'order', 'created_at', 'updated_at'],
+    prefix
   );
 
   const { offset, created_at, updated_at, q, order } = queryObject;
@@ -24,11 +23,11 @@ export const useCustomerGroupTableQuery = ({
     order,
     created_at: created_at ? JSON.parse(created_at) : undefined,
     updated_at: updated_at ? JSON.parse(updated_at) : undefined,
-    q,
+    q
   };
 
   return {
     searchParams,
-    raw: queryObject,
+    raw: queryObject
   };
 };

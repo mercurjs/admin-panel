@@ -25,14 +25,22 @@
       }
     }
   },
-  "plugins": ["react", "react-hooks", "jsx-a11y", "import", "@typescript-eslint"],
+  "plugins": [
+    "react",
+    "react-hooks",
+    "jsx-a11y",
+    "import",
+    "@typescript-eslint",
+    "@tanstack/query"
+  ],
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:jsx-a11y/recommended"
+    "plugin:jsx-a11y/recommended",
+    "plugin:@tanstack/eslint-plugin-query/recommended"
   ],
   "ignorePatterns": ["node_modules/", "dist/", "build/"],
   "rules": {
@@ -40,10 +48,7 @@
     "react-hooks/exhaustive-deps": "warn",
     "react/jsx-curly-brace-presence": "warn",
     "react/react-in-jsx-scope": "off",
-    "@typescript-eslint/consistent-type-imports": [
-      "error",
-      { "prefer": "type-imports" }
-    ],
+    "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
     "@typescript-eslint/no-import-type-side-effects": "error",
     "newline-before-return": "error",
     "import/no-unresolved": 0,

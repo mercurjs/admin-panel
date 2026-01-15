@@ -1,6 +1,5 @@
-import type { HttpTypes } from "@medusajs/types";
-
-import { useQueryParams } from "@hooks/use-query-params";
+import { useQueryParams } from '@hooks/use-query-params';
+import type { HttpTypes } from '@medusajs/types';
 
 type UseProductTypeTableQueryProps = {
   prefix?: string;
@@ -9,12 +8,9 @@ type UseProductTypeTableQueryProps = {
 
 export const useProductTypeTableQuery = ({
   prefix,
-  pageSize = 20,
+  pageSize = 20
 }: UseProductTypeTableQueryProps) => {
-  const queryObject = useQueryParams(
-    ["offset", "q", "order", "created_at", "updated_at"],
-    prefix,
-  );
+  const queryObject = useQueryParams(['offset', 'q', 'order', 'created_at', 'updated_at'], prefix);
 
   const { offset, q, order, created_at, updated_at } = queryObject;
   const searchParams: HttpTypes.AdminProductTypeListParams = {
@@ -23,11 +19,11 @@ export const useProductTypeTableQuery = ({
     order,
     created_at: created_at ? JSON.parse(created_at) : undefined,
     updated_at: updated_at ? JSON.parse(updated_at) : undefined,
-    q,
+    q
   };
 
   return {
     searchParams,
-    raw: queryObject,
+    raw: queryObject
   };
 };

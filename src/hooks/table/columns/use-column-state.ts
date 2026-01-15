@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import type { HttpTypes } from "@medusajs/types";
+import type { HttpTypes } from '@medusajs/types';
 
-type ViewConfiguration =
-  HttpTypes.AdminViewConfigurationResponse["view_configuration"];
+type ViewConfiguration = HttpTypes.AdminViewConfigurationResponse['view_configuration'];
 
 interface ColumnState {
   visibility: Record<string, boolean>;
@@ -21,37 +20,31 @@ interface UseColumnStateReturn {
   setVisibleColumns: (visibility: Record<string, boolean>) => void;
   setColumnOrder: (order: string[]) => void;
   handleColumnVisibilityChange: (visibility: Record<string, boolean>) => void;
-  handleViewChange: (
-    view: ViewConfiguration | null,
-    apiColumns: HttpTypes.AdminColumn[],
-  ) => void;
+  handleViewChange: (view: ViewConfiguration | null, apiColumns: HttpTypes.AdminColumn[]) => void;
   initializeColumns: (apiColumns: HttpTypes.AdminColumn[]) => void;
 }
 
 export function useColumnState(
   apiColumns: HttpTypes.AdminColumn[] | undefined,
-  activeView?: ViewConfiguration | null,
+  activeView?: ViewConfiguration | null
 ): UseColumnStateReturn {
   // Initialize state lazily to avoid unnecessary re-renders
-  const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(
-    () => {
-      if (apiColumns?.length && activeView?.configuration) {
-        // If there's an active view, initialize with its configuration
-        const visibility: Record<string, boolean> = {};
-        apiColumns.forEach((column) => {
-          visibility[column.field] =
-            activeView.configuration.visible_columns?.includes(column.field) ||
-            false;
-        });
+  const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(() => {
+    if (apiColumns?.length && activeView?.configuration) {
+      // If there's an active view, initialize with its configuration
+      const visibility: Record<string, boolean> = {};
+      apiColumns.forEach(column => {
+        visibility[column.field] =
+          activeView.configuration.visible_columns?.includes(column.field) || false;
+      });
 
-        return visibility;
-      } else if (apiColumns?.length) {
-        return getInitialColumnVisibility(apiColumns);
-      }
+      return visibility;
+    } else if (apiColumns?.length) {
+      return getInitialColumnVisibility(apiColumns);
+    }
 
-      return {};
-    },
-  );
+    return {};
+  });
 
   const [columnOrder, setColumnOrder] = useState<string[]>(() => {
     if (activeView?.configuration?.column_order) {
@@ -67,9 +60,9 @@ export function useColumnState(
   const columnState = useMemo<ColumnState>(
     () => ({
       visibility: visibleColumns,
-      order: columnOrder,
+      order: columnOrder
     }),
-    [visibleColumns, columnOrder],
+    [visibleColumns, columnOrder]
   );
 
   const currentColumns = useMemo(() => {
@@ -79,23 +72,20 @@ export function useColumnState(
 
     return {
       visible,
-      order: columnOrder,
+      order: columnOrder
     };
   }, [visibleColumns, columnOrder]);
 
-  const handleColumnVisibilityChange = useCallback(
-    (visibility: Record<string, boolean>) => {
-      setVisibleColumns(visibility);
-    },
-    [],
-  );
+  const handleColumnVisibilityChange = useCallback((visibility: Record<string, boolean>) => {
+    setVisibleColumns(visibility);
+  }, []);
 
   const handleViewChange = useCallback(
     (view: ViewConfiguration | null, apiColumns: HttpTypes.AdminColumn[]) => {
       if (view?.configuration) {
         // Apply view configuration
         const newVisibility: Record<string, boolean> = {};
-        apiColumns.forEach((column) => {
+        apiColumns.forEach(column => {
           newVisibility[column.field] =
             view.configuration.visible_columns?.includes(column.field) || false;
         });
@@ -107,21 +97,18 @@ export function useColumnState(
         setColumnOrder(getInitialColumnOrder(apiColumns));
       }
     },
-    [],
+    []
   );
 
-  const initializeColumns = useCallback(
-    (apiColumns: HttpTypes.AdminColumn[]) => {
-      // Only initialize if we don't already have column state
-      if (Object.keys(visibleColumns).length === 0) {
-        setVisibleColumns(getInitialColumnVisibility(apiColumns));
-      }
-      if (columnOrder.length === 0) {
-        setColumnOrder(getInitialColumnOrder(apiColumns));
-      }
-    },
-    [],
-  );
+  const initializeColumns = useCallback((apiColumns: HttpTypes.AdminColumn[]) => {
+    // Only initialize if we don't already have column state
+    if (Object.keys(visibleColumns).length === 0) {
+      setVisibleColumns(getInitialColumnVisibility(apiColumns));
+    }
+    if (columnOrder.length === 0) {
+      setColumnOrder(getInitialColumnOrder(apiColumns));
+    }
+  }, []);
 
   // Track previous active view to detect changes
   const prevActiveViewRef = useRef<ViewConfiguration | null | undefined>();
@@ -140,11 +127,9 @@ export function useColumnState(
         if (activeView?.configuration) {
           // Apply the active view's configuration
           const newVisibility: Record<string, boolean> = {};
-          apiColumns.forEach((column) => {
+          apiColumns.forEach(column => {
             newVisibility[column.field] =
-              activeView.configuration?.visible_columns?.includes(
-                column.field,
-              ) || false;
+              activeView.configuration?.visible_columns?.includes(column.field) || false;
           });
           setVisibleColumns(newVisibility);
           setColumnOrder(activeView.configuration?.column_order || []);
@@ -168,7 +153,7 @@ export function useColumnState(
     setColumnOrder,
     handleColumnVisibilityChange,
     handleViewChange,
-    initializeColumns,
+    initializeColumns
   };
 }
 
@@ -179,16 +164,14 @@ const DEFAULT_COLUMN_ORDER = 500;
 /**
  * Gets the initial column visibility state from API columns
  */
-function getInitialColumnVisibility(
-  apiColumns: HttpTypes.AdminColumn[],
-): Record<string, boolean> {
+function getInitialColumnVisibility(apiColumns: HttpTypes.AdminColumn[]): Record<string, boolean> {
   if (!apiColumns || apiColumns.length === 0) {
     return {};
   }
 
   const visibility: Record<string, boolean> = {};
 
-  apiColumns.forEach((column) => {
+  apiColumns.forEach(column => {
     visibility[column.field] = column.default_visible ?? true;
   });
 
@@ -210,5 +193,5 @@ function getInitialColumnOrder(apiColumns: HttpTypes.AdminColumn[]): string[] {
     return orderA - orderB;
   });
 
-  return sortedColumns.map((col) => col.field);
+  return sortedColumns.map(col => col.field);
 }

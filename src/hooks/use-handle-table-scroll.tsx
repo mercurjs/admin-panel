@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState } from 'react';
 
 export const useHandleTableScroll = () => {
   const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -10,8 +10,7 @@ export const useHandleTableScroll = () => {
     if (tableContainerRef.current) {
       setIsScrolled(
         tableContainerRef.current.scrollTop > 0 &&
-          tableContainerRef.current.scrollTop <
-            tableContainerRef.current.scrollHeight,
+          tableContainerRef.current.scrollTop < tableContainerRef.current.scrollHeight
       );
     }
   };
@@ -19,6 +18,6 @@ export const useHandleTableScroll = () => {
   return {
     tableContainerRef,
     isScrolled,
-    handleScroll,
+    handleScroll
   };
 };

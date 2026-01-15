@@ -1,20 +1,19 @@
-import type { FetchError } from "@medusajs/js-sdk";
-import type { HttpTypes, PaginatedResponse } from "@medusajs/types";
+import { sdk } from '@lib/client';
+import { queryClient } from '@lib/query-client';
+import { queryKeysFactory } from '@lib/query-key-factory';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes, PaginatedResponse } from '@medusajs/types';
+import {
+  useMutation,
+  useQuery,
+  type QueryKey,
+  type UseMutationOptions,
+  type UseQueryOptions
+} from '@tanstack/react-query';
 
-import type {
-  QueryKey,
-  UseMutationOptions,
-  UseQueryOptions,
-} from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { pricePreferencesQueryKeys } from './price-preferences';
 
-import { sdk } from "@lib/client";
-import { queryClient } from "@lib/query-client";
-import { queryKeysFactory } from "@lib/query-key-factory";
-
-import { pricePreferencesQueryKeys } from "./price-preferences";
-
-const REGIONS_QUERY_KEY = "regions" as const;
+const REGIONS_QUERY_KEY = 'regions' as const;
 export const regionsQueryKeys = queryKeysFactory(REGIONS_QUERY_KEY);
 
 export const useRegion = (
@@ -29,13 +28,13 @@ export const useRegion = (
       { region: HttpTypes.AdminRegion },
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryKey: regionsQueryKeys.detail(id, query),
     queryFn: async () => sdk.admin.region.retrieve(id, query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -50,13 +49,13 @@ export const useRegions = (
       PaginatedResponse<{ regions: HttpTypes.AdminRegion[] }>,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.region.list(query),
     queryKey: regionsQueryKeys.list(query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -67,23 +66,23 @@ export const useCreateRegion = (
     { region: HttpTypes.AdminRegion },
     FetchError,
     HttpTypes.AdminCreateRegion
-  >,
+  >
 ) => {
   return useMutation({
-    mutationFn: (payload) => sdk.admin.region.create(payload),
+    mutationFn: payload => sdk.admin.region.create(payload),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: regionsQueryKeys.lists() });
 
       queryClient.invalidateQueries({
-        queryKey: pricePreferencesQueryKeys.list(),
+        queryKey: pricePreferencesQueryKeys.list()
       });
       queryClient.invalidateQueries({
-        queryKey: pricePreferencesQueryKeys.details(),
+        queryKey: pricePreferencesQueryKeys.details()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -93,34 +92,30 @@ export const useUpdateRegion = (
     { region: HttpTypes.AdminRegion },
     FetchError,
     HttpTypes.AdminUpdateRegion
-  >,
+  >
 ) => {
   return useMutation({
-    mutationFn: (payload) => sdk.admin.region.update(id, payload),
+    mutationFn: payload => sdk.admin.region.update(id, payload),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: regionsQueryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: regionsQueryKeys.details() });
 
       queryClient.invalidateQueries({
-        queryKey: pricePreferencesQueryKeys.list(),
+        queryKey: pricePreferencesQueryKeys.list()
       });
       queryClient.invalidateQueries({
-        queryKey: pricePreferencesQueryKeys.details(),
+        queryKey: pricePreferencesQueryKeys.details()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
 export const useDeleteRegion = (
   id: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminRegionDeleteResponse,
-    FetchError,
-    void
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminRegionDeleteResponse, FetchError, void>
 ) => {
   return useMutation({
     mutationFn: () => sdk.admin.region.delete(id),
@@ -130,6 +125,6 @@ export const useDeleteRegion = (
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };

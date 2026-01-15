@@ -1,4 +1,4 @@
-import { useQueryParams } from "@hooks/use-query-params";
+import { useQueryParams } from '@hooks/use-query-params';
 
 type UseUserInviteTableQueryProps = {
   prefix?: string;
@@ -7,12 +7,9 @@ type UseUserInviteTableQueryProps = {
 
 export const useUserInviteTableQuery = ({
   prefix,
-  pageSize = 20,
+  pageSize = 20
 }: UseUserInviteTableQueryProps) => {
-  const queryObject = useQueryParams(
-    ["offset", "q", "order", "created_at", "updated_at"],
-    prefix,
-  );
+  const queryObject = useQueryParams(['offset', 'q', 'order', 'created_at', 'updated_at'], prefix);
 
   const { offset, created_at, updated_at, q, order } = queryObject;
 
@@ -22,11 +19,11 @@ export const useUserInviteTableQuery = ({
     order,
     created_at: created_at ? JSON.parse(created_at) : undefined,
     updated_at: updated_at ? JSON.parse(updated_at) : undefined,
-    q,
+    q
   };
 
   return {
     searchParams,
-    raw: queryObject,
+    raw: queryObject
   };
 };

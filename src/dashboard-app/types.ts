@@ -1,18 +1,16 @@
-import type { ComponentType } from "react";
+import type { ComponentType } from 'react';
 
+import type { INavItem } from '@components/layout/nav-item';
 import type {
   CustomFieldContainerZone,
   CustomFieldFormTab,
   CustomFieldFormZone,
   CustomFieldModel,
   InjectionZone,
-  NestedRoutePosition,
-} from "@medusajs/admin-shared";
-
-import type { LoaderFunction } from "react-router-dom";
-import type { ZodFirstPartySchemaTypes } from "zod";
-
-import type { INavItem } from "@components/layout/nav-item";
+  NestedRoutePosition
+} from '@medusajs/admin-shared';
+import type { LoaderFunction } from 'react-router-dom';
+import type { ZodFirstPartySchemaTypes } from 'zod';
 
 export type RouteExtension = {
   Component: ComponentType;
@@ -99,7 +97,7 @@ export type MenuItemModule = {
   menuItems: MenuItemExtension[];
 };
 
-export type MenuItemKey = "coreExtensions" | "settingsExtensions";
+export type MenuItemKey = 'coreExtensions' | 'settingsExtensions';
 
 export type FormField = FormFieldExtension & {
   name: string;
@@ -120,10 +118,7 @@ export type ConfigField = ConfigFieldExtension & {
   name: string;
 };
 
-export type ConfigFieldMap = Map<
-  CustomFieldModel,
-  Map<CustomFieldFormZone, ConfigField[]>
->;
+export type ConfigFieldMap = Map<CustomFieldModel, Map<CustomFieldFormZone, ConfigField[]>>;
 
 export type DisplayMap = Map<
   CustomFieldModel,

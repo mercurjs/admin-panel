@@ -1,21 +1,20 @@
-import type { FetchError } from "@medusajs/js-sdk";
-import type { HttpTypes } from "@medusajs/types";
+import { sdk } from '@lib/client';
+import { queryClient } from '@lib/query-client';
+import { queryKeysFactory } from '@lib/query-key-factory';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes } from '@medusajs/types';
+import {
+  useMutation,
+  useQuery,
+  type QueryKey,
+  type UseMutationOptions,
+  type UseQueryOptions
+} from '@tanstack/react-query';
 
-import type {
-  QueryKey,
-  UseMutationOptions,
-  UseQueryOptions,
-} from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { ordersQueryKeys } from './orders';
+import { returnsQueryKeys } from './returns';
 
-import { sdk } from "@lib/client";
-import { queryClient } from "@lib/query-client";
-import { queryKeysFactory } from "@lib/query-key-factory";
-
-import { ordersQueryKeys } from "./orders";
-import { returnsQueryKeys } from "./returns";
-
-const EXCHANGES_QUERY_KEY = "exchanges" as const;
+const EXCHANGES_QUERY_KEY = 'exchanges' as const;
 export const exchangesQueryKeys = queryKeysFactory(EXCHANGES_QUERY_KEY);
 
 export const useExchange = (
@@ -28,13 +27,13 @@ export const useExchange = (
       HttpTypes.AdminExchangeResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: async () => sdk.admin.exchange.retrieve(id, query),
     queryKey: exchangesQueryKeys.detail(id, query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -49,13 +48,13 @@ export const useExchanges = (
       HttpTypes.AdminExchangeListResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: async () => sdk.admin.exchange.list(query),
     queryKey: exchangesQueryKeys.list(query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -67,34 +66,35 @@ export const useCreateExchange = (
     HttpTypes.AdminExchangeResponse,
     FetchError,
     HttpTypes.AdminCreateExchange
-  >,
+  >
 ) => {
   return useMutation({
-    mutationFn: (payload: HttpTypes.AdminCreateExchange) =>
-      sdk.admin.exchange.create(payload),
+    mutationFn: (payload: HttpTypes.AdminCreateExchange) => sdk.admin.exchange.create(payload),
+    // @todo fix any type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       queryClient.invalidateQueries({
-        queryKey: exchangesQueryKeys.lists(),
+        queryKey: exchangesQueryKeys.lists()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
 export const useCancelExchange = (
   id: string,
   orderId: string,
-  options?: UseMutationOptions<HttpTypes.AdminExchangeResponse, FetchError>,
+  options?: UseMutationOptions<HttpTypes.AdminExchangeResponse, FetchError>
 ) => {
   return useMutation({
     mutationFn: () => sdk.admin.exchange.cancel(id),
@@ -102,23 +102,23 @@ export const useCancelExchange = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       queryClient.invalidateQueries({
-        queryKey: exchangesQueryKeys.details(),
+        queryKey: exchangesQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: exchangesQueryKeys.lists(),
+        queryKey: exchangesQueryKeys.lists()
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -129,7 +129,7 @@ export const useAddExchangeInboundItems = (
     HttpTypes.AdminExchangeResponse,
     FetchError,
     HttpTypes.AdminAddExchangeInboundItems
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: (payload: HttpTypes.AdminAddExchangeInboundItems) =>
@@ -138,11 +138,11 @@ export const useAddExchangeInboundItems = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -153,7 +153,7 @@ export const useUpdateExchangeInboundItem = (
     HttpTypes.AdminExchangeResponse,
     FetchError,
     HttpTypes.AdminUpdateExchangeInboundItem & { actionId: string }
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: ({
@@ -162,44 +162,43 @@ export const useUpdateExchangeInboundItem = (
     }: HttpTypes.AdminUpdateExchangeInboundItem & { actionId: string }) => {
       return sdk.admin.exchange.updateInboundItem(id, actionId, payload);
     },
+    // @todo fix any type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
 export const useRemoveExchangeInboundItem = (
   id: string,
   orderId: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminExchangeResponse,
-    FetchError,
-    string
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminExchangeResponse, FetchError, string>
 ) => {
   return useMutation({
-    mutationFn: (actionId: string) =>
-      sdk.admin.exchange.removeInboundItem(id, actionId),
+    mutationFn: (actionId: string) => sdk.admin.exchange.removeInboundItem(id, actionId),
+    // @todo fix any type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       queryClient.invalidateQueries({
-        queryKey: returnsQueryKeys.details(),
+        queryKey: returnsQueryKeys.details()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -210,18 +209,20 @@ export const useAddExchangeInboundShipping = (
     HttpTypes.AdminExchangeResponse,
     FetchError,
     HttpTypes.AdminExchangeAddInboundShipping
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: (payload: HttpTypes.AdminExchangeAddInboundShipping) =>
       sdk.admin.exchange.addInboundShipping(id, payload),
+    // @todo fix any type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -232,7 +233,7 @@ export const useUpdateExchangeInboundShipping = (
     HttpTypes.AdminExchangeResponse,
     FetchError,
     HttpTypes.AdminExchangeUpdateInboundShipping
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: ({
@@ -240,36 +241,35 @@ export const useUpdateExchangeInboundShipping = (
       ...payload
     }: HttpTypes.AdminExchangeUpdateInboundShipping & { actionId: string }) =>
       sdk.admin.exchange.updateInboundShipping(id, actionId, payload),
+    // @todo fix any type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
 export const useDeleteExchangeInboundShipping = (
   id: string,
   orderId: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminExchangeResponse,
-    FetchError,
-    string
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminExchangeResponse, FetchError, string>
 ) => {
   return useMutation({
-    mutationFn: (actionId: string) =>
-      sdk.admin.exchange.deleteInboundShipping(id, actionId),
+    mutationFn: (actionId: string) => sdk.admin.exchange.deleteInboundShipping(id, actionId),
+    // @todo fix any type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -280,7 +280,7 @@ export const useAddExchangeOutboundItems = (
     HttpTypes.AdminExchangeResponse,
     FetchError,
     HttpTypes.AdminAddExchangeOutboundItems
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: (payload: HttpTypes.AdminAddExchangeOutboundItems) =>
@@ -289,11 +289,11 @@ export const useAddExchangeOutboundItems = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -304,7 +304,7 @@ export const useUpdateExchangeOutboundItems = (
     HttpTypes.AdminExchangeResponse,
     FetchError,
     HttpTypes.AdminUpdateExchangeOutboundItem & { actionId: string }
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: ({
@@ -317,40 +317,35 @@ export const useUpdateExchangeOutboundItems = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
 export const useRemoveExchangeOutboundItem = (
   id: string,
   orderId: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminExchangeResponse,
-    FetchError,
-    string
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminExchangeResponse, FetchError, string>
 ) => {
   return useMutation({
-    mutationFn: (actionId: string) =>
-      sdk.admin.exchange.removeOutboundItem(id, actionId),
+    mutationFn: (actionId: string) => sdk.admin.exchange.removeOutboundItem(id, actionId),
     // @todo fix any type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -361,7 +356,7 @@ export const useAddExchangeOutboundShipping = (
     HttpTypes.AdminExchangeResponse,
     FetchError,
     HttpTypes.AdminExchangeAddOutboundShipping
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: (payload: HttpTypes.AdminExchangeAddOutboundShipping) =>
@@ -370,11 +365,11 @@ export const useAddExchangeOutboundShipping = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -385,7 +380,7 @@ export const useUpdateExchangeOutboundShipping = (
     HttpTypes.AdminExchangeResponse,
     FetchError,
     HttpTypes.AdminExchangeUpdateOutboundShipping
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: ({
@@ -397,33 +392,30 @@ export const useUpdateExchangeOutboundShipping = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
 export const useDeleteExchangeOutboundShipping = (
   id: string,
   orderId: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminExchangeResponse,
-    FetchError,
-    string
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminExchangeResponse, FetchError, string>
 ) => {
   return useMutation({
-    mutationFn: (actionId: string) =>
-      sdk.admin.exchange.deleteOutboundShipping(id, actionId),
+    mutationFn: (actionId: string) => sdk.admin.exchange.deleteOutboundShipping(id, actionId),
+    // @todo fix any type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -434,38 +426,40 @@ export const useExchangeConfirmRequest = (
     HttpTypes.AdminExchangeResponse,
     FetchError,
     HttpTypes.AdminRequestExchange
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: (payload: HttpTypes.AdminRequestExchange) =>
       sdk.admin.exchange.request(id, payload),
+    // @todo fix any type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: returnsQueryKeys.all,
+        queryKey: returnsQueryKeys.all
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       queryClient.invalidateQueries({
-        queryKey: exchangesQueryKeys.lists(),
+        queryKey: exchangesQueryKeys.lists()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
 export const useCancelExchangeRequest = (
   id: string,
   orderId: string,
-  options?: UseMutationOptions<HttpTypes.AdminExchangeResponse, FetchError>,
+  options?: UseMutationOptions<HttpTypes.AdminExchangeResponse, FetchError>
 ) => {
   return useMutation({
     mutationFn: () => sdk.admin.exchange.cancelRequest(id),
@@ -473,21 +467,21 @@ export const useCancelExchangeRequest = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       queryClient.invalidateQueries({
-        queryKey: exchangesQueryKeys.details(),
+        queryKey: exchangesQueryKeys.details()
       });
       queryClient.invalidateQueries({
-        queryKey: exchangesQueryKeys.lists(),
+        queryKey: exchangesQueryKeys.lists()
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };

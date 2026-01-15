@@ -1,27 +1,20 @@
-import type * as React from "react";
-import type { ComponentType } from "react";
+import type * as React from 'react';
+import type { ComponentType } from 'react';
 
-
-import type {
-  CustomFieldContainerZone,
-  CustomFieldFormTab,
-  CustomFieldFormZone,
-  CustomFieldModel,
-  InjectionZone,
-} from "@medusajs/admin-shared";
-import { NESTED_ROUTE_POSITIONS } from "@medusajs/admin-shared";
-
-import type { RouteObject } from "react-router-dom";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-
-import type { INavItem } from "@components/layout/nav-item";
-
-import { getRouteMap } from "@/dashboard-app/routes/get-route.map.tsx";
+import type { INavItem } from '@components/layout/nav-item';
 import {
-  createRouteMap,
-  getRouteExtensions,
-} from "@/dashboard-app/routes/utils.ts";
-import { Providers } from "@/providers";
+  NESTED_ROUTE_POSITIONS,
+  type CustomFieldContainerZone,
+  type CustomFieldFormTab,
+  type CustomFieldFormZone,
+  type CustomFieldModel,
+  type InjectionZone
+} from '@medusajs/admin-shared';
+import { createBrowserRouter, RouterProvider, type RouteObject } from 'react-router-dom';
+
+import { getRouteMap } from '@/dashboard-app/routes/get-route.map.tsx';
+import { createRouteMap, getRouteExtensions } from '@/dashboard-app/routes/utils.ts';
+import { Providers } from '@/providers';
 
 import type {
   ConfigExtension,
@@ -39,8 +32,8 @@ import type {
   MenuItemKey,
   MenuMap,
   WidgetMap,
-  ZoneStructure,
-} from "./types";
+  ZoneStructure
+} from './types';
 
 type DashboardAppProps = {
   plugins: DashboardPlugin[];
@@ -74,11 +67,8 @@ export class DashboardApp {
     const settingsRoutes: RouteObject[] = [];
 
     for (const plugin of plugins) {
-      const filteredCoreRoutes = getRouteExtensions(plugin.routeModule, "core");
-      const filteredSettingsRoutes = getRouteExtensions(
-        plugin.routeModule,
-        "settings",
-      );
+      const filteredCoreRoutes = getRouteExtensions(plugin.routeModule, 'core');
+      const filteredSettingsRoutes = getRouteExtensions(plugin.routeModule, 'settings');
 
       const coreRoutesMap = createRouteMap(filteredCoreRoutes);
       const settingsRoutesMap = createRouteMap(filteredSettingsRoutes);
@@ -93,14 +83,14 @@ export class DashboardApp {
   private populateWidgets(plugins: DashboardPlugin[]) {
     const registry = new Map<InjectionZone, React.ComponentType[]>();
 
-    plugins.forEach((plugin) => {
+    plugins.forEach(plugin => {
       const widgets = plugin.widgetModule.widgets;
       if (!widgets) {
         return;
       }
 
-      widgets.forEach((widget) => {
-        widget.zone.forEach((zone) => {
+      widgets.forEach(widget => {
+        widget.zone.forEach(zone => {
           if (!registry.has(zone)) {
             registry.set(zone, []);
           }
@@ -118,7 +108,7 @@ export class DashboardApp {
 
     // Collect all menu items from all plugins
     const allMenuItems: MenuItemExtension[] = [];
-    plugins.forEach((plugin) => {
+    plugins.forEach(plugin => {
       if (plugin.menuItemModule.menuItems) {
         allMenuItems.push(...plugin.menuItemModule.menuItems);
       }
@@ -130,28 +120,28 @@ export class DashboardApp {
 
     allMenuItems.sort((a, b) => a.path.length - b.path.length);
 
-    allMenuItems.forEach((item) => {
-      if (item.path.includes("/:")) {
-        if (process.env.NODE_ENV === "development") {
+    allMenuItems.forEach(item => {
+      if (item.path.includes('/:')) {
+        if (process.env.NODE_ENV === 'development') {
           console.warn(
-            `[@medusajs/dashboard] Menu item for path "${item.path}" can't be added to the sidebar as it contains a parameter.`,
+            `[@medusajs/dashboard] Menu item for path "${item.path}" can't be added to the sidebar as it contains a parameter.`
           );
         }
 
         return;
       }
 
-      const isSettingsPath = item.path.startsWith("/settings");
-      const key = isSettingsPath ? "settingsExtensions" : "coreExtensions";
+      const isSettingsPath = item.path.startsWith('/settings');
+      const key = isSettingsPath ? 'settingsExtensions' : 'coreExtensions';
 
-      const pathParts = item.path.split("/").filter(Boolean);
-      const parentPath = "/" + pathParts.slice(0, -1).join("/");
+      const pathParts = item.path.split('/').filter(Boolean);
+      const parentPath = '/' + pathParts.slice(0, -1).join('/');
 
       // Check if this is a nested settings path
       if (isSettingsPath && pathParts.length > 2) {
-        if (process.env.NODE_ENV === "development") {
+        if (process.env.NODE_ENV === 'development') {
           console.warn(
-            `[@medusajs/dashboard] Nested settings menu item "${item.path}" can't be added to the sidebar. Only top-level settings items are allowed.`,
+            `[@medusajs/dashboard] Nested settings menu item "${item.path}" can't be added to the sidebar. Only top-level settings items are allowed.`
           );
         }
 
@@ -159,9 +149,7 @@ export class DashboardApp {
       }
 
       // Find the parent item if it exists
-      const parentItem = allMenuItems.find(
-        (menuItem) => menuItem.path === parentPath,
-      );
+      const parentItem = allMenuItems.find(menuItem => menuItem.path === parentPath);
 
       // Check if parent item is a nested route under existing route
       if (
@@ -169,9 +157,9 @@ export class DashboardApp {
         NESTED_ROUTE_POSITIONS.includes(parentItem?.nested) &&
         pathParts.length > 1
       ) {
-        if (process.env.NODE_ENV === "development") {
+        if (process.env.NODE_ENV === 'development') {
           console.warn(
-            `[@medusajs/dashboard] Nested menu item "${item.path}" can't be added to the sidebar as it is nested under "${parentItem.nested}".`,
+            `[@medusajs/dashboard] Nested menu item "${item.path}" can't be added to the sidebar as it is nested under "${parentItem.nested}".`
           );
         }
 
@@ -183,10 +171,10 @@ export class DashboardApp {
         to: item.path,
         icon: item.icon ? <item.icon /> : undefined,
         items: [],
-        nested: item.nested,
+        nested: item.nested
       };
 
-      if (parentPath !== "/" && tempRegistry[parentPath]) {
+      if (parentPath !== '/' && tempRegistry[parentPath]) {
         if (!tempRegistry[parentPath].items) {
           tempRegistry[parentPath].items = [];
         }
@@ -211,57 +199,55 @@ export class DashboardApp {
     const fields: FormFieldMap = new Map();
     const configs: ConfigFieldMap = new Map();
 
-    plugins.forEach((plugin) => {
-      Object.entries(plugin.formModule.customFields).forEach(
-        ([model, customization]) => {
-          // Initialize maps if they don't exist for this model
-          if (!fields.has(model as CustomFieldModel)) {
-            fields.set(model as CustomFieldModel, new Map());
-          }
-          if (!configs.has(model as CustomFieldModel)) {
-            configs.set(model as CustomFieldModel, new Map());
-          }
+    plugins.forEach(plugin => {
+      Object.entries(plugin.formModule.customFields).forEach(([model, customization]) => {
+        // Initialize maps if they don't exist for this model
+        if (!fields.has(model as CustomFieldModel)) {
+          fields.set(model as CustomFieldModel, new Map());
+        }
+        if (!configs.has(model as CustomFieldModel)) {
+          configs.set(model as CustomFieldModel, new Map());
+        }
 
-          // Process forms
-          const modelFields = this.processFields(customization.forms);
-          const existingModelFields = fields.get(model as CustomFieldModel)!;
+        // Process forms
+        const modelFields = this.processFields(customization.forms);
+        const existingModelFields = fields.get(model as CustomFieldModel)!;
 
-          // Merge the maps
-          modelFields.forEach((zoneStructure, zone) => {
-            if (!existingModelFields.has(zone)) {
-              existingModelFields.set(zone, {
-                components: [],
-                tabs: new Map(),
-              });
-            }
-
-            const existingZoneStructure = existingModelFields.get(zone)!;
-
-            // Merge components
-            existingZoneStructure.components.push(...zoneStructure.components);
-
-            // Merge tabs
-            zoneStructure.tabs.forEach((fields, tab) => {
-              if (!existingZoneStructure.tabs.has(tab)) {
-                existingZoneStructure.tabs.set(tab, []);
-              }
-              existingZoneStructure.tabs.get(tab)!.push(...fields);
+        // Merge the maps
+        modelFields.forEach((zoneStructure, zone) => {
+          if (!existingModelFields.has(zone)) {
+            existingModelFields.set(zone, {
+              components: [],
+              tabs: new Map()
             });
-          });
+          }
 
-          // Process configs
-          const modelConfigs = this.processConfigs(customization.configs);
-          const existingModelConfigs = configs.get(model as CustomFieldModel)!;
+          const existingZoneStructure = existingModelFields.get(zone)!;
 
-          // Merge the config maps
-          modelConfigs.forEach((configFields, zone) => {
-            if (!existingModelConfigs.has(zone)) {
-              existingModelConfigs.set(zone, []);
+          // Merge components
+          existingZoneStructure.components.push(...zoneStructure.components);
+
+          // Merge tabs
+          zoneStructure.tabs.forEach((fields, tab) => {
+            if (!existingZoneStructure.tabs.has(tab)) {
+              existingZoneStructure.tabs.set(tab, []);
             }
-            existingModelConfigs.get(zone)!.push(...configFields);
+            existingZoneStructure.tabs.get(tab)!.push(...fields);
           });
-        },
-      );
+        });
+
+        // Process configs
+        const modelConfigs = this.processConfigs(customization.configs);
+        const existingModelConfigs = configs.get(model as CustomFieldModel)!;
+
+        // Merge the config maps
+        modelConfigs.forEach((configFields, zone) => {
+          if (!existingModelConfigs.has(zone)) {
+            existingModelConfigs.set(zone, []);
+          }
+          existingModelConfigs.get(zone)!.push(...configFields);
+        });
+      });
     });
 
     return { fields, configs };
@@ -270,19 +256,15 @@ export class DashboardApp {
   private processFields(forms: FormExtension[]): FormZoneMap {
     const formZoneMap: FormZoneMap = new Map();
 
-    forms.forEach((fieldDef) =>
-      this.processFieldDefinition(formZoneMap, fieldDef),
-    );
+    forms.forEach(fieldDef => this.processFieldDefinition(formZoneMap, fieldDef));
 
     return formZoneMap;
   }
 
-  private processConfigs(
-    configs: ConfigExtension[],
-  ): Map<CustomFieldFormZone, ConfigField[]> {
+  private processConfigs(configs: ConfigExtension[]): Map<CustomFieldFormZone, ConfigField[]> {
     const modelConfigMap = new Map<CustomFieldFormZone, ConfigField[]>();
 
-    configs.forEach((configDef) => {
+    configs.forEach(configDef => {
       const { zone, fields } = configDef;
       const zoneConfigs: ConfigField[] = [];
 
@@ -290,7 +272,7 @@ export class DashboardApp {
         zoneConfigs.push({
           name,
           defaultValue: config.defaultValue,
-          validation: config.validation,
+          validation: config.validation
         });
       });
 
@@ -300,10 +282,7 @@ export class DashboardApp {
     return modelConfigMap;
   }
 
-  private processFieldDefinition(
-    formZoneMap: FormZoneMap,
-    fieldDef: FormExtension,
-  ) {
+  private processFieldDefinition(formZoneMap: FormZoneMap, fieldDef: FormExtension) {
     const { zone, tab, fields: fieldsDefinition } = fieldDef;
     const zoneStructure = this.getOrCreateZoneStructure(formZoneMap, zone);
 
@@ -315,7 +294,7 @@ export class DashboardApp {
 
   private getOrCreateZoneStructure(
     formZoneMap: FormZoneMap,
-    zone: CustomFieldFormZone,
+    zone: CustomFieldFormZone
   ): ZoneStructure {
     let zoneStructure = formZoneMap.get(zone);
     if (!zoneStructure) {
@@ -326,23 +305,20 @@ export class DashboardApp {
     return zoneStructure;
   }
 
-  private createFormField(
-    fieldKey: string,
-    fieldDefinition: FormFieldExtension,
-  ): FormField {
+  private createFormField(fieldKey: string, fieldDefinition: FormFieldExtension): FormField {
     return {
       name: fieldKey,
       validation: fieldDefinition.validation,
       label: fieldDefinition.label,
       description: fieldDefinition.description,
-      Component: fieldDefinition.Component,
+      Component: fieldDefinition.Component
     };
   }
 
   private addFormFieldToZoneStructure(
     zoneStructure: ZoneStructure,
     formField: FormField,
-    tab?: CustomFieldFormTab,
+    tab?: CustomFieldFormTab
   ) {
     if (tab) {
       let tabFields = zoneStructure.tabs.get(tab);
@@ -364,40 +340,38 @@ export class DashboardApp {
       Map<CustomFieldContainerZone, React.ComponentType<{ data: any }>[]>
     >();
 
-    plugins.forEach((plugin) => {
-      Object.entries(plugin.displayModule.displays).forEach(
-        ([model, customization]) => {
-          if (!displays.has(model as CustomFieldModel)) {
-            displays.set(
-              model as CustomFieldModel,
-              new Map<
-                CustomFieldContainerZone,
-                // @todo fix any type
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                React.ComponentType<{ data: any }>[]
-              >(),
-            );
+    plugins.forEach(plugin => {
+      Object.entries(plugin.displayModule.displays).forEach(([model, customization]) => {
+        if (!displays.has(model as CustomFieldModel)) {
+          displays.set(
+            model as CustomFieldModel,
+            new Map<
+              CustomFieldContainerZone,
+              // @todo fix any type
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              React.ComponentType<{ data: any }>[]
+            >()
+          );
+        }
+
+        const modelDisplays = displays.get(model as CustomFieldModel)!;
+        const processedDisplays = this.processDisplays(customization);
+
+        // Merge the displays
+        processedDisplays.forEach((components, zone) => {
+          if (!modelDisplays.has(zone)) {
+            modelDisplays.set(zone, []);
           }
-
-          const modelDisplays = displays.get(model as CustomFieldModel)!;
-          const processedDisplays = this.processDisplays(customization);
-
-          // Merge the displays
-          processedDisplays.forEach((components, zone) => {
-            if (!modelDisplays.has(zone)) {
-              modelDisplays.set(zone, []);
-            }
-            modelDisplays.get(zone)!.push(...components);
-          });
-        },
-      );
+          modelDisplays.get(zone)!.push(...components);
+        });
+      });
     });
 
     return displays;
   }
 
   private processDisplays(
-    displays: DisplayExtension[],
+    displays: DisplayExtension[]
     // @todo fix any type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Map<CustomFieldContainerZone, ComponentType<{ data: any }>[]> {
@@ -408,7 +382,7 @@ export class DashboardApp {
       ComponentType<{ data: any }>[]
     >();
 
-    displays.forEach((display) => {
+    displays.forEach(display => {
       const { zone, Component } = display;
       if (!modelDisplayMap.has(zone)) {
         modelDisplayMap.set(zone, []);
@@ -430,7 +404,7 @@ export class DashboardApp {
   private getFormFields(
     model: CustomFieldModel,
     zone: CustomFieldFormZone,
-    tab?: CustomFieldFormTab,
+    tab?: CustomFieldFormTab
   ) {
     const zoneMap = this.fields.get(model)?.get(zone);
 
@@ -459,18 +433,18 @@ export class DashboardApp {
       getWidgets: this.getWidgets.bind(this),
       getFormFields: this.getFormFields.bind(this),
       getFormConfigs: this.getFormConfigs.bind(this),
-      getDisplays: this.getDisplays.bind(this),
+      getDisplays: this.getDisplays.bind(this)
     };
   }
 
   render() {
     const routes = getRouteMap({
       settingsRoutes: this.settingsRoutes,
-      coreRoutes: this.coreRoutes,
+      coreRoutes: this.coreRoutes
     });
 
     const router = createBrowserRouter(routes, {
-      basename: __BASE__ || "/",
+      basename: __BASE__ || '/'
     });
 
     return (

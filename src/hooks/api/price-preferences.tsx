@@ -1,20 +1,18 @@
-import { FetchError } from "@medusajs/js-sdk"
-import { HttpTypes } from "@medusajs/types"
+import { sdk } from '@lib/client';
+import { queryClient } from '@lib/query-client';
+import { queryKeysFactory } from '@lib/query-key-factory';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes } from '@medusajs/types';
 import {
-  QueryKey,
-  UseMutationOptions,
-  UseQueryOptions,
   useMutation,
   useQuery,
-} from "@tanstack/react-query"
-import { sdk } from "../../lib/client"
-import { queryClient } from "../../lib/query-client"
-import { queryKeysFactory } from "../../lib/query-key-factory"
+  type QueryKey,
+  type UseMutationOptions,
+  type UseQueryOptions
+} from '@tanstack/react-query';
 
-const PRICE_PREFERENCES_QUERY_KEY = "price-preferences" as const
-export const pricePreferencesQueryKeys = queryKeysFactory(
-  PRICE_PREFERENCES_QUERY_KEY
-)
+const PRICE_PREFERENCES_QUERY_KEY = 'price-preferences' as const;
+export const pricePreferencesQueryKeys = queryKeysFactory(PRICE_PREFERENCES_QUERY_KEY);
 
 export const usePricePreference = (
   id: string,
@@ -26,17 +24,17 @@ export const usePricePreference = (
       HttpTypes.AdminPricePreferenceResponse,
       QueryKey
     >,
-    "queryKey" | "queryFn"
+    'queryKey' | 'queryFn'
   >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.pricePreference.retrieve(id, query),
     queryKey: pricePreferencesQueryKeys.detail(id),
-    ...options,
-  })
+    ...options
+  });
 
-  return { ...data, ...rest }
-}
+  return { ...data, ...rest };
+};
 
 export const usePricePreferences = (
   query?: HttpTypes.AdminPricePreferenceListParams,
@@ -47,17 +45,17 @@ export const usePricePreferences = (
       HttpTypes.AdminPricePreferenceListResponse,
       QueryKey
     >,
-    "queryKey" | "queryFn"
+    'queryKey' | 'queryFn'
   >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.pricePreference.list(query),
     queryKey: pricePreferencesQueryKeys.list(query),
-    ...options,
-  })
+    ...options
+  });
 
-  return { ...data, ...rest }
-}
+  return { ...data, ...rest };
+};
 
 export const useUpsertPricePreference = (
   id?: string | undefined,
@@ -69,49 +67,49 @@ export const useUpsertPricePreference = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload) => {
+    mutationFn: payload => {
       if (id) {
-        return sdk.admin.pricePreference.update(id, {
-          ...payload,
-          attribute: payload.attribute ?? undefined,
-        }, query)
+        return sdk.admin.pricePreference.update(
+          id,
+          {
+            ...payload,
+            attribute: payload.attribute ?? undefined
+          },
+          query
+        );
       }
 
-      return sdk.admin.pricePreference.create(payload, query)
+      return sdk.admin.pricePreference.create(payload, query);
     },
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
-        queryKey: pricePreferencesQueryKeys.list(),
-      })
+        queryKey: pricePreferencesQueryKeys.list()
+      });
       if (id) {
         queryClient.invalidateQueries({
-          queryKey: pricePreferencesQueryKeys.detail(id),
-        })
+          queryKey: pricePreferencesQueryKeys.detail(id)
+        });
       }
 
-      options?.onSuccess?.(data, variables, context)
+      options?.onSuccess?.(data, variables, context);
     },
-    ...options,
-  })
-}
+    ...options
+  });
+};
 
 export const useDeletePricePreference = (
   id: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminPricePreferenceDeleteResponse,
-    FetchError,
-    void
-  >
+  options?: UseMutationOptions<HttpTypes.AdminPricePreferenceDeleteResponse, FetchError, void>
 ) => {
   return useMutation({
     mutationFn: () => sdk.admin.pricePreference.delete(id),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
-        queryKey: pricePreferencesQueryKeys.list(),
-      })
+        queryKey: pricePreferencesQueryKeys.list()
+      });
 
-      options?.onSuccess?.(data, variables, context)
+      options?.onSuccess?.(data, variables, context);
     },
-    ...options,
-  })
-}
+    ...options
+  });
+};

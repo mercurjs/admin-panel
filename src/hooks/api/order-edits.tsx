@@ -1,15 +1,12 @@
-import type { FetchError } from "@medusajs/js-sdk";
-import type { HttpTypes } from "@medusajs/types";
+import { sdk } from '@lib/client';
+import { queryClient } from '@lib/query-client.ts';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes } from '@medusajs/types';
+import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
 
-import type { UseMutationOptions } from "@tanstack/react-query";
-import { useMutation } from "@tanstack/react-query";
-
-import { sdk } from "@lib/client";
-import { queryClient } from "@lib/query-client.ts";
-
-import { inventoryItemsQueryKeys } from "./inventory.tsx";
-import { ordersQueryKeys } from "./orders";
-import { reservationItemsQueryKeys } from "./reservations";
+import { inventoryItemsQueryKeys } from './inventory.tsx';
+import { ordersQueryKeys } from './orders';
+import { reservationItemsQueryKeys } from './reservations';
 
 export const useCreateOrderEdit = (
   orderId: string,
@@ -17,7 +14,7 @@ export const useCreateOrderEdit = (
     HttpTypes.AdminOrderEditPreviewResponse,
     FetchError,
     HttpTypes.AdminInitiateOrderEditRequest
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: (payload: HttpTypes.AdminInitiateOrderEditRequest) =>
@@ -26,25 +23,21 @@ export const useCreateOrderEdit = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
 export const useRequestOrderEdit = (
   id: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminOrderEditPreviewResponse,
-    FetchError,
-    void
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminOrderEditPreviewResponse, FetchError, void>
 ) => {
   return useMutation({
     mutationFn: () => sdk.admin.orderEdit.request(id),
@@ -52,33 +45,29 @@ export const useRequestOrderEdit = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(id),
+        queryKey: ordersQueryKeys.preview(id)
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.changes(id),
+        queryKey: ordersQueryKeys.changes(id)
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.lineItems(id),
+        queryKey: ordersQueryKeys.lineItems(id)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
 export const useConfirmOrderEdit = (
   id: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminOrderEditPreviewResponse,
-    FetchError,
-    void
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminOrderEditPreviewResponse, FetchError, void>
 ) => {
   return useMutation({
     mutationFn: () => sdk.admin.orderEdit.confirm(id),
@@ -86,36 +75,36 @@ export const useConfirmOrderEdit = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(id),
+        queryKey: ordersQueryKeys.preview(id)
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.changes(id),
+        queryKey: ordersQueryKeys.changes(id)
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.lineItems(id),
+        queryKey: ordersQueryKeys.lineItems(id)
       });
 
       queryClient.invalidateQueries({
-        queryKey: reservationItemsQueryKeys.lists(),
+        queryKey: reservationItemsQueryKeys.lists()
       });
 
       queryClient.invalidateQueries({
-        queryKey: inventoryItemsQueryKeys.lists(),
+        queryKey: inventoryItemsQueryKeys.lists()
       });
 
       queryClient.invalidateQueries({
-        queryKey: inventoryItemsQueryKeys.details(),
+        queryKey: inventoryItemsQueryKeys.details()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -123,7 +112,7 @@ export const useCancelOrderEdit = (
   orderId: string,
   // @todo fix any type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  options?: UseMutationOptions<any, FetchError, any>,
+  options?: UseMutationOptions<any, FetchError, any>
 ) => {
   return useMutation({
     mutationFn: () => sdk.admin.orderEdit.cancelRequest(orderId),
@@ -131,23 +120,23 @@ export const useCancelOrderEdit = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.details(),
+        queryKey: ordersQueryKeys.details()
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(orderId),
+        queryKey: ordersQueryKeys.preview(orderId)
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.changes(orderId),
+        queryKey: ordersQueryKeys.changes(orderId)
       });
 
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.lineItems(orderId),
+        queryKey: ordersQueryKeys.lineItems(orderId)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -157,7 +146,7 @@ export const useAddOrderEditItems = (
     HttpTypes.AdminOrderEditPreviewResponse,
     FetchError,
     HttpTypes.AdminAddOrderEditItems
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: (payload: HttpTypes.AdminAddOrderEditItems) =>
@@ -166,11 +155,11 @@ export const useAddOrderEditItems = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(id),
+        queryKey: ordersQueryKeys.preview(id)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -183,7 +172,7 @@ export const useUpdateOrderEditOriginalItem = (
     HttpTypes.AdminOrderEditPreviewResponse,
     FetchError,
     HttpTypes.AdminUpdateOrderEditItem & { itemId: string }
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: ({
@@ -196,11 +185,11 @@ export const useUpdateOrderEditOriginalItem = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(id),
+        queryKey: ordersQueryKeys.preview(id)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -213,7 +202,7 @@ export const useUpdateOrderEditAddedItem = (
     HttpTypes.AdminOrderEditPreviewResponse,
     FetchError,
     HttpTypes.AdminUpdateOrderEditItem & { actionId: string }
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: ({
@@ -226,11 +215,11 @@ export const useUpdateOrderEditAddedItem = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(id),
+        queryKey: ordersQueryKeys.preview(id)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -240,23 +229,18 @@ export const useUpdateOrderEditAddedItem = (
  */
 export const useRemoveOrderEditItem = (
   id: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminOrderEditPreviewResponse,
-    FetchError,
-    string
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminOrderEditPreviewResponse, FetchError, string>
 ) => {
   return useMutation({
-    mutationFn: (actionId: string) =>
-      sdk.admin.orderEdit.removeAddedItem(id, actionId),
+    mutationFn: (actionId: string) => sdk.admin.orderEdit.removeAddedItem(id, actionId),
     // @todo fix any type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
-        queryKey: ordersQueryKeys.preview(id),
+        queryKey: ordersQueryKeys.preview(id)
       });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };

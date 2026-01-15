@@ -1,53 +1,49 @@
-import { useTranslation } from "react-i18next"
-import { Filter } from "../../../components/table/data-table"
-import { useProductTags } from "../../api"
-import { useProductTypes } from "../../api/product-types"
-import { useSalesChannels } from "../../api/sales-channels"
+import type { Filter } from '@components/table/data-table';
+import { useProductTags, useProductTypes, useSalesChannels } from '@hooks/api';
+import { useTranslation } from 'react-i18next';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const excludeableFields = [
-  "sales_channel_id",
-  "collections",
-  "categories",
-  "product_types",
-  "product_tags",
-] as const
+  'sales_channel_id',
+  'collections',
+  'categories',
+  'product_types',
+  'product_tags'
+] as const;
 
-export const useProductTableFilters = (
-  exclude?: (typeof excludeableFields)[number][]
-) => {
-  const { t } = useTranslation()
+export const useProductTableFilters = (exclude?: (typeof excludeableFields)[number][]) => {
+  const { t } = useTranslation();
 
-  const isProductTypeExcluded = exclude?.includes("product_types")
+  const isProductTypeExcluded = exclude?.includes('product_types');
 
   const { product_types } = useProductTypes(
     {
       limit: 1000,
-      offset: 0,
+      offset: 0
     },
     {
-      enabled: !isProductTypeExcluded,
+      enabled: !isProductTypeExcluded
     }
-  )
+  );
 
-  const isProductTagExcluded = exclude?.includes("product_tags")
+  const isProductTagExcluded = exclude?.includes('product_tags');
 
   const { product_tags } = useProductTags({
     limit: 1000,
-    offset: 0,
-  })
+    offset: 0
+  });
 
-
-  const isSalesChannelExcluded = exclude?.includes("sales_channel_id")
+  const isSalesChannelExcluded = exclude?.includes('sales_channel_id');
 
   const { sales_channels } = useSalesChannels(
     {
       limit: 1000,
-      fields: "id,name",
+      fields: 'id,name'
     },
     {
-      enabled: !isSalesChannelExcluded,
+      enabled: !isSalesChannelExcluded
     }
-  )
+  );
 
   // Commented out as it's not used yet. Seems it might be helpful in future
   // const isCategoryExcluded = exclude?.includes("categories")
@@ -73,54 +69,54 @@ export const useProductTableFilters = (
   //   }
   // )
 
-  let filters: Filter[] = []
+  let filters: Filter[] = [];
 
   if (product_types && !isProductTypeExcluded) {
     const typeFilter: Filter = {
-      key: "type_id",
-      label: t("fields.type"),
-      type: "select",
+      key: 'type_id',
+      label: t('fields.type'),
+      type: 'select',
       multiple: true,
       searchable: true,
-      options: product_types.map((t) => ({
+      options: product_types.map(t => ({
         label: t.value,
-        value: t.id,
-      })),
-    }
+        value: t.id
+      }))
+    };
 
-    filters = [...filters, typeFilter]
+    filters = [...filters, typeFilter];
   }
 
   if (product_tags && !isProductTagExcluded) {
     const tagFilter: Filter = {
-      key: "tag_id",
-      label: t("fields.tag"),
-      type: "select",
+      key: 'tag_id',
+      label: t('fields.tag'),
+      type: 'select',
       multiple: true,
       searchable: true,
-      options: product_tags.map((t) => ({
+      options: product_tags.map(t => ({
         label: t.value,
-        value: t.id,
-      })),
-    }
+        value: t.id
+      }))
+    };
 
-    filters = [...filters, tagFilter]
+    filters = [...filters, tagFilter];
   }
 
   if (sales_channels) {
     const salesChannelFilter: Filter = {
-      key: "sales_channel_id",
-      label: t("fields.salesChannel"),
-      type: "select",
+      key: 'sales_channel_id',
+      label: t('fields.salesChannel'),
+      type: 'select',
       multiple: true,
       searchable: true,
-      options: sales_channels.map((s) => ({
+      options: sales_channels.map(s => ({
         label: s.name,
-        value: s.id,
-      })),
-    }
+        value: s.id
+      }))
+    };
 
-    filters = [...filters, salesChannelFilter]
+    filters = [...filters, salesChannelFilter];
   }
 
   // Commented out as it's not used yet. Seems it might be helpful in future
@@ -171,40 +167,40 @@ export const useProductTableFilters = (
   // }
 
   const statusFilter: Filter = {
-    key: "status",
-    label: t("fields.status"),
-    type: "select",
+    key: 'status',
+    label: t('fields.status'),
+    type: 'select',
     multiple: true,
     options: [
       {
-        label: t("products.productStatus.draft"),
-        value: "draft",
+        label: t('products.productStatus.draft'),
+        value: 'draft'
       },
       {
-        label: t("products.productStatus.proposed"),
-        value: "proposed",
+        label: t('products.productStatus.proposed'),
+        value: 'proposed'
       },
       {
-        label: t("products.productStatus.published"),
-        value: "published",
+        label: t('products.productStatus.published'),
+        value: 'published'
       },
       {
-        label: t("products.productStatus.rejected"),
-        value: "rejected",
-      },
-    ],
-  }
+        label: t('products.productStatus.rejected'),
+        value: 'rejected'
+      }
+    ]
+  };
 
   const dateFilters: Filter[] = [
-    { label: t("fields.createdAt"), key: "created_at" },
-    { label: t("fields.updatedAt"), key: "updated_at" },
-  ].map((f) => ({
+    { label: t('fields.createdAt'), key: 'created_at' },
+    { label: t('fields.updatedAt'), key: 'updated_at' }
+  ].map(f => ({
     key: f.key,
     label: f.label,
-    type: "date",
-  }))
+    type: 'date'
+  }));
 
-  filters = [...filters, statusFilter, ...dateFilters]
+  filters = [...filters, statusFilter, ...dateFilters];
 
-  return filters
-}
+  return filters;
+};

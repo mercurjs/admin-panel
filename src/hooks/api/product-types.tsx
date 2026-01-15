@@ -1,18 +1,17 @@
-import type { FetchError } from "@medusajs/js-sdk";
-import type { HttpTypes } from "@medusajs/types";
+import { sdk } from '@lib/client';
+import { queryClient } from '@lib/query-client';
+import { queryKeysFactory } from '@lib/query-key-factory';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes } from '@medusajs/types';
+import {
+  useMutation,
+  useQuery,
+  type QueryKey,
+  type UseMutationOptions,
+  type UseQueryOptions
+} from '@tanstack/react-query';
 
-import type {
-  QueryKey,
-  UseMutationOptions,
-  UseQueryOptions,
-} from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
-
-import { sdk } from "@lib/client";
-import { queryClient } from "@lib/query-client";
-import { queryKeysFactory } from "@lib/query-key-factory";
-
-const PRODUCT_TYPES_QUERY_KEY = "product_types" as const;
+const PRODUCT_TYPES_QUERY_KEY = 'product_types' as const;
 export const productTypesQueryKeys = queryKeysFactory(PRODUCT_TYPES_QUERY_KEY);
 
 export const useProductType = (
@@ -25,13 +24,13 @@ export const useProductType = (
       HttpTypes.AdminProductTypeResponse,
       QueryKey
     >,
-    "queryKey" | "queryFn"
-  >,
+    'queryKey' | 'queryFn'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.productType.retrieve(id, query),
     queryKey: productTypesQueryKeys.detail(id),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -46,13 +45,13 @@ export const useProductTypes = (
       HttpTypes.AdminProductTypeListResponse,
       QueryKey
     >,
-    "queryKey" | "queryFn"
-  >,
+    'queryKey' | 'queryFn'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.productType.list(query),
     queryKey: productTypesQueryKeys.list(query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -63,18 +62,18 @@ export const useCreateProductType = (
     HttpTypes.AdminProductTypeResponse,
     FetchError,
     HttpTypes.AdminCreateProductType
-  >,
+  >
 ) => {
   return useMutation({
-    mutationFn: (payload) => sdk.admin.productType.create(payload),
+    mutationFn: payload => sdk.admin.productType.create(payload),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
-        queryKey: productTypesQueryKeys.lists(),
+        queryKey: productTypesQueryKeys.lists()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -84,44 +83,40 @@ export const useUpdateProductType = (
     HttpTypes.AdminProductTypeResponse,
     FetchError,
     HttpTypes.AdminUpdateProductType
-  >,
+  >
 ) => {
   return useMutation({
-    mutationFn: (payload) => sdk.admin.productType.update(id, payload),
+    mutationFn: payload => sdk.admin.productType.update(id, payload),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
-        queryKey: productTypesQueryKeys.detail(id),
+        queryKey: productTypesQueryKeys.detail(id)
       });
       queryClient.invalidateQueries({
-        queryKey: productTypesQueryKeys.lists(),
+        queryKey: productTypesQueryKeys.lists()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
 export const useDeleteProductType = (
   id: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminProductTypeDeleteResponse,
-    FetchError,
-    void
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminProductTypeDeleteResponse, FetchError, void>
 ) => {
   return useMutation({
     mutationFn: () => sdk.admin.productType.delete(id),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
-        queryKey: productTypesQueryKeys.detail(id),
+        queryKey: productTypesQueryKeys.detail(id)
       });
       queryClient.invalidateQueries({
-        queryKey: productTypesQueryKeys.lists(),
+        queryKey: productTypesQueryKeys.lists()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };

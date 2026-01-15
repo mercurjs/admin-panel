@@ -1,20 +1,19 @@
-import type { FetchError } from "@medusajs/js-sdk";
-import type { HttpTypes } from "@medusajs/types";
+import { sdk } from '@lib/client';
+import { queryClient } from '@lib/query-client';
+import { queryKeysFactory } from '@lib/query-key-factory.ts';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes } from '@medusajs/types';
+import {
+  useMutation,
+  useQuery,
+  type QueryKey,
+  type UseMutationOptions,
+  type UseQueryOptions
+} from '@tanstack/react-query';
 
-import type {
-  QueryKey,
-  UseMutationOptions,
-  UseQueryOptions,
-} from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { productsQueryKeys } from './products';
 
-import { sdk } from "@lib/client";
-import { queryClient } from "@lib/query-client";
-import { queryKeysFactory } from "@lib/query-key-factory.ts";
-
-import { productsQueryKeys } from "./products";
-
-const CATEGORIES_QUERY_KEY = "categories" as const;
+const CATEGORIES_QUERY_KEY = 'categories' as const;
 export const categoriesQueryKeys = queryKeysFactory(CATEGORIES_QUERY_KEY);
 
 export const useProductCategory = (
@@ -27,13 +26,13 @@ export const useProductCategory = (
       HttpTypes.AdminProductCategoryResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryKey: categoriesQueryKeys.detail(id, query),
     queryFn: () => sdk.admin.productCategory.retrieve(id, query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -48,13 +47,13 @@ export const useProductCategories = (
       HttpTypes.AdminProductCategoryListResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryKey: categoriesQueryKeys.list(query),
     queryFn: () => sdk.admin.productCategory.list(query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -65,16 +64,16 @@ export const useCreateProductCategory = (
     HttpTypes.AdminProductCategoryResponse,
     FetchError,
     HttpTypes.AdminCreateProductCategory
-  >,
+  >
 ) => {
   return useMutation({
-    mutationFn: (payload) => sdk.admin.productCategory.create(payload),
+    mutationFn: payload => sdk.admin.productCategory.create(payload),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: categoriesQueryKeys.lists() });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -84,41 +83,37 @@ export const useUpdateProductCategory = (
     HttpTypes.AdminProductCategoryResponse,
     FetchError,
     HttpTypes.AdminUpdateProductCategory
-  >,
+  >
 ) => {
   return useMutation({
-    mutationFn: (payload) => sdk.admin.productCategory.update(id, payload),
+    mutationFn: payload => sdk.admin.productCategory.update(id, payload),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: categoriesQueryKeys.lists() });
       queryClient.invalidateQueries({
-        queryKey: categoriesQueryKeys.detail(id),
+        queryKey: categoriesQueryKeys.detail(id)
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
 export const useDeleteProductCategory = (
   id: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminProductCategoryDeleteResponse,
-    FetchError,
-    void
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminProductCategoryDeleteResponse, FetchError, void>
 ) => {
   return useMutation({
     mutationFn: () => sdk.admin.productCategory.delete(id),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
-        queryKey: categoriesQueryKeys.detail(id),
+        queryKey: categoriesQueryKeys.detail(id)
       });
       queryClient.invalidateQueries({ queryKey: categoriesQueryKeys.lists() });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -128,29 +123,28 @@ export const useUpdateProductCategoryProducts = (
     HttpTypes.AdminProductCategoryResponse,
     FetchError,
     HttpTypes.AdminUpdateProductCategoryProducts
-  >,
+  >
 ) => {
   return useMutation({
-    mutationFn: (payload) =>
-      sdk.admin.productCategory.updateProducts(id, payload),
+    mutationFn: payload => sdk.admin.productCategory.updateProducts(id, payload),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: categoriesQueryKeys.lists() });
       queryClient.invalidateQueries({
-        queryKey: categoriesQueryKeys.details(),
+        queryKey: categoriesQueryKeys.details()
       });
       /**
        * Invalidate products list query to ensure that the products collections are updated.
        */
       queryClient.invalidateQueries({
-        queryKey: productsQueryKeys.lists(),
+        queryKey: productsQueryKeys.lists()
       });
 
       queryClient.invalidateQueries({
-        queryKey: productsQueryKeys.details(),
+        queryKey: productsQueryKeys.details()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };

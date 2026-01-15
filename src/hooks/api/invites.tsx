@@ -1,18 +1,17 @@
-import type { FetchError } from "@medusajs/js-sdk";
-import type { HttpTypes } from "@medusajs/types";
+import { sdk } from '@lib/client';
+import { queryClient } from '@lib/query-client';
+import { queryKeysFactory } from '@lib/query-key-factory';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes } from '@medusajs/types';
+import {
+  useMutation,
+  useQuery,
+  type QueryKey,
+  type UseMutationOptions,
+  type UseQueryOptions
+} from '@tanstack/react-query';
 
-import type {
-  QueryKey,
-  UseMutationOptions,
-  UseQueryOptions,
-} from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
-
-import { sdk } from "@lib/client";
-import { queryClient } from "@lib/query-client";
-import { queryKeysFactory } from "@lib/query-key-factory";
-
-const INVITES_QUERY_KEY = "invites" as const;
+const INVITES_QUERY_KEY = 'invites' as const;
 const invitesQueryKeys = queryKeysFactory(INVITES_QUERY_KEY);
 
 export const useInvite = (
@@ -24,13 +23,13 @@ export const useInvite = (
       HttpTypes.AdminInviteResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryKey: invitesQueryKeys.detail(id),
     queryFn: async () => sdk.admin.invite.retrieve(id),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -47,13 +46,13 @@ export const useInvites = (
       HttpTypes.AdminInviteListResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.invite.list(query),
     queryKey: invitesQueryKeys.list(query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -64,21 +63,21 @@ export const useCreateInvite = (
     HttpTypes.AdminInviteResponse,
     FetchError,
     HttpTypes.AdminCreateInvite
-  >,
+  >
 ) => {
   return useMutation({
-    mutationFn: (payload) => sdk.admin.invite.create(payload),
+    mutationFn: payload => sdk.admin.invite.create(payload),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: invitesQueryKeys.lists() });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
 export const useResendInvite = (
   id: string,
-  options?: UseMutationOptions<HttpTypes.AdminInviteResponse, FetchError, void>,
+  options?: UseMutationOptions<HttpTypes.AdminInviteResponse, FetchError, void>
 ) => {
   return useMutation({
     mutationFn: () => sdk.admin.invite.resend(id),
@@ -87,17 +86,13 @@ export const useResendInvite = (
       queryClient.invalidateQueries({ queryKey: invitesQueryKeys.detail(id) });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
 export const useDeleteInvite = (
   id: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminInviteDeleteResponse,
-    FetchError,
-    void
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminInviteDeleteResponse, FetchError, void>
 ) => {
   return useMutation({
     mutationFn: () => sdk.admin.invite.delete(id),
@@ -106,7 +101,7 @@ export const useDeleteInvite = (
       queryClient.invalidateQueries({ queryKey: invitesQueryKeys.detail(id) });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };
 
@@ -116,23 +111,23 @@ export const useAcceptInvite = (
     HttpTypes.AdminAcceptInviteResponse,
     FetchError,
     HttpTypes.AdminAcceptInvite & { auth_token: string }
-  >,
+  >
 ) => {
   return useMutation({
-    mutationFn: (payload) => {
+    mutationFn: payload => {
       const { auth_token, ...rest } = payload;
 
       return sdk.admin.invite.accept(
         { invite_token: inviteToken, ...rest },
         {},
         {
-          Authorization: `Bearer ${auth_token}`,
-        },
+          Authorization: `Bearer ${auth_token}`
+        }
       );
     },
     onSuccess: (data, variables, context) => {
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 };

@@ -1,6 +1,6 @@
-import type { FindParams, HttpTypes } from "@medusajs/types";
+import type { FindParams, HttpTypes } from '@medusajs/types';
 
-import { useQueryParams } from "@/hooks/use-query-params";
+import { useQueryParams } from '@/hooks/use-query-params';
 
 type UseCommissionRulesTableQueryProps = {
   prefix?: string;
@@ -9,12 +9,9 @@ type UseCommissionRulesTableQueryProps = {
 
 export const useCommissionRulesTableQuery = ({
   prefix,
-  pageSize = 20,
+  pageSize = 20
 }: UseCommissionRulesTableQueryProps) => {
-  const queryObject = useQueryParams(
-    ["offset", "q", "order", "created_at", "updated_at"],
-    prefix,
-  );
+  const queryObject = useQueryParams(['offset', 'q', 'order', 'created_at', 'updated_at'], prefix);
 
   const { offset, q, order, created_at, updated_at } = queryObject;
 
@@ -24,11 +21,11 @@ export const useCommissionRulesTableQuery = ({
     order,
     created_at: created_at ? JSON.parse(created_at) : undefined,
     updated_at: updated_at ? JSON.parse(updated_at) : undefined,
-    q,
+    q
   };
 
   return {
     searchParams,
-    raw: queryObject,
+    raw: queryObject
   };
 };

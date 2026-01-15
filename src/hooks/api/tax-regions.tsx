@@ -1,18 +1,17 @@
-import type { FetchError } from "@medusajs/js-sdk";
-import type { HttpTypes } from "@medusajs/types";
+import { sdk } from '@lib/client';
+import { queryClient } from '@lib/query-client';
+import { queryKeysFactory } from '@lib/query-key-factory';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes } from '@medusajs/types';
+import {
+  useMutation,
+  useQuery,
+  type QueryKey,
+  type UseMutationOptions,
+  type UseQueryOptions
+} from '@tanstack/react-query';
 
-import type {
-  QueryKey,
-  UseMutationOptions,
-  UseQueryOptions,
-} from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
-
-import { sdk } from "@lib/client";
-import { queryClient } from "@lib/query-client";
-import { queryKeysFactory } from "@lib/query-key-factory";
-
-const TAX_REGIONS_QUERY_KEY = "tax_regions" as const;
+const TAX_REGIONS_QUERY_KEY = 'tax_regions' as const;
 export const taxRegionsQueryKeys = queryKeysFactory(TAX_REGIONS_QUERY_KEY);
 
 export const useTaxRegion = (
@@ -25,13 +24,13 @@ export const useTaxRegion = (
       HttpTypes.AdminTaxRegionResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryKey: taxRegionsQueryKeys.detail(id),
     queryFn: async () => sdk.admin.taxRegion.retrieve(id, query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -46,13 +45,13 @@ export const useTaxRegions = (
       HttpTypes.AdminTaxRegionListResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.taxRegion.list(query),
     queryKey: taxRegionsQueryKeys.list(query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -63,15 +62,15 @@ export const useCreateTaxRegion = (
     HttpTypes.AdminTaxRegionResponse,
     FetchError,
     HttpTypes.AdminCreateTaxRegion
-  >,
+  >
 ) =>
   useMutation({
-    mutationFn: (payload) => sdk.admin.taxRegion.create(payload),
+    mutationFn: payload => sdk.admin.taxRegion.create(payload),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: taxRegionsQueryKeys.all });
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useUpdateTaxRegion = (
@@ -82,43 +81,39 @@ export const useUpdateTaxRegion = (
     FetchError,
     HttpTypes.AdminUpdateTaxRegion,
     QueryKey
-  >,
+  >
 ) =>
   useMutation({
-    mutationFn: (payload) => sdk.admin.taxRegion.update(id, payload, query),
+    mutationFn: payload => sdk.admin.taxRegion.update(id, payload, query),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
-        queryKey: taxRegionsQueryKeys.detail(id),
+        queryKey: taxRegionsQueryKeys.detail(id)
       });
       queryClient.invalidateQueries({ queryKey: taxRegionsQueryKeys.lists() });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });
 
 export const useDeleteTaxRegion = (
   id: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminTaxRegionDeleteResponse,
-    FetchError,
-    void
-  >,
+  options?: UseMutationOptions<HttpTypes.AdminTaxRegionDeleteResponse, FetchError, void>
 ) =>
   useMutation({
     mutationFn: () => sdk.admin.taxRegion.delete(id),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: taxRegionsQueryKeys.lists() });
       queryClient.invalidateQueries({
-        queryKey: taxRegionsQueryKeys.detail(id),
+        queryKey: taxRegionsQueryKeys.detail(id)
       });
 
       // Invalidate all detail queries, as the deleted tax region may have been a sublevel region
       queryClient.invalidateQueries({
-        queryKey: taxRegionsQueryKeys.details(),
+        queryKey: taxRegionsQueryKeys.details()
       });
 
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    ...options
   });

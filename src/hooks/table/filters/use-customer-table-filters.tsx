@@ -1,70 +1,69 @@
-import { useTranslation } from "react-i18next"
-import { Filter } from "../../../components/table/data-table"
-import { useCustomerGroups } from "../../api/customer-groups"
+import type { Filter } from '@components/table/data-table';
+import { useCustomerGroups } from '@hooks/api';
+import { useTranslation } from 'react-i18next';
 
-const excludeableFields = ["groups"] as const
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const excludeableFields = ['groups'] as const;
 
-export const useCustomerTableFilters = (
-  exclude?: (typeof excludeableFields)[number][]
-) => {
-  const { t } = useTranslation()
+export const useCustomerTableFilters = (exclude?: (typeof excludeableFields)[number][]) => {
+  const { t } = useTranslation();
 
-  const isGroupsExcluded = exclude?.includes("groups")
+  const isGroupsExcluded = exclude?.includes('groups');
 
   const { customer_groups } = useCustomerGroups(
     {
-      limit: 1000,
+      limit: 1000
     },
     {
-      enabled: !isGroupsExcluded,
+      enabled: !isGroupsExcluded
     }
-  )
+  );
 
-  let filters: Filter[] = []
-  
+  let filters: Filter[] = [];
+
   if (customer_groups && !isGroupsExcluded) {
     const customerGroupFilter: Filter = {
-      key: "groups",
-      label: t("customers.groups.label"),
-      type: "select",
+      key: 'groups',
+      label: t('customers.groups.label'),
+      type: 'select',
       multiple: true,
       options: customer_groups
-      .filter((s) => s?.name)
-      .map((s) => ({
-        label: s.name as string,
-        value: s.id,
-      })),
-    }
+        .filter(s => s?.name)
+        .map(s => ({
+          label: s.name as string,
+          value: s.id
+        }))
+    };
 
-    filters = [...filters, customerGroupFilter]
+    filters = [...filters, customerGroupFilter];
   }
 
   const hasAccountFilter: Filter = {
-    key: "has_account",
-    label: t("fields.account"),
-    type: "select",
+    key: 'has_account',
+    label: t('fields.account'),
+    type: 'select',
     options: [
       {
-        label: t("customers.registered"),
-        value: "true",
+        label: t('customers.registered'),
+        value: 'true'
       },
       {
-        label: t("customers.guest"),
-        value: "false",
-      },
-    ],
-  }
+        label: t('customers.guest'),
+        value: 'false'
+      }
+    ]
+  };
 
   const dateFilters: Filter[] = [
-    { label: t("fields.createdAt"), key: "created_at" },
-    { label: t("fields.updatedAt"), key: "updated_at" },
-  ].map((f) => ({
+    { label: t('fields.createdAt'), key: 'created_at' },
+    { label: t('fields.updatedAt'), key: 'updated_at' }
+  ].map(f => ({
     key: f.key,
     label: f.label,
-    type: "date",
-  }))
+    type: 'date'
+  }));
 
-  filters = [...filters, hasAccountFilter, ...dateFilters]
+  filters = [...filters, hasAccountFilter, ...dateFilters];
 
-  return filters
-}
+  return filters;
+};

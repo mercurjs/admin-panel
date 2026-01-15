@@ -1,4 +1,3 @@
-import type { ZodType } from "zod";
 import {
   ZodBoolean,
   ZodEffects,
@@ -8,9 +7,10 @@ import {
   ZodOptional,
   ZodString,
   ZodUndefined,
-} from "zod";
+  type ZodType
+} from 'zod';
 
-import type { FormFieldType } from "./types";
+import type { FormFieldType } from './types';
 
 export function getFieldLabel(name: string, label?: string) {
   if (label) {
@@ -18,22 +18,22 @@ export function getFieldLabel(name: string, label?: string) {
   }
 
   return name
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
 
 export function getFieldType(type: ZodType): FormFieldType {
   if (type instanceof ZodString) {
-    return "text";
+    return 'text';
   }
 
   if (type instanceof ZodNumber) {
-    return "number";
+    return 'number';
   }
 
   if (type instanceof ZodBoolean) {
-    return "boolean";
+    return 'boolean';
   }
 
   if (type instanceof ZodNullable) {
@@ -54,7 +54,7 @@ export function getFieldType(type: ZodType): FormFieldType {
     return getFieldType(innerType);
   }
 
-  return "unsupported";
+  return 'unsupported';
 }
 
 export function getIsFieldOptional(type: ZodType) {

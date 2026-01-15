@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
 
 /**
  * Base interface for a command that can be managed
@@ -51,10 +51,10 @@ export const useCommandHistory = (maxHistory = 20) => {
   const execute = useCallback(
     (command: Command) => {
       command.execute();
-      setPast((past) => [...past, command].slice(0, maxHistory - 1));
+      setPast(past => [...past, command].slice(0, maxHistory - 1));
       setFuture([]);
     },
-    [maxHistory],
+    [maxHistory]
   );
 
   return {
@@ -62,6 +62,6 @@ export const useCommandHistory = (maxHistory = 20) => {
     redo,
     execute,
     canUndo,
-    canRedo,
+    canRedo
   };
 };

@@ -1,14 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
 
 export const useTalkJS = () => {
   const { data: talkJs, isLoading } = useQuery({
-    queryKey: ["talk-js"],
+    queryKey: ['talk-js'],
     queryFn: () =>
-      fetch("/admin/talk-js")
-        .then((res) => res.json())
-        .catch((err) => ({
-          message: err,
-        })),
+      fetch('/admin/talk-js')
+        .then(res => res.json())
+        .catch(err => ({
+          message: err
+        }))
   });
 
   return { ...talkJs, isLoading };

@@ -1,16 +1,14 @@
-import type { ComponentType } from "react";
+import type { ComponentType } from 'react';
 
-import { InlineTip, Input, Switch } from "@medusajs/ui";
+import { Form } from '@components/common/form';
+import { InlineTip, Input, Switch } from '@medusajs/ui';
+import type { ControllerRenderProps, UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
-import type { ControllerRenderProps, UseFormReturn } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import type { FormField } from '@/dashboard-app/types';
 
-import { Form } from "@components/common/form";
-
-import type { FormField } from "@/dashboard-app/types";
-
-import type { FormFieldType } from "./types";
-import { getFieldType } from "./utils";
+import type { FormFieldType } from './types';
+import { getFieldType } from './utils';
 
 type FormExtensionZoneProps = {
   fields: FormField[];
@@ -22,7 +20,11 @@ type FormExtensionZoneProps = {
 export const FormExtensionZone = ({ fields, form }: FormExtensionZoneProps) => (
   <div>
     {fields.map((field, index) => (
-      <FormExtensionField key={index} field={field} form={form} />
+      <FormExtensionField
+        key={index}
+        field={field}
+        form={form}
+      />
     ))}
   </div>
 );
@@ -33,9 +35,9 @@ function getFieldLabel(field: FormField) {
   }
 
   return field.name
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
 
 type FormExtensionFieldProps = {
@@ -93,31 +95,56 @@ const FormExtensionFieldComponent = ({
   field,
   type,
   component,
-  placeholder,
+  placeholder
 }: FormExtensionFieldComponentProps) => {
   const { t } = useTranslation();
 
   if (component) {
     const Component = component;
 
-    return <Component {...field} placeholder={placeholder} />;
+    return (
+      <Component
+        {...field}
+        placeholder={placeholder}
+      />
+    );
   }
 
   switch (type) {
-    case "text": {
-      return <Input {...field} placeholder={placeholder} />;
+    case 'text': {
+      return (
+        <Input
+          {...field}
+          placeholder={placeholder}
+        />
+      );
     }
-    case "number": {
-      return <Input {...field} placeholder={placeholder} type="number" />;
+    case 'number': {
+      return (
+        <Input
+          {...field}
+          placeholder={placeholder}
+          type="number"
+        />
+      );
     }
-    case "boolean": {
-      return <Switch className="rtl:rotate-180" dir="ltr" {...field} />;
+    case 'boolean': {
+      return (
+        <Switch
+          className="rtl:rotate-180"
+          dir="ltr"
+          {...field}
+        />
+      );
     }
     default: {
       return (
-        <InlineTip variant="warning" label={t("general.warning")}>
-          The field type does not support rendering a fallback component. Please
-          provide a component prop.
+        <InlineTip
+          variant="warning"
+          label={t('general.warning')}
+        >
+          The field type does not support rendering a fallback component. Please provide a component
+          prop.
         </InlineTip>
       );
     }

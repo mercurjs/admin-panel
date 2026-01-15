@@ -1,18 +1,18 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
-import debounce from "lodash/debounce";
+import debounce from 'lodash/debounce';
 
 /**
  * Hook for debouncing search input
  * @returns searchValue, onSearchValueChange, query
  */
 export const useDebouncedSearch = () => {
-  const [searchValue, onSearchValueChange] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [searchValue, onSearchValueChange] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
 
   const debouncedUpdate = useCallback(
     debounce((query: string) => setDebouncedQuery(query), 300),
-    [],
+    []
   );
 
   useEffect(() => {
@@ -24,6 +24,6 @@ export const useDebouncedSearch = () => {
   return {
     searchValue,
     onSearchValueChange,
-    query: debouncedQuery || undefined,
+    query: debouncedQuery || undefined
   };
 };

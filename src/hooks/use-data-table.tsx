@@ -1,19 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 
-import type {
-  ColumnDef,
-  OnChangeFn,
-  PaginationState,
-  Row,
-  RowSelectionState,
-} from "@tanstack/react-table";
 import {
   getCoreRowModel,
   getExpandedRowModel,
   getPaginationRowModel,
   useReactTable,
-} from "@tanstack/react-table";
-import { useSearchParams } from "react-router-dom";
+  type ColumnDef,
+  type OnChangeFn,
+  type PaginationState,
+  type Row,
+  type RowSelectionState
+} from '@tanstack/react-table';
+import { useSearchParams } from 'react-router-dom';
 
 type UseDataTableProps<TData> = {
   data?: TData[];
@@ -47,22 +45,22 @@ export const useDataTable = <TData,>({
   getSubRows,
   getRowId,
   meta,
-  prefix,
+  prefix
 }: UseDataTableProps<TData>) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const offsetKey = `${prefix ? `${prefix}_` : ""}offset`;
+  const offsetKey = `${prefix ? `${prefix}_` : ''}offset`;
   const offset = searchParams.get(offsetKey);
 
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: offset ? Math.ceil(Number(offset) / _pageSize) : 0,
-    pageSize: _pageSize,
+    pageSize: _pageSize
   });
   const pagination = useMemo(
     () => ({
       pageIndex,
-      pageSize,
+      pageSize
     }),
-    [pageIndex, pageSize],
+    [pageIndex, pageSize]
   );
   const [localRowSelection, setLocalRowSelection] = useState({});
   const rowSelection = _rowSelection?.state ?? localRowSelection;
@@ -79,19 +77,17 @@ export const useDataTable = <TData,>({
       return;
     }
 
-    setPagination((prev) => ({
+    setPagination(prev => ({
       ...prev,
-      pageIndex: index,
+      pageIndex: index
     }));
   }, [offset, enablePagination, _pageSize, pageIndex]);
 
-  const onPaginationChange = (
-    updater: (old: PaginationState) => PaginationState,
-  ) => {
+  const onPaginationChange = (updater: (old: PaginationState) => PaginationState) => {
     const state = updater(pagination);
     const { pageIndex, pageSize } = state;
 
-    setSearchParams((prev) => {
+    setSearchParams(prev => {
       if (!pageIndex) {
         prev.delete(offsetKey);
 
@@ -114,7 +110,7 @@ export const useDataTable = <TData,>({
     columns,
     state: {
       rowSelection: rowSelection, // We always pass a selection state to the table even if it's not enabled
-      pagination: enablePagination ? pagination : undefined,
+      pagination: enablePagination ? pagination : undefined
     },
     pageCount: Math.ceil((count ?? 0) / pageSize),
     enableRowSelection,
@@ -125,14 +121,10 @@ export const useDataTable = <TData,>({
       ? (onPaginationChange as OnChangeFn<PaginationState>)
       : undefined,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: enablePagination
-      ? getPaginationRowModel()
-      : undefined,
-    getExpandedRowModel: enableExpandableRows
-      ? getExpandedRowModel()
-      : undefined,
+    getPaginationRowModel: enablePagination ? getPaginationRowModel() : undefined,
+    getExpandedRowModel: enableExpandableRows ? getExpandedRowModel() : undefined,
     manualPagination: enablePagination ? true : undefined,
-    meta,
+    meta
   });
 
   return { table };

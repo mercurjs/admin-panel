@@ -1,13 +1,10 @@
-import type { FetchError } from "@medusajs/js-sdk";
-import type { HttpTypes } from "@medusajs/types";
+import { sdk } from '@lib/client';
+import { queryKeysFactory } from '@lib/query-key-factory';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes } from '@medusajs/types';
+import { useQuery, type QueryKey, type UseQueryOptions } from '@tanstack/react-query';
 
-import type { QueryKey, UseQueryOptions } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
-
-import { sdk } from "@lib/client";
-import { queryKeysFactory } from "@lib/query-key-factory";
-
-const NOTIFICATION_QUERY_KEY = "notification" as const;
+const NOTIFICATION_QUERY_KEY = 'notification' as const;
 export const notificationQueryKeys = queryKeysFactory(NOTIFICATION_QUERY_KEY);
 
 export const useNotification = (
@@ -22,13 +19,13 @@ export const useNotification = (
       HttpTypes.AdminNotificationResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryKey: notificationQueryKeys.detail(id),
     queryFn: async () => sdk.admin.notification.retrieve(id, query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
@@ -43,13 +40,13 @@ export const useNotifications = (
       HttpTypes.AdminNotificationListResponse,
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.notification.list(query),
     queryKey: notificationQueryKeys.list(query),
-    ...options,
+    ...options
   });
 
   return { ...data, ...rest };
