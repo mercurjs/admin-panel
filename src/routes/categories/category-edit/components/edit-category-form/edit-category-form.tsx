@@ -1,25 +1,22 @@
-import type { HttpTypes } from "@medusajs/types";
-import { Button, Input, Select, Textarea, toast } from "@medusajs/ui";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { z } from "zod";
-
-import { Form } from "@components/common/form";
-import { HandleInput } from "@components/inputs/handle-input";
-import { RouteDrawer, useRouteModal } from "@components/modals";
-import { KeyboundForm } from "@components/utilities/keybound-form";
-
-import { useUpdateProductCategory } from "@hooks/api";
-import { useDocumentDirection } from "@hooks/use-document-direction";
+import { Form } from '@components/common/form';
+import { HandleInput } from '@components/inputs/handle-input';
+import { RouteDrawer, useRouteModal } from '@components/modals';
+import { KeyboundForm } from '@components/utilities/keybound-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useUpdateProductCategory } from '@hooks/api';
+import { useDocumentDirection } from '@hooks/use-document-direction';
+import type { HttpTypes } from '@medusajs/types';
+import { Button, Input, Select, Textarea, toast } from '@medusajs/ui';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
 const EditCategorySchema = z.object({
   name: z.string().min(1),
   handle: z.string().min(1),
   description: z.string().optional(),
-  status: z.enum(["active", "inactive"]),
-  visibility: z.enum(["public", "internal"]),
+  status: z.enum(['active', 'inactive']),
+  visibility: z.enum(['public', 'internal'])
 });
 
 type EditCategoryFormProps = {
@@ -34,38 +31,41 @@ export const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
     defaultValues: {
       name: category.name,
       handle: category.handle,
-      description: category.description || "",
-      status: category.is_active ? "active" : "inactive",
-      visibility: category.is_internal ? "internal" : "public",
+      description: category.description || '',
+      status: category.is_active ? 'active' : 'inactive',
+      visibility: category.is_internal ? 'internal' : 'public'
     },
-    resolver: zodResolver(EditCategorySchema),
+    resolver: zodResolver(EditCategorySchema)
   });
 
   const { mutateAsync, isPending } = useUpdateProductCategory(category.id);
-  const handleSubmit = form.handleSubmit(async (data) => {
+  const handleSubmit = form.handleSubmit(async data => {
     await mutateAsync(
       {
         name: data.name,
         description: data.description,
         handle: data.handle,
-        is_active: data.status === "active",
-        is_internal: data.visibility === "internal",
+        is_active: data.status === 'active',
+        is_internal: data.visibility === 'internal'
       },
       {
         onSuccess: () => {
-          toast.success(t("categories.edit.successToast"));
+          toast.success(t('categories.edit.successToast'));
           handleSuccess();
         },
-        onError: (error) => {
+        onError: error => {
           toast.error(error.message);
-        },
-      },
+        }
+      }
     );
   });
 
   return (
     <RouteDrawer.Form form={form}>
-      <KeyboundForm onSubmit={handleSubmit} className="flex flex-1 flex-col">
+      <KeyboundForm
+        onSubmit={handleSubmit}
+        className="flex flex-1 flex-col"
+      >
         <RouteDrawer.Body>
           <div className="flex flex-col gap-y-4">
             <Form.Field
@@ -73,9 +73,12 @@ export const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
               name="name"
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>{t("fields.title")}</Form.Label>
+                  <Form.Label>{t('fields.title')}</Form.Label>
                   <Form.Control>
-                    <Input autoComplete="off" {...field} />
+                    <Input
+                      autoComplete="off"
+                      {...field}
+                    />
                   </Form.Control>
                   <Form.ErrorMessage />
                 </Form.Item>
@@ -86,8 +89,11 @@ export const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
               name="handle"
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label optional tooltip={t("collections.handleTooltip")}>
-                    {t("fields.handle")}
+                  <Form.Label
+                    optional
+                    tooltip={t('collections.handleTooltip')}
+                  >
+                    {t('fields.handle')}
                   </Form.Label>
                   <Form.Control>
                     <HandleInput {...field} />
@@ -101,7 +107,7 @@ export const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
               name="description"
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label optional>{t("fields.description")}</Form.Label>
+                  <Form.Label optional>{t('fields.description')}</Form.Label>
                   <Form.Control>
                     <Textarea {...field} />
                   </Form.Control>
@@ -115,9 +121,7 @@ export const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
                 name="status"
                 render={({ field: { ref, onChange, ...field } }) => (
                   <Form.Item>
-                    <Form.Label>
-                      {t("categories.fields.status.label")}
-                    </Form.Label>
+                    <Form.Label>{t('categories.fields.status.label')}</Form.Label>
                     <Form.Control>
                       <Select
                         dir={direction}
@@ -129,10 +133,10 @@ export const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
                         </Select.Trigger>
                         <Select.Content>
                           <Select.Item value="active">
-                            {t("categories.fields.status.active")}
+                            {t('categories.fields.status.active')}
                           </Select.Item>
                           <Select.Item value="inactive">
-                            {t("categories.fields.status.inactive")}
+                            {t('categories.fields.status.inactive')}
                           </Select.Item>
                         </Select.Content>
                       </Select>
@@ -146,9 +150,7 @@ export const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
                 name="visibility"
                 render={({ field: { ref, onChange, ...field } }) => (
                   <Form.Item>
-                    <Form.Label>
-                      {t("categories.fields.visibility.label")}
-                    </Form.Label>
+                    <Form.Label>{t('categories.fields.visibility.label')}</Form.Label>
                     <Form.Control>
                       <Select
                         dir={direction}
@@ -160,10 +162,10 @@ export const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
                         </Select.Trigger>
                         <Select.Content>
                           <Select.Item value="public">
-                            {t("categories.fields.visibility.public")}
+                            {t('categories.fields.visibility.public')}
                           </Select.Item>
                           <Select.Item value="internal">
-                            {t("categories.fields.visibility.internal")}
+                            {t('categories.fields.visibility.internal')}
                           </Select.Item>
                         </Select.Content>
                       </Select>
@@ -178,12 +180,19 @@ export const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
         <RouteDrawer.Footer>
           <div className="flex items-center gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary">
-                {t("actions.cancel")}
+              <Button
+                size="small"
+                variant="secondary"
+              >
+                {t('actions.cancel')}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
-              {t("actions.save")}
+            <Button
+              size="small"
+              type="submit"
+              isLoading={isPending}
+            >
+              {t('actions.save')}
             </Button>
           </div>
         </RouteDrawer.Footer>

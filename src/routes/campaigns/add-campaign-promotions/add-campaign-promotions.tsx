@@ -1,10 +1,8 @@
-import { useParams } from "react-router-dom";
+import { RouteFocusModal } from '@components/modals';
+import { useCampaign } from '@hooks/api';
+import { useParams } from 'react-router-dom';
 
-import { RouteFocusModal } from "@components/modals";
-
-import { useCampaign } from "@hooks/api";
-
-import { AddCampaignPromotionsForm } from "./components";
+import { AddCampaignPromotionsForm } from './components';
 
 export const AddCampaignPromotions = () => {
   const { id } = useParams();

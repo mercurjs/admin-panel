@@ -1,38 +1,35 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import type { HttpTypes } from "@medusajs/types";
-import { Button, Container, Heading, Text } from "@medusajs/ui";
+import { _DataTable } from '@components/table/data-table';
+import { useCollections } from '@hooks/api';
+import { useCollectionTableColumns } from '@hooks/table/columns';
+import { useCollectionTableFilters } from '@hooks/table/filters';
+import { useCollectionTableQuery } from '@hooks/table/query';
+import { useDataTable } from '@hooks/use-data-table';
+import type { HttpTypes } from '@medusajs/types';
+import { Button, Container, Heading, Text } from '@medusajs/ui';
+import { keepPreviousData } from '@tanstack/react-query';
+import { createColumnHelper } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-import { keepPreviousData } from "@tanstack/react-query";
-import { createColumnHelper } from "@tanstack/react-table";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-
-import { _DataTable } from "@components/table/data-table";
-
-import { useCollections } from "@hooks/api";
-import { useCollectionTableColumns } from "@hooks/table/columns";
-import { useCollectionTableFilters } from "@hooks/table/filters";
-import { useCollectionTableQuery } from "@hooks/table/query";
-import { useDataTable } from "@hooks/use-data-table";
-
-import { CollectionRowActions } from "./collection-row-actions";
+import { CollectionRowActions } from './collection-row-actions';
 
 const PAGE_SIZE = 20;
 
 export const CollectionListTable = () => {
   const { t } = useTranslation();
   const { searchParams, raw } = useCollectionTableQuery({
-    pageSize: PAGE_SIZE,
+    pageSize: PAGE_SIZE
   });
   const { collections, count, isError, error, isLoading } = useCollections(
     {
       ...searchParams,
-      fields: "+products.id",
+      fields: '+products.id'
     },
     {
-      placeholderData: keepPreviousData,
-    },
+      placeholderData: keepPreviousData
+    }
   );
 
   const filters = useCollectionTableFilters();
@@ -44,7 +41,7 @@ export const CollectionListTable = () => {
     count,
     enablePagination: true,
     getRowId: (row, index) => row.id ?? `${index}`,
-    pageSize: PAGE_SIZE,
+    pageSize: PAGE_SIZE
   });
 
   if (isError) {
@@ -55,14 +52,20 @@ export const CollectionListTable = () => {
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
         <div>
-          <Heading>{t("collections.domain")}</Heading>
-          <Text className="text-ui-fg-subtle" size="small">
-            {t("collections.subtitle")}
+          <Heading>{t('collections.domain')}</Heading>
+          <Text
+            className="text-ui-fg-subtle"
+            size="small"
+          >
+            {t('collections.subtitle')}
           </Text>
         </div>
         <Link to="/collections/create">
-          <Button size="small" variant="secondary">
-            {t("actions.create")}
+          <Button
+            size="small"
+            variant="secondary"
+          >
+            {t('actions.create')}
           </Button>
         </Link>
       </div>
@@ -73,13 +76,13 @@ export const CollectionListTable = () => {
         count={count}
         filters={filters}
         orderBy={[
-          { key: "title", label: t("fields.title") },
-          { key: "handle", label: t("fields.handle") },
-          { key: "created_at", label: t("fields.createdAt") },
-          { key: "updated_at", label: t("fields.updatedAt") },
+          { key: 'title', label: t('fields.title') },
+          { key: 'handle', label: t('fields.handle') },
+          { key: 'created_at', label: t('fields.createdAt') },
+          { key: 'updated_at', label: t('fields.updatedAt') }
         ]}
         search
-        navigateTo={(row) => `/collections/${row.original.id}`}
+        navigateTo={row => `/collections/${row.original.id}`}
         queryObject={raw}
         isLoading={isLoading}
       />
@@ -96,10 +99,10 @@ const useColumns = () => {
     () => [
       ...base,
       columnHelper.display({
-        id: "actions",
-        cell: ({ row }) => <CollectionRowActions collection={row.original} />,
-      }),
+        id: 'actions',
+        cell: ({ row }) => <CollectionRowActions collection={row.original} />
+      })
     ],
-    [base],
+    [base]
   );
 };

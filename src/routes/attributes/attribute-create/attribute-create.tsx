@@ -1,27 +1,32 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { FocusModal, Button, toast, ProgressTabs } from "@medusajs/ui";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
-import { useTranslation } from "react-i18next";
-import type { AdminProductCategory } from "@medusajs/types";
-import { AttributeForm, type AttributeFormRef } from "@/routes/attributes/attribute-edit/components/attribute-form";
-import type { z } from "zod";
-import { sdk } from "@/lib/client";
-import { attributeQueryKeys } from "@/hooks/api/attributes";
-import type { CreateAttributeFormSchema } from "@/routes/attributes/attribute-edit/schema";
+import { useEffect, useRef, useState } from 'react';
+
+import type { AdminProductCategory } from '@medusajs/types';
+import { Button, FocusModal, ProgressTabs, toast } from '@medusajs/ui';
+import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import type { z } from 'zod';
+
+import { attributeQueryKeys } from '@/hooks/api/attributes';
+import { sdk } from '@/lib/client';
+import {
+  AttributeForm,
+  type AttributeFormRef
+} from '@/routes/attributes/attribute-edit/components/attribute-form';
+import type { CreateAttributeFormSchema } from '@/routes/attributes/attribute-edit/schema';
 
 export const AttributeCreate = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const formRef = useRef<AttributeFormRef>(null);
   const [categories, setCategories] = useState<AdminProductCategory[]>([]);
-  const [activeTab, setActiveTab] = useState<"details" | "type">("details");
+  const [activeTab, setActiveTab] = useState<'details' | 'type'>('details');
   const [tabStatuses, setTabStatuses] = useState<{
-    detailsStatus: "not-started" | "in-progress" | "completed";
-    typeStatus: "not-started" | "in-progress" | "completed";
+    detailsStatus: 'not-started' | 'in-progress' | 'completed';
+    typeStatus: 'not-started' | 'in-progress' | 'completed';
   }>({
-    detailsStatus: "not-started",
-    typeStatus: "not-started",
+    detailsStatus: 'not-started',
+    typeStatus: 'not-started'
   });
   const queryClient = useQueryClient();
 
@@ -30,31 +35,29 @@ export const AttributeCreate = () => {
       try {
         const { product_categories } = await sdk.client.fetch<{
           product_categories: AdminProductCategory[];
-        }>("/admin/product-categories", {
-          method: "GET",
+        }>('/admin/product-categories', {
+          method: 'GET'
         });
 
         setCategories(product_categories);
       } catch (error) {
-        console.error("Failed to fetch categories:", error);
+        console.error('Failed to fetch categories:', error);
       }
     };
     fetchCategories();
   }, []);
 
-  const handleSave = async (
-    data: z.infer<typeof CreateAttributeFormSchema>
-  ) => {
+  const handleSave = async (data: z.infer<typeof CreateAttributeFormSchema>) => {
     try {
       const { ...payload } = data;
-      await sdk.client.fetch("/admin/attributes", {
-        method: "POST",
-        body: payload,
+      await sdk.client.fetch('/admin/attributes', {
+        method: 'POST',
+        body: payload
       });
 
       queryClient.invalidateQueries({ queryKey: attributeQueryKeys.lists() });
 
-      toast.success("Attribute was successfully created.");
+      toast.success('Attribute was successfully created.');
       navigate(-1);
     } catch (error) {
       toast.error((error as Error).message);
@@ -67,13 +70,12 @@ export const AttributeCreate = () => {
   };
 
   const handleTabChange = (value: string) => {
-    const newTab = value as "details" | "type";
+    const newTab = value as 'details' | 'type';
 
+    if (newTab === 'type' && tabStatuses.detailsStatus === 'not-started') {
+      toast.warning(t('attributes.create.fillNameWarning'));
 
-    if (newTab === "type" && tabStatuses.detailsStatus === "not-started") {
-      toast.warning(t("attributes.create.fillNameWarning"));
-
-      return
+      return;
     }
 
     setActiveTab(newTab);
@@ -81,19 +83,19 @@ export const AttributeCreate = () => {
 
   const handleNext = async () => {
     if (formRef.current) {
-      const isValid = await formRef.current.validateFields(["name"]);
+      const isValid = await formRef.current.validateFields(['name']);
       if (isValid) {
-        setActiveTab("type");
+        setActiveTab('type');
       }
     } else {
-      setActiveTab("type");
+      setActiveTab('type');
     }
   };
 
   return (
     <FocusModal
       open={true}
-      onOpenChange={(open) => {
+      onOpenChange={open => {
         if (!open) handleClose();
       }}
       data-testid="attribute-create-modal"
@@ -102,12 +104,18 @@ export const AttributeCreate = () => {
         <ProgressTabs
           value={activeTab}
           onValueChange={handleTabChange}
-          className="w-full h-full overflow-y-auto"
+          className="h-full w-full overflow-y-auto"
           data-testid="attribute-create-progress-tabs"
         >
-          <FocusModal.Header className="flex items-center justify-between bg-ui-bg-base w-full py-0 h-fit sticky top-0 z-10" data-testid="attribute-create-modal-header">
-            <div className="w-full border-l h-full">
-              <ProgressTabs.List className="justify-start flex w-full items-center" data-testid="attribute-create-progress-tabs-list">
+          <FocusModal.Header
+            className="sticky top-0 z-10 flex h-fit w-full items-center justify-between bg-ui-bg-base py-0"
+            data-testid="attribute-create-modal-header"
+          >
+            <div className="h-full w-full border-l">
+              <ProgressTabs.List
+                className="flex w-full items-center justify-start"
+                data-testid="attribute-create-progress-tabs-list"
+              >
                 <ProgressTabs.Trigger
                   value="details"
                   status={tabStatuses.detailsStatus}
@@ -125,7 +133,10 @@ export const AttributeCreate = () => {
               </ProgressTabs.List>
             </div>
           </FocusModal.Header>
-          <FocusModal.Body className="flex flex-col items-center py-16" data-testid="attribute-create-modal-body">
+          <FocusModal.Body
+            className="flex flex-col items-center py-16"
+            data-testid="attribute-create-modal-body"
+          >
             <div>
               <AttributeForm
                 ref={formRef}
@@ -139,15 +150,27 @@ export const AttributeCreate = () => {
           </FocusModal.Body>
         </ProgressTabs>
         <FocusModal.Footer data-testid="attribute-create-modal-footer">
-          <Button variant="secondary" onClick={handleClose} data-testid="attribute-create-modal-cancel-button">
+          <Button
+            variant="secondary"
+            onClick={handleClose}
+            data-testid="attribute-create-modal-cancel-button"
+          >
             Cancel
           </Button>
-          {activeTab === "details" ? (
-            <Button type="button" onClick={handleNext} data-testid="attribute-create-modal-next-button">
+          {activeTab === 'details' ? (
+            <Button
+              type="button"
+              onClick={handleNext}
+              data-testid="attribute-create-modal-next-button"
+            >
               Next
             </Button>
           ) : (
-            <Button type="submit" form="attribute-form" data-testid="attribute-create-modal-save-button">
+            <Button
+              type="submit"
+              form="attribute-form"
+              data-testid="attribute-create-modal-save-button"
+            >
               Save
             </Button>
           )}

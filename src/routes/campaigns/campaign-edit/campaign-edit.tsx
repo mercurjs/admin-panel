@@ -1,14 +1,10 @@
-import { Heading } from "@medusajs/ui";
-
-import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
-
-import { RouteDrawer } from "@components/modals";
-import { VisuallyHidden } from "@components/utilities/visually-hidden";
-
-import { useCampaign } from "@hooks/api";
-
-import { EditCampaignForm } from "@routes/campaigns/campaign-edit/components/edit-campaign-form";
+import { RouteDrawer } from '@components/modals';
+import { VisuallyHidden } from '@components/utilities/visually-hidden';
+import { useCampaign } from '@hooks/api';
+import { Heading } from '@medusajs/ui';
+import { EditCampaignForm } from '@routes/campaigns/campaign-edit/components/edit-campaign-form';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 export const CampaignEdit = () => {
   const { t } = useTranslation();
@@ -24,10 +20,10 @@ export const CampaignEdit = () => {
     <RouteDrawer>
       <RouteDrawer.Header>
         <RouteDrawer.Title asChild>
-          <Heading>{t("campaigns.edit.header")}</Heading>
+          <Heading>{t('campaigns.edit.header')}</Heading>
         </RouteDrawer.Title>
         <RouteDrawer.Description asChild>
-          <VisuallyHidden>{t("campaigns.edit.description")}</VisuallyHidden>
+          <VisuallyHidden>{t('campaigns.edit.description')}</VisuallyHidden>
         </RouteDrawer.Description>
       </RouteDrawer.Header>
 

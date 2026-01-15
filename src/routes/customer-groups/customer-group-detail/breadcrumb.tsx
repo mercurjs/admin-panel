@@ -1,28 +1,23 @@
-import type { HttpTypes } from "@medusajs/types";
+import { useCustomerGroup } from '@hooks/api';
+import type { HttpTypes } from '@medusajs/types';
+import type { UIMatch } from 'react-router-dom';
 
-import type { UIMatch } from "react-router-dom";
+import { CUSTOMER_GROUP_DETAIL_FIELDS } from './constants';
 
-import { useCustomerGroup } from "@hooks/api";
+type CustomerGroupDetailBreadcrumbProps = UIMatch<HttpTypes.AdminCustomerGroupResponse>;
 
-import { CUSTOMER_GROUP_DETAIL_FIELDS } from "./constants";
-
-type CustomerGroupDetailBreadcrumbProps =
-  UIMatch<HttpTypes.AdminCustomerGroupResponse>;
-
-export const CustomerGroupDetailBreadcrumb = (
-  props: CustomerGroupDetailBreadcrumbProps,
-) => {
+export const CustomerGroupDetailBreadcrumb = (props: CustomerGroupDetailBreadcrumbProps) => {
   const { id } = props.params || {};
 
   const { customer_group } = useCustomerGroup(
     id!,
     {
-      fields: CUSTOMER_GROUP_DETAIL_FIELDS,
+      fields: CUSTOMER_GROUP_DETAIL_FIELDS
     },
     {
       initialData: props.data,
-      enabled: Boolean(id),
-    },
+      enabled: Boolean(id)
+    }
   );
 
   if (!customer_group) {

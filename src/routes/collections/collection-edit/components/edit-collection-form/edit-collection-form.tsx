@@ -1,16 +1,13 @@
-import type { HttpTypes } from "@medusajs/types";
-import { Button, Input, Text } from "@medusajs/ui";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import * as zod from "zod";
-
-import { Form } from "@components/common/form";
-import { RouteDrawer, useRouteModal } from "@components/modals";
-import { KeyboundForm } from "@components/utilities/keybound-form";
-
-import { useUpdateCollection } from "@hooks/api";
+import { Form } from '@components/common/form';
+import { RouteDrawer, useRouteModal } from '@components/modals';
+import { KeyboundForm } from '@components/utilities/keybound-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useUpdateCollection } from '@hooks/api';
+import type { HttpTypes } from '@medusajs/types';
+import { Button, Input, Text } from '@medusajs/ui';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import * as zod from 'zod';
 
 type EditCollectionFormProps = {
   collection: HttpTypes.AdminCollection;
@@ -18,7 +15,7 @@ type EditCollectionFormProps = {
 
 const EditCollectionSchema = zod.object({
   title: zod.string().min(1),
-  handle: zod.string().min(1),
+  handle: zod.string().min(1)
 });
 
 export const EditCollectionForm = ({ collection }: EditCollectionFormProps) => {
@@ -28,24 +25,27 @@ export const EditCollectionForm = ({ collection }: EditCollectionFormProps) => {
   const form = useForm<zod.infer<typeof EditCollectionSchema>>({
     defaultValues: {
       title: collection.title,
-      handle: collection.handle,
+      handle: collection.handle
     },
-    resolver: zodResolver(EditCollectionSchema),
+    resolver: zodResolver(EditCollectionSchema)
   });
 
   const { mutateAsync, isPending } = useUpdateCollection(collection.id);
 
-  const handleSubmit = form.handleSubmit(async (data) => {
+  const handleSubmit = form.handleSubmit(async data => {
     await mutateAsync(data, {
       onSuccess: () => {
         handleSuccess();
-      },
+      }
     });
   });
 
   return (
     <RouteDrawer.Form form={form}>
-      <KeyboundForm onSubmit={handleSubmit} className="flex flex-1 flex-col">
+      <KeyboundForm
+        onSubmit={handleSubmit}
+        className="flex flex-1 flex-col"
+      >
         <RouteDrawer.Body>
           <div className="flex flex-col gap-y-4">
             <Form.Field
@@ -53,7 +53,7 @@ export const EditCollectionForm = ({ collection }: EditCollectionFormProps) => {
               name="title"
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>{t("fields.title")}</Form.Label>
+                  <Form.Label>{t('fields.title')}</Form.Label>
                   <Form.Control>
                     <Input {...field} />
                   </Form.Control>
@@ -66,8 +66,8 @@ export const EditCollectionForm = ({ collection }: EditCollectionFormProps) => {
               name="handle"
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label tooltip={t("collections.handleTooltip")}>
-                    {t("fields.handle")}
+                  <Form.Label tooltip={t('collections.handleTooltip')}>
+                    {t('fields.handle')}
                   </Form.Label>
                   <Form.Control>
                     <div className="relative">
@@ -81,7 +81,10 @@ export const EditCollectionForm = ({ collection }: EditCollectionFormProps) => {
                           /
                         </Text>
                       </div>
-                      <Input {...field} className="pl-10" />
+                      <Input
+                        {...field}
+                        className="pl-10"
+                      />
                     </div>
                   </Form.Control>
                   <Form.ErrorMessage />
@@ -93,12 +96,19 @@ export const EditCollectionForm = ({ collection }: EditCollectionFormProps) => {
         <RouteDrawer.Footer>
           <div className="flex items-center gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary">
-                {t("actions.cancel")}
+              <Button
+                size="small"
+                variant="secondary"
+              >
+                {t('actions.cancel')}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={isPending}>
-              {t("actions.save")}
+            <Button
+              size="small"
+              type="submit"
+              isLoading={isPending}
+            >
+              {t('actions.save')}
             </Button>
           </div>
         </RouteDrawer.Footer>

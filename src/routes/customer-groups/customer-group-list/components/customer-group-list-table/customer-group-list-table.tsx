@@ -1,27 +1,18 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo } from 'react';
 
-import { PencilSquare, Trash } from "@medusajs/icons";
-import type { HttpTypes } from "@medusajs/types";
-import {
-  Container,
-  createDataTableColumnHelper,
-  toast,
-  usePrompt,
-} from "@medusajs/ui";
-
-import { keepPreviousData } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-
-import { DataTable } from "@components/data-table";
-import { useDataTableDateFilters } from "@components/data-table/helpers/general";
-import { SingleColumnPage } from "@components/layout/pages";
-
-import { useCustomerGroups, useDeleteCustomerGroupLazy } from "@hooks/api";
-import { useDate } from "@hooks/use-date.tsx";
-import { useQueryParams } from "@hooks/use-query-params";
-
-import { useExtension } from "@providers/extension-provider";
+import { DataTable } from '@components/data-table';
+import { useDataTableDateFilters } from '@components/data-table/helpers/general';
+import { SingleColumnPage } from '@components/layout/pages';
+import { useCustomerGroups, useDeleteCustomerGroupLazy } from '@hooks/api';
+import { useDate } from '@hooks/use-date.tsx';
+import { useQueryParams } from '@hooks/use-query-params';
+import { PencilSquare, Trash } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Container, createDataTableColumnHelper, toast, usePrompt } from '@medusajs/ui';
+import { useExtension } from '@providers/extension-provider';
+import { keepPreviousData } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 const PAGE_SIZE = 10;
 
@@ -30,31 +21,30 @@ export const CustomerGroupListTable = () => {
   const { getWidgets } = useExtension();
 
   const { q, order, offset, created_at, updated_at } = useQueryParams([
-    "q",
-    "order",
-    "offset",
-    "created_at",
-    "updated_at",
+    'q',
+    'order',
+    'offset',
+    'created_at',
+    'updated_at'
   ]);
 
   const columns = useColumns();
   const filters = useFilters();
 
-  const { customer_groups, count, isPending, isError, error } =
-    useCustomerGroups(
-      {
-        q,
-        order,
-        offset: offset ? parseInt(offset) : undefined,
-        limit: PAGE_SIZE,
-        created_at: created_at ? JSON.parse(created_at) : undefined,
-        updated_at: updated_at ? JSON.parse(updated_at) : undefined,
-        fields: "id,name,created_at,updated_at,customers.id",
-      },
-      {
-        placeholderData: keepPreviousData,
-      },
-    );
+  const { customer_groups, count, isPending, isError, error } = useCustomerGroups(
+    {
+      q,
+      order,
+      offset: offset ? parseInt(offset) : undefined,
+      limit: PAGE_SIZE,
+      created_at: created_at ? JSON.parse(created_at) : undefined,
+      updated_at: updated_at ? JSON.parse(updated_at) : undefined,
+      fields: 'id,name,created_at,updated_at,customers.id'
+    },
+    {
+      placeholderData: keepPreviousData
+    }
+  );
 
   if (isError) {
     throw error;
@@ -63,32 +53,35 @@ export const CustomerGroupListTable = () => {
   return (
     <SingleColumnPage
       widgets={{
-        before: getWidgets("customer_group.list.before"),
-        after: getWidgets("customer_group.list.after"),
+        before: getWidgets('customer_group.list.before'),
+        after: getWidgets('customer_group.list.after')
       }}
     >
-      <Container className="overflow-hidden p-0" data-testid="customer-group-list-container">
+      <Container
+        className="overflow-hidden p-0"
+        data-testid="customer-group-list-container"
+      >
         <DataTable
           data={customer_groups}
           columns={columns}
           filters={filters}
-          heading={t("customerGroups.domain")}
+          heading={t('customerGroups.domain')}
           rowCount={count}
-          getRowId={(row) => row.id}
-          rowHref={(row) => `/customer-groups/${row.id}`}
+          getRowId={row => row.id}
+          rowHref={row => `/customer-groups/${row.id}`}
           action={{
-            label: t("actions.create"),
-            to: "/customer-groups/create",
+            label: t('actions.create'),
+            to: '/customer-groups/create'
           }}
           emptyState={{
             empty: {
-              heading: t("customerGroups.list.empty.heading"),
-              description: t("customerGroups.list.empty.description"),
+              heading: t('customerGroups.list.empty.heading'),
+              description: t('customerGroups.list.empty.description')
             },
             filtered: {
-              heading: t("customerGroups.list.filtered.heading"),
-              description: t("customerGroups.list.filtered.description"),
-            },
+              heading: t('customerGroups.list.filtered.heading'),
+              description: t('customerGroups.list.filtered.description')
+            }
           }}
           pageSize={PAGE_SIZE}
           isLoading={isPending}
@@ -98,8 +91,7 @@ export const CustomerGroupListTable = () => {
   );
 };
 
-const columnHelper =
-  createDataTableColumnHelper<HttpTypes.AdminCustomerGroup>();
+const columnHelper = createDataTableColumnHelper<HttpTypes.AdminCustomerGroup>();
 
 const useColumns = () => {
   const { t } = useTranslation();
@@ -112,14 +104,14 @@ const useColumns = () => {
   const handleDeleteCustomerGroup = useCallback(
     async ({ id, name }: { id: string; name: string }) => {
       const res = await prompt({
-        title: t("customerGroups.delete.title"),
-        description: t("customerGroups.delete.description", {
-          name,
+        title: t('customerGroups.delete.title'),
+        description: t('customerGroups.delete.description', {
+          name
         }),
         verificationText: name,
-        verificationInstruction: t("general.typeToConfirm"),
-        confirmText: t("actions.delete"),
-        cancelText: t("actions.cancel"),
+        verificationInstruction: t('general.typeToConfirm'),
+        confirmText: t('actions.delete'),
+        cancelText: t('actions.cancel')
       });
 
       if (!res) {
@@ -130,88 +122,88 @@ const useColumns = () => {
         { id },
         {
           onSuccess: () => {
-            toast.success(t("customerGroups.delete.successToast", { name }));
+            toast.success(t('customerGroups.delete.successToast', { name }));
           },
-          onError: (e) => {
+          onError: e => {
             toast.error(e.message);
-          },
-        },
+          }
+        }
       );
     },
-    [t, prompt, deleteCustomerGroup],
+    [t, prompt, deleteCustomerGroup]
   );
 
   return useMemo(() => {
     return [
-      columnHelper.accessor("name", {
-        header: t("fields.name"),
+      columnHelper.accessor('name', {
+        header: t('fields.name'),
         enableSorting: true,
-        sortAscLabel: t("filters.sorting.alphabeticallyAsc"),
-        sortDescLabel: t("filters.sorting.alphabeticallyDesc"),
+        sortAscLabel: t('filters.sorting.alphabeticallyAsc'),
+        sortDescLabel: t('filters.sorting.alphabeticallyDesc')
       }),
-      columnHelper.accessor("customers", {
-        header: t("customers.domain"),
+      columnHelper.accessor('customers', {
+        header: t('customers.domain'),
         cell: ({ row }) => {
           return <span>{row.original.customers?.length ?? 0}</span>;
-        },
+        }
       }),
-      columnHelper.accessor("created_at", {
-        header: t("fields.createdAt"),
+      columnHelper.accessor('created_at', {
+        header: t('fields.createdAt'),
         cell: ({ row }) => {
           return (
             <span>
               {getFullDate({
                 date: row.original.created_at,
-                includeTime: true,
+                includeTime: true
               })}
             </span>
           );
         },
         enableSorting: true,
-        sortAscLabel: t("filters.sorting.dateAsc"),
-        sortDescLabel: t("filters.sorting.dateDesc"),
+        sortAscLabel: t('filters.sorting.dateAsc'),
+        sortDescLabel: t('filters.sorting.dateDesc')
       }),
-      columnHelper.accessor("updated_at", {
-        header: t("fields.updatedAt"),
+      columnHelper.accessor('updated_at', {
+        header: t('fields.updatedAt'),
         cell: ({ row }) => {
           return (
             <span>
               {getFullDate({
                 date: row.original.updated_at,
-                includeTime: true,
+                includeTime: true
               })}
             </span>
           );
         },
         enableSorting: true,
-        sortAscLabel: t("filters.sorting.dateAsc"),
-        sortDescLabel: t("filters.sorting.dateDesc"),
+        sortAscLabel: t('filters.sorting.dateAsc'),
+        sortDescLabel: t('filters.sorting.dateDesc')
       }),
       columnHelper.action({
         actions: [
           [
             {
               icon: <PencilSquare />,
-              label: t("actions.edit"),
-              onClick: (row) => {
+              label: t('actions.edit'),
+              onClick: row => {
                 navigate(`/customer-groups/${row.row.original.id}/edit`);
-              },
-            },
+              }
+            }
           ],
           [
             {
               icon: <Trash />,
-              label: t("actions.delete"),
-              onClick: (row) => {
+              label: t('actions.delete'),
+              onClick: row => {
                 handleDeleteCustomerGroup({
                   id: row.row.original.id,
-                  name: row.row.original.name ?? "",
+                  name: row.row.original.name ?? ''
                 });
-              },
-            },
-          ],
-        ],
-      }),
+              }
+            }
+          ]
+        ]
+      })
     ];
   }, [t, navigate, getFullDate, handleDeleteCustomerGroup]);
 };

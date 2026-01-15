@@ -1,41 +1,40 @@
-import type { AdminProductCategoryResponse } from "@medusajs/types";
+import type { AdminProductCategoryResponse } from '@medusajs/types';
+import type { TFunction } from 'i18next';
 
-import type { TFunction } from "i18next";
-
-import type { CategoryTreeItem } from "./types";
+import type { CategoryTreeItem } from './types';
 
 export function getIsActiveProps(
   isActive: boolean,
-  t: TFunction,
-): { color: "green" | "red"; label: string } {
+  t: TFunction
+): { color: 'green' | 'red'; label: string } {
   switch (isActive) {
     case true:
       return {
-        label: t("categories.fields.status.active"),
-        color: "green",
+        label: t('categories.fields.status.active'),
+        color: 'green'
       };
     case false:
       return {
-        label: t("categories.fields.status.inactive"),
-        color: "red",
+        label: t('categories.fields.status.inactive'),
+        color: 'red'
       };
   }
 }
 
 export function getIsInternalProps(
   isInternal: boolean,
-  t: TFunction,
-): { color: "blue" | "green"; label: string } {
+  t: TFunction
+): { color: 'blue' | 'green'; label: string } {
   switch (isInternal) {
     case true:
       return {
-        label: t("categories.fields.visibility.internal"),
-        color: "blue",
+        label: t('categories.fields.visibility.internal'),
+        color: 'blue'
       };
     case false:
       return {
-        label: t("categories.fields.visibility.public"),
-        color: "green",
+        label: t('categories.fields.visibility.public'),
+        color: 'green'
       };
   }
 }
@@ -46,43 +45,38 @@ type ChipProps = {
 };
 
 export function getCategoryPath(
-  category?: AdminProductCategoryResponse["product_category"],
+  category?: AdminProductCategoryResponse['product_category']
 ): ChipProps[] {
   if (!category) {
     return [];
   }
 
-  const path = category.parent_category
-    ? getCategoryPath(category.parent_category)
-    : [];
+  const path = category.parent_category ? getCategoryPath(category.parent_category) : [];
   path.push({ id: category.id, name: category.name });
 
   return path;
 }
 
 export function getCategoryChildren(
-  category?: AdminProductCategoryResponse["product_category"],
+  category?: AdminProductCategoryResponse['product_category']
 ): ChipProps[] {
   if (!category || !category.category_children) {
     return [];
   }
 
-  return category.category_children.map((child) => ({
+  return category.category_children.map(child => ({
     id: child.id,
-    name: child.name,
+    name: child.name
   }));
 }
 
 export const insertCategoryTreeItem = (
   categories: CategoryTreeItem[],
-  newItem: CategoryTreeItem,
+  newItem: CategoryTreeItem
 ): CategoryTreeItem[] => {
   const seen = new Set<string>();
 
-  const remove = (
-    items: CategoryTreeItem[],
-    id: string,
-  ): CategoryTreeItem[] => {
+  const remove = (items: CategoryTreeItem[], id: string): CategoryTreeItem[] => {
     const stack = [...items];
     const result: CategoryTreeItem[] = [];
 

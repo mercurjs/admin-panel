@@ -1,18 +1,11 @@
-import { PencilSquare, Trash } from "@medusajs/icons";
-import type { HttpTypes } from "@medusajs/types";
-import { usePrompt } from "@medusajs/ui";
+import { ActionMenu } from '@components/common/action-menu';
+import { useDeleteCollection } from '@hooks/api';
+import { PencilSquare, Trash } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { usePrompt } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
 
-import { useTranslation } from "react-i18next";
-
-import { ActionMenu } from "@components/common/action-menu";
-
-import { useDeleteCollection } from "@hooks/api";
-
-export const CollectionRowActions = ({
-  collection,
-}: {
-  collection: HttpTypes.AdminCollection;
-}) => {
+export const CollectionRowActions = ({ collection }: { collection: HttpTypes.AdminCollection }) => {
   const { t } = useTranslation();
   const prompt = usePrompt();
 
@@ -20,14 +13,14 @@ export const CollectionRowActions = ({
 
   const handleDeleteCollection = async () => {
     const res = await prompt({
-      title: t("general.areYouSure"),
-      description: t("collections.deleteWarning", {
-        title: collection.title,
+      title: t('general.areYouSure'),
+      description: t('collections.deleteWarning', {
+        title: collection.title
       }),
       verificationText: collection.title,
-      verificationInstruction: t("general.typeToConfirm"),
-      confirmText: t("actions.delete"),
-      cancelText: t("actions.cancel"),
+      verificationInstruction: t('general.typeToConfirm'),
+      confirmText: t('actions.delete'),
+      cancelText: t('actions.cancel')
     });
 
     if (!res) {
@@ -43,22 +36,22 @@ export const CollectionRowActions = ({
         {
           actions: [
             {
-              label: t("actions.edit"),
+              label: t('actions.edit'),
               to: `/collections/${collection.id}/edit`,
-              icon: <PencilSquare />,
-            },
-          ],
+              icon: <PencilSquare />
+            }
+          ]
         },
         {
           actions: [
             {
-              label: t("actions.delete"),
+              label: t('actions.delete'),
               onClick: handleDeleteCollection,
               icon: <Trash />,
-              disabled: !collection.id,
-            },
-          ],
-        },
+              disabled: !collection.id
+            }
+          ]
+        }
       ]}
     />
   );

@@ -1,10 +1,8 @@
-import { Button, Container, Drawer, Text } from "@medusajs/ui";
+import type { CommissionLine } from '@custom-types/commission';
+import { Button, Container, Drawer, Text } from '@medusajs/ui';
+import { useNavigate } from 'react-router-dom';
 
-import { useNavigate } from "react-router-dom";
-
-import type { CommissionLine } from "@custom-types/commission";
-
-import { formatDate } from "@/lib/date";
+import { formatDate } from '@/lib/date';
 
 type Props = {
   line?: CommissionLine;
@@ -20,7 +18,10 @@ export function CommissionLineDetail({ line, open, close }: Props) {
   }
 
   return (
-    <Drawer open={open} onOpenChange={close}>
+    <Drawer
+      open={open}
+      onOpenChange={close}
+    >
       <Drawer.Content>
         <Drawer.Header>
           <Drawer.Title>Commission line details</Drawer.Title>
@@ -30,7 +31,7 @@ export function CommissionLineDetail({ line, open, close }: Props) {
             <legend className="mb-2">Seller name</legend>
             <Container>
               <div className="flex items-center justify-between">
-                <Text>{line.order?.seller?.name ?? "-"}</Text>
+                <Text>{line.order?.seller?.name ?? '-'}</Text>
                 <Button
                   variant="secondary"
                   size="small"
@@ -46,7 +47,7 @@ export function CommissionLineDetail({ line, open, close }: Props) {
             <legend className="mt-4">Order number</legend>
             <Container>
               <div className="flex items-center justify-between">
-                <Text>{line.order?.display_id ? `#${line.order?.display_id}` : "-"}</Text>
+                <Text>{line.order?.display_id ? `#${line.order?.display_id}` : '-'}</Text>
                 <Button
                   variant="secondary"
                   size="small"
@@ -73,10 +74,10 @@ export function CommissionLineDetail({ line, open, close }: Props) {
                 <Text>{`Rule name: ${line.rule?.name ?? '-'}`}</Text>
                 <Text>{`Reference: ${line.rule?.reference ?? '-'}`}</Text>
                 <Text>{`Type: ${line.rule?.rate?.type ?? '-'}`}</Text>
-                {line.rule?.rate.type === "percentage" && (
+                {line.rule?.rate.type === 'percentage' && (
                   <>
                     <Text>{`Rate value: ${line.rule?.rate?.percentage_rate ?? '-'} ${line.rule?.rate?.percentage_rate ? '%' : ''}`}</Text>
-                    <Text>{`Include tax: ${line.rule?.rate?.include_tax ? "Yes" : "No"}`}</Text>
+                    <Text>{`Include tax: ${line.rule?.rate?.include_tax ? 'Yes' : 'No'}`}</Text>
                   </>
                 )}
                 {line.rule?.deleted_at && (

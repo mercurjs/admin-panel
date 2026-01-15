@@ -1,1 +1,1 @@
-export { AttributeCreate as Component } from "./attribute-create";
+export { AttributeCreate as Component } from './attribute-create';

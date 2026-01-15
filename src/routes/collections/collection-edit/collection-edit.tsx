@@ -1,13 +1,9 @@
-import { Heading } from "@medusajs/ui";
-
-import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
-
-import { RouteDrawer } from "@components/modals";
-
-import { useCollection } from "@hooks/api";
-
-import { EditCollectionForm } from "@routes/collections/collection-edit/components/edit-collection-form";
+import { RouteDrawer } from '@components/modals';
+import { useCollection } from '@hooks/api';
+import { Heading } from '@medusajs/ui';
+import { EditCollectionForm } from '@routes/collections/collection-edit/components/edit-collection-form';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 export const CollectionEdit = () => {
   const { id } = useParams();
@@ -21,11 +17,9 @@ export const CollectionEdit = () => {
   return (
     <RouteDrawer>
       <RouteDrawer.Header>
-        <Heading>{t("collections.editCollection")}</Heading>
+        <Heading>{t('collections.editCollection')}</Heading>
       </RouteDrawer.Header>
-      {!isLoading && collection && (
-        <EditCollectionForm collection={collection} />
-      )}
+      {!isLoading && collection && <EditCollectionForm collection={collection} />}
     </RouteDrawer>
   );
 };

@@ -1,13 +1,9 @@
-import { Heading } from "@medusajs/ui";
-
-import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
-
-import { RouteDrawer } from "@components/modals";
-
-import { useCustomerGroup } from "@hooks/api";
-
-import { EditCustomerGroupForm } from "@routes/customer-groups/customer-group-edit/components/edit-customer-group-form";
+import { RouteDrawer } from '@components/modals';
+import { useCustomerGroup } from '@hooks/api';
+import { Heading } from '@medusajs/ui';
+import { EditCustomerGroupForm } from '@routes/customer-groups/customer-group-edit/components/edit-customer-group-form';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 export const CustomerGroupEdit = () => {
   const { id } = useParams();
@@ -22,11 +18,9 @@ export const CustomerGroupEdit = () => {
   return (
     <RouteDrawer>
       <RouteDrawer.Header>
-        <Heading>{t("customerGroups.edit.header")}</Heading>
+        <Heading>{t('customerGroups.edit.header')}</Heading>
       </RouteDrawer.Header>
-      {!isLoading && customer_group && (
-        <EditCustomerGroupForm group={customer_group} />
-      )}
+      {!isLoading && customer_group && <EditCustomerGroupForm group={customer_group} />}
     </RouteDrawer>
   );
 };

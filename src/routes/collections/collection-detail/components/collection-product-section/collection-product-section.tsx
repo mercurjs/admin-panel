@@ -1,22 +1,18 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import { PencilSquare, Plus, Trash } from "@medusajs/icons";
-import type { HttpTypes } from "@medusajs/types";
-import { Checkbox, Container, Heading, toast, usePrompt } from "@medusajs/ui";
-
-import { keepPreviousData } from "@tanstack/react-query";
-import { createColumnHelper } from "@tanstack/react-table";
-import { useTranslation } from "react-i18next";
-
-import { ActionMenu } from "@components/common/action-menu";
-import { _DataTable } from "@components/table/data-table";
-
-import { useUpdateCollectionProducts } from "@hooks/api";
-import { useProducts } from "@hooks/api";
-import { useProductTableColumns } from "@hooks/table/columns";
-import { useProductTableFilters } from "@hooks/table/filters";
-import { useProductTableQuery } from "@hooks/table/query";
-import { useDataTable } from "@hooks/use-data-table";
+import { ActionMenu } from '@components/common/action-menu';
+import { _DataTable } from '@components/table/data-table';
+import { useProducts, useUpdateCollectionProducts } from '@hooks/api';
+import { useProductTableColumns } from '@hooks/table/columns';
+import { useProductTableFilters } from '@hooks/table/filters';
+import { useProductTableQuery } from '@hooks/table/query';
+import { useDataTable } from '@hooks/use-data-table';
+import { PencilSquare, Plus, Trash } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Checkbox, Container, Heading, toast, usePrompt } from '@medusajs/ui';
+import { keepPreviousData } from '@tanstack/react-query';
+import { createColumnHelper } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
 
 type CollectionProductSectionProps = {
   collection: HttpTypes.AdminCollection;
@@ -24,9 +20,7 @@ type CollectionProductSectionProps = {
 
 const PAGE_SIZE = 10;
 
-export const CollectionProductSection = ({
-  collection,
-}: CollectionProductSectionProps) => {
+export const CollectionProductSection = ({ collection }: CollectionProductSectionProps) => {
   const { t } = useTranslation();
 
   const { searchParams, raw } = useProductTableQuery({ pageSize: PAGE_SIZE });
@@ -34,27 +28,27 @@ export const CollectionProductSection = ({
     {
       limit: PAGE_SIZE,
       ...searchParams,
-      collection_id: [collection.id!],
+      collection_id: [collection.id!]
     },
     {
-      placeholderData: keepPreviousData,
-    },
+      placeholderData: keepPreviousData
+    }
   );
 
-  const filters = useProductTableFilters(["collections"]);
+  const filters = useProductTableFilters(['collections']);
   const columns = useColumns();
 
   const { table } = useDataTable({
     data: products ?? [],
     columns,
-    getRowId: (row) => row.id,
+    getRowId: row => row.id,
     count,
     enablePagination: true,
     enableRowSelection: true,
     pageSize: PAGE_SIZE,
     meta: {
-      collectionId: collection.id,
-    },
+      collectionId: collection.id
+    }
   });
 
   const prompt = usePrompt();
@@ -65,12 +59,12 @@ export const CollectionProductSection = ({
     const ids = Object.keys(selection);
 
     const res = await prompt({
-      title: t("general.areYouSure"),
-      description: t("collections.removeProductsWarning", {
-        count: ids.length,
+      title: t('general.areYouSure'),
+      description: t('collections.removeProductsWarning', {
+        count: ids.length
       }),
-      confirmText: t("actions.remove"),
-      cancelText: t("actions.cancel"),
+      confirmText: t('actions.remove'),
+      cancelText: t('actions.cancel')
     });
 
     if (!res) {
@@ -79,20 +73,20 @@ export const CollectionProductSection = ({
 
     await mutateAsync(
       {
-        remove: ids,
+        remove: ids
       },
       {
         onSuccess: () => {
           toast.success(
-            t("collections.products.remove.successToast", {
-              count: ids.length,
-            }),
+            t('collections.products.remove.successToast', {
+              count: ids.length
+            })
           );
         },
-        onError: (e) => {
+        onError: e => {
           toast.error(e.message);
-        },
-      },
+        }
+      }
     );
   };
 
@@ -103,18 +97,18 @@ export const CollectionProductSection = ({
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">{t("products.domain")}</Heading>
+        <Heading level="h2">{t('products.domain')}</Heading>
         <ActionMenu
           groups={[
             {
               actions: [
                 {
                   icon: <Plus />,
-                  label: t("actions.add"),
-                  to: "products",
-                },
-              ],
-            },
+                  label: t('actions.add'),
+                  to: 'products'
+                }
+              ]
+            }
           ]}
         />
       </div>
@@ -129,20 +123,20 @@ export const CollectionProductSection = ({
         filters={filters}
         isLoading={isLoading}
         orderBy={[
-          { key: "title", label: t("fields.title") },
-          { key: "created_at", label: t("fields.createdAt") },
-          { key: "updated_at", label: t("fields.updatedAt") },
+          { key: 'title', label: t('fields.title') },
+          { key: 'created_at', label: t('fields.createdAt') },
+          { key: 'updated_at', label: t('fields.updatedAt') }
         ]}
         queryObject={raw}
         commands={[
           {
             action: handleRemove,
-            label: t("actions.remove"),
-            shortcut: "r",
-          },
+            label: t('actions.remove'),
+            shortcut: 'r'
+          }
         ]}
         noRecords={{
-          message: t("collections.products.list.noRecordsMessage"),
+          message: t('collections.products.list.noRecordsMessage')
         }}
       />
     </Container>
@@ -151,7 +145,7 @@ export const CollectionProductSection = ({
 
 const ProductActions = ({
   product,
-  collectionId,
+  collectionId
 }: {
   product: HttpTypes.AdminProduct;
   collectionId: string;
@@ -162,12 +156,12 @@ const ProductActions = ({
 
   const handleRemove = async () => {
     const res = await prompt({
-      title: t("general.areYouSure"),
-      description: t("collections.removeSingleProductWarning", {
-        title: product.title,
+      title: t('general.areYouSure'),
+      description: t('collections.removeSingleProductWarning', {
+        title: product.title
       }),
-      confirmText: t("actions.remove"),
-      cancelText: t("actions.cancel"),
+      confirmText: t('actions.remove'),
+      cancelText: t('actions.cancel')
     });
 
     if (!res) {
@@ -176,20 +170,20 @@ const ProductActions = ({
 
     await mutateAsync(
       {
-        remove: [product.id],
+        remove: [product.id]
       },
       {
         onSuccess: () => {
           toast.success(
-            t("collections.products.remove.successToast", {
-              count: 1,
-            }),
+            t('collections.products.remove.successToast', {
+              count: 1
+            })
           );
         },
-        onError: (e) => {
+        onError: e => {
           toast.error(e.message);
-        },
-      },
+        }
+      }
     );
   };
 
@@ -200,20 +194,20 @@ const ProductActions = ({
           actions: [
             {
               icon: <PencilSquare />,
-              label: t("actions.edit"),
-              to: `/products/${product.id}/edit`,
-            },
-          ],
+              label: t('actions.edit'),
+              to: `/products/${product.id}/edit`
+            }
+          ]
         },
         {
           actions: [
             {
               icon: <Trash />,
-              label: t("actions.remove"),
-              onClick: handleRemove,
-            },
-          ],
-        },
+              label: t('actions.remove'),
+              onClick: handleRemove
+            }
+          ]
+        }
       ]}
     />
   );
@@ -227,18 +221,16 @@ const useColumns = () => {
   return useMemo(
     () => [
       columnHelper.display({
-        id: "select",
+        id: 'select',
         header: ({ table }) => {
           return (
             <Checkbox
               checked={
                 table.getIsSomePageRowsSelected()
-                  ? "indeterminate"
+                  ? 'indeterminate'
                   : table.getIsAllPageRowsSelected()
               }
-              onCheckedChange={(value) =>
-                table.toggleAllPageRowsSelected(!!value)
-              }
+              onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
             />
           );
         },
@@ -246,17 +238,17 @@ const useColumns = () => {
           return (
             <Checkbox
               checked={row.getIsSelected()}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              onClick={(e) => {
+              onCheckedChange={value => row.toggleSelected(!!value)}
+              onClick={e => {
                 e.stopPropagation();
               }}
             />
           );
-        },
+        }
       }),
       ...columns,
       columnHelper.display({
-        id: "actions",
+        id: 'actions',
         cell: ({ row, table }) => {
           const { collectionId } = table.options.meta as {
             collectionId: string;
@@ -268,9 +260,9 @@ const useColumns = () => {
               collectionId={collectionId}
             />
           );
-        },
-      }),
+        }
+      })
     ],
-    [columns],
+    [columns]
   );
 };

@@ -1,55 +1,47 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState } from 'react';
 
-import { Badge } from "@medusajs/ui";
+import type { UniqueIdentifier } from '@dnd-kit/core';
+import { useProductCategories } from '@hooks/api';
+import { Badge } from '@medusajs/ui';
+import { CategoryTree } from '@routes/categories/common/components/category-tree';
+import type { CategoryTreeItem } from '@routes/categories/common/types.ts';
+import { insertCategoryTreeItem } from '@routes/categories/common/utils.ts';
+import { useWatch, type UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
-import type { UniqueIdentifier } from "@dnd-kit/core";
-import type { UseFormReturn } from "react-hook-form";
-import { useWatch } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-
-import { useProductCategories } from "@hooks/api";
-
-import { CategoryTree } from "@routes/categories/common/components/category-tree";
-import type { CategoryTreeItem } from "@routes/categories/common/types.ts";
-import { insertCategoryTreeItem } from "@routes/categories/common/utils.ts";
-
-import type { CreateCategorySchema } from "./schema";
+import type { CreateCategorySchema } from './schema';
 
 type CreateCategoryNestingProps = {
   form: UseFormReturn<CreateCategorySchema>;
   shouldFreeze?: boolean;
 };
 
-const ID = "new-item";
+const ID = 'new-item';
 
-export const CreateCategoryNesting = ({
-  form,
-  shouldFreeze,
-}: CreateCategoryNestingProps) => {
+export const CreateCategoryNesting = ({ form, shouldFreeze }: CreateCategoryNestingProps) => {
   const { t } = useTranslation();
   const [snapshot, setSnapshot] = useState<CategoryTreeItem[]>([]);
 
-  const { product_categories, isPending, isError, error } =
-    useProductCategories({
-      parent_category_id: "null",
-      limit: 9999,
-      fields: "id,name,parent_category_id,rank,category_children,rank",
-      include_descendants_tree: true,
-    });
+  const { product_categories, isPending, isError, error } = useProductCategories({
+    parent_category_id: 'null',
+    limit: 9999,
+    fields: 'id,name,parent_category_id,rank,category_children,rank',
+    include_descendants_tree: true
+  });
 
   const parentCategoryId = useWatch({
     control: form.control,
-    name: "parent_category_id",
+    name: 'parent_category_id'
   });
 
   const watchedRank = useWatch({
     control: form.control,
-    name: "rank",
+    name: 'rank'
   });
 
   const watchedName = useWatch({
     control: form.control,
-    name: "name",
+    name: 'name'
   });
 
   const value = useMemo(() => {
@@ -58,7 +50,7 @@ export const CreateCategoryNesting = ({
       name: watchedName,
       parent_category_id: parentCategoryId,
       rank: watchedRank,
-      category_children: null,
+      category_children: null
     };
 
     return insertCategoryTreeItem(product_categories ?? [], temp);
@@ -67,22 +59,22 @@ export const CreateCategoryNesting = ({
   const handleChange = (
     {
       parentId,
-      index,
+      index
     }: {
       id: UniqueIdentifier;
       parentId: UniqueIdentifier | null;
       index: number;
     },
-    list: CategoryTreeItem[],
+    list: CategoryTreeItem[]
   ) => {
-    form.setValue("parent_category_id", parentId as string | null, {
+    form.setValue('parent_category_id', parentId as string | null, {
       shouldDirty: true,
-      shouldTouch: true,
+      shouldTouch: true
     });
 
-    form.setValue("rank", index, {
+    form.setValue('rank', index, {
       shouldDirty: true,
-      shouldTouch: true,
+      shouldTouch: true
     });
 
     setSnapshot(list);
@@ -97,15 +89,18 @@ export const CreateCategoryNesting = ({
   return (
     <CategoryTree
       value={shouldFreeze ? snapshot : value}
-      enableDrag={(item) => item.id === ID}
+      enableDrag={item => item.id === ID}
       onChange={handleChange}
-      renderValue={(item) => {
+      renderValue={item => {
         if (item.id === ID) {
           return (
             <div className="flex items-center gap-x-3">
               <span>{item.name}</span>
-              <Badge size="2xsmall" color="blue">
-                {t("categories.fields.new.label")}
+              <Badge
+                size="2xsmall"
+                color="blue"
+              >
+                {t('categories.fields.new.label')}
               </Badge>
             </div>
           );

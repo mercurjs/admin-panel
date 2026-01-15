@@ -1,8 +1,6 @@
-import { SingleColumnPage } from "@components/layout/pages";
-
-import { CustomerListTable } from "@routes/customers/customer-list/components/customer-list-table";
-
-import { useExtension } from "@providers/extension-provider";
+import { SingleColumnPage } from '@components/layout/pages';
+import { useExtension } from '@providers/extension-provider';
+import { CustomerListTable } from '@routes/customers/customer-list/components/customer-list-table';
 
 export const CustomersList = () => {
   const { getWidgets } = useExtension();
@@ -10,8 +8,8 @@ export const CustomersList = () => {
   return (
     <SingleColumnPage
       widgets={{
-        after: getWidgets("customer.list.after"),
-        before: getWidgets("customer.list.before"),
+        after: getWidgets('customer.list.after'),
+        before: getWidgets('customer.list.before')
       }}
     >
       <CustomerListTable />

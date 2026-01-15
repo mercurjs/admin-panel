@@ -1,50 +1,45 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import { ArrowPath } from "@medusajs/icons";
-import type { HttpTypes } from "@medusajs/types";
-import { Container, Heading } from "@medusajs/ui";
-
-import { keepPreviousData } from "@tanstack/react-query";
-import { createColumnHelper } from "@tanstack/react-table";
-import { useTranslation } from "react-i18next";
-
-import { ActionMenu } from "@components/common/action-menu";
-import { _DataTable } from "@components/table/data-table";
-
-import { useOrders } from "@hooks/api";
-import { useOrderTableColumns } from "@hooks/table/columns";
-import { useOrderTableFilters } from "@hooks/table/filters";
-import { useOrderTableQuery } from "@hooks/table/query";
-import { useDataTable } from "@hooks/use-data-table";
+import { ActionMenu } from '@components/common/action-menu';
+import { _DataTable } from '@components/table/data-table';
+import { useOrders } from '@hooks/api';
+import { useOrderTableColumns } from '@hooks/table/columns';
+import { useOrderTableFilters } from '@hooks/table/filters';
+import { useOrderTableQuery } from '@hooks/table/query';
+import { useDataTable } from '@hooks/use-data-table';
+import { ArrowPath } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Container, Heading } from '@medusajs/ui';
+import { keepPreviousData } from '@tanstack/react-query';
+import { createColumnHelper } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
 
 type CustomerGeneralSectionProps = {
   customer: HttpTypes.AdminCustomer;
 };
 
-const PREFIX = "cusord";
+const PREFIX = 'cusord';
 const PAGE_SIZE = 10;
-const DEFAULT_RELATIONS = "*customer,*items,*sales_channel";
+const DEFAULT_RELATIONS = '*customer,*items,*sales_channel';
 const DEFAULT_FIELDS =
-  "id,status,display_id,created_at,email,fulfillment_status,payment_status,total,currency_code";
+  'id,status,display_id,created_at,email,fulfillment_status,payment_status,total,currency_code';
 
-export const CustomerOrderSection = ({
-  customer,
-}: CustomerGeneralSectionProps) => {
+export const CustomerOrderSection = ({ customer }: CustomerGeneralSectionProps) => {
   const { t } = useTranslation();
 
   const { searchParams, raw } = useOrderTableQuery({
     pageSize: PAGE_SIZE,
-    prefix: PREFIX,
+    prefix: PREFIX
   });
   const { orders, count, isLoading, isError, error } = useOrders(
     {
       customer_id: customer.id,
-      fields: DEFAULT_FIELDS + "," + DEFAULT_RELATIONS,
-      ...searchParams,
+      fields: DEFAULT_FIELDS + ',' + DEFAULT_RELATIONS,
+      ...searchParams
     },
     {
-      placeholderData: keepPreviousData,
-    },
+      placeholderData: keepPreviousData
+    }
   );
 
   const columns = useColumns();
@@ -56,7 +51,7 @@ export const CustomerOrderSection = ({
     enablePagination: true,
     count,
     pageSize: PAGE_SIZE,
-    prefix: PREFIX,
+    prefix: PREFIX
   });
 
   if (isError) {
@@ -64,9 +59,20 @@ export const CustomerOrderSection = ({
   }
 
   return (
-    <Container className="divide-y p-0" data-testid="customer-order-section">
-      <div className="flex items-center justify-between px-6 py-4" data-testid="customer-order-section-header">
-        <Heading level="h2" data-testid="customer-order-section-heading">{t("orders.domain")}</Heading>
+    <Container
+      className="divide-y p-0"
+      data-testid="customer-order-section"
+    >
+      <div
+        className="flex items-center justify-between px-6 py-4"
+        data-testid="customer-order-section-header"
+      >
+        <Heading
+          level="h2"
+          data-testid="customer-order-section-heading"
+        >
+          {t('orders.domain')}
+        </Heading>
         {/*TODO: ENABLE WHEN DRAFT ORDERS ARE DONE*/}
         {/*<div className="flex items-center gap-x-2">*/}
         {/*  <Button size="small" variant="secondary">*/}
@@ -78,15 +84,15 @@ export const CustomerOrderSection = ({
         columns={columns}
         table={table}
         pagination
-        navigateTo={(row) => `/orders/${row.original.id}`}
+        navigateTo={row => `/orders/${row.original.id}`}
         filters={filters}
         count={count}
         isLoading={isLoading}
         pageSize={PAGE_SIZE}
         orderBy={[
-          { key: "display_id", label: t("orders.fields.displayId") },
-          { key: "created_at", label: t("fields.createdAt") },
-          { key: "updated_at", label: t("fields.updatedAt") },
+          { key: 'display_id', label: t('orders.fields.displayId') },
+          { key: 'created_at', label: t('fields.createdAt') },
+          { key: 'updated_at', label: t('fields.updatedAt') }
         ]}
         search={true}
         queryObject={raw}
@@ -106,12 +112,12 @@ const CustomerOrderActions = ({ order }: { order: HttpTypes.AdminOrder }) => {
         {
           actions: [
             {
-              label: t("transferOwnership.label"),
+              label: t('transferOwnership.label'),
               to: `${order.id}/transfer`,
-              icon: <ArrowPath />,
-            },
-          ],
-        },
+              icon: <ArrowPath />
+            }
+          ]
+        }
       ]}
     />
   );
@@ -120,16 +126,16 @@ const CustomerOrderActions = ({ order }: { order: HttpTypes.AdminOrder }) => {
 const columnHelper = createColumnHelper<HttpTypes.AdminOrder>();
 
 const useColumns = () => {
-  const base = useOrderTableColumns({ exclude: ["customer"] });
+  const base = useOrderTableColumns({ exclude: ['customer'] });
 
   return useMemo(
     () => [
       ...base,
       columnHelper.display({
-        id: "actions",
-        cell: ({ row }) => <CustomerOrderActions order={row.original} />,
-      }),
+        id: 'actions',
+        cell: ({ row }) => <CustomerOrderActions order={row.original} />
+      })
     ],
-    [base],
+    [base]
   );
 };

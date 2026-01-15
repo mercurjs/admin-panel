@@ -1,8 +1,6 @@
-import { SingleColumnPage } from "@components/layout/pages";
-
-import { CategoryListTable } from "@routes/categories/category-list/components/category-list-table";
-
-import { useExtension } from "@providers/extension-provider";
+import { SingleColumnPage } from '@components/layout/pages';
+import { useExtension } from '@providers/extension-provider';
+import { CategoryListTable } from '@routes/categories/category-list/components/category-list-table';
 
 export const CategoryList = () => {
   const { getWidgets } = useExtension();
@@ -10,8 +8,8 @@ export const CategoryList = () => {
   return (
     <SingleColumnPage
       widgets={{
-        after: getWidgets("product_category.list.after"),
-        before: getWidgets("product_category.list.before"),
+        after: getWidgets('product_category.list.after'),
+        before: getWidgets('product_category.list.before')
       }}
       hasOutlet
     >

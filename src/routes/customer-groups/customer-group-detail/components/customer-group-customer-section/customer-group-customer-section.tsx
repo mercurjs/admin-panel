@@ -1,23 +1,18 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState } from 'react';
 
-import { PencilSquare, Trash } from "@medusajs/icons";
-import type { HttpTypes } from "@medusajs/types";
-import { Button, Checkbox, Container, Heading, usePrompt } from "@medusajs/ui";
-
-import type { RowSelectionState } from "@tanstack/react-table";
-import { createColumnHelper } from "@tanstack/react-table";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-
-import { ActionMenu } from "@components/common/action-menu";
-import { _DataTable } from "@components/table/data-table";
-
-import { useRemoveCustomersFromGroup } from "@hooks/api";
-import { useCustomers } from "@hooks/api";
-import { useCustomerTableColumns } from "@hooks/table/columns";
-import { useCustomerTableFilters } from "@hooks/table/filters";
-import { useCustomerTableQuery } from "@hooks/table/query";
-import { useDataTable } from "@hooks/use-data-table.tsx";
+import { ActionMenu } from '@components/common/action-menu';
+import { _DataTable } from '@components/table/data-table';
+import { useCustomers, useRemoveCustomersFromGroup } from '@hooks/api';
+import { useCustomerTableColumns } from '@hooks/table/columns';
+import { useCustomerTableFilters } from '@hooks/table/filters';
+import { useCustomerTableQuery } from '@hooks/table/query';
+import { useDataTable } from '@hooks/use-data-table.tsx';
+import { PencilSquare, Trash } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Button, Checkbox, Container, Heading, usePrompt } from '@medusajs/ui';
+import { createColumnHelper, type RowSelectionState } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 type CustomerGroupCustomerSectionProps = {
   group: HttpTypes.AdminCustomerGroup;
@@ -25,9 +20,7 @@ type CustomerGroupCustomerSectionProps = {
 
 const PAGE_SIZE = 10;
 
-export const CustomerGroupCustomerSection = ({
-  group,
-}: CustomerGroupCustomerSectionProps) => {
+export const CustomerGroupCustomerSection = ({ group }: CustomerGroupCustomerSectionProps) => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const { t } = useTranslation();
   const prompt = usePrompt();
@@ -35,27 +28,27 @@ export const CustomerGroupCustomerSection = ({
   const { searchParams, raw } = useCustomerTableQuery({ pageSize: PAGE_SIZE });
   const { customers, count, isLoading, isError, error } = useCustomers({
     ...searchParams,
-    groups: group.id,
+    groups: group.id
   });
 
   const columns = useColumns();
-  const filters = useCustomerTableFilters(["groups"]);
+  const filters = useCustomerTableFilters(['groups']);
 
   const { table } = useDataTable({
     data: customers ?? [],
     columns,
     count,
-    getRowId: (row) => row.id,
+    getRowId: row => row.id,
     enablePagination: true,
     enableRowSelection: true,
     pageSize: PAGE_SIZE,
     rowSelection: {
       state: rowSelection,
-      updater: setRowSelection,
+      updater: setRowSelection
     },
     meta: {
-      customerGroupId: group.id,
-    },
+      customerGroupId: group.id
+    }
   });
 
   if (isError) {
@@ -68,14 +61,14 @@ export const CustomerGroupCustomerSection = ({
     const keys = Object.keys(rowSelection);
 
     const res = await prompt({
-      title: t("customerGroups.customers.remove.title", {
-        count: keys.length,
+      title: t('customerGroups.customers.remove.title', {
+        count: keys.length
       }),
-      description: t("customerGroups.customers.remove.description", {
-        count: keys.length,
+      description: t('customerGroups.customers.remove.description', {
+        count: keys.length
       }),
-      confirmText: t("actions.continue"),
-      cancelText: t("actions.cancel"),
+      confirmText: t('actions.continue'),
+      cancelText: t('actions.cancel')
     });
 
     if (!res) {
@@ -85,17 +78,35 @@ export const CustomerGroupCustomerSection = ({
     await mutateAsync(keys, {
       onSuccess: () => {
         setRowSelection({});
-      },
+      }
     });
   };
 
   return (
-    <Container className="divide-y p-0" data-testid="customer-group-customer-section">
-      <div className="flex items-center justify-between px-6 py-4" data-testid="customer-group-customer-section-header">
-        <Heading level="h2" data-testid="customer-group-customer-section-heading">{t("customers.domain")}</Heading>
-        <Link to={`/customer-groups/${group.id}/add-customers`} data-testid="customer-group-customer-section-add-link">
-          <Button variant="secondary" size="small" data-testid="customer-group-customer-section-add-button">
-            {t("general.add")}
+    <Container
+      className="divide-y p-0"
+      data-testid="customer-group-customer-section"
+    >
+      <div
+        className="flex items-center justify-between px-6 py-4"
+        data-testid="customer-group-customer-section-header"
+      >
+        <Heading
+          level="h2"
+          data-testid="customer-group-customer-section-heading"
+        >
+          {t('customers.domain')}
+        </Heading>
+        <Link
+          to={`/customer-groups/${group.id}/add-customers`}
+          data-testid="customer-group-customer-section-add-link"
+        >
+          <Button
+            variant="secondary"
+            size="small"
+            data-testid="customer-group-customer-section-add-button"
+          >
+            {t('general.add')}
           </Button>
         </Link>
       </div>
@@ -105,28 +116,28 @@ export const CustomerGroupCustomerSection = ({
         pageSize={PAGE_SIZE}
         isLoading={isLoading}
         count={count}
-        navigateTo={(row) => `/customers/${row.id}`}
+        navigateTo={row => `/customers/${row.id}`}
         filters={filters}
         search
         pagination
         orderBy={[
-          { key: "email", label: t("fields.email") },
-          { key: "first_name", label: t("fields.firstName") },
-          { key: "last_name", label: t("fields.lastName") },
-          { key: "has_account", label: t("customers.hasAccount") },
-          { key: "created_at", label: t("fields.createdAt") },
-          { key: "updated_at", label: t("fields.updatedAt") },
+          { key: 'email', label: t('fields.email') },
+          { key: 'first_name', label: t('fields.firstName') },
+          { key: 'last_name', label: t('fields.lastName') },
+          { key: 'has_account', label: t('customers.hasAccount') },
+          { key: 'created_at', label: t('fields.createdAt') },
+          { key: 'updated_at', label: t('fields.updatedAt') }
         ]}
         queryObject={raw}
         commands={[
           {
             action: handleRemove,
-            label: t("actions.remove"),
-            shortcut: "r",
-          },
+            label: t('actions.remove'),
+            shortcut: 'r'
+          }
         ]}
         noRecords={{
-          message: t("customerGroups.customers.list.noRecordsMessage"),
+          message: t('customerGroups.customers.list.noRecordsMessage')
         }}
       />
     </Container>
@@ -135,7 +146,7 @@ export const CustomerGroupCustomerSection = ({
 
 const CustomerActions = ({
   customer,
-  customerGroupId,
+  customerGroupId
 }: {
   customer: HttpTypes.AdminCustomer;
   customerGroupId: string;
@@ -147,14 +158,14 @@ const CustomerActions = ({
 
   const handleRemove = async () => {
     const res = await prompt({
-      title: t("customerGroups.customers.remove.title", {
-        count: 1,
+      title: t('customerGroups.customers.remove.title', {
+        count: 1
       }),
-      description: t("customerGroups.customers.remove.description", {
-        count: 1,
+      description: t('customerGroups.customers.remove.description', {
+        count: 1
       }),
-      confirmText: t("actions.continue"),
-      cancelText: t("actions.cancel"),
+      confirmText: t('actions.continue'),
+      cancelText: t('actions.cancel')
     });
 
     if (!res) {
@@ -172,20 +183,20 @@ const CustomerActions = ({
           actions: [
             {
               icon: <PencilSquare />,
-              label: t("actions.edit"),
-              to: `/customers/${customer.id}/edit`,
-            },
-          ],
+              label: t('actions.edit'),
+              to: `/customers/${customer.id}/edit`
+            }
+          ]
         },
         {
           actions: [
             {
               icon: <Trash />,
-              label: t("actions.remove"),
-              onClick: handleRemove,
-            },
-          ],
-        },
+              label: t('actions.remove'),
+              onClick: handleRemove
+            }
+          ]
+        }
       ]}
     />
   );
@@ -199,18 +210,16 @@ const useColumns = () => {
   return useMemo(
     () => [
       columnHelper.display({
-        id: "select",
+        id: 'select',
         header: ({ table }) => {
           return (
             <Checkbox
               checked={
                 table.getIsSomePageRowsSelected()
-                  ? "indeterminate"
+                  ? 'indeterminate'
                   : table.getIsAllPageRowsSelected()
               }
-              onCheckedChange={(value) =>
-                table.toggleAllPageRowsSelected(!!value)
-              }
+              onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
             />
           );
         },
@@ -218,17 +227,17 @@ const useColumns = () => {
           return (
             <Checkbox
               checked={row.getIsSelected()}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              onClick={(e) => {
+              onCheckedChange={value => row.toggleSelected(!!value)}
+              onClick={e => {
                 e.stopPropagation();
               }}
             />
           );
-        },
+        }
       }),
       ...columns,
       columnHelper.display({
-        id: "actions",
+        id: 'actions',
         cell: ({ row, table }) => {
           const { customerGroupId } = table.options.meta as {
             customerGroupId: string;
@@ -240,9 +249,9 @@ const useColumns = () => {
               customerGroupId={customerGroupId}
             />
           );
-        },
-      }),
+        }
+      })
     ],
-    [columns],
+    [columns]
   );
 };

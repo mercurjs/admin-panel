@@ -1,41 +1,36 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState } from 'react';
 
-import type { HttpTypes } from "@medusajs/types";
-import { Button, Checkbox, Hint, Tooltip, toast } from "@medusajs/ui";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { createColumnHelper } from "@tanstack/react-table";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { z } from "zod";
-
-import { RouteFocusModal, useRouteModal } from "@components/modals";
-import { _DataTable } from "@components/table/data-table";
-import { KeyboundForm } from "@components/utilities/keybound-form";
-
-import { useUpdateProductCategoryProducts } from "@hooks/api";
-import { useProducts } from "@hooks/api";
-import { useProductTableColumns } from "@hooks/table/columns";
-import { useProductTableFilters } from "@hooks/table/filters";
-import { useProductTableQuery } from "@hooks/table/query";
-import { useDataTable } from "@hooks/use-data-table";
+import { RouteFocusModal, useRouteModal } from '@components/modals';
+import { _DataTable } from '@components/table/data-table';
+import { KeyboundForm } from '@components/utilities/keybound-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useProducts, useUpdateProductCategoryProducts } from '@hooks/api';
+import { useProductTableColumns } from '@hooks/table/columns';
+import { useProductTableFilters } from '@hooks/table/filters';
+import { useProductTableQuery } from '@hooks/table/query';
+import { useDataTable } from '@hooks/use-data-table';
+import type { HttpTypes } from '@medusajs/types';
+import { Button, Checkbox, Hint, toast, Tooltip } from '@medusajs/ui';
+import { createColumnHelper, type OnChangeFn, type RowSelectionState } from '@tanstack/react-table';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
 type EditCategoryProductsFormProps = {
   categoryId: string;
-  products?: Pick<HttpTypes.AdminProduct, "id">[];
+  products?: Pick<HttpTypes.AdminProduct, 'id'>[];
 };
 
 const EditCategoryProductsSchema = z.object({
-  product_ids: z.array(z.string()),
+  product_ids: z.array(z.string())
 });
 
 const PAGE_SIZE = 50;
-const PREFIX = "p";
+const PREFIX = 'p';
 
 export const EditCategoryProductsForm = ({
   categoryId,
-  products = [],
+  products = []
 }: EditCategoryProductsFormProps) => {
   const { t } = useTranslation();
   const { handleSuccess } = useRouteModal();
@@ -45,25 +40,22 @@ export const EditCategoryProductsForm = ({
       acc[p.id!] = true;
 
       return acc;
-    }, {} as RowSelectionState),
+    }, {} as RowSelectionState)
   );
 
   const form = useForm<z.infer<typeof EditCategoryProductsSchema>>({
     defaultValues: {
-      product_ids: [],
+      product_ids: []
     },
-    resolver: zodResolver(EditCategoryProductsSchema),
+    resolver: zodResolver(EditCategoryProductsSchema)
   });
 
-  const updater: OnChangeFn<RowSelectionState> = (newSelection) => {
-    const value =
-      typeof newSelection === "function"
-        ? newSelection(selection)
-        : newSelection;
+  const updater: OnChangeFn<RowSelectionState> = newSelection => {
+    const value = typeof newSelection === 'function' ? newSelection(selection) : newSelection;
 
-    form.setValue("product_ids", Object.keys(value), {
+    form.setValue('product_ids', Object.keys(value), {
       shouldDirty: true,
-      shouldTouch: true,
+      shouldTouch: true
     });
 
     setSelection(value);
@@ -71,7 +63,7 @@ export const EditCategoryProductsForm = ({
 
   const { searchParams, raw } = useProductTableQuery({
     pageSize: PAGE_SIZE,
-    prefix: PREFIX,
+    prefix: PREFIX
   });
 
   const {
@@ -79,53 +71,52 @@ export const EditCategoryProductsForm = ({
     count,
     isPending,
     isError,
-    error,
+    error
   } = useProducts({
-    ...searchParams,
+    ...searchParams
   });
 
   const columns = useColumns();
-  const filters = useProductTableFilters(["categories"]);
+  const filters = useProductTableFilters(['categories']);
 
   const { table } = useDataTable({
     data,
     columns,
-    getRowId: (original) => original.id,
+    getRowId: original => original.id,
     count,
     pageSize: PAGE_SIZE,
     prefix: PREFIX,
-    enableRowSelection: (row) => {
-      return !products.some((p) => p.id === row.original.id);
+    enableRowSelection: row => {
+      return !products.some(p => p.id === row.original.id);
     },
     enablePagination: true,
     rowSelection: {
       state: selection,
-      updater,
-    },
+      updater
+    }
   });
 
-  const { mutateAsync, isPending: isMutating } =
-    useUpdateProductCategoryProducts(categoryId);
+  const { mutateAsync, isPending: isMutating } = useUpdateProductCategoryProducts(categoryId);
 
-  const handleSubmit = form.handleSubmit(async (data) => {
+  const handleSubmit = form.handleSubmit(async data => {
     await mutateAsync(
       {
-        add: data.product_ids,
+        add: data.product_ids
       },
       {
         onSuccess: () => {
           toast.success(
-            t("categories.products.add.successToast", {
-              count: data.product_ids.length - products.length,
-            }),
+            t('categories.products.add.successToast', {
+              count: data.product_ids.length - products.length
+            })
           );
 
           handleSuccess();
         },
-        onError: (error) => {
+        onError: error => {
           toast.error(error.message);
-        },
-      },
+        }
+      }
     );
   });
 
@@ -142,9 +133,7 @@ export const EditCategoryProductsForm = ({
         <RouteFocusModal.Header>
           <div className="flex items-center justify-end gap-x-2">
             {form.formState.errors.product_ids && (
-              <Hint variant="error">
-                {form.formState.errors.product_ids.message}
-              </Hint>
+              <Hint variant="error">{form.formState.errors.product_ids.message}</Hint>
             )}
           </div>
         </RouteFocusModal.Header>
@@ -157,9 +146,9 @@ export const EditCategoryProductsForm = ({
             queryObject={raw}
             filters={filters}
             orderBy={[
-              { key: "title", label: t("fields.title") },
-              { key: "created_at", label: t("fields.createdAt") },
-              { key: "updated_at", label: t("fields.updatedAt") },
+              { key: 'title', label: t('fields.title') },
+              { key: 'created_at', label: t('fields.createdAt') },
+              { key: 'updated_at', label: t('fields.updatedAt') }
             ]}
             prefix={PREFIX}
             isLoading={isPending}
@@ -170,12 +159,19 @@ export const EditCategoryProductsForm = ({
         </RouteFocusModal.Body>
         <RouteFocusModal.Footer>
           <RouteFocusModal.Close asChild>
-            <Button size="small" variant="secondary">
-              {t("actions.cancel")}
+            <Button
+              size="small"
+              variant="secondary"
+            >
+              {t('actions.cancel')}
             </Button>
           </RouteFocusModal.Close>
-          <Button size="small" type="submit" isLoading={isMutating}>
-            {t("actions.save")}
+          <Button
+            size="small"
+            type="submit"
+            isLoading={isMutating}
+          >
+            {t('actions.save')}
           </Button>
         </RouteFocusModal.Footer>
       </KeyboundForm>
@@ -192,18 +188,16 @@ const useColumns = () => {
   return useMemo(
     () => [
       columnHelper.display({
-        id: "select",
+        id: 'select',
         header: ({ table }) => {
           return (
             <Checkbox
               checked={
                 table.getIsSomePageRowsSelected()
-                  ? "indeterminate"
+                  ? 'indeterminate'
                   : table.getIsAllPageRowsSelected()
               }
-              onCheckedChange={(value) =>
-                table.toggleAllPageRowsSelected(!!value)
-              }
+              onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
             />
           );
         },
@@ -215,8 +209,8 @@ const useColumns = () => {
             <Checkbox
               checked={isSelected}
               disabled={isPreSelected}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              onClick={(e) => {
+              onCheckedChange={value => row.toggleSelected(!!value)}
+              onClick={e => {
                 e.stopPropagation();
               }}
             />
@@ -225,7 +219,7 @@ const useColumns = () => {
           if (isPreSelected) {
             return (
               <Tooltip
-                content={t("categories.products.add.disabledTooltip")}
+                content={t('categories.products.add.disabledTooltip')}
                 side="right"
               >
                 {Component}
@@ -234,10 +228,10 @@ const useColumns = () => {
           }
 
           return Component;
-        },
+        }
       }),
-      ...base,
+      ...base
     ],
-    [t, base],
+    [t, base]
   );
 };

@@ -1,23 +1,18 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState } from 'react';
 
-import { PencilSquare, Trash } from "@medusajs/icons";
-import type { AdminCampaign, AdminPromotion } from "@medusajs/types";
-import { Button, Checkbox, Container, Heading, usePrompt } from "@medusajs/ui";
-
-import type { RowSelectionState } from "@tanstack/react-table";
-import { createColumnHelper } from "@tanstack/react-table";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-
-import { ActionMenu } from "@components/common/action-menu";
-import { _DataTable } from "@components/table/data-table";
-
-import { useAddOrRemoveCampaignPromotions } from "@hooks/api";
-import { usePromotions } from "@hooks/api";
-import { usePromotionTableColumns } from "@hooks/table/columns/use-promotion-table-columns";
-import { usePromotionTableFilters } from "@hooks/table/filters";
-import { usePromotionTableQuery } from "@hooks/table/query/use-promotion-table-query";
-import { useDataTable } from "@hooks/use-data-table";
+import { ActionMenu } from '@components/common/action-menu';
+import { _DataTable } from '@components/table/data-table';
+import { useAddOrRemoveCampaignPromotions, usePromotions } from '@hooks/api';
+import { usePromotionTableColumns } from '@hooks/table/columns/use-promotion-table-columns';
+import { usePromotionTableFilters } from '@hooks/table/filters';
+import { usePromotionTableQuery } from '@hooks/table/query/use-promotion-table-query';
+import { useDataTable } from '@hooks/use-data-table';
+import { PencilSquare, Trash } from '@medusajs/icons';
+import type { AdminCampaign, AdminPromotion } from '@medusajs/types';
+import { Button, Checkbox, Container, Heading, usePrompt } from '@medusajs/ui';
+import { createColumnHelper, type RowSelectionState } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 type CampaignPromotionSectionProps = {
   campaign: AdminCampaign;
@@ -25,9 +20,7 @@ type CampaignPromotionSectionProps = {
 
 const PAGE_SIZE = 10;
 
-export const CampaignPromotionSection = ({
-  campaign,
-}: CampaignPromotionSectionProps) => {
+export const CampaignPromotionSection = ({ campaign }: CampaignPromotionSectionProps) => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const { t } = useTranslation();
   const prompt = usePrompt();
@@ -36,22 +29,22 @@ export const CampaignPromotionSection = ({
   const { searchParams, raw } = usePromotionTableQuery({ pageSize: PAGE_SIZE });
   const { promotions, count, isLoading, isError, error } = usePromotions({
     ...searchParams,
-    campaign_id: campaign.id,
+    campaign_id: campaign.id
   });
 
   const { table } = useDataTable({
     data: promotions ?? [],
     columns,
     count,
-    getRowId: (row) => row.id,
+    getRowId: row => row.id,
     enablePagination: true,
     enableRowSelection: true,
     pageSize: PAGE_SIZE,
     rowSelection: {
       state: rowSelection,
-      updater: setRowSelection,
+      updater: setRowSelection
     },
-    meta: { campaignId: campaign.id },
+    meta: { campaignId: campaign.id }
   });
 
   if (isError) {
@@ -64,31 +57,43 @@ export const CampaignPromotionSection = ({
     const keys = Object.keys(rowSelection);
 
     const res = await prompt({
-      title: t("campaigns.promotions.remove.title", { count: keys.length }),
-      description: t("campaigns.promotions.remove.description", {
-        count: keys.length,
+      title: t('campaigns.promotions.remove.title', { count: keys.length }),
+      description: t('campaigns.promotions.remove.description', {
+        count: keys.length
       }),
-      confirmText: t("actions.continue"),
-      cancelText: t("actions.cancel"),
+      confirmText: t('actions.continue'),
+      cancelText: t('actions.cancel')
     });
 
     if (!res) {
       return;
     }
 
-    await mutateAsync(
-      { remove: keys },
-      { onSuccess: () => setRowSelection({}) },
-    );
+    await mutateAsync({ remove: keys }, { onSuccess: () => setRowSelection({}) });
   };
 
   return (
-    <Container className="divide-y p-0" data-testid="campaign-promotion-section-container">
-      <div className="flex items-center justify-between px-6 py-4" data-testid="campaign-promotion-section-header">
-        <Heading level="h2" data-testid="campaign-promotion-section-heading">{t("promotions.domain")}</Heading>
+    <Container
+      className="divide-y p-0"
+      data-testid="campaign-promotion-section-container"
+    >
+      <div
+        className="flex items-center justify-between px-6 py-4"
+        data-testid="campaign-promotion-section-header"
+      >
+        <Heading
+          level="h2"
+          data-testid="campaign-promotion-section-heading"
+        >
+          {t('promotions.domain')}
+        </Heading>
         <Link to={`/campaigns/${campaign.id}/add-promotions`}>
-          <Button variant="secondary" size="small" data-testid="campaign-promotion-section-add-button">
-            {t("general.add")}
+          <Button
+            variant="secondary"
+            size="small"
+            data-testid="campaign-promotion-section-add-button"
+          >
+            {t('general.add')}
           </Button>
         </Link>
       </div>
@@ -99,26 +104,26 @@ export const CampaignPromotionSection = ({
         pageSize={PAGE_SIZE}
         isLoading={isLoading}
         count={count}
-        navigateTo={(row) => `/promotions/${row.id}`}
+        navigateTo={row => `/promotions/${row.id}`}
         filters={filters}
         search
         pagination
         orderBy={[
-          { key: "code", label: t("fields.code") },
-          { key: "type", label: t("fields.type") },
-          { key: "created_at", label: t("fields.createdAt") },
-          { key: "updated_at", label: t("fields.updatedAt") },
+          { key: 'code', label: t('fields.code') },
+          { key: 'type', label: t('fields.type') },
+          { key: 'created_at', label: t('fields.createdAt') },
+          { key: 'updated_at', label: t('fields.updatedAt') }
         ]}
         queryObject={raw}
         commands={[
           {
             action: handleRemove,
-            label: t("actions.remove"),
-            shortcut: "r",
-          },
+            label: t('actions.remove'),
+            shortcut: 'r'
+          }
         ]}
         noRecords={{
-          message: t("campaigns.promotions.list.noRecordsMessage"),
+          message: t('campaigns.promotions.list.noRecordsMessage')
         }}
         data-testid="campaign-promotion-section-table"
       />
@@ -128,7 +133,7 @@ export const CampaignPromotionSection = ({
 
 const PromotionActions = ({
   promotion,
-  campaignId,
+  campaignId
 }: {
   promotion: AdminPromotion;
   campaignId: string;
@@ -140,14 +145,14 @@ const PromotionActions = ({
 
   const handleRemove = async () => {
     const res = await prompt({
-      title: t("campaigns.promotions.remove.title", {
-        count: 1,
+      title: t('campaigns.promotions.remove.title', {
+        count: 1
       }),
-      description: t("campaigns.promotions.remove.description", {
-        count: 1,
+      description: t('campaigns.promotions.remove.description', {
+        count: 1
       }),
-      confirmText: t("actions.continue"),
-      cancelText: t("actions.cancel"),
+      confirmText: t('actions.continue'),
+      cancelText: t('actions.cancel')
     });
 
     if (!res) {
@@ -155,7 +160,7 @@ const PromotionActions = ({
     }
 
     await mutateAsync({
-      remove: [promotion.id],
+      remove: [promotion.id]
     });
   };
 
@@ -166,20 +171,20 @@ const PromotionActions = ({
           actions: [
             {
               icon: <PencilSquare />,
-              label: t("actions.edit"),
-              to: `/promotions/${promotion.id}/edit`,
-            },
-          ],
+              label: t('actions.edit'),
+              to: `/promotions/${promotion.id}/edit`
+            }
+          ]
         },
         {
           actions: [
             {
               icon: <Trash />,
-              label: t("actions.remove"),
-              onClick: handleRemove,
-            },
-          ],
-        },
+              label: t('actions.remove'),
+              onClick: handleRemove
+            }
+          ]
+        }
       ]}
       data-testid={`campaign-promotion-section-action-menu-${promotion.id}`}
     />
@@ -194,18 +199,16 @@ const useColumns = () => {
   return useMemo(
     () => [
       columnHelper.display({
-        id: "select",
+        id: 'select',
         header: ({ table }) => {
           return (
             <Checkbox
               checked={
                 table.getIsSomePageRowsSelected()
-                  ? "indeterminate"
+                  ? 'indeterminate'
                   : table.getIsAllPageRowsSelected()
               }
-              onCheckedChange={(value) =>
-                table.toggleAllPageRowsSelected(!!value)
-              }
+              onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
               data-testid="campaign-promotion-section-select-all-checkbox"
             />
           );
@@ -214,18 +217,18 @@ const useColumns = () => {
           return (
             <Checkbox
               checked={row.getIsSelected()}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              onClick={(e) => {
+              onCheckedChange={value => row.toggleSelected(!!value)}
+              onClick={e => {
                 e.stopPropagation();
               }}
               data-testid={`campaign-promotion-section-select-checkbox-${row.original.id}`}
             />
           );
-        },
+        }
       }),
       ...columns,
       columnHelper.display({
-        id: "actions",
+        id: 'actions',
         cell: ({ row, table }) => {
           const { campaignId } = table.options.meta as {
             campaignId: string;
@@ -237,9 +240,9 @@ const useColumns = () => {
               campaignId={campaignId}
             />
           );
-        },
-      }),
+        }
+      })
     ],
-    [columns],
+    [columns]
   );
 };

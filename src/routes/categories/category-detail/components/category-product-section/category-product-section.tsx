@@ -1,30 +1,18 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState } from 'react';
 
-import { PlusMini } from "@medusajs/icons";
-import type { HttpTypes } from "@medusajs/types";
-import {
-  Checkbox,
-  CommandBar,
-  Container,
-  Heading,
-  toast,
-  usePrompt,
-} from "@medusajs/ui";
-
-import { keepPreviousData } from "@tanstack/react-query";
-import type { RowSelectionState } from "@tanstack/react-table";
-import { createColumnHelper } from "@tanstack/react-table";
-import { useTranslation } from "react-i18next";
-
-import { ActionMenu } from "@components/common/action-menu";
-import { _DataTable } from "@components/table/data-table";
-
-import { useUpdateProductCategoryProducts } from "@hooks/api";
-import { useProducts } from "@hooks/api";
-import { useProductTableColumns } from "@hooks/table/columns";
-import { useProductTableFilters } from "@hooks/table/filters";
-import { useProductTableQuery } from "@hooks/table/query";
-import { useDataTable } from "@hooks/use-data-table";
+import { ActionMenu } from '@components/common/action-menu';
+import { _DataTable } from '@components/table/data-table';
+import { useProducts, useUpdateProductCategoryProducts } from '@hooks/api';
+import { useProductTableColumns } from '@hooks/table/columns';
+import { useProductTableFilters } from '@hooks/table/filters';
+import { useProductTableQuery } from '@hooks/table/query';
+import { useDataTable } from '@hooks/use-data-table';
+import { PlusMini } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Checkbox, CommandBar, Container, Heading, toast, usePrompt } from '@medusajs/ui';
+import { keepPreviousData } from '@tanstack/react-query';
+import { createColumnHelper, type RowSelectionState } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
 
 type CategoryProductSectionProps = {
   category: HttpTypes.AdminProductCategory;
@@ -32,9 +20,7 @@ type CategoryProductSectionProps = {
 
 const PAGE_SIZE = 10;
 
-export const CategoryProductSection = ({
-  category,
-}: CategoryProductSectionProps) => {
+export const CategoryProductSection = ({ category }: CategoryProductSectionProps) => {
   const { t } = useTranslation();
   const prompt = usePrompt();
 
@@ -44,28 +30,28 @@ export const CategoryProductSection = ({
   const { products, count, isLoading, isError, error } = useProducts(
     {
       ...searchParams,
-      category_id: [category.id],
+      category_id: [category.id]
     },
     {
-      placeholderData: keepPreviousData,
-    },
+      placeholderData: keepPreviousData
+    }
   );
 
   const columns = useColumns();
-  const filters = useProductTableFilters(["categories"]);
+  const filters = useProductTableFilters(['categories']);
 
   const { table } = useDataTable({
     data: products || [],
     columns,
     count,
-    getRowId: (original) => original.id,
+    getRowId: original => original.id,
     pageSize: PAGE_SIZE,
     enableRowSelection: true,
     enablePagination: true,
     rowSelection: {
       state: selection,
-      updater: setSelection,
-    },
+      updater: setSelection
+    }
   });
 
   const { mutateAsync } = useUpdateProductCategoryProducts(category.id);
@@ -74,12 +60,12 @@ export const CategoryProductSection = ({
     const selected = Object.keys(selection);
 
     const res = await prompt({
-      title: t("general.areYouSure"),
-      description: t("categories.products.remove.confirmation", {
-        count: selected.length,
+      title: t('general.areYouSure'),
+      description: t('categories.products.remove.confirmation', {
+        count: selected.length
       }),
-      confirmText: t("actions.remove"),
-      cancelText: t("actions.cancel"),
+      confirmText: t('actions.remove'),
+      cancelText: t('actions.cancel')
     });
 
     if (!res) {
@@ -88,22 +74,22 @@ export const CategoryProductSection = ({
 
     await mutateAsync(
       {
-        remove: selected,
+        remove: selected
       },
       {
         onSuccess: () => {
           toast.success(
-            t("categories.products.remove.successToast", {
-              count: selected.length,
-            }),
+            t('categories.products.remove.successToast', {
+              count: selected.length
+            })
           );
 
           setSelection({});
         },
-        onError: (error) => {
+        onError: error => {
           toast.error(error.message);
-        },
-      },
+        }
+      }
     );
   };
 
@@ -114,18 +100,18 @@ export const CategoryProductSection = ({
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">{t("products.domain")}</Heading>
+        <Heading level="h2">{t('products.domain')}</Heading>
         <ActionMenu
           groups={[
             {
               actions: [
                 {
-                  label: t("actions.add"),
+                  label: t('actions.add'),
                   icon: <PlusMini />,
-                  to: "products",
-                },
-              ],
-            },
+                  to: 'products'
+                }
+              ]
+            }
           ]}
         />
       </div>
@@ -134,30 +120,30 @@ export const CategoryProductSection = ({
         filters={filters}
         columns={columns}
         orderBy={[
-          { key: "title", label: t("fields.title") },
-          { key: "created_at", label: t("fields.createdAt") },
-          { key: "updated_at", label: t("fields.updatedAt") },
+          { key: 'title', label: t('fields.title') },
+          { key: 'created_at', label: t('fields.createdAt') },
+          { key: 'updated_at', label: t('fields.updatedAt') }
         ]}
         pageSize={PAGE_SIZE}
         count={count}
-        navigateTo={(row) => `/products/${row.id}`}
+        navigateTo={row => `/products/${row.id}`}
         isLoading={isLoading}
         queryObject={raw}
         noRecords={{
-          message: t("categories.products.list.noRecordsMessage"),
+          message: t('categories.products.list.noRecordsMessage')
         }}
       />
       <CommandBar open={!!Object.keys(selection).length}>
         <CommandBar.Bar>
           <CommandBar.Value>
-            {t("general.countSelected", {
-              count: Object.keys(selection).length,
+            {t('general.countSelected', {
+              count: Object.keys(selection).length
             })}
           </CommandBar.Value>
           <CommandBar.Seperator />
           <CommandBar.Command
             action={handleRemove}
-            label={t("actions.remove")}
+            label={t('actions.remove')}
             shortcut="r"
           />
         </CommandBar.Bar>
@@ -174,18 +160,16 @@ const useColumns = () => {
   return useMemo(
     () => [
       columnHelper.display({
-        id: "select",
+        id: 'select',
         header: ({ table }) => {
           return (
             <Checkbox
               checked={
                 table.getIsSomePageRowsSelected()
-                  ? "indeterminate"
+                  ? 'indeterminate'
                   : table.getIsAllPageRowsSelected()
               }
-              onCheckedChange={(value) =>
-                table.toggleAllPageRowsSelected(!!value)
-              }
+              onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
             />
           );
         },
@@ -193,16 +177,16 @@ const useColumns = () => {
           return (
             <Checkbox
               checked={row.getIsSelected()}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              onClick={(e) => {
+              onCheckedChange={value => row.toggleSelected(!!value)}
+              onClick={e => {
                 e.stopPropagation();
               }}
             />
           );
-        },
+        }
       }),
-      ...base,
+      ...base
     ],
-    [base],
+    [base]
   );
 };

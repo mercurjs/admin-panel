@@ -1,162 +1,163 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button, Checkbox, Hint, Tooltip, toast } from "@medusajs/ui"
-import {
-  OnChangeFn,
-  RowSelectionState,
-  createColumnHelper,
-} from "@tanstack/react-table"
-import { useEffect, useMemo, useState } from "react"
-import { useForm } from "react-hook-form"
-import { useTranslation } from "react-i18next"
-import * as zod from "zod"
+import { useEffect, useMemo, useState } from 'react';
 
-import type { HttpTypes } from "@medusajs/types"
-import {
-  RouteFocusModal,
-  useRouteModal,
-} from '@components/modals'
-import { _DataTable } from '@components/table/data-table'
-import { KeyboundForm } from '@components/utilities/keybound-form'
-import { useBatchCustomerCustomerGroups } from "../../../../../hooks/api"
-import { useCustomerGroups } from '@hooks/api'
-import { useCustomerGroupTableColumns } from '@hooks/table/columns'
-import { useCustomerGroupTableFilters } from '@hooks/table/filters'
-import { useCustomerGroupTableQuery } from '@hooks/table/query'
-import { useDataTable } from '@hooks/use-data-table.tsx'
-import { FetchError } from "@medusajs/js-sdk"
+import { RouteFocusModal, useRouteModal } from '@components/modals';
+import { _DataTable } from '@components/table/data-table';
+import { KeyboundForm } from '@components/utilities/keybound-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useBatchCustomerCustomerGroups, useCustomerGroups } from '@hooks/api';
+import { useCustomerGroupTableColumns } from '@hooks/table/columns';
+import { useCustomerGroupTableFilters } from '@hooks/table/filters';
+import { useCustomerGroupTableQuery } from '@hooks/table/query';
+import { useDataTable } from '@hooks/use-data-table.tsx';
+import { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes } from '@medusajs/types';
+import { Button, Checkbox, Hint, toast, Tooltip } from '@medusajs/ui';
+import { createColumnHelper, type OnChangeFn, type RowSelectionState } from '@tanstack/react-table';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import * as zod from 'zod';
 
 type AddCustomerGroupsFormProps = {
-  customerId: string
-}
+  customerId: string;
+};
 
 export const AddCustomerGroupsSchema = zod.object({
-  customer_group_ids: zod.array(zod.string()).min(1),
-})
+  customer_group_ids: zod.array(zod.string()).min(1)
+});
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 10;
 
-export const AddCustomerGroupsForm = ({
-                                        customerId,
-                                      }: AddCustomerGroupsFormProps) => {
-  const { t } = useTranslation()
-  const { handleSuccess } = useRouteModal()
-  const [isPending, setIsPending] = useState(false)
+export const AddCustomerGroupsForm = ({ customerId }: AddCustomerGroupsFormProps) => {
+  const { t } = useTranslation();
+  const { handleSuccess } = useRouteModal();
+  const [isPending, setIsPending] = useState(false);
 
-  const { mutateAsync: batchCustomerCustomerGroups } =
-    useBatchCustomerCustomerGroups(customerId)
+  const { mutateAsync: batchCustomerCustomerGroups } = useBatchCustomerCustomerGroups(customerId);
 
   const form = useForm<zod.infer<typeof AddCustomerGroupsSchema>>({
     defaultValues: {
-      customer_group_ids: [],
+      customer_group_ids: []
     },
-    resolver: zodResolver(AddCustomerGroupsSchema),
-  })
+    resolver: zodResolver(AddCustomerGroupsSchema)
+  });
 
-  const { setValue } = form
+  const { setValue } = form;
 
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   useEffect(() => {
     setValue(
-      "customer_group_ids",
-      Object.keys(rowSelection).filter((k) => rowSelection[k]),
+      'customer_group_ids',
+      Object.keys(rowSelection).filter(k => rowSelection[k]),
       {
         shouldDirty: true,
-        shouldTouch: true,
+        shouldTouch: true
       }
-    )
-  }, [rowSelection, setValue])
+    );
+  }, [rowSelection, setValue]);
 
   const { searchParams, raw } = useCustomerGroupTableQuery({
-    pageSize: PAGE_SIZE,
-  })
-  const filters = useCustomerGroupTableFilters()
+    pageSize: PAGE_SIZE
+  });
+  const filters = useCustomerGroupTableFilters();
 
   const {
     customer_groups,
     count,
     isPending: isLoading,
     isError,
-    error,
+    error
   } = useCustomerGroups({
-    fields: "*customers",
-    ...searchParams,
-  })
+    fields: '*customers',
+    ...searchParams
+  });
 
-  const updater: OnChangeFn<RowSelectionState> = (fn) => {
-    const state = typeof fn === "function" ? fn(rowSelection) : fn
+  const updater: OnChangeFn<RowSelectionState> = fn => {
+    const state = typeof fn === 'function' ? fn(rowSelection) : fn;
 
-    const ids = Object.keys(state)
+    const ids = Object.keys(state);
 
-    setValue("customer_group_ids", ids, {
+    setValue('customer_group_ids', ids, {
       shouldDirty: true,
-      shouldTouch: true,
-    })
+      shouldTouch: true
+    });
 
-    setRowSelection(state)
-  }
+    setRowSelection(state);
+  };
 
-  const columns = useColumns()
+  const columns = useColumns();
 
   const { table } = useDataTable({
     data: customer_groups ?? [],
     columns,
     count,
     enablePagination: true,
-    enableRowSelection: (row) => {
-      return !row.original.customers?.map((c) => c.id).includes(customerId)
+    enableRowSelection: row => {
+      return !row.original.customers?.map(c => c.id).includes(customerId);
     },
-    getRowId: (row) => row.id,
+    getRowId: row => row.id,
     pageSize: PAGE_SIZE,
     rowSelection: {
       state: rowSelection,
-      updater,
-    },
-  })
+      updater
+    }
+  });
 
-  const handleSubmit = form.handleSubmit(async (data) => {
-    setIsPending(true)
+  const handleSubmit = form.handleSubmit(async data => {
+    setIsPending(true);
     try {
-      await batchCustomerCustomerGroups({ add: data.customer_group_ids })
+      await batchCustomerCustomerGroups({ add: data.customer_group_ids });
 
       toast.success(
-        t("customers.groups.add.success", {
+        t('customers.groups.add.success', {
           groups: data.customer_group_ids
-            .map((id) => customer_groups?.find((g) => g.id === id))
+            .map(id => customer_groups?.find(g => g.id === id))
             .filter(Boolean)
-            .map((cg) => cg?.name),
+            .map(cg => cg?.name)
         })
-      )
+      );
 
-      handleSuccess(`/customers/${customerId}`)
+      handleSuccess(`/customers/${customerId}`);
     } catch (e) {
-      toast.error(e instanceof FetchError ? e.message : "An error occurred")
+      toast.error(e instanceof FetchError ? e.message : 'An error occurred');
     } finally {
-      setIsPending(false)
+      setIsPending(false);
     }
-  })
+  });
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   return (
-    <RouteFocusModal.Form form={form} data-testid="add-customer-groups-form">
+    <RouteFocusModal.Form
+      form={form}
+      data-testid="add-customer-groups-form"
+    >
       <KeyboundForm
         className="flex h-full flex-col overflow-hidden"
         onSubmit={handleSubmit}
         data-testid="add-customer-groups-form-keybound"
       >
         <RouteFocusModal.Header data-testid="add-customer-groups-form-header">
-          <div className="flex items-center justify-end gap-x-2" data-testid="add-customer-groups-form-header-errors">
+          <div
+            className="flex items-center justify-end gap-x-2"
+            data-testid="add-customer-groups-form-header-errors"
+          >
             {form.formState.errors.customer_group_ids && (
-              <Hint variant="error" data-testid="add-customer-groups-form-error-hint">
+              <Hint
+                variant="error"
+                data-testid="add-customer-groups-form-error-hint"
+              >
                 {form.formState.errors.customer_group_ids.message}
               </Hint>
             )}
           </div>
         </RouteFocusModal.Header>
-        <RouteFocusModal.Body className="size-full overflow-hidden" data-testid="add-customer-groups-form-body">
+        <RouteFocusModal.Body
+          className="size-full overflow-hidden"
+          data-testid="add-customer-groups-form-body"
+        >
           <_DataTable
             table={table}
             columns={columns}
@@ -164,23 +165,27 @@ export const AddCustomerGroupsForm = ({
             count={count}
             filters={filters}
             orderBy={[
-              { key: "name", label: t("fields.name") },
-              { key: "created_at", label: t("fields.createdAt") },
-              { key: "updated_at", label: t("fields.updatedAt") },
+              { key: 'name', label: t('fields.name') },
+              { key: 'created_at', label: t('fields.createdAt') },
+              { key: 'updated_at', label: t('fields.updatedAt') }
             ]}
             isLoading={isLoading}
             layout="fill"
             search="autofocus"
             queryObject={raw}
             noRecords={{
-              message: t("customers.groups.add.list.noRecordsMessage"),
+              message: t('customers.groups.add.list.noRecordsMessage')
             }}
           />
         </RouteFocusModal.Body>
         <RouteFocusModal.Footer data-testid="add-customer-groups-form-footer">
           <RouteFocusModal.Close asChild>
-            <Button variant="secondary" size="small" data-testid="add-customer-groups-form-cancel-button">
-              {t("actions.cancel")}
+            <Button
+              variant="secondary"
+              size="small"
+              data-testid="add-customer-groups-form-cancel-button"
+            >
+              {t('actions.cancel')}
             </Button>
           </RouteFocusModal.Close>
           <Button
@@ -190,71 +195,69 @@ export const AddCustomerGroupsForm = ({
             isLoading={isPending}
             data-testid="add-customer-groups-form-submit-button"
           >
-            {t("actions.save")}
+            {t('actions.save')}
           </Button>
         </RouteFocusModal.Footer>
       </KeyboundForm>
     </RouteFocusModal.Form>
-  )
-}
+  );
+};
 
-const columnHelper = createColumnHelper<HttpTypes.AdminCustomerGroup>()
+const columnHelper = createColumnHelper<HttpTypes.AdminCustomerGroup>();
 
 const useColumns = () => {
-  const { t } = useTranslation()
-  const base = useCustomerGroupTableColumns()
+  const { t } = useTranslation();
+  const base = useCustomerGroupTableColumns();
 
   const columns = useMemo(
     () => [
       columnHelper.display({
-        id: "select",
+        id: 'select',
         header: ({ table }) => {
           return (
             <Checkbox
               checked={
                 table.getIsSomePageRowsSelected()
-                  ? "indeterminate"
+                  ? 'indeterminate'
                   : table.getIsAllPageRowsSelected()
               }
-              onCheckedChange={(value) =>
-                table.toggleAllPageRowsSelected(!!value)
-              }
+              onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
             />
-          )
+          );
         },
         cell: ({ row }) => {
-          const isPreSelected = !row.getCanSelect()
-          const isSelected = row.getIsSelected() || isPreSelected
+          const isPreSelected = !row.getCanSelect();
+          const isSelected = row.getIsSelected() || isPreSelected;
 
           const Component = (
             <Checkbox
               checked={isSelected}
               disabled={isPreSelected}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              onClick={(e) => {
-                e.stopPropagation()
+              onCheckedChange={value => row.toggleSelected(!!value)}
+              onClick={e => {
+                e.stopPropagation();
               }}
             />
-          )
+          );
 
           if (isPreSelected) {
             return (
               <Tooltip
-                content={t("customers.groups.alreadyAddedTooltip")}
+                content={t('customers.groups.alreadyAddedTooltip')}
                 side="right"
               >
                 {Component}
               </Tooltip>
-            )
+            );
           }
 
-          return Component
-        },
+          return Component;
+        }
       }),
-      ...base,
+      ...base
     ],
     [t, base]
-  )
+  );
 
-  return columns
-}
+  return columns;
+};

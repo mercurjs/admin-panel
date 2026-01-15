@@ -1,8 +1,6 @@
-import { SingleColumnPage } from "@components/layout/pages";
-
-import { CampaignListTable } from "@routes/campaigns/campaign-list/components";
-
-import { useExtension } from "@providers/extension-provider";
+import { SingleColumnPage } from '@components/layout/pages';
+import { useExtension } from '@providers/extension-provider';
+import { CampaignListTable } from '@routes/campaigns/campaign-list/components';
 
 export const CampaignList = () => {
   const { getWidgets } = useExtension();
@@ -10,8 +8,8 @@ export const CampaignList = () => {
   return (
     <SingleColumnPage
       widgets={{
-        after: getWidgets("campaign.list.after"),
-        before: getWidgets("campaign.list.before"),
+        after: getWidgets('campaign.list.after'),
+        before: getWidgets('campaign.list.before')
       }}
       hasOutlet
     >

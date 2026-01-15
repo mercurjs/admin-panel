@@ -1,10 +1,8 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
-import type { UniqueIdentifier } from "@dnd-kit/core";
-
-import { SortableTree } from "@components/common/sortable-tree";
-
-import type { CategoryTreeItem } from "@routes/categories/common/types.ts";
+import { SortableTree } from '@components/common/sortable-tree';
+import type { UniqueIdentifier } from '@dnd-kit/core';
+import type { CategoryTreeItem } from '@routes/categories/common/types.ts';
 
 type CategoryTreeProps = {
   value: CategoryTreeItem[];
@@ -14,7 +12,7 @@ type CategoryTreeProps = {
       parentId: UniqueIdentifier | null;
       index: number;
     },
-    items: CategoryTreeItem[],
+    items: CategoryTreeItem[]
   ) => void;
   renderValue: (item: CategoryTreeItem) => ReactNode;
   enableDrag?: boolean | ((item: CategoryTreeItem) => boolean);
@@ -26,7 +24,7 @@ export const CategoryTree = ({
   onChange,
   renderValue,
   enableDrag = true,
-  isLoading = false,
+  isLoading = false
 }: CategoryTreeProps) => {
   if (isLoading) {
     return (

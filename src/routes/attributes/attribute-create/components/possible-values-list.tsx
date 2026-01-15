@@ -1,23 +1,23 @@
 import {
-  DndContext,
   closestCenter,
+  DndContext,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
+  type DragEndEvent
+} from '@dnd-kit/core';
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { Button, Input, IconButton, Label } from "@medusajs/ui";
-import { XMark, DotsSix } from "@medusajs/icons";
-import { useFieldArray, useFormContext } from "react-hook-form";
+  verticalListSortingStrategy
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { DotsSix, XMark } from '@medusajs/icons';
+import { Button, IconButton, Input, Label } from '@medusajs/ui';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 
 type AttributeValueType = {
   value: string;
@@ -36,14 +36,13 @@ interface SortableItemProps {
 const SortableItem = ({ id, index, onRemove }: SortableItemProps) => {
   const {
     register,
-    formState: { errors },
+    formState: { errors }
   } = useFormContext<FormValues>();
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    transition
   };
 
   const fieldError = errors[`possible_values.${index}.value`];
@@ -52,7 +51,7 @@ const SortableItem = ({ id, index, onRemove }: SortableItemProps) => {
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center gap-2 p-2 bg-ui-bg-component border border-ui-border-base rounded-xl mb-2"
+      className="mb-2 flex items-center gap-2 rounded-xl border border-ui-border-base bg-ui-bg-component p-2"
       data-testid={`attribute-form-possible-value-item-${index}`}
     >
       <button
@@ -72,7 +71,12 @@ const SortableItem = ({ id, index, onRemove }: SortableItemProps) => {
           data-testid={`attribute-form-possible-value-input-${index}`}
         />
       </div>
-      <IconButton variant="transparent" size="small" onClick={onRemove} data-testid={`attribute-form-possible-value-remove-button-${index}`}>
+      <IconButton
+        variant="transparent"
+        size="small"
+        onClick={onRemove}
+        data-testid={`attribute-form-possible-value-remove-button-${index}`}
+      >
         <XMark />
       </IconButton>
     </div>
@@ -83,13 +87,13 @@ const PossibleValuesList = () => {
   const { control, getValues } = useFormContext<FormValues>();
   const { fields, append, remove, update } = useFieldArray({
     control,
-    name: "possible_values",
+    name: 'possible_values'
   });
 
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
+      coordinateGetter: sortableKeyboardCoordinates
     })
   );
 
@@ -97,13 +101,11 @@ const PossibleValuesList = () => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const oldIndex = fields.findIndex((field) => field.id === active.id);
-      const newIndex = fields.findIndex((field) => field.id === over.id);
+      const oldIndex = fields.findIndex(field => field.id === active.id);
+      const newIndex = fields.findIndex(field => field.id === over.id);
 
       // Get current form values
-      const currentValues = getValues(
-        "possible_values"
-      ) as AttributeValueType[];
+      const currentValues = getValues('possible_values') as AttributeValueType[];
 
       // Create new array with reordered items
       const reorderedValues = arrayMove(currentValues, oldIndex, newIndex);
@@ -113,7 +115,7 @@ const PossibleValuesList = () => {
         update(index, {
           value: value.value,
           rank: index,
-          metadata: value.metadata || {},
+          metadata: value.metadata || {}
         });
       });
     }
@@ -121,15 +123,21 @@ const PossibleValuesList = () => {
 
   const handleAddValue = () => {
     append({
-      value: "",
+      value: '',
       rank: fields.length,
-      metadata: {},
+      metadata: {}
     });
   };
 
   return (
-    <div className="space-y-2" data-testid="attribute-form-possible-values-list">
-      <div className="flex items-center justify-between pb-1" data-testid="attribute-form-possible-values-header">
+    <div
+      className="space-y-2"
+      data-testid="attribute-form-possible-values-list"
+    >
+      <div
+        className="flex items-center justify-between pb-1"
+        data-testid="attribute-form-possible-values-header"
+      >
         <Label data-testid="attribute-form-possible-values-label">Possible Values</Label>
         <Button
           type="button"
@@ -148,7 +156,7 @@ const PossibleValuesList = () => {
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={fields.map((field) => field.id)}
+          items={fields.map(field => field.id)}
           strategy={verticalListSortingStrategy}
         >
           {fields.map((field, index) => (

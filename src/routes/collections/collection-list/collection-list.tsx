@@ -1,8 +1,6 @@
-import { SingleColumnPage } from "@components/layout/pages";
-
-import { CollectionListTable } from "@routes/collections/collection-list/components/collection-list-table";
-
-import { useExtension } from "@providers/extension-provider";
+import { SingleColumnPage } from '@components/layout/pages';
+import { useExtension } from '@providers/extension-provider';
+import { CollectionListTable } from '@routes/collections/collection-list/components/collection-list-table';
 
 export const CollectionList = () => {
   const { getWidgets } = useExtension();
@@ -10,8 +8,8 @@ export const CollectionList = () => {
   return (
     <SingleColumnPage
       widgets={{
-        after: getWidgets("product_collection.list.after"),
-        before: getWidgets("product_collection.list.before"),
+        after: getWidgets('product_collection.list.after'),
+        before: getWidgets('product_collection.list.before')
       }}
     >
       <CollectionListTable />

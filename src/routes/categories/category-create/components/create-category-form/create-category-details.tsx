@@ -1,14 +1,11 @@
-import { Heading, Input, Select, Text, Textarea } from "@medusajs/ui";
+import { Form } from '@components/common/form';
+import { HandleInput } from '@components/inputs/handle-input';
+import { useDocumentDirection } from '@hooks/use-document-direction';
+import { Heading, Input, Select, Text, Textarea } from '@medusajs/ui';
+import type { UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
-import type { UseFormReturn } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-
-import { Form } from "@components/common/form";
-import { HandleInput } from "@components/inputs/handle-input";
-
-import { useDocumentDirection } from "@hooks/use-document-direction";
-
-import type { CreateCategorySchema } from "./schema";
+import type { CreateCategorySchema } from './schema';
 
 type CreateCategoryDetailsProps = {
   form: UseFormReturn<CreateCategorySchema>;
@@ -22,9 +19,12 @@ export const CreateCategoryDetails = ({ form }: CreateCategoryDetailsProps) => {
     <div className="flex flex-col items-center p-16">
       <div className="flex w-full max-w-[720px] flex-col gap-y-8">
         <div>
-          <Heading>{t("categories.create.header")}</Heading>
-          <Text size="small" className="text-ui-fg-subtle">
-            {t("categories.create.hint")}
+          <Heading>{t('categories.create.header')}</Heading>
+          <Text
+            size="small"
+            className="text-ui-fg-subtle"
+          >
+            {t('categories.create.hint')}
           </Text>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -33,9 +33,12 @@ export const CreateCategoryDetails = ({ form }: CreateCategoryDetailsProps) => {
             name="name"
             render={({ field }) => (
               <Form.Item>
-                <Form.Label>{t("fields.title")}</Form.Label>
+                <Form.Label>{t('fields.title')}</Form.Label>
                 <Form.Control>
-                  <Input autoComplete="off" {...field} />
+                  <Input
+                    autoComplete="off"
+                    {...field}
+                  />
                 </Form.Control>
                 <Form.ErrorMessage />
               </Form.Item>
@@ -46,8 +49,11 @@ export const CreateCategoryDetails = ({ form }: CreateCategoryDetailsProps) => {
             name="handle"
             render={({ field }) => (
               <Form.Item>
-                <Form.Label optional tooltip={t("collections.handleTooltip")}>
-                  {t("fields.handle")}
+                <Form.Label
+                  optional
+                  tooltip={t('collections.handleTooltip')}
+                >
+                  {t('fields.handle')}
                 </Form.Label>
                 <Form.Control>
                   <HandleInput {...field} />
@@ -62,7 +68,7 @@ export const CreateCategoryDetails = ({ form }: CreateCategoryDetailsProps) => {
           name="description"
           render={({ field }) => (
             <Form.Item>
-              <Form.Label optional>{t("fields.description")}</Form.Label>
+              <Form.Label optional>{t('fields.description')}</Form.Label>
               <Form.Control>
                 <Textarea {...field} />
               </Form.Control>
@@ -76,18 +82,22 @@ export const CreateCategoryDetails = ({ form }: CreateCategoryDetailsProps) => {
             name="status"
             render={({ field: { ref, onChange, ...field } }) => (
               <Form.Item>
-                <Form.Label>{t("categories.fields.status.label")}</Form.Label>
+                <Form.Label>{t('categories.fields.status.label')}</Form.Label>
                 <Form.Control>
-                  <Select dir={direction} {...field} onValueChange={onChange}>
+                  <Select
+                    dir={direction}
+                    {...field}
+                    onValueChange={onChange}
+                  >
                     <Select.Trigger ref={ref}>
                       <Select.Value />
                     </Select.Trigger>
                     <Select.Content>
                       <Select.Item value="active">
-                        {t("categories.fields.status.active")}
+                        {t('categories.fields.status.active')}
                       </Select.Item>
                       <Select.Item value="inactive">
-                        {t("categories.fields.status.inactive")}
+                        {t('categories.fields.status.inactive')}
                       </Select.Item>
                     </Select.Content>
                   </Select>
@@ -101,20 +111,22 @@ export const CreateCategoryDetails = ({ form }: CreateCategoryDetailsProps) => {
             name="visibility"
             render={({ field: { ref, onChange, ...field } }) => (
               <Form.Item>
-                <Form.Label>
-                  {t("categories.fields.visibility.label")}
-                </Form.Label>
+                <Form.Label>{t('categories.fields.visibility.label')}</Form.Label>
                 <Form.Control>
-                  <Select dir={direction} {...field} onValueChange={onChange}>
+                  <Select
+                    dir={direction}
+                    {...field}
+                    onValueChange={onChange}
+                  >
                     <Select.Trigger ref={ref}>
                       <Select.Value />
                     </Select.Trigger>
                     <Select.Content>
                       <Select.Item value="public">
-                        {t("categories.fields.visibility.public")}
+                        {t('categories.fields.visibility.public')}
                       </Select.Item>
                       <Select.Item value="internal">
-                        {t("categories.fields.visibility.internal")}
+                        {t('categories.fields.visibility.internal')}
                       </Select.Item>
                     </Select.Content>
                   </Select>

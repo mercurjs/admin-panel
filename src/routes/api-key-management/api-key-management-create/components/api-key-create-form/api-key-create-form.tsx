@@ -1,18 +1,17 @@
 import { Fragment, useState } from 'react';
 
+import { Form } from '@components/common/form';
+import { RouteFocusModal, useRouteModal } from '@components/modals';
+import { KeyboundForm } from '@components/utilities/keybound-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useCreateApiKey } from '@hooks/api';
 import { Eye, EyeSlash } from '@medusajs/icons';
-import { AdminApiKeyResponse } from '@medusajs/types';
+import type { AdminApiKeyResponse } from '@medusajs/types';
 import { Button, Heading, Input, Prompt, Text, toast } from '@medusajs/ui';
+import { ApiKeyType } from '@routes/api-key-management/common/constants';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import * as zod from 'zod';
-
-import { Form } from '../../../../../components/common/form';
-import { RouteFocusModal, useRouteModal } from '../../../../../components/modals';
-import { KeyboundForm } from '../../../../../components/utilities/keybound-form';
-import { useCreateApiKey } from '../../../../../hooks/api/api-keys';
-import { ApiKeyType } from '../../../common/constants';
 
 const ApiKeyCreateSchema = zod.object({
   title: zod.string().min(1)

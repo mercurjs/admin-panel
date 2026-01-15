@@ -1,16 +1,13 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { History } from "@medusajs/icons";
-import { Container, Heading, Table, Text } from "@medusajs/ui";
+import type { CommissionLine } from '@custom-types/commission';
+import { useListCommissionLines } from '@hooks/api';
+import { History } from '@medusajs/icons';
+import { Container, Heading, Table, Text } from '@medusajs/ui';
+import { ActionMenu } from '@routes/commission-lines/components/action-menu';
+import { CommissionLineDetail } from '@routes/commission-lines/components/commission-detail';
 
-import type { CommissionLine } from "@custom-types/commission";
-
-import { useListCommissionLines } from "@hooks/api";
-
-import { ActionMenu } from "@routes/commission-lines/components/action-menu";
-import { CommissionLineDetail } from "@routes/commission-lines/components/commission-detail";
-
-import { formatDate } from "@/lib/date";
+import { formatDate } from '@/lib/date';
 
 const PAGE_SIZE = 20;
 
@@ -18,9 +15,7 @@ export const CommissionLines = () => {
   const [currentPage, setCurrentPage] = useState<number>(0);
 
   const [detailOpen, setDetailOpen] = useState(false);
-  const [detailCommission, setDetailCommission] = useState<
-    CommissionLine | undefined
-  >(undefined);
+  const [detailCommission, setDetailCommission] = useState<CommissionLine | undefined>(undefined);
 
   const handleDetail = (commission: CommissionLine) => {
     setDetailCommission(commission);
@@ -29,7 +24,7 @@ export const CommissionLines = () => {
 
   const { data, isLoading } = useListCommissionLines({
     offset: currentPage * PAGE_SIZE,
-    limit: PAGE_SIZE,
+    limit: PAGE_SIZE
   });
 
   return (
@@ -63,8 +58,10 @@ export const CommissionLines = () => {
             {data?.commission_lines?.map((line: CommissionLine) => {
               return (
                 <Table.Row key={line.id}>
-                  <Table.Cell>{line.order?.seller?.name || "-"}</Table.Cell>
-                  <Table.Cell>{line.order?.display_id ? `#${line.order?.display_id}` : "-"}</Table.Cell>
+                  <Table.Cell>{line.order?.seller?.name || '-'}</Table.Cell>
+                  <Table.Cell>
+                    {line.order?.display_id ? `#${line.order?.display_id}` : '-'}
+                  </Table.Cell>
                   <Table.Cell>{`${line.value.toFixed(2)} ${line.currency_code.toUpperCase()}`}</Table.Cell>
 
                   <Table.Cell>
@@ -74,7 +71,10 @@ export const CommissionLines = () => {
                     </div>
                   </Table.Cell>
                   <Table.Cell>
-                    <ActionMenu handleDetail={handleDetail} line={line} />
+                    <ActionMenu
+                      handleDetail={handleDetail}
+                      line={line}
+                    />
                   </Table.Cell>
                 </Table.Row>
               );

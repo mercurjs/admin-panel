@@ -1,72 +1,88 @@
-import { Button, Container, Heading, Text } from "@medusajs/ui"
-import { keepPreviousData } from "@tanstack/react-query"
-import { useTranslation } from "react-i18next"
-import { Link } from "react-router-dom"
-import { _DataTable } from "../../../../../components/table/data-table"
-import { useApiKeys } from "../../../../../hooks/api/api-keys"
-import { useDataTable } from "../../../../../hooks/use-data-table"
-import { useApiKeyManagementTableColumns } from "./use-api-key-management-table-columns"
-import { useApiKeyManagementTableFilters } from "./use-api-key-management-table-filters"
-import { useApiKeyManagementTableQuery } from "./use-api-key-management-table-query"
+import { _DataTable } from '@components/table/data-table';
+import { useApiKeys } from '@hooks/api';
+import { useDataTable } from '@hooks/use-data-table';
+import { Button, Container, Heading, Text } from '@medusajs/ui';
+import { keepPreviousData } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-const PAGE_SIZE = 20
+import { useApiKeyManagementTableColumns } from './use-api-key-management-table-columns';
+import { useApiKeyManagementTableFilters } from './use-api-key-management-table-filters';
+import { useApiKeyManagementTableQuery } from './use-api-key-management-table-query';
 
-export const ApiKeyManagementListTable = ({
-  keyType,
-}: {
-  keyType: "secret" | "publishable"
-}) => {
-  const { t } = useTranslation()
+const PAGE_SIZE = 20;
+
+export const ApiKeyManagementListTable = ({ keyType }: { keyType: 'secret' | 'publishable' }) => {
+  const { t } = useTranslation();
 
   const { searchParams, raw } = useApiKeyManagementTableQuery({
-    pageSize: PAGE_SIZE,
-  })
+    pageSize: PAGE_SIZE
+  });
 
   const query = {
     ...searchParams,
     type: keyType,
     fields:
-      "id,title,redacted,token,type,created_at,updated_at,revoked_at,last_used_at,created_by,revoked_by",
-  }
+      'id,title,redacted,token,type,created_at,updated_at,revoked_at,last_used_at,created_by,revoked_by'
+  };
 
   const { api_keys, count, isLoading, isError, error } = useApiKeys(query, {
-    placeholderData: keepPreviousData,
-  })
+    placeholderData: keepPreviousData
+  });
 
-  const filters = useApiKeyManagementTableFilters()
-  const columns = useApiKeyManagementTableColumns()
+  const filters = useApiKeyManagementTableFilters();
+  const columns = useApiKeyManagementTableColumns();
 
   const { table } = useDataTable({
     data: api_keys || [],
     columns,
     count,
     enablePagination: true,
-    getRowId: (row) => row.id,
-    pageSize: PAGE_SIZE,
-  })
+    getRowId: row => row.id,
+    pageSize: PAGE_SIZE
+  });
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   return (
-    <Container className="divide-y p-0" data-testid={`${keyType}-api-keys-container`}>
-      <div className="flex items-center justify-between px-6 py-4" data-testid={`${keyType}-api-keys-header`}>
+    <Container
+      className="divide-y p-0"
+      data-testid={`${keyType}-api-keys-container`}
+    >
+      <div
+        className="flex items-center justify-between px-6 py-4"
+        data-testid={`${keyType}-api-keys-header`}
+      >
         <div>
-          <Heading level="h2" data-testid={`${keyType}-api-keys-heading`}>
-            {keyType === "publishable"
+          <Heading
+            level="h2"
+            data-testid={`${keyType}-api-keys-heading`}
+          >
+            {keyType === 'publishable'
               ? t(`apiKeyManagement.domain.publishable`)
-              : t("apiKeyManagement.domain.secret")}
+              : t('apiKeyManagement.domain.secret')}
           </Heading>
-          <Text className="text-ui-fg-subtle" size="small" data-testid={`${keyType}-api-keys-description`}>
-            {keyType === "publishable"
+          <Text
+            className="text-ui-fg-subtle"
+            size="small"
+            data-testid={`${keyType}-api-keys-description`}
+          >
+            {keyType === 'publishable'
               ? t(`apiKeyManagement.subtitle.publishable`)
-              : t("apiKeyManagement.subtitle.secret")}
+              : t('apiKeyManagement.subtitle.secret')}
           </Text>
         </div>
-        <Link to="create" data-testid={`${keyType}-api-keys-create-button`}>
-          <Button variant="secondary" size="small">
-            {t("actions.create")}
+        <Link
+          to="create"
+          data-testid={`${keyType}-api-keys-create-button`}
+        >
+          <Button
+            variant="secondary"
+            size="small"
+          >
+            {t('actions.create')}
           </Button>
         </Link>
       </div>
@@ -78,12 +94,12 @@ export const ApiKeyManagementListTable = ({
           count={count}
           pageSize={PAGE_SIZE}
           orderBy={[
-            { key: "title", label: t("fields.title") },
-            { key: "created_at", label: t("fields.createdAt") },
-            { key: "updated_at", label: t("fields.updatedAt") },
-            { key: "revoked_at", label: t("fields.revokedAt") },
+            { key: 'title', label: t('fields.title') },
+            { key: 'created_at', label: t('fields.createdAt') },
+            { key: 'updated_at', label: t('fields.updatedAt') },
+            { key: 'revoked_at', label: t('fields.revokedAt') }
           ]}
-          navigateTo={(row) => row.id}
+          navigateTo={row => row.id}
           pagination
           search
           queryObject={raw}
@@ -91,5 +107,5 @@ export const ApiKeyManagementListTable = ({
         />
       </div>
     </Container>
-  )
-}
+  );
+};

@@ -1,1 +1,1 @@
-export { Commission as Component } from "@routes/commission/commission";
+export { Commission as Component } from '@routes/commission/commission';

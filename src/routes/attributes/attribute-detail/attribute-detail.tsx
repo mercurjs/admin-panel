@@ -1,25 +1,12 @@
-import { EllipsisHorizontal } from "@medusajs/icons";
-import {
-  Badge,
-  Button,
-  Container,
-  DropdownMenu,
-  Heading,
-  Text,
-  toast,
-} from "@medusajs/ui";
-
-import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
-
-import { SectionRow } from "@components/common/section";
-import { SingleColumnLayout } from "@components/layout/single-column";
-
-import { attributeQueryKeys, useAttribute } from "@hooks/api/attributes.tsx";
-
-import { sdk } from "@lib/client";
-
-import { PossibleValuesTable } from "@routes/attributes/attribute-edit-possible-value/components/possible-values-table.tsx";
+import { SectionRow } from '@components/common/section';
+import { SingleColumnLayout } from '@components/layout/single-column';
+import { attributeQueryKeys, useAttribute } from '@hooks/api/attributes.tsx';
+import { sdk } from '@lib/client';
+import { EllipsisHorizontal } from '@medusajs/icons';
+import { Badge, Button, Container, DropdownMenu, Heading, Text, toast } from '@medusajs/ui';
+import { PossibleValuesTable } from '@routes/attributes/attribute-edit-possible-value/components/possible-values-table.tsx';
+import { useQueryClient } from '@tanstack/react-query';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export const AttributeDetail = () => {
   const { id } = useParams();
@@ -28,12 +15,12 @@ export const AttributeDetail = () => {
   const queryClient = useQueryClient();
 
   const { attribute, isLoading } = useAttribute(
-    id ?? "",
+    id ?? '',
     {
       fields:
-        "name, description, handle, product_categories.name, possible_values.*,is_filterable,is_required,ui_component",
+        'name, description, handle, product_categories.name, possible_values.*,is_filterable,is_required,ui_component'
     },
-    { enabled: !!id },
+    { enabled: !!id }
   );
 
   if (isLoading) {
@@ -63,11 +50,11 @@ export const AttributeDetail = () => {
   const handleDelete = async () => {
     try {
       await sdk.client.fetch(`/admin/attributes/${id}`, {
-        method: "DELETE",
+        method: 'DELETE'
       });
-      toast.success("Attribute deleted!");
+      toast.success('Attribute deleted!');
       queryClient.invalidateQueries({ queryKey: attributeQueryKeys.list() });
-      navigate("/attributes");
+      navigate('/attributes');
     } catch (error) {
       toast.error((error as Error).message);
     }
@@ -75,19 +62,48 @@ export const AttributeDetail = () => {
 
   return (
     <SingleColumnLayout>
-      <Container className="divide-y p-0" data-testid="attribute-detail-container">
-        <div className="flex items-center justify-between px-6 py-4" data-testid="attribute-detail-header">
-          <Heading level="h2" data-testid="attribute-detail-heading">{attribute.name}</Heading>
-          <div className="flex items-center gap-2" data-testid="attribute-detail-actions">
+      <Container
+        className="divide-y p-0"
+        data-testid="attribute-detail-container"
+      >
+        <div
+          className="flex items-center justify-between px-6 py-4"
+          data-testid="attribute-detail-header"
+        >
+          <Heading
+            level="h2"
+            data-testid="attribute-detail-heading"
+          >
+            {attribute.name}
+          </Heading>
+          <div
+            className="flex items-center gap-2"
+            data-testid="attribute-detail-actions"
+          >
             <DropdownMenu>
               <DropdownMenu.Trigger asChild>
-                <Button variant="transparent" size="small" data-testid="attribute-detail-action-menu-trigger">
+                <Button
+                  variant="transparent"
+                  size="small"
+                  data-testid="attribute-detail-action-menu-trigger"
+                >
                   <EllipsisHorizontal />
                 </Button>
               </DropdownMenu.Trigger>
-              <DropdownMenu.Content align="end" data-testid="attribute-detail-action-menu">
-                <DropdownMenu.Item onClick={handleEdit} data-testid="attribute-detail-edit-action">Edit</DropdownMenu.Item>
-                <DropdownMenu.Item onClick={handleDelete} data-testid="attribute-detail-delete-action">
+              <DropdownMenu.Content
+                align="end"
+                data-testid="attribute-detail-action-menu"
+              >
+                <DropdownMenu.Item
+                  onClick={handleEdit}
+                  data-testid="attribute-detail-edit-action"
+                >
+                  Edit
+                </DropdownMenu.Item>
+                <DropdownMenu.Item
+                  onClick={handleDelete}
+                  data-testid="attribute-detail-delete-action"
+                >
                   Delete
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
@@ -95,46 +111,62 @@ export const AttributeDetail = () => {
           </div>
         </div>
 
-        <SectionRow title="Description" value={attribute.description} data-testid="attribute-detail-description-row" />
-        <SectionRow title="Handle" value={attribute.handle} data-testid="attribute-detail-handle-row" />
-        <SectionRow title="Type" value={attribute.ui_component} data-testid="attribute-detail-type-row" />
+        <SectionRow
+          title="Description"
+          value={attribute.description}
+          data-testid="attribute-detail-description-row"
+        />
+        <SectionRow
+          title="Handle"
+          value={attribute.handle}
+          data-testid="attribute-detail-handle-row"
+        />
+        <SectionRow
+          title="Type"
+          value={attribute.ui_component}
+          data-testid="attribute-detail-type-row"
+        />
         <SectionRow
           title="Filterable"
-          value={attribute.is_filterable ? "True" : "False"}
+          value={attribute.is_filterable ? 'True' : 'False'}
           data-testid="attribute-detail-filterable-row"
         />
         <SectionRow
           title="Required"
-          value={attribute.is_required ? "True" : "False"}
+          value={attribute.is_required ? 'True' : 'False'}
           data-testid="attribute-detail-required-row"
         />
         <SectionRow
           title="Global"
-          value={!attribute.product_categories?.length ? "True" : "False"}
+          value={!attribute.product_categories?.length ? 'True' : 'False'}
           data-testid="attribute-detail-global-row"
         />
 
-        {attribute.product_categories &&
-          attribute.product_categories.length > 0 && (
-            <SectionRow
-              title="Product Categories"
-              value={
-                <>
-                  {attribute.product_categories.map(
-                    (category: { id: string; name: string }) => (
-                      <Badge size="xsmall" key={category.id} data-testid={`attribute-detail-category-badge-${category.id}`}>
-                        {category.name}
-                      </Badge>
-                    ),
-                  )}
-                </>
-              }
-              data-testid="attribute-detail-categories-row"
-            />
-          )}
+        {attribute.product_categories && attribute.product_categories.length > 0 && (
+          <SectionRow
+            title="Product Categories"
+            value={
+              <>
+                {attribute.product_categories.map((category: { id: string; name: string }) => (
+                  <Badge
+                    size="xsmall"
+                    key={category.id}
+                    data-testid={`attribute-detail-category-badge-${category.id}`}
+                  >
+                    {category.name}
+                  </Badge>
+                ))}
+              </>
+            }
+            data-testid="attribute-detail-categories-row"
+          />
+        )}
       </Container>
 
-      <PossibleValuesTable attribute={attribute} isLoading={isLoading} />
+      <PossibleValuesTable
+        attribute={attribute}
+        isLoading={isLoading}
+      />
     </SingleColumnLayout>
   );
 };

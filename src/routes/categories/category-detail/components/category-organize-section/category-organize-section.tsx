@@ -1,63 +1,58 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState } from 'react';
 
-import {
-  FolderIllustration,
-  PencilSquare,
-  TriangleRightMini,
-} from "@medusajs/icons";
-import type { HttpTypes } from "@medusajs/types";
-import { Badge, Container, Heading, Text, Tooltip } from "@medusajs/ui";
-
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-
-import { ActionMenu } from "@components/common/action-menu";
-import { LinkButton } from "@components/common/link-button";
-import { Skeleton } from "@components/common/skeleton";
-
-import { useProductCategory } from "@hooks/api";
-
-import {
-  getCategoryChildren,
-  getCategoryPath,
-} from "@routes/categories/common/utils";
+import { ActionMenu } from '@components/common/action-menu';
+import { LinkButton } from '@components/common/link-button';
+import { Skeleton } from '@components/common/skeleton';
+import { useProductCategory } from '@hooks/api';
+import { FolderIllustration, PencilSquare, TriangleRightMini } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Badge, Container, Heading, Text, Tooltip } from '@medusajs/ui';
+import { getCategoryChildren, getCategoryPath } from '@routes/categories/common/utils';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 type CategoryOrganizeSectionProps = {
   category: HttpTypes.AdminProductCategory;
 };
 
-export const CategoryOrganizeSection = ({
-  category,
-}: CategoryOrganizeSectionProps) => {
+export const CategoryOrganizeSection = ({ category }: CategoryOrganizeSectionProps) => {
   const { t } = useTranslation();
 
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">{t("categories.organize.header")}</Heading>
+        <Heading level="h2">{t('categories.organize.header')}</Heading>
         <ActionMenu
           groups={[
             {
               actions: [
                 {
-                  label: t("categories.organize.action"),
+                  label: t('categories.organize.action'),
                   icon: <PencilSquare />,
-                  to: `organize`,
-                },
-              ],
-            },
+                  to: `organize`
+                }
+              ]
+            }
           ]}
         />
       </div>
       <div className="grid grid-cols-2 items-start gap-3 px-6 py-4 text-ui-fg-subtle">
-        <Text size="small" leading="compact" weight="plus">
-          {t("categories.fields.path.label")}
+        <Text
+          size="small"
+          leading="compact"
+          weight="plus"
+        >
+          {t('categories.fields.path.label')}
         </Text>
         <PathDisplay category={category} />
       </div>
       <div className="grid grid-cols-2 items-start gap-3 px-6 py-4 text-ui-fg-subtle">
-        <Text size="small" leading="compact" weight="plus">
-          {t("categories.fields.children.label")}
+        <Text
+          size="small"
+          leading="compact"
+          weight="plus"
+        >
+          {t('categories.fields.children.label')}
         </Text>
         <ChildrenDisplay category={category} />
       </div>
@@ -65,11 +60,7 @@ export const CategoryOrganizeSection = ({
   );
 };
 
-const PathDisplay = ({
-  category,
-}: {
-  category: HttpTypes.AdminProductCategory;
-}) => {
+const PathDisplay = ({ category }: { category: HttpTypes.AdminProductCategory }) => {
   const [expanded, setExpanded] = useState(false);
 
   const { t } = useTranslation();
@@ -78,10 +69,10 @@ const PathDisplay = ({
     product_category: withParents,
     isLoading,
     isError,
-    error,
+    error
   } = useProductCategory(category.id, {
     include_ancestors_tree: true,
-    fields: "id,name,*parent_category",
+    fields: 'id,name,*parent_category'
   });
 
   const chips = useMemo(() => getCategoryPath(withParents), [withParents]);
@@ -96,7 +87,10 @@ const PathDisplay = ({
 
   if (!chips.length) {
     return (
-      <Text size="small" leading="compact">
+      <Text
+        size="small"
+        leading="compact"
+      >
         -
       </Text>
     );
@@ -107,13 +101,17 @@ const PathDisplay = ({
       <div className="grid grid-cols-[20px_1fr] items-start gap-x-2">
         <FolderIllustration />
         <div className="flex w-full items-center gap-x-0.5 overflow-hidden">
-          <Tooltip content={t("categories.fields.path.tooltip")}>
+          <Tooltip content={t('categories.fields.path.tooltip')}>
             <button
               className="outline-none"
               type="button"
               onClick={() => setExpanded(true)}
             >
-              <Text size="xsmall" leading="compact" weight="plus">
+              <Text
+                size="xsmall"
+                leading="compact"
+                weight="plus"
+              >
                 ...
               </Text>
             </button>
@@ -141,9 +139,16 @@ const PathDisplay = ({
         <div className="gap- flex flex-wrap items-center gap-x-0.5 gap-y-1">
           {chips.map((chip, index) => {
             return (
-              <div key={chip.id} className="flex items-center gap-x-0.5">
+              <div
+                key={chip.id}
+                className="flex items-center gap-x-0.5"
+              >
                 {index === chips.length - 1 ? (
-                  <Text size="xsmall" leading="compact" weight="plus">
+                  <Text
+                    size="xsmall"
+                    leading="compact"
+                    weight="plus"
+                  >
                     {chip.name}
                   </Text>
                 ) : (
@@ -166,8 +171,15 @@ const PathDisplay = ({
   return (
     <div className="grid grid-cols-1 items-start gap-x-2">
       {chips.map((chip, index) => (
-        <div key={chip.id} className="flex items-center gap-x-0.5">
-          <Text size="xsmall" leading="compact" weight="plus">
+        <div
+          key={chip.id}
+          className="flex items-center gap-x-0.5"
+        >
+          <Text
+            size="xsmall"
+            leading="compact"
+            weight="plus"
+          >
             {chip.name}
           </Text>
           {index < chips.length - 1 && <TriangleRightMini />}
@@ -177,25 +189,18 @@ const PathDisplay = ({
   );
 };
 
-const ChildrenDisplay = ({
-  category,
-}: {
-  category: HttpTypes.AdminProductCategory;
-}) => {
+const ChildrenDisplay = ({ category }: { category: HttpTypes.AdminProductCategory }) => {
   const {
     product_category: withChildren,
     isLoading,
     isError,
-    error,
+    error
   } = useProductCategory(category.id, {
     include_descendants_tree: true,
-    fields: "id,name,category_children",
+    fields: 'id,name,category_children'
   });
 
-  const chips = useMemo(
-    () => getCategoryChildren(withChildren),
-    [withChildren],
-  );
+  const chips = useMemo(() => getCategoryChildren(withChildren), [withChildren]);
 
   if (isLoading || !withChildren) {
     return <Skeleton className="h-5 w-16" />;
@@ -207,7 +212,10 @@ const ChildrenDisplay = ({
 
   if (!chips.length) {
     return (
-      <Text size="small" leading="compact">
+      <Text
+        size="small"
+        leading="compact"
+      >
         -
       </Text>
     );
@@ -215,8 +223,13 @@ const ChildrenDisplay = ({
 
   return (
     <div className="flex w-full flex-wrap gap-1">
-      {chips.map((chip) => (
-        <Badge key={chip.id} size="2xsmall" className="max-w-full" asChild>
+      {chips.map(chip => (
+        <Badge
+          key={chip.id}
+          size="2xsmall"
+          className="max-w-full"
+          asChild
+        >
           <Link to={`/categories/${chip.id}`}>
             <span className="truncate">{chip.name}</span>
           </Link>

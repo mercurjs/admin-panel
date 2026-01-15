@@ -1,1 +1,1 @@
-export { Algolia as Component } from "./algolia";
+export { Algolia as Component } from './algolia';

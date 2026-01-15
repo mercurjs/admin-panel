@@ -1,21 +1,18 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import { PencilSquare, Trash } from "@medusajs/icons";
-import type { AdminCampaign } from "@medusajs/types";
-import { Button, Container, Heading, toast, usePrompt } from "@medusajs/ui";
-
-import { keepPreviousData } from "@tanstack/react-query";
-import { createColumnHelper } from "@tanstack/react-table";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-
-import { ActionMenu } from "@components/common/action-menu";
-import { _DataTable } from "@components/table/data-table";
-
-import { useCampaigns, useDeleteCampaign } from "@hooks/api";
-import { useCampaignTableColumns } from "@hooks/table/columns";
-import { useCampaignTableQuery } from "@hooks/table/query";
-import { useDataTable } from "@hooks/use-data-table";
+import { ActionMenu } from '@components/common/action-menu';
+import { _DataTable } from '@components/table/data-table';
+import { useCampaigns, useDeleteCampaign } from '@hooks/api';
+import { useCampaignTableColumns } from '@hooks/table/columns';
+import { useCampaignTableQuery } from '@hooks/table/query';
+import { useDataTable } from '@hooks/use-data-table';
+import { PencilSquare, Trash } from '@medusajs/icons';
+import type { AdminCampaign } from '@medusajs/types';
+import { Button, Container, Heading, toast, usePrompt } from '@medusajs/ui';
+import { keepPreviousData } from '@tanstack/react-query';
+import { createColumnHelper } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 const PAGE_SIZE = 20;
 
@@ -28,9 +25,9 @@ export const CampaignListTable = () => {
     count,
     isPending: isLoading,
     isError,
-    error,
+    error
   } = useCampaigns(searchParams, {
-    placeholderData: keepPreviousData,
+    placeholderData: keepPreviousData
   });
 
   const columns = useColumns();
@@ -40,8 +37,8 @@ export const CampaignListTable = () => {
     columns,
     count,
     enablePagination: true,
-    getRowId: (row) => row.id,
-    pageSize: PAGE_SIZE,
+    getRowId: row => row.id,
+    pageSize: PAGE_SIZE
   });
 
   if (isError) {
@@ -49,12 +46,27 @@ export const CampaignListTable = () => {
   }
 
   return (
-    <Container className="divide-y p-0" data-testid="campaign-list-table-container">
-      <div className="flex items-center justify-between px-6 py-4" data-testid="campaign-list-table-header">
-        <Heading level="h2" data-testid="campaign-list-table-heading">{t("campaigns.domain")}</Heading>
+    <Container
+      className="divide-y p-0"
+      data-testid="campaign-list-table-container"
+    >
+      <div
+        className="flex items-center justify-between px-6 py-4"
+        data-testid="campaign-list-table-header"
+      >
+        <Heading
+          level="h2"
+          data-testid="campaign-list-table-heading"
+        >
+          {t('campaigns.domain')}
+        </Heading>
         <Link to="/campaigns/create">
-          <Button size="small" variant="secondary" data-testid="campaign-list-table-create-button">
-            {t("actions.create")}
+          <Button
+            size="small"
+            variant="secondary"
+            data-testid="campaign-list-table-create-button"
+          >
+            {t('actions.create')}
           </Button>
         </Link>
       </div>
@@ -66,13 +78,13 @@ export const CampaignListTable = () => {
         pageSize={PAGE_SIZE}
         pagination
         search
-        navigateTo={(row) => row.id}
+        navigateTo={row => row.id}
         isLoading={isLoading}
         queryObject={raw}
         orderBy={[
-          { key: "name", label: t("fields.name") },
-          { key: "created_at", label: t("fields.createdAt") },
-          { key: "updated_at", label: t("fields.updatedAt") },
+          { key: 'name', label: t('fields.name') },
+          { key: 'created_at', label: t('fields.createdAt') },
+          { key: 'updated_at', label: t('fields.updatedAt') }
         ]}
         data-testid="campaign-list-table"
       />
@@ -87,14 +99,14 @@ const CampaignActions = ({ campaign }: { campaign: AdminCampaign }) => {
 
   const handleDelete = async () => {
     const confirm = await prompt({
-      title: t("general.areYouSure"),
-      description: t("campaigns.deleteCampaignWarning", {
-        name: campaign.name,
+      title: t('general.areYouSure'),
+      description: t('campaigns.deleteCampaignWarning', {
+        name: campaign.name
       }),
-      verificationInstruction: t("general.typeToConfirm"),
+      verificationInstruction: t('general.typeToConfirm'),
       verificationText: campaign.name,
-      confirmText: t("actions.delete"),
-      cancelText: t("actions.cancel"),
+      confirmText: t('actions.delete'),
+      cancelText: t('actions.cancel')
     });
 
     if (!confirm) {
@@ -103,13 +115,11 @@ const CampaignActions = ({ campaign }: { campaign: AdminCampaign }) => {
 
     await mutateAsync(undefined, {
       onSuccess: () => {
-        toast.success(
-          t("campaigns.delete.successToast", { name: campaign.name }),
-        );
+        toast.success(t('campaigns.delete.successToast', { name: campaign.name }));
       },
-      onError: (e) => {
+      onError: e => {
         toast.error(e.message);
-      },
+      }
     });
   };
 
@@ -120,20 +130,20 @@ const CampaignActions = ({ campaign }: { campaign: AdminCampaign }) => {
           actions: [
             {
               icon: <PencilSquare />,
-              label: t("actions.edit"),
-              to: `/campaigns/${campaign.id}/edit`,
-            },
-          ],
+              label: t('actions.edit'),
+              to: `/campaigns/${campaign.id}/edit`
+            }
+          ]
         },
         {
           actions: [
             {
               icon: <Trash />,
-              label: t("actions.delete"),
-              onClick: handleDelete,
-            },
-          ],
-        },
+              label: t('actions.delete'),
+              onClick: handleDelete
+            }
+          ]
+        }
       ]}
       data-testid={`campaign-list-table-action-menu-${campaign.id}`}
     />
@@ -149,12 +159,12 @@ const useColumns = () => {
     () => [
       ...base,
       columnHelper.display({
-        id: "actions",
+        id: 'actions',
         cell: ({ row }) => {
           return <CampaignActions campaign={row.original} />;
-        },
-      }),
+        }
+      })
     ],
-    [base],
+    [base]
   );
 };
