@@ -1361,7 +1361,7 @@
       "locationDescription": "Choose which location you want to fulfill items from.",
       "sendNotificationHint": "Notify customers about the created fulfillment.",
       "methodDescription": "Choose a different shipping method from the one customer selected",
-      "cantBeFulfilledByAdmin": "This item cannot be fulfilled by admin locations.",
+      "cantBeFulfilledByAdmin": "This item cannot be fulfilled by admin.",
       "error": {
         "wrongQuantity": "Only one item is available for fulfillment",
         "wrongQuantity_other": "Quantity should be a number between 1 and {{number}}",
