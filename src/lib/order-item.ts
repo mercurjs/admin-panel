@@ -1,14 +1,18 @@
-import { AdminOrderLineItem, OrderLineItemDTO } from '@medusajs/types';
+import { AdminOrderLineItem, AdminProductVariant, OrderLineItemDTO } from '@medusajs/types';
 
 export const getFulfillableQuantity = (item: OrderLineItemDTO | AdminOrderLineItem) => {
   return item.quantity - item.detail.fulfilled_quantity;
 };
 
-export const canItemBeFulfilledByAdmin = (
-  item: AdminOrderLineItem,
-  adminLocationIds: Set<string>
+export const canVariantBeFulfilledByAdmin = (
+  variant?: AdminProductVariant,
+  adminLocationIds?: Set<string>
 ): boolean => {
-  const inventory = item.variant?.inventory?.[0];
+  if (!adminLocationIds || !variant) {
+    return false;
+  }
+
+  const inventory = variant?.inventory?.[0];
   if (!inventory?.location_levels?.length) {
     return false;
   }
@@ -20,5 +24,5 @@ export const filterItemsFulfillableByAdmin = (
   items: AdminOrderLineItem[],
   adminLocationIds: Set<string>
 ): AdminOrderLineItem[] => {
-  return items.filter(item => canItemBeFulfilledByAdmin(item, adminLocationIds));
+  return items.filter(item => canVariantBeFulfilledByAdmin(item.variant, adminLocationIds));
 };
