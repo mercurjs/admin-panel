@@ -1076,7 +1076,10 @@
       "currentOwner": "Současný vlastník",
       "newOwner": "Nový vlastník",
       "currentOwnerDescription": "Zákazník aktuálně spojený s touto objednávkou.",
-      "newOwnerDescription": "Zákazník, na kterého se objednávka převede."
+      "newOwnerDescription": "Zákazník, na kterého se objednávka převede.",
+      "errors": {
+        "orderChangeAlreadyExists": "Objednávka nemůže být převedena, protože existuje aktivní žádost o převod."
+      }
     },
     "payment": {
       "title": "Platby",

@@ -1047,7 +1047,10 @@
       "currentOwner": "Huidige eigenaar",
       "newOwner": "Nieuwe eigenaar",
       "currentOwnerDescription": "De klant die momenteel aan deze bestelling is gekoppeld.",
-      "newOwnerDescription": "De klant waaraan deze bestelling moet worden overgedragen."
+      "newOwnerDescription": "De klant waaraan deze bestelling moet worden overgedragen.",
+      "errors": {
+        "orderChangeAlreadyExists": "De bestelling kan niet worden overgedragen omdat er een actief overdrachtsverzoek bestaat."
+      }
     },
     "payment": {
       "title": "Betalingen",

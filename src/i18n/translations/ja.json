@@ -958,7 +958,10 @@
       "currentOwner": "現在の所有者",
       "newOwner": "新しい所有者",
       "currentOwnerDescription": "この注文に現在関連付けられている顧客。",
-      "newOwnerDescription": "この注文を移転する顧客。"
+      "newOwnerDescription": "この注文を移転する顧客。",
+      "errors": {
+        "orderChangeAlreadyExists": "アクティブな移転リクエストが存在するため、注文を移転できません。"
+      }
     },
     "payment": {
       "title": "支払い",

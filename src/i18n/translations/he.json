@@ -1051,7 +1051,10 @@
       "currentOwner": "בעלים נוכחי",
       "newOwner": "בעלים חדש",
       "currentOwnerDescription": "הלקוח הקשור כרגע להזמנה זו.",
-      "newOwnerDescription": "הלקוח שאליו תועבר ההזמנה."
+      "newOwnerDescription": "הלקוח שאליו תועבר ההזמנה.",
+      "errors": {
+        "orderChangeAlreadyExists": "לא ניתן להעביר את ההזמנה מכיוון שקיימת בקשת העברה פעילה."
+      }
     },
     "payment": {
       "title": "תשלומים",

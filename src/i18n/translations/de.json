@@ -952,7 +952,10 @@
       "currentOwner": "Aktueller Besitzer",
       "newOwner": "Neuer Besitzer",
       "currentOwnerDescription": "Der Kunde, der derzeit mit dieser Bestellung verbunden ist.",
-      "newOwnerDescription": "Der Kunde, an den Sie diese Bestellung übertragen möchten."
+      "newOwnerDescription": "Der Kunde, an den Sie diese Bestellung übertragen möchten.",
+      "errors": {
+        "orderChangeAlreadyExists": "Die Bestellung kann nicht übertragen werden, da eine aktive Übertragungsanfrage besteht."
+      }
     },
     "payment": {
       "title": "Zahlungen",

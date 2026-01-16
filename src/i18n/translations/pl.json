@@ -1115,7 +1115,10 @@
       "currentOwner": "Obecny właściciel",
       "newOwner": "Nowy właściciel",
       "currentOwnerDescription": "Klient obecnie związany z tym zamówieniem.",
-      "newOwnerDescription": "Klient, do którego chcesz przekazać to zamówienie."
+      "newOwnerDescription": "Klient, do którego chcesz przekazać to zamówienie.",
+      "errors": {
+        "orderChangeAlreadyExists": "Zamówienie nie może zostać przekazane, ponieważ istnieje aktywny wniosek o przekazanie."
+      }
     },
     "payment": {
       "title": "Płatności",

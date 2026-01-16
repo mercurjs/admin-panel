@@ -1049,7 +1049,10 @@
       "currentOwner": "Dabartinis savininkas",
       "newOwner": "Naujas savininkas",
       "currentOwnerDescription": "Pirkėjas jau susietas su šiuo užsakymu.",
-      "newOwnerDescription": "Pirkėjas kuriam perleidžiamos užsakymmo nuosavybė."
+      "newOwnerDescription": "Pirkėjas kuriam perleidžiamos užsakymmo nuosavybė.",
+      "errors": {
+        "orderChangeAlreadyExists": "Užsakymas negali būti perleistas, nes yra aktyvus perleidimo prašymas."
+      }
     },
     "payment": {
       "title": "Apmokėjimas",

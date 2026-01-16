@@ -1008,7 +1008,10 @@
       "currentOwner": "Тековен сопственик",
       "newOwner": "Нов сопственик",
       "currentOwnerDescription": "Клиентот во моментов е поврзан со оваа нарачка.",
-      "newOwnerDescription": "Клиентот да ја пренесе оваа нарачка на."
+      "newOwnerDescription": "Клиентот да ја пренесе оваа нарачка на.",
+      "errors": {
+        "orderChangeAlreadyExists": "Нарачката не може да се пренесе бидејќи постои активно барање за пренос."
+      }
     },
     "payment": {
       "title": "Плаќања",

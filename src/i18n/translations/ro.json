@@ -1008,7 +1008,10 @@
       "currentOwner": "Actual proprietar",
       "newOwner": "Noul proprietar",
       "currentOwnerDescription": "Clientul se referă în prezent la această comandă.",
-      "newOwnerDescription": "Clientului să transfere această comandă."
+      "newOwnerDescription": "Clientului să transfere această comandă.",
+      "errors": {
+        "orderChangeAlreadyExists": "Comanda nu poate fi transferată deoarece există o solicitare de transfer activă."
+      }
     },
     "payment": {
       "title": "Plăți",

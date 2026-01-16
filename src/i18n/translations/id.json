@@ -1051,7 +1051,10 @@
       "currentOwner": "Pemilik saat ini",
       "newOwner": "Pemilik baru",
       "currentOwnerDescription": "Pelanggan yang saat ini terkait dengan pesanan ini.",
-      "newOwnerDescription": "Pelanggan yang akan menerima transfer pesanan ini."
+      "newOwnerDescription": "Pelanggan yang akan menerima transfer pesanan ini.",
+      "errors": {
+        "orderChangeAlreadyExists": "Pesanan tidak dapat ditransfer karena ada permintaan transfer yang aktif."
+      }
     },
     "payment": {
       "title": "Pembayaran",

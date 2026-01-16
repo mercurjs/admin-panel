@@ -4098,6 +4098,16 @@
             },
             "newOwnerDescription": {
               "type": "string"
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "orderChangeAlreadyExists": {
+                  "type": "string"
+                }
+              },
+              "required": ["orderChangeAlreadyExists"],
+              "additionalProperties": false
             }
           },
           "required": [
@@ -4106,7 +4116,8 @@
             "currentOwner",
             "newOwner",
             "currentOwnerDescription",
-            "newOwnerDescription"
+            "newOwnerDescription",
+            "errors"
           ],
           "additionalProperties": false
         },

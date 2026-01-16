@@ -1008,7 +1008,10 @@
       "currentOwner": "Одоогийн эзэмшигч",
       "newOwner": "Шинэ эзэмшигч",
       "currentOwnerDescription": "Энэ захиалга холбоотой одоогийн үйлчлүүлэгч.",
-      "newOwnerDescription": "Энэ захиалгыг шилжүүлэх үйлчлүүлэгч."
+      "newOwnerDescription": "Энэ захиалгыг шилжүүлэх үйлчлүүлэгч.",
+      "errors": {
+        "orderChangeAlreadyExists": "Идэвхтэй шилжүүлэх хүсэлт байгаа тул захиалгыг шилжүүлж болохгүй."
+      }
     },
     "payment": {
       "title": "Төлбөрүүд",

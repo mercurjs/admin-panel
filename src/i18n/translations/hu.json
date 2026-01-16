@@ -1047,7 +1047,10 @@
       "currentOwner": "Jelenlegi tulajdonos",
       "newOwner": "Új tulajdonos",
       "currentOwnerDescription": "A rendelés jelenlegi tulajdonosa.",
-      "newOwnerDescription": "A rendelés új tulajdonosa."
+      "newOwnerDescription": "A rendelés új tulajdonosa.",
+      "errors": {
+        "orderChangeAlreadyExists": "A rendelés nem adható át, mert van egy aktív átadási kérelem."
+      }
     },
     "payment": {
       "title": "Fizetés",

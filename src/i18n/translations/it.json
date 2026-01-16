@@ -964,7 +964,10 @@
       "currentOwner": "Proprietario attuale",
       "newOwner": "Nuovo proprietario",
       "currentOwnerDescription": "Il cliente attualmente associato a questo ordine.",
-      "newOwnerDescription": "Il cliente a cui trasferire questo ordine."
+      "newOwnerDescription": "Il cliente a cui trasferire questo ordine.",
+      "errors": {
+        "orderChangeAlreadyExists": "L'ordine non può essere trasferito perché esiste una richiesta di trasferimento attiva."
+      }
     },
     "payment": {
       "title": "Pagamenti",

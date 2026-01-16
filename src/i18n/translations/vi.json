@@ -1076,7 +1076,10 @@
       "currentOwner": "Chủ sở hữu hiện tại",
       "newOwner": "Chủ sở hữu mới",
       "currentOwnerDescription": "Khách hàng hiện đang liên quan đến đơn hàng này.",
-      "newOwnerDescription": "Khách hàng mà đơn hàng này sẽ được chuyển đến."
+      "newOwnerDescription": "Khách hàng mà đơn hàng này sẽ được chuyển đến.",
+      "errors": {
+        "orderChangeAlreadyExists": "Không thể chuyển đơn hàng vì đã có yêu cầu chuyển đang hoạt động."
+      }
     },
     "payment": {
       "title": "Thanh toán",

@@ -58,7 +58,14 @@ export function CreateOrderTransferForm({ order }: CreateOrderTransferFormProps)
       toast.success(t('orders.transfer.requestSuccess', { customerDetails: customer?.label }));
       handleSuccess();
     } catch (error) {
-      toast.error((error as Error).message);
+      const errorMessage = (error as Error).message;
+
+      if (errorMessage.includes('already has an existing active order change')) {
+        toast.error(t('orders.transfer.errors.orderChangeAlreadyExists'));
+        return;
+      }
+
+      toast.error(errorMessage);
     }
   });
 

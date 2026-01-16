@@ -952,7 +952,10 @@
       "currentOwner": "Proprietário atual",
       "newOwner": "Novo proprietário",
       "currentOwnerDescription": "O cliente atualmente relacionado a este pedido.",
-      "newOwnerDescription": "O cliente para o qual este pedido será transferido."
+      "newOwnerDescription": "O cliente para o qual este pedido será transferido.",
+      "errors": {
+        "orderChangeAlreadyExists": "O pedido não pode ser transferido porque existe uma solicitação de transferência ativa."
+      }
     },
     "payment": {
       "title": "Pagamentos",

@@ -1122,7 +1122,10 @@
       "currentOwner": "Propietario actual",
       "newOwner": "Nuevo propietario",
       "currentOwnerDescription": "El cliente actualmente relacionado con este pedido.",
-      "newOwnerDescription": "El cliente a quien se transferirá este pedido."
+      "newOwnerDescription": "El cliente a quien se transferirá este pedido.",
+      "errors": {
+        "orderChangeAlreadyExists": "El pedido no puede ser transferido porque existe una solicitud de transferencia activa."
+      }
     },
     "payment": {
       "title": "Pagos",

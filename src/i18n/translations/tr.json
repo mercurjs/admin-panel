@@ -1016,7 +1016,10 @@
       "currentOwner": "Mevcut Sahip",
       "newOwner": "Yeni Sahip",
       "currentOwnerDescription": "Bu siparişle şu anda ilişkili olan müşteri.",
-      "newOwnerDescription": "Bu siparişin devredileceği müşteri."
+      "newOwnerDescription": "Bu siparişin devredileceği müşteri.",
+      "errors": {
+        "orderChangeAlreadyExists": "Aktif bir transfer talebi olduğu için sipariş transfer edilemez."
+      }
     },
     "payment": {
       "title": "Ödemeler",
