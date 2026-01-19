@@ -271,11 +271,11 @@ export const ExchangeCreateForm = ({
 
   return (
     <RouteFocusModal.Form form={form} data-testid="order-create-exchange-form">
-      <KeyboundForm onSubmit={handleSubmit} className="flex h-full flex-col">
+      <KeyboundForm onSubmit={handleSubmit} className="flex h-full flex-col" data-testid="order-create-exchange-form">
         <RouteFocusModal.Header data-testid="order-create-exchange-header" />
 
         <RouteFocusModal.Body className="flex size-full justify-center overflow-y-auto" data-testid="order-create-exchange-body">
-          <div className="mt-16 w-[720px] max-w-[100%] px-4 md:p-0">
+          <div className="mt-16 w-[720px] max-w-[100%] px-4 md:p-0" data-testid="order-create-exchange-form-content">
             <Heading level="h1" data-testid="order-create-exchange-heading">{t("orders.exchanges.create")}</Heading>
 
             <ExchangeInboundSection
@@ -296,11 +296,11 @@ export const ExchangeCreateForm = ({
             {/* TOTALS SECTION*/}
             <div className="mt-8 border-y border-dotted py-4" data-testid="order-create-exchange-totals">
               <div className="mb-2 flex items-center justify-between" data-testid="order-create-exchange-inbound-total">
-                <span className="txt-small text-ui-fg-subtle">
+                <span className="txt-small text-ui-fg-subtle" data-testid="order-create-exchange-form-inbound-total-label">
                   {t("orders.returns.inboundTotal")}
                 </span>
 
-                <span className="txt-small text-ui-fg-subtle">
+                <span className="txt-small text-ui-fg-subtle" data-testid="order-create-exchange-form-inbound-total-value">
                   {getStylizedAmount(
                     inboundPreviewItems.reduce((acc, item) => {
                       const action = item.actions?.find(
@@ -316,11 +316,11 @@ export const ExchangeCreateForm = ({
               </div>
 
               <div className="mb-2 flex items-center justify-between" data-testid="order-create-exchange-outbound-total">
-                <span className="txt-small text-ui-fg-subtle">
+                <span className="txt-small text-ui-fg-subtle" data-testid="order-create-exchange-form-outbound-total-label">
                   {t("orders.exchanges.outboundTotal")}
                 </span>
 
-                <span className="txt-small text-ui-fg-subtle">
+                <span className="txt-small text-ui-fg-subtle" data-testid="order-create-exchange-form-outbound-total-value">
                   {getStylizedAmount(
                     outboundPreviewItems.reduce((acc, item) => {
                       const action = item.actions?.find(
@@ -487,10 +487,10 @@ export const ExchangeCreateForm = ({
               </div>
 
               <div className="mt-4 flex items-center justify-between border-t border-dotted pt-4" data-testid="order-create-exchange-refund-amount">
-                <span className="txt-small font-medium">
+                <span className="txt-small font-medium" data-testid="order-create-exchange-form-refund-amount-label">
                   {t("orders.exchanges.refundAmount")}
                 </span>
-                <span className="txt-small font-medium">
+                <span className="txt-small font-medium" data-testid="order-create-exchange-form-refund-amount-value">
                   {getStylizedAmount(
                     preview.summary.pending_difference,
                     order.currency_code
@@ -506,7 +506,7 @@ export const ExchangeCreateForm = ({
                 render={({ field: { onChange, value, ...field } }) => {
                   return (
                     <Form.Item data-testid="order-create-exchange-notification-item">
-                      <div className="flex items-center">
+                      <div className="flex items-center" data-testid="order-create-exchange-form-notification-control">
                         <Form.Control className="mr-4 self-start" data-testid="order-create-exchange-notification-control">
                           <Switch
                             dir="ltr"
@@ -537,7 +537,7 @@ export const ExchangeCreateForm = ({
           </div>
         </RouteFocusModal.Body>
         <RouteFocusModal.Footer data-testid="order-create-exchange-footer">
-          <div className="flex w-full items-center justify-end gap-x-4">
+          <div className="flex w-full items-center justify-end gap-x-4" data-testid="order-create-exchange-form-footer-actions">
             <div className="flex items-center justify-end gap-x-2">
               <RouteFocusModal.Close asChild>
                 <Button

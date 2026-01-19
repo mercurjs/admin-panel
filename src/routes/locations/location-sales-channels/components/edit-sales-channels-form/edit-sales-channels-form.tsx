@@ -188,14 +188,14 @@ const useColumns = () => {
         },
         cell: ({ row }) => {
           return (
-            <div data-testid={`location-sales-channels-form-table-row-${row.id}-select-cell`}>
+            <div data-testid={`location-sales-channels-form-table-row-${row.index}-select-cell`}>
               <Checkbox
                 checked={row.getIsSelected()}
                 onCheckedChange={(value) => row.toggleSelected(!!value)}
                 onClick={(e) => {
                   e.stopPropagation()
                 }}
-                data-testid={`location-sales-channels-form-table-row-${row.id}-select-checkbox`}
+                data-testid={`location-sales-channels-form-table-row-${row.index}-select-checkbox`}
               />
             </div>
           )

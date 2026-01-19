@@ -50,6 +50,7 @@ export function EditOrderEmailForm({ order }: EditOrderEmailFormProps) {
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex size-full flex-col overflow-hidden"
+        data-testid="order-edit-email-form"
       >
         <RouteDrawer.Body className="flex-1 overflow-auto" data-testid="order-edit-email-body">
           <Form.Field
@@ -72,7 +73,7 @@ export function EditOrderEmailForm({ order }: EditOrderEmailFormProps) {
         </RouteDrawer.Body>
 
         <RouteDrawer.Footer data-testid="order-edit-email-footer">
-          <div className="flex items-center justify-end gap-x-2">
+          <div className="flex items-center justify-end gap-x-2" data-testid="order-edit-email-form-footer-actions">
             <RouteDrawer.Close asChild>
               <Button variant="secondary" size="small" data-testid="order-edit-email-cancel-button">
                 {t("actions.cancel")}

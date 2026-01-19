@@ -125,7 +125,7 @@ export const CreateCategoryForm = ({
     : "in-progress"
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="category-create-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex size-full flex-col overflow-hidden"
@@ -135,14 +135,15 @@ export const CreateCategoryForm = ({
           onValueChange={(tab) => handleTabChange(tab as Tab)}
           className="flex size-full flex-col"
         >
-          <RouteFocusModal.Header>
+          <RouteFocusModal.Header data-testid="category-create-form-header">
             <div className="flex w-full items-center justify-between">
               <div className="-my-2 w-full max-w-[400px] border-l">
-                <ProgressTabs.List className="grid w-full grid-cols-2">
+                <ProgressTabs.List className="grid w-full grid-cols-2" data-testid="category-create-form-tabs-list">
                   <ProgressTabs.Trigger
                     value={Tab.DETAILS}
                     status={detailsStatus}
                     className="w-full min-w-0 overflow-hidden"
+                    data-testid="category-create-form-tab-details"
                   >
                     <span className="truncate">
                       {t("categories.create.tabs.details")}
@@ -152,6 +153,7 @@ export const CreateCategoryForm = ({
                     value={Tab.ORGANIZE}
                     status={nestingStatus}
                     className="w-full min-w-0 overflow-hidden"
+                    data-testid="category-create-form-tab-organize"
                   >
                     <span className="truncate">
                       {t("categories.create.tabs.organize")}
@@ -161,21 +163,22 @@ export const CreateCategoryForm = ({
               </div>
             </div>
           </RouteFocusModal.Header>
-          <RouteFocusModal.Body className="flex size-full flex-col overflow-auto">
-            <ProgressTabs.Content value={Tab.DETAILS}>
+          <RouteFocusModal.Body className="flex size-full flex-col overflow-auto" data-testid="category-create-form-body">
+            <ProgressTabs.Content value={Tab.DETAILS} data-testid="category-create-form-tab-details-content">
               <CreateCategoryDetails form={form} />
             </ProgressTabs.Content>
             <ProgressTabs.Content
               value={Tab.ORGANIZE}
               className="bg-ui-bg-subtle flex-1"
+              data-testid="category-create-form-tab-organize-content"
             >
               <CreateCategoryNesting form={form} shouldFreeze={shouldFreeze} />
             </ProgressTabs.Content>
           </RouteFocusModal.Body>
-          <RouteFocusModal.Footer>
+          <RouteFocusModal.Footer data-testid="category-create-form-footer">
             <div className="flex items-center justify-end gap-x-2">
               <RouteFocusModal.Close asChild>
-                <Button size="small" variant="secondary">
+                <Button size="small" variant="secondary" data-testid="category-create-form-cancel-button">
                   {t("actions.cancel")}
                 </Button>
               </RouteFocusModal.Close>
@@ -186,6 +189,7 @@ export const CreateCategoryForm = ({
                   variant="primary"
                   type="submit"
                   isLoading={isPending}
+                  data-testid="category-create-form-save-button"
                 >
                   {t("actions.save")}
                 </Button>
@@ -196,6 +200,7 @@ export const CreateCategoryForm = ({
                   variant="primary"
                   type="button"
                   onClick={() => handleTabChange(Tab.ORGANIZE)}
+                  data-testid="category-create-form-continue-button"
                 >
                   {t("actions.continue")}
                 </Button>

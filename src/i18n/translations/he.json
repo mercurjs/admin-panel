@@ -2260,7 +2260,8 @@
       "header": "מוצרים",
       "actions": {
         "addProducts": "הוסף מוצרים",
-        "editPrices": "ערוך מחירים"
+        "editPrices": "ערוך מחירים",
+        "editPricesDisabled": "הוסף מוצרים לפני עריכת מחירים"
       },
       "delete": {
         "confirmation_one": "אתה עומד למחוק את המחירים עבור {{count}} מוצר ברשימת המחירים. פעולה זו אינה ניתנת לביטול.",

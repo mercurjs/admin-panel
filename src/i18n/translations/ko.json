@@ -2266,7 +2266,8 @@
       "header": "제품",
       "actions": {
         "addProducts": "제품 추가",
-        "editPrices": "가격 편집"
+        "editPrices": "가격 편집",
+        "editPricesDisabled": "가격을 편집하기 전에 제품을 추가하세요"
       },
       "delete": {
         "confirmation_one": "가격 목록에서 {{count}}개 제품의 가격을 삭제하려고 합니다. 이 작업은 취소할 수 없습니다.",

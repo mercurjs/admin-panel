@@ -2260,7 +2260,8 @@
             "header": "Produk",
             "actions": {
                 "addProducts": "Tambah produk",
-                "editPrices": "Edit harga"
+                "editPrices": "Edit harga",
+                "editPricesDisabled": "Tambahkan produk sebelum mengedit harga"
             },
             "delete": {
                 "confirmation_one": "Anda akan menghapus harga untuk {{count}} produk dalam daftar harga. Tindakan ini tidak dapat dibatalkan.",

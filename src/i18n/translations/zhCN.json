@@ -2260,7 +2260,8 @@
       "header": "产品",
       "actions": {
         "addProducts": "添加产品",
-        "editPrices": "编辑价格"
+        "editPrices": "编辑价格",
+        "editPricesDisabled": "编辑价格前请先添加产品"
       },
       "delete": {
         "confirmation_one": "您即将删除价格列表中 {{count}} 个产品的价格。此操作无法撤销。",

@@ -259,7 +259,7 @@ export const CreateProductVariantForm = ({
   })
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="product-variant-create-form">
       <ProgressTabs
         dir={direction}
         value={tab}
@@ -270,19 +270,21 @@ export const CreateProductVariantForm = ({
           onSubmit={handleSubmit}
           className="flex h-full flex-col overflow-hidden"
         >
-          <RouteFocusModal.Header>
+          <RouteFocusModal.Header data-testid="product-variant-create-form-header">
             <div className="flex w-full items-center justify-between gap-x-4">
               <div className="-my-2 w-full max-w-[600px] border-l">
-                <ProgressTabs.List className="grid w-full grid-cols-3">
+                <ProgressTabs.List className="grid w-full grid-cols-3" data-testid="product-variant-create-form-tabs-list">
                   <ProgressTabs.Trigger
                     status={tabState.detail}
                     value={Tab.DETAIL}
+                    data-testid="product-variant-create-form-tab-details"
                   >
                     {t("priceLists.create.tabs.details")}
                   </ProgressTabs.Trigger>
                   <ProgressTabs.Trigger
                     status={tabState.price}
                     value={Tab.PRICE}
+                    data-testid="product-variant-create-form-tab-pricing"
                   >
                     {t("priceLists.create.tabs.prices")}
                   </ProgressTabs.Trigger>
@@ -290,6 +292,7 @@ export const CreateProductVariantForm = ({
                     <ProgressTabs.Trigger
                       status={tabState.inventory}
                       value={Tab.INVENTORY}
+                      data-testid="product-variant-create-form-tab-inventory"
                     >
                       {t("products.create.tabs.inventory")}
                     </ProgressTabs.Trigger>
@@ -298,16 +301,18 @@ export const CreateProductVariantForm = ({
               </div>
             </div>
           </RouteFocusModal.Header>
-          <RouteFocusModal.Body className="size-full overflow-hidden">
+          <RouteFocusModal.Body className="size-full overflow-hidden" data-testid="product-variant-create-form-body">
             <ProgressTabs.Content
               className="size-full overflow-y-auto"
               value={Tab.DETAIL}
+              data-testid="product-variant-create-form-tab-details-content"
             >
               <DetailsTab form={form} product={product} />
             </ProgressTabs.Content>
             <ProgressTabs.Content
               className="size-full overflow-y-auto"
               value={Tab.PRICE}
+              data-testid="product-variant-create-form-tab-pricing-content"
             >
               <PricingTab form={form} />
             </ProgressTabs.Content>
@@ -315,15 +320,16 @@ export const CreateProductVariantForm = ({
               <ProgressTabs.Content
                 className="size-full overflow-hidden"
                 value={Tab.INVENTORY}
+                data-testid="product-variant-create-form-tab-inventory-content"
               >
                 <InventoryKitTab form={form} />
               </ProgressTabs.Content>
             )}
           </RouteFocusModal.Body>
-          <RouteFocusModal.Footer>
+          <RouteFocusModal.Footer data-testid="product-variant-create-form-footer">
             <div className="flex items-center justify-end gap-x-2">
               <RouteDrawer.Close asChild>
-                <Button variant="secondary" size="small">
+                <Button variant="secondary" size="small" data-testid="product-variant-create-form-cancel-button">
                   {t("actions.cancel")}
                 </Button>
               </RouteDrawer.Close>
@@ -367,6 +373,7 @@ const PrimaryButton = ({
         variant="primary"
         size="small"
         isLoading={isLoading}
+        data-testid="product-variant-create-form-save-button"
       >
         {t("actions.save")}
       </Button>
@@ -380,6 +387,7 @@ const PrimaryButton = ({
       variant="primary"
       size="small"
       onClick={() => next(tab)}
+      data-testid="product-variant-create-form-continue-button"
     >
       {t("actions.continue")}
     </Button>

@@ -2259,7 +2259,8 @@
       "header": "Proizvodi",
       "actions": {
         "addProducts": "Dodaj proizvode",
-        "editPrices": "Izmijeni cijene"
+        "editPrices": "Izmijeni cijene",
+        "editPricesDisabled": "Dodajte proizvode prije uređivanja cijena"
       },
       "delete": {
         "confirmation_one": "Upravo ćete obrisati cijene za {{count}} proizvod u cjenovnom popisu. Ova radnja se ne može poništiti.",

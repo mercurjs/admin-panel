@@ -216,6 +216,7 @@ export const ProductCreateForm = ({
   return (
     <RouteFocusModal.Form form={form}>
       <KeyboundForm
+        data-testid="product-create-form"
         onKeyDown={(e) => {
           // We want to continue to the next tab on enter instead of saving as draft immediately
           if (e.key === "Enter") {
@@ -257,14 +258,16 @@ export const ProductCreateForm = ({
             setTab(tab as Tab)
           }}
           className="flex h-full flex-col overflow-hidden"
+          data-testid="product-create-form-tabs"
         >
           <RouteFocusModal.Header>
-            <div className="-my-2 w-full border-l">
-              <ProgressTabs.List className="justify-start-start flex w-full items-center">
+            <div className="-my-2 w-full border-l" data-testid="product-create-form-tabs-header">
+              <ProgressTabs.List className="justify-start-start flex w-full items-center" data-testid="product-create-form-tabs-list">
                 <ProgressTabs.Trigger
                   status={tabState[Tab.DETAILS]}
                   value={Tab.DETAILS}
                   className="max-w-[200px] truncate"
+                  data-testid="product-create-form-tab-details"
                 >
                   {t("products.create.tabs.details")}
                 </ProgressTabs.Trigger>
@@ -272,6 +275,7 @@ export const ProductCreateForm = ({
                   status={tabState[Tab.ORGANIZE]}
                   value={Tab.ORGANIZE}
                   className="max-w-[200px] truncate"
+                  data-testid="product-create-form-tab-organize"
                 >
                   {t("products.create.tabs.organize")}
                 </ProgressTabs.Trigger>
@@ -279,6 +283,7 @@ export const ProductCreateForm = ({
                   status={tabState[Tab.VARIANTS]}
                   value={Tab.VARIANTS}
                   className="max-w-[200px] truncate"
+                  data-testid="product-create-form-tab-variants"
                 >
                   {t("products.create.tabs.variants")}
                 </ProgressTabs.Trigger>
@@ -287,6 +292,7 @@ export const ProductCreateForm = ({
                     status={tabState[Tab.INVENTORY]}
                     value={Tab.INVENTORY}
                     className="max-w-[200px] truncate"
+                    data-testid="product-create-form-tab-inventory"
                   >
                     {t("products.create.tabs.inventory")}
                   </ProgressTabs.Trigger>
@@ -294,22 +300,25 @@ export const ProductCreateForm = ({
               </ProgressTabs.List>
             </div>
           </RouteFocusModal.Header>
-          <RouteFocusModal.Body className="size-full overflow-hidden">
+          <RouteFocusModal.Body className="size-full overflow-hidden" data-testid="product-create-form-body">
             <ProgressTabs.Content
               className="size-full overflow-y-auto"
               value={Tab.DETAILS}
+              data-testid="product-create-form-tab-content-details"
             >
               <ProductCreateDetailsForm form={form} />
             </ProgressTabs.Content>
             <ProgressTabs.Content
               className="size-full overflow-y-auto"
               value={Tab.ORGANIZE}
+              data-testid="product-create-form-tab-content-organize"
             >
               <ProductCreateOrganizeForm form={form} />
             </ProgressTabs.Content>
             <ProgressTabs.Content
               className="size-full overflow-y-auto"
               value={Tab.VARIANTS}
+              data-testid="product-create-form-tab-content-variants"
             >
               <ProductCreateVariantsForm
                 form={form}
@@ -322,16 +331,17 @@ export const ProductCreateForm = ({
               <ProgressTabs.Content
                 className="size-full overflow-y-auto"
                 value={Tab.INVENTORY}
+                data-testid="product-create-form-tab-content-inventory"
               >
                 <ProductCreateInventoryKitForm form={form} />
               </ProgressTabs.Content>
             )}
           </RouteFocusModal.Body>
         </ProgressTabs>
-        <RouteFocusModal.Footer>
-          <div className="flex items-center justify-end gap-x-2">
+        <RouteFocusModal.Footer data-testid="product-create-form-footer">
+          <div className="flex items-center justify-end gap-x-2" data-testid="product-create-form-footer-actions">
             <RouteFocusModal.Close asChild>
-              <Button variant="secondary" size="small">
+              <Button variant="secondary" size="small" data-testid="product-create-form-cancel-button">
                 {t("actions.cancel")}
               </Button>
             </RouteFocusModal.Close>
@@ -341,6 +351,7 @@ export const ProductCreateForm = ({
               type="submit"
               isLoading={isPending}
               className="whitespace-nowrap"
+              data-testid="product-create-form-save-draft-button"
             >
               {t("actions.saveAsDraft")}
             </Button>
@@ -384,6 +395,7 @@ const PrimaryButton = ({
         variant="primary"
         size="small"
         isLoading={isLoading}
+        data-testid="product-create-form-publish-button"
       >
         {t("actions.publish")}
       </Button>
@@ -397,6 +409,7 @@ const PrimaryButton = ({
       variant="primary"
       size="small"
       onClick={() => next(tab)}
+      data-testid="product-create-form-continue-button"
     >
       {t("actions.continue")}
     </Button>

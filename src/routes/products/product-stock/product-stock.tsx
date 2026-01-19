@@ -51,12 +51,12 @@ export const ProductStock = () => {
 
   return (
     <div>
-      <div className="fixed inset-x-0 top-0 z-50 h-1">
+      <div className="fixed inset-x-0 top-0 z-50 h-1" data-testid="product-stock-progress-bar-container">
         <AnimatePresence>
           {isLoading ? <ProgressBar duration={5} /> : null}
         </AnimatePresence>
       </div>
-      <RouteFocusModal>
+      <RouteFocusModal data-testid="product-stock-modal">
         <RouteFocusModal.Title asChild>
           <span className="sr-only">{t("products.stock.heading")}</span>
         </RouteFocusModal.Title>

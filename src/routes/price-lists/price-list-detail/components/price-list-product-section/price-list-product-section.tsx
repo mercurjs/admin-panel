@@ -128,6 +128,8 @@ export const PriceListProductSection = ({
                   label: t("priceLists.products.actions.editPrices"),
                   to: "products/edit",
                   icon: <PencilSquare />,
+                  disabled: count === 0,
+                  disabledTooltip: t("priceLists.products.actions.editPricesDisabled"),
                 },
               ],
             },

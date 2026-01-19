@@ -16,18 +16,18 @@ export const ProductCreateGeneralSection = ({
   const { t } = useTranslation()
 
   return (
-    <div id="general" className="flex flex-col gap-y-6">
-      <div className="flex flex-col gap-y-2">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div id="general" className="flex flex-col gap-y-6" data-testid="product-create-general-section">
+      <div className="flex flex-col gap-y-2" data-testid="product-create-general-section-fields">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3" data-testid="product-create-general-section-title-fields">
           <Form.Field
             control={form.control}
             name="title"
             render={({ field }) => {
               return (
-                <Form.Item>
-                  <Form.Label>{t("products.fields.title.label")}</Form.Label>
-                  <Form.Control>
-                    <Input {...field} placeholder={t("products.fields.title.placeholder")} />
+                <Form.Item data-testid="product-create-general-section-title-item">
+                  <Form.Label data-testid="product-create-general-section-title-label">{t("products.fields.title.label")}</Form.Label>
+                  <Form.Control data-testid="product-create-general-section-title-control">
+                    <Input {...field} placeholder={t("products.fields.title.placeholder")} data-testid="product-create-general-section-title-input" />
                   </Form.Control>
                 </Form.Item>
               )
@@ -38,12 +38,12 @@ export const ProductCreateGeneralSection = ({
             name="subtitle"
             render={({ field }) => {
               return (
-                <Form.Item>
-                  <Form.Label optional>
+                <Form.Item data-testid="product-create-general-section-subtitle-item">
+                  <Form.Label optional data-testid="product-create-general-section-subtitle-label">
                     {t("products.fields.subtitle.label")}
                   </Form.Label>
-                  <Form.Control>
-                    <Input {...field} placeholder={t("products.fields.subtitle.placeholder")} />
+                  <Form.Control data-testid="product-create-general-section-subtitle-control">
+                    <Input {...field} placeholder={t("products.fields.subtitle.placeholder")} data-testid="product-create-general-section-subtitle-input" />
                   </Form.Control>
                 </Form.Item>
               )
@@ -54,15 +54,16 @@ export const ProductCreateGeneralSection = ({
             name="handle"
             render={({ field }) => {
               return (
-                <Form.Item>
+                <Form.Item data-testid="product-create-general-section-handle-item">
                   <Form.Label
                     tooltip={t("products.fields.handle.tooltip")}
                     optional
+                    data-testid="product-create-general-section-handle-label"
                   >
                     {t("fields.handle")}
                   </Form.Label>
-                  <Form.Control>
-                    <HandleInput {...field} placeholder={t("products.fields.handle.placeholder")} />
+                  <Form.Control data-testid="product-create-general-section-handle-control">
+                    <HandleInput {...field} placeholder={t("products.fields.handle.placeholder")} data-testid="product-create-general-section-handle-input" />
                   </Form.Control>
                 </Form.Item>
               )
@@ -75,12 +76,12 @@ export const ProductCreateGeneralSection = ({
         name="description"
         render={({ field }) => {
           return (
-            <Form.Item>
-              <Form.Label optional>
+            <Form.Item data-testid="product-create-general-section-description-item">
+              <Form.Label optional data-testid="product-create-general-section-description-label">
                 {t("products.fields.description.label")}
               </Form.Label>
-              <Form.Control>
-                <Textarea {...field} placeholder={t("products.fields.description.placeholder")} />
+              <Form.Control data-testid="product-create-general-section-description-control">
+                <Textarea {...field} placeholder={t("products.fields.description.placeholder")} data-testid="product-create-general-section-description-input" />
               </Form.Control>
             </Form.Item>
           )

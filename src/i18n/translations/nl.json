@@ -2247,7 +2247,8 @@
       "header": "Producten",
       "actions": {
         "addProducts": "Producten toevoegen",
-        "editPrices": "Prijzen bewerken"
+        "editPrices": "Prijzen bewerken",
+        "editPricesDisabled": "Voeg producten toe voordat u prijzen bewerkt"
       },
       "delete": {
         "confirmation_one": "U staat op het punt de prijzen voor {{count}} product in de prijslijst te verwijderen. Deze actie kan niet ongedaan worden gemaakt.",

@@ -76,24 +76,24 @@ export const RequestProductCollectionList = () => {
             </Table.Row>
           </Table.Header>
           <Table.Body data-testid="request-product-collection-list-table-body">
-            {requests?.map((request) => {
+            {requests?.map((request, index) => {
               const requestData = request.data as ProductCollectionDTO;
 
               return (
-                <Table.Row key={request.id} data-testid={`request-product-collection-list-table-row-${request.id}`}>
-                  <Table.Cell data-testid={`request-product-collection-list-table-row-${request.id}-title`}>{requestData.title}</Table.Cell>
-                  <Table.Cell data-testid={`request-product-collection-list-table-row-${request.id}-handle`}>{requestData.handle}</Table.Cell>
-                  <Table.Cell data-testid={`request-product-collection-list-table-row-${request.id}-submitted-by`}>{request.seller?.name}</Table.Cell>
-                  <Table.Cell data-testid={`request-product-collection-list-table-row-${request.id}-date`}>
+                <Table.Row key={request.id} data-testid={`request-product-collection-list-table-row-${index}`}>
+                  <Table.Cell data-testid={`request-product-collection-list-table-row-${index}-title`}>{requestData.title}</Table.Cell>
+                  <Table.Cell data-testid={`request-product-collection-list-table-row-${index}-handle`}>{requestData.handle}</Table.Cell>
+                  <Table.Cell data-testid={`request-product-collection-list-table-row-${index}-submitted-by`}>{request.seller?.name}</Table.Cell>
+                  <Table.Cell data-testid={`request-product-collection-list-table-row-${index}-date`}>
                     <div className="flex items-center gap-2">
                       <History />
                       {formatDate(request.created_at!)}
                     </div>
                   </Table.Cell>
-                  <Table.Cell data-testid={`request-product-collection-list-table-row-${request.id}-status`}>
+                  <Table.Cell data-testid={`request-product-collection-list-table-row-${index}-status`}>
                     {getRequestStatusBadge(request.status!)}
                   </Table.Cell>
-                  <Table.Cell data-testid={`request-product-collection-list-table-row-${request.id}-actions`}>
+                  <Table.Cell data-testid={`request-product-collection-list-table-row-${index}-actions`}>
                     <RequestMenu
                       handleDetail={handleDetail}
                       request={request}

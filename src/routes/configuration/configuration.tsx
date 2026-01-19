@@ -87,9 +87,9 @@ export const Configuration = () => {
             </Table.Row>
           </Table.Header>
           <Table.Body data-testid="configuration-table-body">
-            {configuration_rules?.map((rule) => (
-              <Table.Row key={rule.id} data-testid={`configuration-table-row-${rule.id}`}>
-                <Table.Cell data-testid={`configuration-table-row-rule-type-${rule.id}`}>
+            {configuration_rules?.map((rule, index) => (
+              <Table.Row key={rule.id} data-testid={`configuration-table-row-${index}`}>
+                <Table.Cell data-testid={`configuration-table-row-rule-type-${index}`}>
                   <div className="flex items-center gap-2">
                     <ConfigurationRuleTooltip
                       type={rule.rule_type as RuleType}
@@ -97,18 +97,18 @@ export const Configuration = () => {
                     {rule.rule_type}
                   </div>
                 </Table.Cell>
-                <Table.Cell data-testid={`configuration-table-row-enabled-${rule.id}`}>
-                  <StatusBadge color={rule.is_enabled ? "green" : "grey"} data-testid={`configuration-table-row-status-badge-${rule.id}`}>
+                <Table.Cell data-testid={`configuration-table-row-enabled-${index}`}>
+                  <StatusBadge color={rule.is_enabled ? "green" : "grey"} data-testid={`configuration-table-row-status-badge-${index}`}>
                     {rule.is_enabled ? "True" : "False"}
                   </StatusBadge>
                 </Table.Cell>
-                <Table.Cell data-testid={`configuration-table-row-actions-${rule.id}`}>
+                <Table.Cell data-testid={`configuration-table-row-actions-${index}`}>
                   <Button
                     variant="secondary"
                     onClick={() => {
                       updateRule(rule.id!, !rule.is_enabled);
                     }}
-                    data-testid={`configuration-table-row-toggle-button-${rule.id}`}
+                    data-testid={`configuration-table-row-toggle-button-${index}`}
                   >
                     {rule.is_enabled ? "Disable" : "Enable"}
                   </Button>

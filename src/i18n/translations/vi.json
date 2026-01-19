@@ -2291,7 +2291,8 @@
       "header": "Sản phẩm",
       "actions": {
         "addProducts": "Thêm sản phẩm",
-        "editPrices": "Chỉnh sửa giá"
+        "editPrices": "Chỉnh sửa giá",
+        "editPricesDisabled": "Thêm sản phẩm trước khi chỉnh sửa giá"
       },
       "delete": {
         "confirmation_one": "Bạn sắp xóa giá của {{count}} sản phẩm trong bảng giá. Hành động này không thể hoàn tác.",

@@ -45,18 +45,18 @@ export const CreateCollectionForm = () => {
   })
 
   return (
-    <RouteFocusModal.Form form={form}>
+    <RouteFocusModal.Form form={form} data-testid="collection-create-form">
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex h-full flex-col overflow-hidden"
       >
         <RouteFocusModal.Header />
 
-        <RouteFocusModal.Body className="flex size-full flex-col items-center p-16">
-          <div className="flex w-full max-w-[720px] flex-col gap-y-8">
-            <div>
-              <Heading>{t("collections.createCollection")}</Heading>
-              <Text size="small" className="text-ui-fg-subtle">
+        <RouteFocusModal.Body className="flex size-full flex-col items-center p-16" data-testid="collection-create-form-body">
+          <div className="flex w-full max-w-[720px] flex-col gap-y-8" data-testid="collection-create-form-content">
+            <div data-testid="collection-create-form-header">
+              <Heading data-testid="collection-create-form-heading">{t("collections.createCollection")}</Heading>
+              <Text size="small" className="text-ui-fg-subtle" data-testid="collection-create-form-hint">
                 {t("collections.createCollectionHint")}
               </Text>
             </div>
@@ -66,12 +66,12 @@ export const CreateCollectionForm = () => {
                 name="title"
                 render={({ field }) => {
                   return (
-                    <Form.Item>
-                      <Form.Label>{t("fields.title")}</Form.Label>
-                      <Form.Control>
-                        <Input autoComplete="off" {...field} />
+                    <Form.Item data-testid="collection-create-form-title-item">
+                      <Form.Label data-testid="collection-create-form-title-label">{t("fields.title")}</Form.Label>
+                      <Form.Control data-testid="collection-create-form-title-control">
+                        <Input autoComplete="off" {...field} data-testid="collection-create-form-title-input" />
                       </Form.Control>
-                      <Form.ErrorMessage />
+                      <Form.ErrorMessage data-testid="collection-create-form-title-error" />
                     </Form.Item>
                   )
                 }}
@@ -81,17 +81,18 @@ export const CreateCollectionForm = () => {
                 name="handle"
                 render={({ field }) => {
                   return (
-                    <Form.Item>
+                    <Form.Item data-testid="collection-create-form-handle-item">
                       <Form.Label
                         optional
                         tooltip={t("collections.handleTooltip")}
+                        data-testid="collection-create-form-handle-label"
                       >
                         {t("fields.handle")}
                       </Form.Label>
-                      <Form.Control>
-                        <HandleInput {...field} />
+                      <Form.Control data-testid="collection-create-form-handle-control">
+                        <HandleInput {...field} data-testid="collection-create-form-handle-input" />
                       </Form.Control>
-                      <Form.ErrorMessage />
+                      <Form.ErrorMessage data-testid="collection-create-form-handle-error" />
                     </Form.Item>
                   )
                 }}
@@ -99,9 +100,9 @@ export const CreateCollectionForm = () => {
             </div>
           </div>
         </RouteFocusModal.Body>
-        <RouteFocusModal.Footer>
+        <RouteFocusModal.Footer data-testid="collection-create-form-footer">
           <RouteFocusModal.Close asChild>
-            <Button size="small" variant="secondary">
+            <Button size="small" variant="secondary" data-testid="collection-create-form-cancel-button">
               {t("actions.cancel")}
             </Button>
           </RouteFocusModal.Close>
@@ -110,6 +111,7 @@ export const CreateCollectionForm = () => {
             variant="primary"
             type="submit"
             isLoading={isPending}
+            data-testid="collection-create-form-create-button"
           >
             {t("actions.create")}
           </Button>

@@ -36,12 +36,14 @@ function PricingTab({ form }: PricingTabProps) {
   }) as any
 
   return (
-    <DataGrid
-      columns={columns}
-      data={[variant]}
-      state={form}
-      onEditingChange={(editing) => setCloseOnEscape(!editing)}
-    />
+    <div data-testid="product-variant-create-form-pricing-tab">
+      <DataGrid
+        columns={columns}
+        data={[variant]}
+        state={form}
+        onEditingChange={(editing) => setCloseOnEscape(!editing)}
+      />
+    </div>
   )
 }
 

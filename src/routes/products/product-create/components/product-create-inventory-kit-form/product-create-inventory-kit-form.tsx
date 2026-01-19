@@ -11,8 +11,8 @@ export const ProductCreateInventoryKitForm = ({
   form,
 }: ProductAttributesProps) => {
   return (
-    <div className="flex flex-col items-center p-16">
-      <div className="flex w-full max-w-[720px] flex-col gap-y-8">
+    <div className="flex flex-col items-center p-16" data-testid="product-create-inventory-kit-form">
+      <div className="flex w-full max-w-[720px] flex-col gap-y-8" data-testid="product-create-inventory-kit-form-content">
         <ProductCreateInventoryKitSection form={form} />
       </div>
     </div>

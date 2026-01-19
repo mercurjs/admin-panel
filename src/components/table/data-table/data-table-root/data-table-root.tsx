@@ -227,7 +227,7 @@ export const DataTableRoot = <TData,>({
 
                       const Inner = flexRender(cell.column.columnDef.cell, cell.getContext());
 
-                      const isTabableLink = isFirstCell && !!to;
+                            const isTabableLink = isFirstCell && !!to;
                       const shouldRenderAsLink = !!to && !isSelectCell;
 
                       return (

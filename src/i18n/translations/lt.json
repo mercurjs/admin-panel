@@ -2249,7 +2249,8 @@
       "header": "Prekės",
       "actions": {
         "addProducts": "Pridėti prekes",
-        "editPrices": "Keisti prices"
+        "editPrices": "Keisti prices",
+        "editPricesDisabled": "Pridėkite prekes prieš keisdami kainas"
       },
       "delete": {
         "confirmation_one": "Ketinate pašalinti kainas {{count}} prekei kainoraštyje. Šis veiksmas neatstatomas.",

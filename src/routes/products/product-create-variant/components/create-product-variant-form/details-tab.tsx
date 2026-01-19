@@ -23,9 +23,9 @@ function DetailsTab({ form, product }: DetailsTabProps) {
   })
 
   return (
-    <div className="flex flex-1 flex-col items-center overflow-y-auto">
+    <div className="flex flex-1 flex-col items-center overflow-y-auto" data-testid="product-variant-create-form-details-tab">
       <div className="flex w-full max-w-[720px] flex-col gap-y-8 px-8 py-16">
-        <Heading level="h1">{t("products.variant.create.header")}</Heading>
+        <Heading level="h1" data-testid="product-variant-create-form-details-heading">{t("products.variant.create.header")}</Heading>
 
         <div className="my-8 grid grid-cols-1 gap-4 md:grid-cols-2">
           <Form.Field
@@ -33,12 +33,12 @@ function DetailsTab({ form, product }: DetailsTabProps) {
             name="title"
             render={({ field }) => {
               return (
-                <Form.Item>
-                  <Form.Label>{t("fields.title")}</Form.Label>
-                  <Form.Control>
-                    <Input {...field} />
+                <Form.Item data-testid="product-variant-create-form-title-item">
+                  <Form.Label data-testid="product-variant-create-form-title-label">{t("fields.title")}</Form.Label>
+                  <Form.Control data-testid="product-variant-create-form-title-control">
+                    <Input {...field} data-testid="product-variant-create-form-title-input" />
                   </Form.Control>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="product-variant-create-form-title-error" />
                 </Form.Item>
               )
             }}
@@ -49,12 +49,12 @@ function DetailsTab({ form, product }: DetailsTabProps) {
             name="sku"
             render={({ field }) => {
               return (
-                <Form.Item>
-                  <Form.Label optional>{t("fields.sku")}</Form.Label>
-                  <Form.Control>
-                    <Input {...field} />
+                <Form.Item data-testid="product-variant-create-form-sku-item">
+                  <Form.Label optional data-testid="product-variant-create-form-sku-label">{t("fields.sku")}</Form.Label>
+                  <Form.Control data-testid="product-variant-create-form-sku-control">
+                    <Input {...field} data-testid="product-variant-create-form-sku-input" />
                   </Form.Control>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="product-variant-create-form-sku-error" />
                 </Form.Item>
               )
             }}
@@ -67,9 +67,9 @@ function DetailsTab({ form, product }: DetailsTabProps) {
               name={`options.${option.title}`}
               render={({ field: { value, onChange, ...field } }) => {
                 return (
-                  <Form.Item>
-                    <Form.Label>{option.title}</Form.Label>
-                    <Form.Control>
+                  <Form.Item data-testid={`product-variant-create-form-option-${option.title}-item`}>
+                    <Form.Label data-testid={`product-variant-create-form-option-${option.title}-label`}>{option.title}</Form.Label>
+                    <Form.Control data-testid={`product-variant-create-form-option-${option.title}-control`}>
                       <Combobox
                         value={value}
                         onChange={(v) => {
@@ -80,8 +80,10 @@ function DetailsTab({ form, product }: DetailsTabProps) {
                           label: v.value,
                           value: v.value,
                         }))}
+                        data-testid={`product-variant-create-form-option-${option.title}-combobox`}
                       />
                     </Form.Control>
+                    <Form.ErrorMessage data-testid={`product-variant-create-form-option-${option.title}-error`} />
                   </Form.Item>
                 )
               }}
@@ -94,28 +96,29 @@ function DetailsTab({ form, product }: DetailsTabProps) {
             name="manage_inventory"
             render={({ field: { value, onChange, ...field } }) => {
               return (
-                <Form.Item>
-                  <div className="bg-ui-bg-component shadow-elevation-card-rest flex gap-x-3 rounded-lg p-4">
-                    <Form.Control>
+                <Form.Item data-testid="product-variant-create-form-manage-inventory-item">
+                  <div className="bg-ui-bg-component shadow-elevation-card-rest flex gap-x-3 rounded-lg p-4" data-testid="product-variant-create-form-manage-inventory-container">
+                    <Form.Control data-testid="product-variant-create-form-manage-inventory-control">
                       <Switch
                         dir="ltr"
                         className="mt-[2px] rtl:rotate-180"
                         checked={value}
                         onCheckedChange={(checked) => onChange(!!checked)}
                         {...field}
+                        data-testid="product-variant-create-form-manage-inventory-switch"
                       />
                     </Form.Control>
 
                     <div className="flex flex-col">
-                      <Form.Label>
+                      <Form.Label data-testid="product-variant-create-form-manage-inventory-label">
                         {t("products.variant.inventory.manageInventoryLabel")}
                       </Form.Label>
-                      <Form.Hint>
+                      <Form.Hint data-testid="product-variant-create-form-manage-inventory-hint">
                         {t("products.variant.inventory.manageInventoryHint")}
                       </Form.Hint>
                     </div>
                   </div>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="product-variant-create-form-manage-inventory-error" />
                 </Form.Item>
               )
             }}
@@ -126,9 +129,9 @@ function DetailsTab({ form, product }: DetailsTabProps) {
             disabled={!manageInventoryEnabled}
             render={({ field: { value, onChange, ...field } }) => {
               return (
-                <Form.Item>
-                  <div className="bg-ui-bg-component shadow-elevation-card-rest flex gap-x-3 rounded-lg p-4">
-                    <Form.Control>
+                <Form.Item data-testid="product-variant-create-form-allow-backorder-item">
+                  <div className="bg-ui-bg-component shadow-elevation-card-rest flex gap-x-3 rounded-lg p-4" data-testid="product-variant-create-form-allow-backorder-container">
+                    <Form.Control data-testid="product-variant-create-form-allow-backorder-control">
                       <Switch
                         dir="ltr"
                         className="rtl:rotate-180"
@@ -136,18 +139,19 @@ function DetailsTab({ form, product }: DetailsTabProps) {
                         onCheckedChange={(checked) => onChange(!!checked)}
                         {...field}
                         disabled={!manageInventoryEnabled}
+                        data-testid="product-variant-create-form-allow-backorder-switch"
                       />
                     </Form.Control>
                     <div className="flex flex-col">
-                      <Form.Label>
+                      <Form.Label data-testid="product-variant-create-form-allow-backorder-label">
                         {t("products.variant.inventory.allowBackordersLabel")}
                       </Form.Label>
-                      <Form.Hint>
+                      <Form.Hint data-testid="product-variant-create-form-allow-backorder-hint">
                         {t("products.variant.inventory.allowBackordersHint")}
                       </Form.Hint>
                     </div>
                   </div>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="product-variant-create-form-allow-backorder-error" />
                 </Form.Item>
               )
             }}
@@ -157,9 +161,9 @@ function DetailsTab({ form, product }: DetailsTabProps) {
             name="inventory_kit"
             render={({ field: { value, onChange, ...field } }) => {
               return (
-                <Form.Item>
-                  <div className="bg-ui-bg-component shadow-elevation-card-rest flex gap-x-3 rounded-lg p-4">
-                    <Form.Control>
+                <Form.Item data-testid="product-variant-create-form-inventory-kit-item">
+                  <div className="bg-ui-bg-component shadow-elevation-card-rest flex gap-x-3 rounded-lg p-4" data-testid="product-variant-create-form-inventory-kit-container">
+                    <Form.Control data-testid="product-variant-create-form-inventory-kit-control">
                       <Switch
                         dir="ltr"
                         className="rtl:rotate-180"
@@ -167,18 +171,19 @@ function DetailsTab({ form, product }: DetailsTabProps) {
                         onCheckedChange={(checked) => onChange(!!checked)}
                         {...field}
                         disabled={!manageInventoryEnabled}
+                        data-testid="product-variant-create-form-inventory-kit-switch"
                       />
                     </Form.Control>
                     <div className="flex flex-col">
-                      <Form.Label>
+                      <Form.Label data-testid="product-variant-create-form-inventory-kit-label">
                         {t("products.variant.inventory.inventoryKit")}
                       </Form.Label>
-                      <Form.Hint>
+                      <Form.Hint data-testid="product-variant-create-form-inventory-kit-hint">
                         {t("products.variant.inventory.inventoryKitHint")}
                       </Form.Hint>
                     </div>
                   </div>
-                  <Form.ErrorMessage />
+                  <Form.ErrorMessage data-testid="product-variant-create-form-inventory-kit-error" />
                 </Form.Item>
               )
             }}

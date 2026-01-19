@@ -2247,7 +2247,8 @@
       "header": "Termékek",
       "actions": {
         "addProducts": "Termékek hozzáadása",
-        "editPrices": "Árak szerkesztése"
+        "editPrices": "Árak szerkesztése",
+        "editPricesDisabled": "Adja hozzá a termékeket az árak szerkesztése előtt"
       },
       "delete": {
         "confirmation_one": "{{count}} termék árainak törlésére készül az árlistában. Ez a művelet nem vonható vissza.",

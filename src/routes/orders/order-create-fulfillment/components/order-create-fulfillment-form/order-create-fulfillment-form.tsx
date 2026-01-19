@@ -228,11 +228,12 @@ export function OrderCreateFulfillmentForm({
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex h-full flex-col overflow-hidden"
+        data-testid="order-create-fulfillment-form"
       >
         <RouteFocusModal.Header data-testid="order-create-fulfillment-header" />
 
         <RouteFocusModal.Body className="flex h-full w-full flex-col items-center divide-y overflow-y-auto" data-testid="order-create-fulfillment-body">
-          <div className="flex size-full flex-col items-center overflow-auto p-16">
+          <div className="flex size-full flex-col items-center overflow-auto p-16" data-testid="order-create-fulfillment-form-content">
             <div className="flex w-full max-w-[736px] flex-col justify-center px-2 pb-2">
               <div className="flex flex-col divide-y divide-dashed">
                 <div className="pb-8" data-testid="order-create-fulfillment-location-section">
@@ -302,11 +303,11 @@ export function OrderCreateFulfillmentForm({
                                     data-testid="order-create-fulfillment-shipping-trigger"
                                   >
                                     {isShippingOptionsLoading ? (
-                                      <span className="text-right">
+                                      <span className="text-right" data-testid="order-create-fulfillment-form-shipping-select-loading">
                                         {t("labels.loading")}...
                                       </span>
                                     ) : (
-                                      <Select.Value />
+                                      <Select.Value data-testid="order-create-fulfillment-form-shipping-select-value" />
                                     )}
                                   </Select.Trigger>
                                   <Select.Content data-testid="order-create-fulfillment-shipping-content">
@@ -328,10 +329,10 @@ export function OrderCreateFulfillmentForm({
 
                   {differentOptionSelected && (
                     <Alert className="mt-4 p-4" variant="warning" data-testid="order-create-fulfillment-shipping-warning">
-                      <span className="-mt-[3px] block font-medium">
+                      <span className="-mt-[3px] block font-medium" data-testid="order-create-fulfillment-form-shipping-warning-title">
                         {t("labels.beaware")}
                       </span>
-                      <span className="text-ui-fg-muted">
+                      <span className="text-ui-fg-muted" data-testid="order-create-fulfillment-form-shipping-warning-message">
                         {t("orders.fulfillment.differentOptionSelected")}
                       </span>
                     </Alert>
@@ -389,7 +390,7 @@ export function OrderCreateFulfillmentForm({
                     render={({ field: { onChange, value, ...field } }) => {
                       return (
                         <Form.Item data-testid="order-create-fulfillment-notification-item">
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between" data-testid="order-create-fulfillment-form-notification-control">
                             <Form.Label data-testid="order-create-fulfillment-notification-label">
                               {t("orders.returns.sendNotification")}
                             </Form.Label>
@@ -420,7 +421,7 @@ export function OrderCreateFulfillmentForm({
           </div>
         </RouteFocusModal.Body>
         <RouteFocusModal.Footer data-testid="order-create-fulfillment-footer">
-          <div className="flex items-center justify-end gap-x-2">
+          <div className="flex items-center justify-end gap-x-2" data-testid="order-create-fulfillment-form-footer-actions">
             <RouteFocusModal.Close asChild>
               <Button size="small" variant="secondary" data-testid="order-create-fulfillment-cancel-button">
                 {t("actions.cancel")}

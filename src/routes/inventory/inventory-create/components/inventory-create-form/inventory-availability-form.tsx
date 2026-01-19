@@ -24,7 +24,7 @@ export const InventoryAvailabilityForm = ({
   const columns = useColumns()
 
   return (
-    <div className="size-full">
+    <div className="size-full" data-testid="inventory-create-form-availability">
       <DataGrid
         columns={columns}
         data={locations}

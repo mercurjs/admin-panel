@@ -38,6 +38,7 @@ type DataGridContextType<TFieldValues extends FieldValues> = {
   getCellMetadata: (coords: DataGridCoordinates) => CellMetadata
   getCellErrorMetadata: (coords: DataGridCoordinates) => CellErrorMetadata
   navigateToField: (field: string) => void
+  dataTestId?: string
 }
 
 export const DataGridContext = createContext<DataGridContextType<any> | null>(
