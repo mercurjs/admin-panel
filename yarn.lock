@@ -694,20 +694,20 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@medusajs/admin-shared@2.12.5":
-  version "2.12.5"
-  resolved "https://registry.yarnpkg.com/@medusajs/admin-shared/-/admin-shared-2.12.5.tgz#db577c719115df0226d0e75202956b6bacae9664"
-  integrity sha512-LKO7QhMmCsvP0dGibBBjNxjwOhWnBTFYfb4y5zsejzzvrrcFhEn7dn9gg4L5XkqtgDRIuiDkEi45ng3xWPPIpQ==
+"@medusajs/admin-shared@2.12.6":
+  version "2.12.6"
+  resolved "https://registry.yarnpkg.com/@medusajs/admin-shared/-/admin-shared-2.12.6.tgz#1ab2a4517792b100946ad6735aa4d10f5e38d223"
+  integrity sha512-VRN/D4j6DODaCfkdss6cF3yfEwpUokZtVFSLMp5LYt+X5rNVzbBmfmFsXwL/PHrEXmdWhSY4hi3BpguL1m3YmA==
 
-"@medusajs/admin-vite-plugin@2.12.5":
-  version "2.12.5"
-  resolved "https://registry.yarnpkg.com/@medusajs/admin-vite-plugin/-/admin-vite-plugin-2.12.5.tgz#ab8466a5f5bb0ab64a548986864e487f497ad208"
-  integrity sha512-gbt04lDMvclzBR52ugqid9BfI3okw2dg85Swj37EKvxhhV7788/no4MiQtBrsT1xcVms54V4HIwZ4L5jE9W5Yg==
+"@medusajs/admin-vite-plugin@2.12.6":
+  version "2.12.6"
+  resolved "https://registry.yarnpkg.com/@medusajs/admin-vite-plugin/-/admin-vite-plugin-2.12.6.tgz#f9085428554ca0d54e13d9b841b63c50b6a2b3a0"
+  integrity sha512-DofMbavRS2eaeGODPxVUslwn7vr/1Vhq+h5RU3IL5gVGDHZ+dWycC5t08lh1tIt58vCo31Ok9JhXzsbOASZm6g==
   dependencies:
     "@babel/parser" "7.25.6"
     "@babel/traverse" "7.25.6"
     "@babel/types" "7.25.6"
-    "@medusajs/admin-shared" "2.12.5"
+    "@medusajs/admin-shared" "2.12.6"
     chokidar "^3.5.3"
     fdir "6.1.1"
     magic-string "0.30.5"
@@ -719,25 +719,30 @@
   resolved "https://registry.yarnpkg.com/@medusajs/icons/-/icons-2.12.5.tgz#4b132824e4672269ba996e963300927095f9472e"
   integrity sha512-aOhhT2xcIHVYBMGaNjHBCekP592xyM7N0BM9LVWohc9dk3Z5df6tHBn9D8dW7wqnvaDh0BIrAVanmaiOHJPqBg==
 
-"@medusajs/js-sdk@2.12.5":
-  version "2.12.5"
-  resolved "https://registry.yarnpkg.com/@medusajs/js-sdk/-/js-sdk-2.12.5.tgz#c7cda1cf0bf5201ab16f09ebb8ff085463f60f8b"
-  integrity sha512-z7h1xxvx4lc1SMqOgihVAbqnZd0Yxq4u/s1JnI24e4kdr9A+lmbtajvpdD6/9gAf9HfL4qNDOJMb4rl8E+x8sQ==
+"@medusajs/icons@2.12.6":
+  version "2.12.6"
+  resolved "https://registry.yarnpkg.com/@medusajs/icons/-/icons-2.12.6.tgz#4c04949882e1d385d256930e108d2f0bd48c29db"
+  integrity sha512-VHQFN7HcaI/Ik8SGW9ETOOsd+FXD6KXF1E8EDjm2Sc+/vlOXkEXX2C0qHXciJFUhsLwoQmpFjgBIksgQScQFIg==
+
+"@medusajs/js-sdk@2.12.6":
+  version "2.12.6"
+  resolved "https://registry.yarnpkg.com/@medusajs/js-sdk/-/js-sdk-2.12.6.tgz#c9f0ea30c8a9700f28d8ff0857c0ef724ab64b19"
+  integrity sha512-kfmBY2AimgvZo1CYy1ezR5yGikIxEdXLJ9KZhD2x4gSeCXcr4A/dj5TAl+D9QNrExpsmfLUPnZL5ZQAEKv9spA==
   dependencies:
     fetch-event-stream "^0.1.5"
     qs "^6.12.1"
 
-"@medusajs/types@2.12.5":
-  version "2.12.5"
-  resolved "https://registry.yarnpkg.com/@medusajs/types/-/types-2.12.5.tgz#15a3028416984e6d8e86b4adc8d57f67f6b1faa1"
-  integrity sha512-8VyCFX2JQIHQxbHZla+nr4kAXuJB4d0rhrcGHGvx4h0dYcZlcl4DJWfdtn6/2rvEWMQwb5NDCBzH1tfEvj1lyQ==
+"@medusajs/types@2.12.6":
+  version "2.12.6"
+  resolved "https://registry.yarnpkg.com/@medusajs/types/-/types-2.12.6.tgz#29fe7a5255c6cb5c5f53283783b7559179ca46e5"
+  integrity sha512-RI5PyK+i0YKOnsJQgq9mROxqn43ln0+NEaTfpJvF+krv4b9Z3/emtHFj60MNGXaU8f8AXbvCKdCKqKLUc6NK7w==
   dependencies:
     bignumber.js "^9.1.2"
 
-"@medusajs/ui-preset@2.12.5":
-  version "2.12.5"
-  resolved "https://registry.yarnpkg.com/@medusajs/ui-preset/-/ui-preset-2.12.5.tgz#9d9c032d2f6e0b660fb3611f41abfa0375a73715"
-  integrity sha512-kcZCJijVoLWqpouEDdEvAmju+nQmal9ee5dbHEM8KeyA7SRnopwOwyjlzRDVhYhAHTFY6C1lGVWebMTwexsMAw==
+"@medusajs/ui-preset@2.12.6":
+  version "2.12.6"
+  resolved "https://registry.yarnpkg.com/@medusajs/ui-preset/-/ui-preset-2.12.6.tgz#038211fa6d0398b2f7cbfe9de7c4d012fd014021"
+  integrity sha512-bcXYnBBuVCD5IOri/ecBw24TH5mW3E2/jVZ3BBHmmlGgmJ0vdPN2oaEq4N4N5BOHC7gy0sX6ydYj+/UduIyXBA==
   dependencies:
     "@tailwindcss/forms" "^0.5.3"
     tailwindcss-animate "^1.0.6"
