@@ -1,6 +1,6 @@
 import { Heading } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
-import { json, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 
 import { RouteDrawer } from "../../../components/modals"
 import { useStockLocation } from "../../../hooks/api/stock-locations"
@@ -20,9 +20,9 @@ export const LocationServiceZoneEdit = () => {
     ?.service_zones.find((z) => z.id === zone_id)
 
   if (!isPending && !isFetching && !serviceZone) {
-    throw json(
-      { message: `Service zone with ID ${zone_id} was not found` },
-      404
+    throw new Response(
+      JSON.stringify({ message: `Service zone with ID ${zone_id} was not found` }),
+      { status: 404, headers: { "Content-Type": "application/json" } }
     )
   }
 
