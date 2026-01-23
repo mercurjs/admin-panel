@@ -24,11 +24,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       inspect(),
-      react({
-        babel: {
-          plugins: ['babel-plugin-react-compiler']
-        }
-      }),
+      react(),
       inject({
         sources
       })

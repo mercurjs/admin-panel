@@ -25,7 +25,7 @@
       }
     }
   },
-  "plugins": ["react", "jsx-a11y", "import", "@typescript-eslint", "react-compiler"],
+  "plugins": ["react", "jsx-a11y", "import", "@typescript-eslint"],
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
@@ -37,7 +37,6 @@
   "rules": {
     "react/jsx-curly-brace-presence": "warn",
     "react/react-in-jsx-scope": "off",
-    "react-compiler/react-compiler": "error",
     "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
     "@typescript-eslint/no-import-type-side-effects": "error",
     "newline-before-return": "error",
