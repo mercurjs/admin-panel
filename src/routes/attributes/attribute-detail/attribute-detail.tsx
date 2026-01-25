@@ -54,7 +54,7 @@ export const AttributeDetail = () => {
       });
       toast.success('Attribute deleted!');
       queryClient.invalidateQueries({ queryKey: attributeQueryKeys.list() });
-      navigate('/attributes');
+      navigate('/settings/attributes');
     } catch (error) {
       toast.error((error as Error).message);
     }

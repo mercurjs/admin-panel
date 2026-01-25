@@ -1,32 +1,34 @@
-import { RouteFocusModal } from '@components/modals';
-import { useStockLocation } from '@hooks/api';
-import { EditServiceZoneAreasForm } from '@routes/locations/location-service-zone-manage-areas/components/edit-region-areas-form';
-import { json, useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom"
+
+import { RouteFocusModal } from "../../../components/modals"
+import { useStockLocation } from "../../../hooks/api/stock-locations"
+import { EditServiceZoneAreasForm } from "./components/edit-region-areas-form"
 
 export const LocationServiceZoneManageAreas = () => {
-  const { location_id, fset_id, zone_id } = useParams();
+  const { location_id, fset_id, zone_id } = useParams()
 
-  const { stock_location, isPending, isFetching, isError, error } = useStockLocation(location_id!, {
-    fields: '*fulfillment_sets.service_zones.geo_zones,fulfillment_sets.service_zones.name'
-  });
+  const { stock_location, isPending, isFetching, isError, error } =
+    useStockLocation(location_id!, {
+      fields: "*fulfillment_sets.service_zones.geo_zones,fulfillment_sets.service_zones.name",
+    })
 
   const zone = stock_location?.fulfillment_sets
-    ?.find(f => f.id === fset_id)
-    ?.service_zones.find(z => z.id === zone_id);
+    ?.find((f) => f.id === fset_id)
+    ?.service_zones.find((z) => z.id === zone_id)
 
   if (!isPending && !isFetching && !zone) {
-    throw json({ message: `Service zone with ID ${zone_id} was not found` }, 404);
+    throw new Response(
+      JSON.stringify({ message: `Service zone with ID ${zone_id} was not found` }),
+      { status: 404, headers: { "Content-Type": "application/json" } }
+    )
   }
 
   if (isError) {
-    throw error;
+    throw error
   }
 
   return (
-    <RouteFocusModal
-      prev={`/settings/locations/${location_id}`}
-      data-testid="location-service-zone-manage-areas-modal"
-    >
+    <RouteFocusModal prev={`/settings/locations/${location_id}`} data-testid="location-service-zone-manage-areas-modal">
       {zone && (
         <EditServiceZoneAreasForm
           zone={zone}
@@ -35,5 +37,5 @@ export const LocationServiceZoneManageAreas = () => {
         />
       )}
     </RouteFocusModal>
-  );
-};
+  )
+}

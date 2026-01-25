@@ -1,39 +1,39 @@
-import { RouteDrawer } from '@components/modals';
-import { useStockLocation } from '@hooks/api';
-import { Heading } from '@medusajs/ui';
-import { EditServiceZoneForm } from '@routes/locations/location-service-zone-edit/components/edit-region-form';
-import { useTranslation } from 'react-i18next';
-import { json, useParams } from 'react-router-dom';
+import { Heading } from "@medusajs/ui"
+import { useTranslation } from "react-i18next"
+import { useParams } from "react-router-dom"
+
+import { RouteDrawer } from "../../../components/modals"
+import { useStockLocation } from "../../../hooks/api/stock-locations"
+import { EditServiceZoneForm } from "./components/edit-region-form"
 
 export const LocationServiceZoneEdit = () => {
-  const { t } = useTranslation();
-  const { location_id, fset_id, zone_id } = useParams();
+  const { t } = useTranslation()
+  const { location_id, fset_id, zone_id } = useParams()
 
-  const { stock_location, isPending, isFetching, isError, error } = useStockLocation(location_id!, {
-    fields: '*fulfillment_sets.service_zones'
-  });
+  const { stock_location, isPending, isFetching, isError, error } =
+    useStockLocation(location_id!, {
+      fields: "*fulfillment_sets.service_zones",
+    })
 
   const serviceZone = stock_location?.fulfillment_sets
-    ?.find(f => f.id === fset_id)
-    ?.service_zones.find(z => z.id === zone_id);
+    ?.find((f) => f.id === fset_id)
+    ?.service_zones.find((z) => z.id === zone_id)
 
   if (!isPending && !isFetching && !serviceZone) {
-    throw json({ message: `Service zone with ID ${zone_id} was not found` }, 404);
+    throw new Response(
+      JSON.stringify({ message: `Service zone with ID ${zone_id} was not found` }),
+      { status: 404, headers: { "Content-Type": "application/json" } }
+    )
   }
 
   if (isError) {
-    throw error;
+    throw error
   }
 
   return (
-    <RouteDrawer
-      prev={`/settings/locations/${location_id}`}
-      data-testid="location-service-zone-edit-drawer"
-    >
+    <RouteDrawer prev={`/settings/locations/${location_id}`} data-testid="location-service-zone-edit-drawer">
       <RouteDrawer.Header data-testid="location-service-zone-edit-drawer-header">
-        <Heading data-testid="location-service-zone-edit-drawer-heading">
-          {t('stockLocations.serviceZones.edit.header')}
-        </Heading>
+        <Heading data-testid="location-service-zone-edit-drawer-heading">{t("stockLocations.serviceZones.edit.header")}</Heading>
       </RouteDrawer.Header>
       {serviceZone && (
         <EditServiceZoneForm
@@ -43,5 +43,5 @@ export const LocationServiceZoneEdit = () => {
         />
       )}
     </RouteDrawer>
-  );
-};
+  )
+}
