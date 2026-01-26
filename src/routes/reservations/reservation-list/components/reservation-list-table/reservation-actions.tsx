@@ -5,6 +5,7 @@ import { useDeleteReservationItem } from "../../../../../hooks/api/reservations"
 import { usePrompt } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { ExtendedReservationItem } from "../../../../inventory/inventory-detail/components/reservations-table/use-reservation-list-table-columns"
+import { toast } from "@medusajs/ui"
 
 export const ReservationActions = ({
   reservation,
@@ -27,7 +28,14 @@ export const ReservationActions = ({
       return
     }
 
-    await mutateAsync()
+    await mutateAsync(undefined, {
+      onSuccess: () => {
+        toast.success(t("inventory.reservation.deleteSuccessToast"))
+      },
+      onError: (e) => {
+        toast.error(e.message)
+      },
+    })
   }
 
   return (
