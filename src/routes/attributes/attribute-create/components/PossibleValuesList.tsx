@@ -15,7 +15,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Button, Input, IconButton, Label } from "@medusajs/ui";
+import { Button, Input, IconButton, Label, Text, Hint } from "@medusajs/ui";
 import { XMark, DotsSix } from "@medusajs/icons";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
@@ -46,9 +46,12 @@ const SortableItem = ({ id, index, onRemove }: SortableItemProps) => {
     transition,
   };
 
-  const fieldError = errors[`possible_values.${index}.value`];
+  const fieldError = Array.isArray(errors?.possible_values) 
+    ? errors.possible_values[index]?.value 
+    : undefined;
 
   return (
+    <>
     <div
       ref={setNodeRef}
       style={style}
@@ -76,11 +79,17 @@ const SortableItem = ({ id, index, onRemove }: SortableItemProps) => {
         <XMark />
       </IconButton>
     </div>
+    {fieldError && (
+      <Text className="text-red-500 text-sm mt-1" data-testid="attribute-form-name-error">
+        {fieldError.message as string}
+      </Text>
+    )}
+    </>
   );
 };
 
 const PossibleValuesList = () => {
-  const { control, getValues } = useFormContext<FormValues>();
+  const { control, getValues, formState } = useFormContext<FormValues>();
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: "possible_values",
@@ -119,13 +128,16 @@ const PossibleValuesList = () => {
     }
   };
 
-  const handleAddValue = () => {
+  const handleAddValue = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     append({
       value: "",
       rank: fields.length,
       metadata: {},
     });
   };
+
+  const shouldShowListError = formState.errors.possible_values && !Array.isArray(formState.errors.possible_values);
 
   return (
     <div className="space-y-2" data-testid="attribute-form-possible-values-list">
@@ -161,6 +173,11 @@ const PossibleValuesList = () => {
           ))}
         </SortableContext>
       </DndContext>
+      {shouldShowListError && (
+          <Hint variant="error" className="text-red-500 text-sm mt-1" data-testid="attribute-form-name-error">
+            {formState.errors.possible_values?.message as string}
+          </Hint>
+        )}
     </div>
   );
 };
