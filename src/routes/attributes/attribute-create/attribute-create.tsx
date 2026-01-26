@@ -79,7 +79,8 @@ export const AttributeCreate = () => {
     setActiveTab(newTab);
   };
 
-  const handleNext = async () => {
+  const handleNext = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (formRef.current) {
       const isValid = await formRef.current.validateFields(["name"]);
       if (isValid) {
