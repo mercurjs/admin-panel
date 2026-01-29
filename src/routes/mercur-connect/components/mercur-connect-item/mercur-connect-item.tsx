@@ -61,7 +61,7 @@ export const MercurConnectItem = ({
 
         <div className="flex justify-end">
           {item.provider === "more" ? (
-            <Link to="https://www.mercurjs.com/contact" target="_blank">
+            <Link to="https://www.mercurjs.com/connect" target="_blank">
               <Button variant="secondary" size="small">
                 Contact us
               </Button>

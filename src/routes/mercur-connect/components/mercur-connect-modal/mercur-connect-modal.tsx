@@ -61,7 +61,7 @@ export const MercurConnectModal = ({
           data-testid={`${testId}-footer`}
         >
           <Link
-            to="https://www.mercurjs.com/contact"
+            to="https://www.mercurjs.com/connect"
             target="_blank"
             data-testid={`${testId}-contact-us-link`}
           >
