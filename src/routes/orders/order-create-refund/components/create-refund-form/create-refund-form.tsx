@@ -300,7 +300,10 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
               type="submit"
               variant="primary"
               size="small"
-              disabled={!!Object.keys(form.formState.errors || {}).length}
+              disabled={
+                !!Object.keys(form.formState.errors || {}).length ||
+                (!hasPaymentIdInSearchParams && !paymentId)
+              }
               data-testid="order-create-refund-save-button"
             >
               {t('actions.save')}
