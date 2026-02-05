@@ -969,14 +969,6 @@ export const CreatePromotionForm = () => {
                                   className={clx('basis-1/2')}
                                   data-testid="promotion-create-form-allocation-option-once"
                                 />
-
-                                <RadioGroup.ChoiceBox
-                                  value="across"
-                                  label={t('promotions.form.allocation.across.title')}
-                                  description={t('promotions.form.allocation.across.description')}
-                                  className={clx('basis-1/2')}
-                                  data-testid="promotion-create-form-allocation-option-across"
-                                />
                               </RadioGroup>
                             </Form.Control>
                             <Form.ErrorMessage data-testid="promotion-create-form-allocation-error" />

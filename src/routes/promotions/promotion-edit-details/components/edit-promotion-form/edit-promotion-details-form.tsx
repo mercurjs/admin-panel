@@ -413,15 +413,6 @@ return (
                             />
 
                         <RadioGroup.ChoiceBox
-                          value="across"
-                          label={t("promotions.form.allocation.across.title")}
-                          description={t(
-                            "promotions.form.allocation.across.description"
-                          )}
-                          data-testid="promotion-edit-details-form-allocation-option-across"
-                        />
-
-                        <RadioGroup.ChoiceBox
                           value="once"
                           label={t("promotions.form.allocation.once.title", {
                             defaultValue: "Once",
