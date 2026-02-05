@@ -1,10 +1,10 @@
-import Medusa from "@medusajs/js-sdk";
+import Medusa from '@medusajs/js-sdk';
 
-export const backendUrl = __BACKEND_URL__ ?? "/";
+export const backendUrl = __BACKEND_URL__ ?? '/';
 
 const decodeJwt = (token: string) => {
   try {
-    const payload = token.split(".")[1];
+    const payload = token.split('.')[1];
     const decoded = JSON.parse(atob(payload));
 
     return decoded;
@@ -28,18 +28,20 @@ export const isTokenExpired = (token: string | null) => {
 };
 
 export const getAuthToken = () => {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     return null;
   }
 
-  return window.localStorage.getItem("medusa_auth_token");
+  return window.localStorage.getItem('medusa_auth_token');
 };
 
 export const sdk = new Medusa({
-  baseUrl: backendUrl,
+  baseUrl: backendUrl
 });
 
 // useful when you want to call the BE from the console and try things out quickly
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
+  // @todo fix any type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (window as any).__sdk = sdk;
 }

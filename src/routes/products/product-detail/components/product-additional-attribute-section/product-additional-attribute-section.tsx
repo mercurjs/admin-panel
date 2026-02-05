@@ -1,35 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { InformationCircleSolid, PencilSquare } from "@medusajs/icons";
-import {
-  Button,
-  Container,
-  Heading,
-  Label,
-  Tooltip,
-  toast,
-} from "@medusajs/ui";
-import { Drawer } from "@medusajs/ui";
-
-import { FormProvider, useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
-
-import { ActionMenu } from "../../../../../components/common/action-menu";
-import { SectionRow } from "../../../../../components/common/section";
-import {
-  useProduct,
-  useProductAttributes,
-  useUpdateProduct,
-} from "../../../../../hooks/api";
-import { FormComponents } from "./components/form-components";
+import { ActionMenu } from '@components/common/action-menu';
+import { SectionRow } from '@components/common/section';
+import { useProduct, useProductAttributes, useUpdateProduct } from '@hooks/api';
+import { InformationCircleSolid, PencilSquare } from '@medusajs/icons';
+import { Button, Container, Drawer, Heading, Label, toast, Tooltip } from '@medusajs/ui';
+import { FormComponents } from '@routes/products/product-detail/components/product-additional-attribute-section/components/form-components.tsx';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 export const ProductAdditionalAttributeSection = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const [open, setOpen] = useState(false);
   const { product, isLoading: isProductLoading } = useProduct(id!, {
-    fields: "attribute_values.*,attribute_values.attribute.*",
+    fields: 'attribute_values.*,attribute_values.attribute.*'
   });
 
   const { data, isLoading } = useProductAttributes(id!);
@@ -39,63 +25,55 @@ export const ProductAdditionalAttributeSection = () => {
   const { mutate: updateProduct } = useUpdateProduct(id!);
 
   const form = useForm<any>({
-    defaultValues: {},
+    defaultValues: {}
   });
 
   // Reset form when product data is loaded
   useEffect(() => {
     if (product?.attribute_values) {
-      const defaultValues = product.attribute_values.reduce(
-        (acc: any, curr: any) => {
-          if (curr) {
-            acc[curr.attribute_id] = curr.value;
-          }
-          return acc;
-        },
-        {},
-      );
+      const defaultValues = product.attribute_values.reduce((acc: any, curr: any) => {
+        if (curr) {
+          acc[curr.attribute_id] = curr.value;
+        }
+
+        return acc;
+      }, {});
       form.reset(defaultValues);
     }
   }, [product?.attribute_values, form]);
 
   const onSubmit = (data: any) => {
-    const formattedData = Object.keys(data).map((key) => {
-      const attribute = attributes.find(
-        (a: any) => a.id === key && a.ui_component === "select",
-      );
-      const value = attribute?.possible_values?.find(
-        (pv: any) => pv.id === data[key],
-      )?.value;
+    const formattedData = Object.keys(data).map(key => {
+      const attribute = attributes.find((a: any) => a.id === key && a.ui_component === 'select');
+      const value = attribute?.possible_values?.find((pv: any) => pv.id === data[key])?.value;
 
       return (
         value && {
-          [key]: value,
+          [key]: value
         }
       );
     });
     const payload = {
       ...data,
-      ...Object.assign({}, ...formattedData.filter(Boolean)),
+      ...Object.assign({}, ...formattedData.filter(Boolean))
     };
 
-    const values = Object.keys(payload).reduce(
-      (acc: Array<Record<string, string>>, key) => {
-        acc.push({ attribute_id: key, value: payload[key] });
-        return acc;
-      },
-      [],
-    );
+    const values = Object.keys(payload).reduce((acc: Array<Record<string, string>>, key) => {
+      acc.push({ attribute_id: key, value: payload[key] });
+
+      return acc;
+    }, []);
 
     updateProduct(
       {
-        additional_data: { values },
+        additional_data: { values }
       },
       {
         onSuccess: () => {
-          toast.success("Product updated successfully");
+          toast.success('Product updated successfully');
           setOpen(false);
-        },
-      },
+        }
+      }
     );
   };
 
@@ -116,19 +94,19 @@ export const ProductAdditionalAttributeSection = () => {
               level="h2"
               data-testid="product-additional-attributes-title"
             >
-              {t("products.additionalAttributes")}
+              {t('products.additionalAttributes')}
             </Heading>
             <ActionMenu
               groups={[
                 {
                   actions: [
                     {
-                      label: t("actions.edit"),
+                      label: t('actions.edit'),
                       onClick: () => setOpen(true),
-                      icon: <PencilSquare />,
-                    },
-                  ],
-                },
+                      icon: <PencilSquare />
+                    }
+                  ]
+                }
               ]}
               data-testid="product-additional-attributes-action-menu"
             />
@@ -143,7 +121,7 @@ export const ProductAdditionalAttributeSection = () => {
                   value={attribute.value}
                   data-testid={`product-additional-attribute-row-${attribute.attribute.name}`}
                 />
-              ),
+              )
           )}
         </Container>
       </div>
@@ -158,7 +136,7 @@ export const ProductAdditionalAttributeSection = () => {
               level="h2"
               data-testid="product-additional-attributes-drawer-title"
             >
-              {t("products.additionalAttributes")}
+              {t('products.additionalAttributes')}
             </Heading>
           </Drawer.Header>
           <Drawer.Body
@@ -192,18 +170,18 @@ export const ProductAdditionalAttributeSection = () => {
                         </Tooltip>
                       )}
                     </Label>
-                    <div
-                      data-testid={`product-additional-attribute-input-${a.id}`}
-                    >
+                    <div data-testid={`product-additional-attribute-input-${a.id}`}>
                       <FormComponents
                         attribute={a}
                         field={{
                           name: a.id,
                           value: form.watch(a.id),
                           defaultValue: form.getValues(a.id),
+                          // @todo fix any type
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
                           onChange: (e: any) => {
                             form.setValue(a.id, e.target.value);
-                          },
+                          }
                         }}
                         data-testid={`product-additional-attribute-input-${a.id}-component`}
                       />
@@ -227,7 +205,7 @@ export const ProductAdditionalAttributeSection = () => {
                   size="small"
                   data-testid="product-additional-attributes-cancel-button"
                 >
-                  {t("actions.cancel")}
+                  {t('actions.cancel')}
                 </Button>
               </Drawer.Close>
               <Button
@@ -236,7 +214,7 @@ export const ProductAdditionalAttributeSection = () => {
                 form="product-additional-attributes-form"
                 data-testid="product-additional-attributes-save-button"
               >
-                {t("actions.save")}
+                {t('actions.save')}
               </Button>
             </div>
           </Drawer.Footer>

@@ -1,2 +1,2 @@
-export { ExtensionProvider } from "./extension-provider"
-export { useExtension } from "./use-extension"
+export { ExtensionProvider } from './extension-provider';
+export { useExtension } from './use-extension';

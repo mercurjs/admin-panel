@@ -1,27 +1,33 @@
 import { forwardRef, Fragment, useEffect, useRef } from 'react';
 
+import { Form } from '@components/common/form';
+import { usePromotionRuleAttributes, usePromotionRules } from '@hooks/api';
+import { useDocumentDirection } from '@hooks/use-document-direction.tsx';
 import { XMarkMini } from '@medusajs/icons';
-import { PromotionDTO } from '@medusajs/types';
+import type { PromotionDTO } from '@medusajs/types';
 import { Badge, Button, Heading, IconButton, Select, Text } from '@medusajs/ui';
-import { ControllerRenderProps, useFieldArray, UseFormReturn, useWatch } from 'react-hook-form';
+import { generateRuleAttributes } from '@routes/promotions/common/edit-rules/components/edit-rules-form/utils.ts';
+import { RuleValueFormField } from '@routes/promotions/common/edit-rules/components/rule-value-form-field';
+import type { CreatePromotionSchemaType } from '@routes/promotions/promotion-create/components/create-promotion-form/form-schema';
+import {
+  useFieldArray,
+  useWatch,
+  type ControllerRenderProps,
+  type UseFormReturn
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { Form } from '../../../../../../components/common/form';
-import {
-  usePromotionRuleAttributes,
-  usePromotionRules
-} from '../../../../../../hooks/api/promotions';
-import { useDocumentDirection } from '../../../../../../hooks/use-document-direction';
-import { CreatePromotionSchemaType } from '../../../../promotion-create/components/create-promotion-form/form-schema';
-import { generateRuleAttributes } from '../edit-rules-form/utils';
-import { RuleValueFormField } from '../rule-value-form-field';
 import { requiredProductRule } from './constants';
 
 type RulesFormFieldType = {
   promotion?: PromotionDTO;
   form: UseFormReturn<CreatePromotionSchemaType>;
   ruleType: 'rules' | 'target-rules' | 'buy-rules';
+  // @todo fix any type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setRulesToRemove?: any;
+  // @todo fix any type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rulesToRemove?: any;
   scope?: 'application_method.buy_rules' | 'rules' | 'application_method.target_rules';
   formType?: 'create' | 'edit';
@@ -98,7 +104,8 @@ export const RulesFormField = ({
 
     if (ruleType === 'rules' && !fields.length) {
       form.resetField('rules');
-
+      // @todo fix any type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       replace(generateRuleAttributes(rules) as any);
     }
 
@@ -106,7 +113,8 @@ export const RulesFormField = ({
       form.resetField('application_method.buy_rules');
       const rulesToAppend =
         promotion?.id || promotionType === 'standard' ? rules : [...rules, requiredProductRule];
-
+      // @todo fix any type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       replace(generateRuleAttributes(rulesToAppend) as any);
     }
 
@@ -115,6 +123,8 @@ export const RulesFormField = ({
       const rulesToAppend =
         promotion?.id || promotionType === 'standard' ? rules : [...rules, requiredProductRule];
 
+      // @todo fix any type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       replace(generateRuleAttributes(rulesToAppend) as any);
     }
 

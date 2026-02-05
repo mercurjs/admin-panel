@@ -1,8 +1,12 @@
-import { HttpTypes } from "@medusajs/types"
-import { useProducts } from "../../../../../hooks/api/products"
-import { productColumnAdapter } from "../../../../../lib/table/entity-adapters"
-import { createTableAdapter, TableAdapter } from "../../../../../lib/table/table-adapters"
-import { useProductTableFilters } from "./use-product-table-filters"
+import type { HttpTypes } from "@medusajs/types";
+
+import { useProducts } from "@hooks/api";
+
+import { productColumnAdapter } from "@lib/table/entity-adapters.tsx";
+import type { TableAdapter } from "@lib/table/table-adapters";
+import { createTableAdapter } from "@lib/table/table-adapters";
+
+import { useProductTableFilters } from "./use-product-table-filters";
 
 export function createProductTableAdapter(): TableAdapter<HttpTypes.AdminProduct> {
   return createTableAdapter<HttpTypes.AdminProduct>({
@@ -20,32 +24,34 @@ export function createProductTableAdapter(): TableAdapter<HttpTypes.AdminProduct
         {
           placeholderData: (previousData, previousQuery) => {
             // Only keep placeholder data if the fields haven't changed
-            const prevFields = previousQuery?.[previousQuery.length - 1]?.query?.fields
+            const prevFields =
+              previousQuery?.[previousQuery.length - 1]?.query?.fields;
             if (prevFields && prevFields !== fields) {
               // Fields changed, don't use placeholder data
-              return undefined
+              return undefined;
             }
             // Fields are the same, keep previous data for smooth transitions
-            return previousData
+            return previousData;
           },
-        }
-      )
-      return { data: products, count, isLoading, isError, error }
+        },
+      );
+
+      return { data: products, count, isLoading, isError, error };
     },
     getRowHref: (row) => `/products/${row.id}`,
-  })
+  });
 }
 
 /**
  * Hook to get the product table adapter with filters
  */
 export function useProductTableAdapter(): TableAdapter<HttpTypes.AdminProduct> {
-  const filters = useProductTableFilters()
-  const adapter = createProductTableAdapter()
+  const filters = useProductTableFilters();
+  const adapter = createProductTableAdapter();
 
   // Add dynamic filters to the adapter
   return {
     ...adapter,
     filters,
-  }
+  };
 }

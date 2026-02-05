@@ -1,1 +1,1 @@
-export { ShippingOptionTypeEdit as Component } from "./shipping-option-type-edit"
+export { ShippingOptionTypeEdit as Component } from './shipping-option-type-edit';

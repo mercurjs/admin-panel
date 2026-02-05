@@ -1,1 +1,1 @@
-export { ClaimCreate as Component } from "./claim-create"
+export { ClaimCreate as Component } from './claim-create';

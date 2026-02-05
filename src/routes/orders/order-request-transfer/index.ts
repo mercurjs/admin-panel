@@ -1,1 +1,1 @@
-export { OrderRequestTransfer as Component } from "./order-request-transfer"
+export { OrderRequestTransfer as Component } from './order-request-transfer';

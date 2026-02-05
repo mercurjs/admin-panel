@@ -1,15 +1,11 @@
-import { EllipsisHorizontal, PencilSquare, Trash } from "@medusajs/icons";
-import { DropdownMenu, toast } from "@medusajs/ui";
-
-import {
-  useDeleteCommisionRule,
-  useUpdateCommisionRule,
-} from "@hooks/api/commission";
+import { useDeleteCommisionRule, useUpdateCommisionRule } from '@hooks/api/commission';
+import { EllipsisHorizontal, PencilSquare, Trash } from '@medusajs/icons';
+import { DropdownMenu, toast } from '@medusajs/ui';
 
 export function CommissionActionMenu({
   id,
   is_active,
-  onSuccess,
+  onSuccess
 }: {
   id: string;
   is_active: boolean;
@@ -21,35 +17,46 @@ export function CommissionActionMenu({
   const onDeleteClick = async () => {
     try {
       await deleteCommissionRule({ id });
-      toast.success("Deleted!");
+      toast.success('Deleted!');
       onSuccess?.();
     } catch {
-      toast.error("Error!");
+      toast.error('Error!');
     }
   };
 
   const onSwitchEnableClick = async () => {
     try {
       await updateCommissionRule({ id, is_active: !is_active });
-      toast.success("Updated!");
+      toast.success('Updated!');
       onSuccess?.();
     } catch {
-      toast.error("Error!");
+      toast.error('Error!');
     }
   };
 
   return (
     <DropdownMenu data-testid={`commission-rule-action-menu-${id}`}>
-      <DropdownMenu.Trigger asChild data-testid={`commission-rule-action-menu-${id}-trigger`}>
+      <DropdownMenu.Trigger
+        asChild
+        data-testid={`commission-rule-action-menu-${id}-trigger`}
+      >
         <EllipsisHorizontal />
       </DropdownMenu.Trigger>
       <DropdownMenu.Content data-testid={`commission-rule-action-menu-${id}-content`}>
-        <DropdownMenu.Item className="gap-x-2" onClick={onSwitchEnableClick} data-testid={`commission-rule-action-menu-${id}-${is_active ? "disable" : "enable"}`}>
+        <DropdownMenu.Item
+          className="gap-x-2"
+          onClick={onSwitchEnableClick}
+          data-testid={`commission-rule-action-menu-${id}-${is_active ? 'disable' : 'enable'}`}
+        >
           <PencilSquare className="text-ui-fg-subtle" />
-          {is_active ? "Disable" : "Enable"}
+          {is_active ? 'Disable' : 'Enable'}
         </DropdownMenu.Item>
         <DropdownMenu.Separator />
-        <DropdownMenu.Item className="gap-x-2" onClick={onDeleteClick} data-testid={`commission-rule-action-menu-${id}-delete`}>
+        <DropdownMenu.Item
+          className="gap-x-2"
+          onClick={onDeleteClick}
+          data-testid={`commission-rule-action-menu-${id}-delete`}
+        >
           <Trash className="text-ui-fg-subtle" />
           Delete
         </DropdownMenu.Item>

@@ -1,10 +1,9 @@
-import React from "react";
+import type { ReactNode } from 'react';
 
-import { ExclamationCircle, MagnifyingGlass, PlusMini } from "@medusajs/icons";
-import { Button, Text, clx } from "@medusajs/ui";
-
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { ExclamationCircle, MagnifyingGlass, PlusMini } from '@medusajs/icons';
+import { Button, clx, Text } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 export type NoResultsProps = {
   title?: string;
@@ -16,19 +15,21 @@ export const NoResults = ({ title, message, className }: NoResultsProps) => {
   const { t } = useTranslation();
 
   return (
-    <div
-      className={clx(
-        "flex h-[400px] w-full items-center justify-center",
-        className,
-      )}
-    >
+    <div className={clx('flex h-[400px] w-full items-center justify-center', className)}>
       <div className="flex flex-col items-center gap-y-2">
         <MagnifyingGlass />
-        <Text size="small" leading="compact" weight="plus">
-          {title ?? t("general.noResultsTitle")}
+        <Text
+          size="small"
+          leading="compact"
+          weight="plus"
+        >
+          {title ?? t('general.noResultsTitle')}
         </Text>
-        <Text size="small" className="text-ui-fg-subtle">
-          {message ?? t("general.noResultsMessage")}
+        <Text
+          size="small"
+          className="text-ui-fg-subtle"
+        >
+          {message ?? t('general.noResultsMessage')}
         </Text>
       </div>
     </div>
@@ -48,14 +49,14 @@ type NoRecordsProps = {
   message?: string;
   className?: string;
   buttonVariant?: string;
-  icon?: React.ReactNode;
-  "data-testid"?: string;
+  icon?: ReactNode;
+  'data-testid'?: string;
 } & ActionProps;
 
 const DefaultButton = ({
   action,
-  "data-testid": dataTestId,
-}: ActionProps & { "data-testid"?: string }) =>
+  'data-testid': dataTestId
+}: ActionProps & { 'data-testid'?: string }) =>
   action && (
     <Link
       to={action.to}
@@ -64,9 +65,7 @@ const DefaultButton = ({
       <Button
         variant="secondary"
         size="small"
-        data-testid={
-          dataTestId ? `${dataTestId}-action-button-inner` : undefined
-        }
+        data-testid={dataTestId ? `${dataTestId}-action-button-inner` : undefined}
       >
         {action.label}
       </Button>
@@ -75,8 +74,8 @@ const DefaultButton = ({
 
 const TransparentIconLeftButton = ({
   action,
-  "data-testid": dataTestId,
-}: ActionProps & { "data-testid"?: string }) =>
+  'data-testid': dataTestId
+}: ActionProps & { 'data-testid'?: string }) =>
   action && (
     <Link
       to={action.to}
@@ -85,9 +84,7 @@ const TransparentIconLeftButton = ({
       <Button
         variant="transparent"
         className="text-ui-fg-interactive"
-        data-testid={
-          dataTestId ? `${dataTestId}-action-button-inner` : undefined
-        }
+        data-testid={dataTestId ? `${dataTestId}-action-button-inner` : undefined}
       >
         <PlusMini /> {action.label}
       </Button>
@@ -99,17 +96,17 @@ export const NoRecords = ({
   message,
   action,
   className,
-  buttonVariant = "default",
+  buttonVariant = 'default',
   icon = <ExclamationCircle className="text-ui-fg-subtle" />,
-  "data-testid": dataTestId,
+  'data-testid': dataTestId
 }: NoRecordsProps) => {
   const { t } = useTranslation();
 
   return (
     <div
       className={clx(
-        "flex h-[150px] w-full flex-col items-center justify-center gap-y-4",
-        className,
+        'flex h-[150px] w-full flex-col items-center justify-center gap-y-4',
+        className
       )}
       data-testid={dataTestId}
     >
@@ -117,9 +114,7 @@ export const NoRecords = ({
         className="flex flex-col items-center gap-y-3"
         data-testid={dataTestId ? `${dataTestId}-content` : undefined}
       >
-        <div data-testid={dataTestId ? `${dataTestId}-icon` : undefined}>
-          {icon}
-        </div>
+        <div data-testid={dataTestId ? `${dataTestId}-icon` : undefined}>{icon}</div>
 
         <div
           className="flex flex-col items-center gap-y-1"
@@ -131,7 +126,7 @@ export const NoRecords = ({
             weight="plus"
             data-testid={dataTestId ? `${dataTestId}-title` : undefined}
           >
-            {title ?? t("general.noRecordsTitle")}
+            {title ?? t('general.noRecordsTitle')}
           </Text>
 
           <Text
@@ -139,16 +134,22 @@ export const NoRecords = ({
             className="text-ui-fg-muted"
             data-testid={dataTestId ? `${dataTestId}-message` : undefined}
           >
-            {message ?? t("general.noRecordsMessage")}
+            {message ?? t('general.noRecordsMessage')}
           </Text>
         </div>
       </div>
 
-      {buttonVariant === "default" && (
-        <DefaultButton action={action} data-testid={dataTestId} />
+      {buttonVariant === 'default' && (
+        <DefaultButton
+          action={action}
+          data-testid={dataTestId}
+        />
       )}
-      {buttonVariant === "transparentIconLeft" && (
-        <TransparentIconLeftButton action={action} data-testid={dataTestId} />
+      {buttonVariant === 'transparentIconLeft' && (
+        <TransparentIconLeftButton
+          action={action}
+          data-testid={dataTestId}
+        />
       )}
     </div>
   );

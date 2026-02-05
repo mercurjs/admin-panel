@@ -1,13 +1,10 @@
-import type { PropsWithChildren, ReactNode } from "react";
+import type { PropsWithChildren, ReactNode } from 'react';
 
-import { EllipsisHorizontal } from "@medusajs/icons";
-import { DropdownMenu, IconButton, clx } from "@medusajs/ui";
-
-import { Link } from "react-router-dom";
-
-import { ConditionalTooltip } from "@components/common/conditional-tooltip";
-
-import { useDocumentDirection } from "@hooks/use-document-direction";
+import { ConditionalTooltip } from '@components/common/conditional-tooltip';
+import { useDocumentDirection } from '@hooks/use-document-direction';
+import { EllipsisHorizontal } from '@medusajs/icons';
+import { clx, DropdownMenu, IconButton } from '@medusajs/ui';
+import { Link } from 'react-router-dom';
 
 export type Action = {
   icon: ReactNode;
@@ -34,24 +31,31 @@ export type ActionGroup = {
 
 type ActionMenuProps = PropsWithChildren<{
   groups: ActionGroup[];
-  variant?: "transparent" | "primary";
+  variant?: 'transparent' | 'primary';
 }>;
 
 export const ActionMenu = ({
   groups,
-  variant = "transparent",
+  variant = 'transparent',
   children,
-  "data-testid": dataTestId,
-}: ActionMenuProps & { "data-testid"?: string }) => {
+  'data-testid': dataTestId
+}: ActionMenuProps & { 'data-testid'?: string }) => {
   const direction = useDocumentDirection();
   const inner = children ?? (
-    <IconButton size="small" variant={variant} data-testid={dataTestId ? `${dataTestId}-trigger` : undefined}>
+    <IconButton
+      size="small"
+      variant={variant}
+      data-testid={dataTestId ? `${dataTestId}-trigger` : undefined}
+    >
       <EllipsisHorizontal />
     </IconButton>
   );
 
   return (
-    <DropdownMenu dir={direction} data-testid={dataTestId}>
+    <DropdownMenu
+      dir={direction}
+      data-testid={dataTestId}
+    >
       <DropdownMenu.Trigger asChild>{inner}</DropdownMenu.Trigger>
       <DropdownMenu.Content data-testid={dataTestId ? `${dataTestId}-content` : undefined}>
         {groups.map((group, index) => {
@@ -62,7 +66,10 @@ export const ActionMenu = ({
           const isLast = index === groups.length - 1;
 
           return (
-            <DropdownMenu.Group key={index} data-testid={dataTestId ? `${dataTestId}-group-${index}` : undefined}>
+            <DropdownMenu.Group
+              key={index}
+              data-testid={dataTestId ? `${dataTestId}-group-${index}` : undefined}
+            >
               {group.actions.map((action, actionIndex) => {
                 const Wrapper = action.disabledTooltip
                   ? ({ children }: { children: ReactNode }) => (
@@ -74,24 +81,25 @@ export const ActionMenu = ({
                         <div>{children}</div>
                       </ConditionalTooltip>
                     )
-                  : "div";
+                  : 'div';
 
                 if (action.onClick) {
                   return (
                     <Wrapper key={actionIndex}>
                       <DropdownMenu.Item
                         disabled={action.disabled}
-                        onClick={(e) => {
+                        onClick={e => {
                           e.stopPropagation();
                           action.onClick();
                         }}
-                        className={clx(
-                          "flex items-center gap-x-2 [&_svg]:text-ui-fg-subtle",
-                          {
-                            "[&_svg]:text-ui-fg-disabled": action.disabled,
-                          },
-                        )}
-                        data-testid={dataTestId ? `${dataTestId}-action-${actionIndex}-${action.label.toLowerCase().replace(/\s+/g, "-")}` : undefined}
+                        className={clx('flex items-center gap-x-2 [&_svg]:text-ui-fg-subtle', {
+                          '[&_svg]:text-ui-fg-disabled': action.disabled
+                        })}
+                        data-testid={
+                          dataTestId
+                            ? `${dataTestId}-action-${actionIndex}-${action.label.toLowerCase().replace(/\s+/g, '-')}`
+                            : undefined
+                        }
                       >
                         {action.icon}
                         <span>{action.label}</span>
@@ -103,17 +111,21 @@ export const ActionMenu = ({
                 return (
                   <Wrapper key={actionIndex}>
                     <DropdownMenu.Item
-                      className={clx(
-                        "flex items-center gap-x-2 [&_svg]:text-ui-fg-subtle",
-                        {
-                          "[&_svg]:text-ui-fg-disabled": action.disabled,
-                        },
-                      )}
+                      className={clx('flex items-center gap-x-2 [&_svg]:text-ui-fg-subtle', {
+                        '[&_svg]:text-ui-fg-disabled': action.disabled
+                      })}
                       asChild
                       disabled={action.disabled}
-                      data-testid={dataTestId ? `${dataTestId}-action-${actionIndex}-${action.label.toLowerCase().replace(/\s+/g, "-")}` : undefined}
+                      data-testid={
+                        dataTestId
+                          ? `${dataTestId}-action-${actionIndex}-${action.label.toLowerCase().replace(/\s+/g, '-')}`
+                          : undefined
+                      }
                     >
-                      <Link to={action.to} onClick={(e) => e.stopPropagation()}>
+                      <Link
+                        to={action.to}
+                        onClick={e => e.stopPropagation()}
+                      >
                         {action.icon}
                         <span>{action.label}</span>
                       </Link>

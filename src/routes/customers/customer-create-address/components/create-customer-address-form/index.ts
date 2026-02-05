@@ -1,1 +1,1 @@
-export * from "./create-customer-address-form"
+export * from './create-customer-address-form';

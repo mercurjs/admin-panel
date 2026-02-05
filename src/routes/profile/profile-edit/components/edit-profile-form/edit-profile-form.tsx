@@ -1,76 +1,81 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button, Input, Select, toast } from "@medusajs/ui"
-import { useForm } from "react-hook-form"
-import { useTranslation } from "react-i18next"
-import * as zod from "zod"
+import { Form } from '@components/common/form';
+import { RouteDrawer, useRouteModal } from '@components/modals';
+import { KeyboundForm } from '@components/utilities/keybound-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useUpdateUser } from '@hooks/api';
+import { useDocumentDirection } from '@hooks/use-document-direction';
+import type { HttpTypes } from '@medusajs/types';
+import { Button, Input, Select, toast } from '@medusajs/ui';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import * as zod from 'zod';
 
-import { HttpTypes } from "@medusajs/types"
-import { Form } from "../../../../../components/common/form"
-import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
-import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import { useUpdateUser } from "../../../../../hooks/api/users"
-import { languages } from "../../../../../i18n/languages"
-import { useDocumentDirection } from "../../../../../hooks/use-document-direction"
+import { languages } from '@/i18n/languages';
 
 type EditProfileProps = {
-  user: HttpTypes.AdminUser
+  user: HttpTypes.AdminUser;
   // usageInsights: boolean
-}
+};
 
 const EditProfileSchema = zod.object({
   first_name: zod.string().optional(),
   last_name: zod.string().optional(),
-  language: zod.string(),
+  language: zod.string()
   // usage_insights: zod.boolean(),
-})
+});
 
 export const EditProfileForm = ({ user }: EditProfileProps) => {
-  const { t, i18n } = useTranslation()
-  const { handleSuccess } = useRouteModal()
-  const direction = useDocumentDirection()
+  const { t, i18n } = useTranslation();
+  const { handleSuccess } = useRouteModal();
+  const direction = useDocumentDirection();
   const form = useForm<zod.infer<typeof EditProfileSchema>>({
     defaultValues: {
-      first_name: user.first_name ?? "",
-      last_name: user.last_name ?? "",
-      language: i18n.language,
+      first_name: user.first_name ?? '',
+      last_name: user.last_name ?? '',
+      language: i18n.language
       // usage_insights: usageInsights,
     },
-    resolver: zodResolver(EditProfileSchema),
-  })
+    resolver: zodResolver(EditProfileSchema)
+  });
 
   const changeLanguage = async (code: string) => {
-    await i18n.changeLanguage(code)
-  }
+    await i18n.changeLanguage(code);
+  };
 
-  const sortedLanguages = languages.sort((a, b) =>
-    a.display_name.localeCompare(b.display_name)
-  )
+  const sortedLanguages = languages.sort((a, b) => a.display_name.localeCompare(b.display_name));
 
-  const { mutateAsync, isPending } = useUpdateUser(user.id!)
+  const { mutateAsync, isPending } = useUpdateUser(user.id!);
 
-  const handleSubmit = form.handleSubmit(async (values) => {
+  const handleSubmit = form.handleSubmit(async values => {
     await mutateAsync(
       {
         first_name: values.first_name,
-        last_name: values.last_name,
+        last_name: values.last_name
       },
       {
-        onError: (error) => {
-          toast.error(error.message)
-          return
-        },
+        onError: error => {
+          toast.error(error.message);
+
+          return;
+        }
       }
-    )
+    );
 
-    await changeLanguage(values.language)
+    await changeLanguage(values.language);
 
-    toast.success(t("profile.toast.edit"))
-    handleSuccess()
-  })
+    toast.success(t('profile.toast.edit'));
+    handleSuccess();
+  });
 
   return (
-    <RouteDrawer.Form form={form} data-testid="profile-edit-form">
-      <KeyboundForm onSubmit={handleSubmit} className="flex flex-1 flex-col">
+    <RouteDrawer.Form
+      form={form}
+      data-testid="profile-edit-form"
+    >
+      <KeyboundForm
+        onSubmit={handleSubmit}
+        className="flex flex-1 flex-col"
+      >
         <RouteDrawer.Body data-testid="profile-edit-body">
           <div className="flex flex-col gap-y-8">
             <div className="grid grid-cols-2 gap-4">
@@ -79,9 +84,14 @@ export const EditProfileForm = ({ user }: EditProfileProps) => {
                 name="first_name"
                 render={({ field }) => (
                   <Form.Item data-testid="profile-edit-first-name-item">
-                    <Form.Label data-testid="profile-edit-first-name-label">{t("fields.firstName")}</Form.Label>
+                    <Form.Label data-testid="profile-edit-first-name-label">
+                      {t('fields.firstName')}
+                    </Form.Label>
                     <Form.Control data-testid="profile-edit-first-name-control">
-                      <Input {...field} data-testid="profile-edit-first-name-input" />
+                      <Input
+                        {...field}
+                        data-testid="profile-edit-first-name-input"
+                      />
                     </Form.Control>
                     <Form.ErrorMessage data-testid="profile-edit-first-name-error" />
                   </Form.Item>
@@ -92,9 +102,14 @@ export const EditProfileForm = ({ user }: EditProfileProps) => {
                 name="last_name"
                 render={({ field }) => (
                   <Form.Item data-testid="profile-edit-last-name-item">
-                    <Form.Label data-testid="profile-edit-last-name-label">{t("fields.lastName")}</Form.Label>
+                    <Form.Label data-testid="profile-edit-last-name-label">
+                      {t('fields.lastName')}
+                    </Form.Label>
                     <Form.Control data-testid="profile-edit-last-name-control">
-                      <Input {...field} data-testid="profile-edit-last-name-input" />
+                      <Input
+                        {...field}
+                        data-testid="profile-edit-last-name-input"
+                      />
                     </Form.Control>
                     <Form.ErrorMessage data-testid="profile-edit-last-name-error" />
                   </Form.Item>
@@ -105,10 +120,17 @@ export const EditProfileForm = ({ user }: EditProfileProps) => {
               control={form.control}
               name="language"
               render={({ field: { ref, ...field } }) => (
-                <Form.Item className="gap-y-4" data-testid="profile-edit-language-item">
+                <Form.Item
+                  className="gap-y-4"
+                  data-testid="profile-edit-language-item"
+                >
                   <div>
-                    <Form.Label data-testid="profile-edit-language-label">{t("profile.fields.languageLabel")}</Form.Label>
-                    <Form.Hint data-testid="profile-edit-language-hint">{t("profile.edit.languageHint")}</Form.Hint>
+                    <Form.Label data-testid="profile-edit-language-label">
+                      {t('profile.fields.languageLabel')}
+                    </Form.Label>
+                    <Form.Hint data-testid="profile-edit-language-hint">
+                      {t('profile.edit.languageHint')}
+                    </Form.Hint>
                   </div>
                   <div>
                     <Form.Control data-testid="profile-edit-language-control">
@@ -118,19 +140,20 @@ export const EditProfileForm = ({ user }: EditProfileProps) => {
                         onValueChange={field.onChange}
                         data-testid="profile-edit-language-select"
                       >
-                        <Select.Trigger ref={ref} className="py-1 text-[13px]" data-testid="profile-edit-language-trigger">
-                          <Select.Value
-                            placeholder={t("profile.edit.languagePlaceholder")}
-                          >
+                        <Select.Trigger
+                          ref={ref}
+                          className="py-1 text-[13px]"
+                          data-testid="profile-edit-language-trigger"
+                        >
+                          <Select.Value placeholder={t('profile.edit.languagePlaceholder')}>
                             {
-                              sortedLanguages.find(
-                                (language) => language.code === field.value
-                              )?.display_name
+                              sortedLanguages.find(language => language.code === field.value)
+                                ?.display_name
                             }
                           </Select.Value>
                         </Select.Trigger>
                         <Select.Content data-testid="profile-edit-language-content">
-                          {languages.map((language) => (
+                          {languages.map(language => (
                             <Select.Item
                               key={language.code}
                               value={language.code}
@@ -192,16 +215,25 @@ export const EditProfileForm = ({ user }: EditProfileProps) => {
         <RouteDrawer.Footer data-testid="profile-edit-footer">
           <div className="flex items-center gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary" data-testid="profile-edit-cancel-button">
-                {t("actions.cancel")}
+              <Button
+                size="small"
+                variant="secondary"
+                data-testid="profile-edit-cancel-button"
+              >
+                {t('actions.cancel')}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={isPending} data-testid="profile-edit-save-button">
-              {t("actions.save")}
+            <Button
+              size="small"
+              type="submit"
+              isLoading={isPending}
+              data-testid="profile-edit-save-button"
+            >
+              {t('actions.save')}
             </Button>
           </div>
         </RouteDrawer.Footer>
       </KeyboundForm>
     </RouteDrawer.Form>
-  )
-}
+  );
+};

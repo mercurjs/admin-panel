@@ -1,7 +1,6 @@
-import { EllipsisHorizontal, Eye } from "@medusajs/icons";
-import { DropdownMenu } from "@medusajs/ui";
-
-import type { CommissionLine } from "@custom-types/commission";
+import type { CommissionLine } from '@custom-types/commission';
+import { EllipsisHorizontal, Eye } from '@medusajs/icons';
+import { DropdownMenu } from '@medusajs/ui';
 
 type Props = {
   handleDetail: (line: CommissionLine) => void;

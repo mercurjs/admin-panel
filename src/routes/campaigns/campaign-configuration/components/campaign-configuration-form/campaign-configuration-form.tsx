@@ -1,66 +1,69 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { AdminCampaign } from "@medusajs/types"
-import { Button, DatePicker, toast } from "@medusajs/ui"
-import { useForm } from "react-hook-form"
-import { useTranslation } from "react-i18next"
-import { z } from "zod"
-
-import { Form } from "../../../../../components/common/form"
-import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
-import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import { useUpdateCampaign } from "../../../../../hooks/api/campaigns"
+import { Form } from '@components/common/form';
+import { RouteDrawer, useRouteModal } from '@components/modals';
+import { KeyboundForm } from '@components/utilities/keybound-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useUpdateCampaign } from '@hooks/api';
+import type { AdminCampaign } from '@medusajs/types';
+import { Button, DatePicker, toast } from '@medusajs/ui';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
 type CampaignConfigurationFormProps = {
-  campaign: AdminCampaign
-}
+  campaign: AdminCampaign;
+};
 
 const CampaignConfigurationSchema = z.object({
   starts_at: z.date().nullable(),
-  ends_at: z.date().nullable(),
-})
+  ends_at: z.date().nullable()
+});
 
-export const CampaignConfigurationForm = ({
-  campaign,
-}: CampaignConfigurationFormProps) => {
-  const { t } = useTranslation()
-  const { handleSuccess } = useRouteModal()
+export const CampaignConfigurationForm = ({ campaign }: CampaignConfigurationFormProps) => {
+  const { t } = useTranslation();
+  const { handleSuccess } = useRouteModal();
 
   const form = useForm<z.infer<typeof CampaignConfigurationSchema>>({
     defaultValues: {
       starts_at: campaign.starts_at ? new Date(campaign.starts_at) : undefined,
-      ends_at: campaign.ends_at ? new Date(campaign.ends_at) : undefined,
+      ends_at: campaign.ends_at ? new Date(campaign.ends_at) : undefined
     },
-    resolver: zodResolver(CampaignConfigurationSchema),
-  })
+    resolver: zodResolver(CampaignConfigurationSchema)
+  });
 
-  const { mutateAsync, isPending } = useUpdateCampaign(campaign.id)
+  const { mutateAsync, isPending } = useUpdateCampaign(campaign.id);
 
-  const handleSubmit = form.handleSubmit(async (data) => {
+  const handleSubmit = form.handleSubmit(async data => {
     await mutateAsync(
       {
         starts_at: data.starts_at || null,
-        ends_at: data.ends_at || null,
+        ends_at: data.ends_at || null
       },
       {
         onSuccess: ({ campaign }) => {
           toast.success(
-            t("campaigns.configuration.edit.successToast", {
-              name: campaign.name,
+            t('campaigns.configuration.edit.successToast', {
+              name: campaign.name
             })
-          )
+          );
 
-          handleSuccess()
+          handleSuccess();
         },
-        onError: (error) => {
-          toast.error(error.message)
-        },
+        onError: error => {
+          toast.error(error.message);
+        }
       }
-    )
-  })
+    );
+  });
 
   return (
-    <RouteDrawer.Form form={form} data-testid="campaign-configuration-form">
-      <KeyboundForm onSubmit={handleSubmit} className="flex flex-1 flex-col">
+    <RouteDrawer.Form
+      form={form}
+      data-testid="campaign-configuration-form"
+    >
+      <KeyboundForm
+        onSubmit={handleSubmit}
+        className="flex flex-1 flex-col"
+      >
         <RouteDrawer.Body data-testid="campaign-configuration-form-body">
           <div className="flex flex-col gap-y-4">
             <Form.Field
@@ -69,7 +72,9 @@ export const CampaignConfigurationForm = ({
               render={({ field }) => {
                 return (
                   <Form.Item data-testid="campaign-configuration-form-starts-at-item">
-                    <Form.Label data-testid="campaign-configuration-form-starts-at-label">{t("campaigns.fields.start_date")}</Form.Label>
+                    <Form.Label data-testid="campaign-configuration-form-starts-at-label">
+                      {t('campaigns.fields.start_date')}
+                    </Form.Label>
 
                     <Form.Control data-testid="campaign-configuration-form-starts-at-control">
                       <DatePicker
@@ -83,7 +88,7 @@ export const CampaignConfigurationForm = ({
 
                     <Form.ErrorMessage data-testid="campaign-configuration-form-starts-at-error" />
                   </Form.Item>
-                )
+                );
               }}
             />
 
@@ -93,7 +98,9 @@ export const CampaignConfigurationForm = ({
               render={({ field }) => {
                 return (
                   <Form.Item data-testid="campaign-configuration-form-ends-at-item">
-                    <Form.Label data-testid="campaign-configuration-form-ends-at-label">{t("campaigns.fields.end_date")}</Form.Label>
+                    <Form.Label data-testid="campaign-configuration-form-ends-at-label">
+                      {t('campaigns.fields.end_date')}
+                    </Form.Label>
 
                     <Form.Control data-testid="campaign-configuration-form-ends-at-control">
                       <DatePicker
@@ -106,7 +113,7 @@ export const CampaignConfigurationForm = ({
 
                     <Form.ErrorMessage data-testid="campaign-configuration-form-ends-at-error" />
                   </Form.Item>
-                )
+                );
               }}
             />
           </div>
@@ -115,8 +122,12 @@ export const CampaignConfigurationForm = ({
         <RouteDrawer.Footer data-testid="campaign-configuration-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button variant="secondary" size="small" data-testid="campaign-configuration-form-cancel-button">
-                {t("actions.cancel")}
+              <Button
+                variant="secondary"
+                size="small"
+                data-testid="campaign-configuration-form-cancel-button"
+              >
+                {t('actions.cancel')}
               </Button>
             </RouteDrawer.Close>
 
@@ -127,11 +138,11 @@ export const CampaignConfigurationForm = ({
               size="small"
               data-testid="campaign-configuration-form-save-button"
             >
-              {t("actions.save")}
+              {t('actions.save')}
             </Button>
           </div>
         </RouteDrawer.Footer>
       </KeyboundForm>
     </RouteDrawer.Form>
-  )
-}
+  );
+};

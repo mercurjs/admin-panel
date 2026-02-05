@@ -1,52 +1,46 @@
-import { ArrowPath } from "@medusajs/icons"
-import { Button, Container, Heading, Text, toast } from "@medusajs/ui"
-import { useTranslation } from "react-i18next"
-
-import { HttpTypes } from "@medusajs/types"
-import { useNavigate } from "react-router-dom"
-import { useCancelExchangeRequest } from "../../../../../hooks/api/exchanges"
+import { useCancelExchangeRequest } from '@hooks/api/exchanges';
+import { ArrowPath } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Button, Container, Heading, Text, toast } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 type ActiveOrderExchangeSectionProps = {
-  orderPreview: HttpTypes.AdminOrderPreview
-}
+  orderPreview: HttpTypes.AdminOrderPreview;
+};
 
-export const ActiveOrderExchangeSection = ({
-  orderPreview,
-}: ActiveOrderExchangeSectionProps) => {
-  const { t } = useTranslation()
-  const exchangeId = orderPreview?.order_change?.exchange_id
+export const ActiveOrderExchangeSection = ({ orderPreview }: ActiveOrderExchangeSectionProps) => {
+  const { t } = useTranslation();
+  const exchangeId = orderPreview?.order_change?.exchange_id;
 
-  const { mutateAsync: cancelExchange } = useCancelExchangeRequest(
-    exchangeId,
-    orderPreview.id
-  )
+  const { mutateAsync: cancelExchange } = useCancelExchangeRequest(exchangeId, orderPreview.id);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const onContinueExchange = async () => {
-    navigate(`/orders/${orderPreview.id}/exchanges`)
-  }
+    navigate(`/orders/${orderPreview.id}/exchanges`);
+  };
 
   const onCancelExchange = async () => {
     await cancelExchange(undefined, {
       onSuccess: () => {
-        toast.success(t("orders.exchanges.toast.canceledSuccessfully"))
+        toast.success(t('orders.exchanges.toast.canceledSuccessfully'));
       },
-      onError: (error) => {
-        toast.error(error.message)
-      },
-    })
-  }
+      onError: error => {
+        toast.error(error.message);
+      }
+    });
+  };
 
   if (!exchangeId) {
-    return
+    return;
   }
 
   return (
     <div
       style={{
         background:
-          "repeating-linear-gradient(-45deg, rgb(212, 212, 216, 0.15), rgb(212, 212, 216,.15) 10px, transparent 10px, transparent 20px)",
+          'repeating-linear-gradient(-45deg, rgb(212, 212, 216, 0.15), rgb(212, 212, 216,.15) 10px, transparent 10px, transparent 20px)'
       }}
       className="-m-4 mb-1 border-b border-l p-4"
       data-testid="active-order-exchange-section"
@@ -54,19 +48,38 @@ export const ActiveOrderExchangeSection = ({
       <Container className="flex items-center justify-between p-0">
         <div className="flex w-full flex-row justify-between">
           <div>
-            <div className="mb-2 flex items-center gap-2 px-6 pt-4" data-testid="active-order-exchange-header">
+            <div
+              className="mb-2 flex items-center gap-2 px-6 pt-4"
+              data-testid="active-order-exchange-header"
+            >
               <ArrowPath className="text-ui-fg-subtle" />
-              <Heading level="h2" data-testid="active-order-exchange-heading">{t("orders.exchanges.panel.title")}</Heading>
+              <Heading
+                level="h2"
+                data-testid="active-order-exchange-heading"
+              >
+                {t('orders.exchanges.panel.title')}
+              </Heading>
             </div>
 
-            <div className="gap-2 px-6 pb-4" data-testid="active-order-exchange-description">
-              <Text>{t("orders.exchanges.panel.description")}</Text>
+            <div
+              className="gap-2 px-6 pb-4"
+              data-testid="active-order-exchange-description"
+            >
+              <Text>{t('orders.exchanges.panel.description')}</Text>
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-x-2 rounded-b-xl px-4 py-4" data-testid="active-order-exchange-actions">
-            <Button size="small" variant="secondary" onClick={onCancelExchange} data-testid="active-order-exchange-cancel-button">
-              {t("orders.exchanges.cancel.title")}
+          <div
+            className="flex items-center justify-end gap-x-2 rounded-b-xl px-4 py-4"
+            data-testid="active-order-exchange-actions"
+          >
+            <Button
+              size="small"
+              variant="secondary"
+              onClick={onCancelExchange}
+              data-testid="active-order-exchange-cancel-button"
+            >
+              {t('orders.exchanges.cancel.title')}
             </Button>
 
             <Button
@@ -75,11 +88,11 @@ export const ActiveOrderExchangeSection = ({
               onClick={onContinueExchange}
               data-testid="active-order-exchange-continue-button"
             >
-              {t("actions.continue")}
+              {t('actions.continue')}
             </Button>
           </div>
         </div>
       </Container>
     </div>
-  )
-}
+  );
+};

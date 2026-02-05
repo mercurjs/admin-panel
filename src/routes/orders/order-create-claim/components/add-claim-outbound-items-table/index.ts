@@ -1,1 +1,1 @@
-export * from "./add-claim-outbound-items-table"
+export * from './add-claim-outbound-items-table';

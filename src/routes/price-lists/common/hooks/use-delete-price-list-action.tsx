@@ -1,9 +1,8 @@
-import { HttpTypes } from '@medusajs/types';
+import { useDeletePriceList } from '@hooks/api';
+import type { HttpTypes } from '@medusajs/types';
 import { toast, usePrompt } from '@medusajs/ui';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-
-import { useDeletePriceList } from '../../../../hooks/api/price-lists';
 
 export const useDeletePriceListAction = ({
   priceList,
@@ -18,7 +17,7 @@ export const useDeletePriceListAction = ({
 
   const { mutateAsync } = useDeletePriceList(priceList.id);
 
-  const handleDelete = async () => {
+  return async () => {
     const res = await prompt({
       title: t('general.areYouSure'),
       description: t('priceLists.delete.confirmation', {
@@ -49,6 +48,4 @@ export const useDeletePriceListAction = ({
       }
     });
   };
-
-  return handleDelete;
 };

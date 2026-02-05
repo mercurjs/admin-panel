@@ -1,1 +1,1 @@
-export * from "./listicle"
+export * from "./listicle";

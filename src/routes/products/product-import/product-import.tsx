@@ -1,93 +1,98 @@
-import { Button, Heading, Text, toast } from "@medusajs/ui"
-import { RouteDrawer, useRouteModal } from "../../../components/modals"
-import { useTranslation } from "react-i18next"
-import { useMemo, useState } from "react"
-import { useConfirmImportProducts, useImportProducts } from "../../../hooks/api"
-import { UploadImport } from "./components/upload-import"
-import { ImportSummary } from "./components/import-summary"
-import { Trash } from "@medusajs/icons"
-import { FilePreview } from "../../../components/common/file-preview"
-import { getProductImportCsvTemplate } from "./helpers/import-template"
+import { useMemo, useState } from 'react';
+
+import { FilePreview } from '@components/common/file-preview';
+import { RouteDrawer, useRouteModal } from '@components/modals';
+import { useConfirmImportProducts, useImportProducts } from '@hooks/api';
+import { Trash } from '@medusajs/icons';
+import { Button, Heading, Text, toast } from '@medusajs/ui';
+import { ImportSummary } from '@routes/products/product-import/components/import-summary';
+import { UploadImport } from '@routes/products/product-import/components/upload-import';
+import { useTranslation } from 'react-i18next';
+
+import { getProductImportCsvTemplate } from './helpers/import-template';
 
 export const ProductImport = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <RouteDrawer>
       <RouteDrawer.Header>
         <RouteDrawer.Title asChild>
-          <Heading>{t("products.import.header")}</Heading>
+          <Heading>{t('products.import.header')}</Heading>
         </RouteDrawer.Title>
         <RouteDrawer.Description className="sr-only">
-          {t("products.import.description")}
+          {t('products.import.description')}
         </RouteDrawer.Description>
       </RouteDrawer.Header>
       <ProductImportContent />
     </RouteDrawer>
-  )
-}
+  );
+};
 
 const ProductImportContent = () => {
-  const { t } = useTranslation()
-  const [filename, setFilename] = useState<string>()
+  const { t } = useTranslation();
+  const [filename, setFilename] = useState<string>();
 
-  const { mutateAsync: importProducts, isPending, data } = useImportProducts()
-  const { mutateAsync: confirm } = useConfirmImportProducts()
-  const { handleSuccess } = useRouteModal()
+  const { mutateAsync: importProducts, isPending, data } = useImportProducts();
+  const { mutateAsync: confirm } = useConfirmImportProducts();
+  const { handleSuccess } = useRouteModal();
 
   const productImportTemplateContent = useMemo(() => {
-    return getProductImportCsvTemplate()
-  }, [])
+    return getProductImportCsvTemplate();
+  }, []);
 
   const handleUploaded = async (file: File) => {
-    setFilename(file.name)
+    setFilename(file.name);
     await importProducts(
       { file },
       {
-        onError: (err) => {
-          toast.error(err.message)
-          setFilename(undefined)
-        },
+        onError: err => {
+          toast.error(err.message);
+          setFilename(undefined);
+        }
       }
-    )
-  }
+    );
+  };
 
   const handleConfirm = async () => {
     if (!data?.transaction_id) {
-      return
+      return;
     }
 
     await confirm(data.transaction_id, {
       onSuccess: () => {
-        toast.info(t("products.import.success.title"), {
-          description: t("products.import.success.description"),
-        })
-        handleSuccess()
+        toast.info(t('products.import.success.title'), {
+          description: t('products.import.success.description')
+        });
+        handleSuccess();
       },
-      onError: (err) => {
-        toast.error(err.message)
-      },
-    })
-  }
+      onError: err => {
+        toast.error(err.message);
+      }
+    });
+  };
 
   const uploadedFileActions = [
     {
       actions: [
         {
-          label: t("actions.delete"),
+          label: t('actions.delete'),
           icon: <Trash />,
-          onClick: () => setFilename(undefined),
-        },
-      ],
-    },
-  ]
+          onClick: () => setFilename(undefined)
+        }
+      ]
+    }
+  ];
 
   return (
     <>
       <RouteDrawer.Body>
-        <Heading level="h2">{t("products.import.upload.title")}</Heading>
-        <Text size="small" className="text-ui-fg-subtle">
-          {t("products.import.upload.description")}
+        <Heading level="h2">{t('products.import.upload.title')}</Heading>
+        <Text
+          size="small"
+          className="text-ui-fg-subtle"
+        >
+          {t('products.import.upload.description')}
         </Text>
 
         <div className="mt-4">
@@ -95,7 +100,7 @@ const ProductImportContent = () => {
             <FilePreview
               filename={filename}
               loading={isPending}
-              activity={t("products.import.upload.preprocessing")}
+              activity={t('products.import.upload.preprocessing')}
               actions={uploadedFileActions}
             />
           ) : (
@@ -109,15 +114,21 @@ const ProductImportContent = () => {
           </div>
         )}
 
-        <Heading className="mt-6" level="h2">
-          {t("products.import.template.title")}
+        <Heading
+          className="mt-6"
+          level="h2"
+        >
+          {t('products.import.template.title')}
         </Heading>
-        <Text size="small" className="text-ui-fg-subtle">
-          {t("products.import.template.description")}
+        <Text
+          size="small"
+          className="text-ui-fg-subtle"
+        >
+          {t('products.import.template.description')}
         </Text>
         <div className="mt-4">
           <FilePreview
-            filename={"product-import-template.csv"}
+            filename="product-import-template.csv"
             url={productImportTemplateContent}
           />
         </div>
@@ -125,8 +136,11 @@ const ProductImportContent = () => {
       <RouteDrawer.Footer>
         <div className="flex items-center gap-x-2">
           <RouteDrawer.Close asChild>
-            <Button size="small" variant="secondary">
-              {t("actions.cancel")}
+            <Button
+              size="small"
+              variant="secondary"
+            >
+              {t('actions.cancel')}
             </Button>
           </RouteDrawer.Close>
           <Button
@@ -134,10 +148,10 @@ const ProductImportContent = () => {
             size="small"
             disabled={!data?.transaction_id || !filename}
           >
-            {t("actions.import")}
+            {t('actions.import')}
           </Button>
         </div>
       </RouteDrawer.Footer>
     </>
-  )
-}
+  );
+};

@@ -1,1 +1,1 @@
-export * from "./active-order-claim-section"
+export * from './active-order-claim-section';

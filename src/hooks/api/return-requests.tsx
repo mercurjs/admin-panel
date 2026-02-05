@@ -1,20 +1,16 @@
+import { sdk } from '@lib/client';
+import { queryKeysFactory } from '@lib/query-key-factory';
 import {
-  QueryKey,
-  UseMutationOptions,
-  UseQueryOptions,
   useMutation,
   useQuery,
-} from "@tanstack/react-query";
+  type QueryKey,
+  type UseMutationOptions,
+  type UseQueryOptions
+} from '@tanstack/react-query';
 
-import { sdk } from "../../lib/client";
+import type { AdminOrderReturnRequest, AdminUpdateOrderReturnRequest } from '@/types';
 
-import {
-  AdminOrderReturnRequest,
-  AdminUpdateOrderReturnRequest,
-} from "../../types";
-import { queryKeysFactory } from "../../lib/query-key-factory";
-
-export const returnRequestsQueryKeys = queryKeysFactory("return-request");
+export const returnRequestsQueryKeys = queryKeysFactory('return-request');
 
 export const useReturnRequests = (
   query?: Record<string, unknown>,
@@ -25,17 +21,17 @@ export const useReturnRequests = (
       { order_return_request: AdminOrderReturnRequest[]; count?: number },
       QueryKey
     >,
-    "queryFn" | "queryKey"
+    'queryFn' | 'queryKey'
   >
 ) => {
   const { data, ...other } = useQuery({
     queryKey: returnRequestsQueryKeys.list(query),
     queryFn: () =>
-      sdk.client.fetch("/admin/return-request", {
-        method: "GET",
-        query,
+      sdk.client.fetch('/admin/return-request', {
+        method: 'GET',
+        query
       }),
-    ...options,
+    ...options
   });
 
   return { ...data, ...other };
@@ -51,9 +47,9 @@ export const useReviewReturnRequest = (
   return useMutation({
     mutationFn: ({ id, payload }) =>
       sdk.client.fetch(`/admin/return-request/${id}`, {
-        method: "POST",
-        body: payload,
+        method: 'POST',
+        body: payload
       }),
-    ...options,
+    ...options
   });
 };

@@ -1,18 +1,18 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { HttpTypes } from "@medusajs/types"
-import { Button, Input, toast } from "@medusajs/ui"
-import { useForm } from "react-hook-form"
-import { useTranslation } from "react-i18next"
-import * as zod from "zod"
-import { Form } from "../../../../../components/common/form"
-import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
-import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import { useUpdateStockLocation } from "../../../../../hooks/api/stock-locations"
-import { CountrySelect } from "../../../../../components/inputs/country-select/country-select"
+import { Form } from '@components/common/form';
+import { CountrySelect } from '@components/inputs/country-select';
+import { RouteDrawer, useRouteModal } from '@components/modals';
+import { KeyboundForm } from '@components/utilities/keybound-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useUpdateStockLocation } from '@hooks/api';
+import type { HttpTypes } from '@medusajs/types';
+import { Button, Input, toast } from '@medusajs/ui';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import * as zod from 'zod';
 
 type EditLocationFormProps = {
-  location: HttpTypes.AdminStockLocation
-}
+  location: HttpTypes.AdminStockLocation;
+};
 
 const EditLocationSchema = zod.object({
   name: zod.string().min(1),
@@ -24,60 +24,66 @@ const EditLocationSchema = zod.object({
     postal_code: zod.string().optional(),
     province: zod.string().optional(),
     company: zod.string().optional(),
-    phone: zod.string().optional(), // TODO: Add validation
-  }),
-})
+    phone: zod.string().optional() // TODO: Add validation
+  })
+});
 
 export const EditLocationForm = ({ location }: EditLocationFormProps) => {
-  const { t } = useTranslation()
-  const { handleSuccess } = useRouteModal()
+  const { t } = useTranslation();
+  const { handleSuccess } = useRouteModal();
 
   const form = useForm<zod.infer<typeof EditLocationSchema>>({
     defaultValues: {
       name: location.name,
       address: {
-        address_1: location.address?.address_1 || "",
-        address_2: location.address?.address_2 || "",
-        city: location.address?.city || "",
-        company: location.address?.company || "",
-        country_code: location.address?.country_code || "",
-        phone: location.address?.phone || "",
-        postal_code: location.address?.postal_code || "",
-        province: location.address?.province || "",
-      },
+        address_1: location.address?.address_1 || '',
+        address_2: location.address?.address_2 || '',
+        city: location.address?.city || '',
+        company: location.address?.company || '',
+        country_code: location.address?.country_code || '',
+        phone: location.address?.phone || '',
+        postal_code: location.address?.postal_code || '',
+        province: location.address?.province || ''
+      }
     },
-    resolver: zodResolver(EditLocationSchema),
-  })
+    resolver: zodResolver(EditLocationSchema)
+  });
 
-  const { mutateAsync, isPending } = useUpdateStockLocation(location.id)
+  const { mutateAsync, isPending } = useUpdateStockLocation(location.id);
 
-  const handleSubmit = form.handleSubmit(async (values) => {
-    const { name, address } = values
+  const handleSubmit = form.handleSubmit(async values => {
+    const { name, address } = values;
 
     await mutateAsync(
       {
         name: name,
-        address: address,
+        address: address
       },
       {
         onSuccess: () => {
-          toast.success(t("stockLocations.edit.successToast", { name: name }))
-          handleSuccess()
+          toast.success(t('stockLocations.edit.successToast', { name: name }));
+          handleSuccess();
         },
-        onError: (e) => {
-          toast.error(e.message)
-        },
+        onError: e => {
+          toast.error(e.message);
+        }
       }
-    )
-  })
+    );
+  });
 
   return (
-    <RouteDrawer.Form form={form} data-testid="location-edit-form">
+    <RouteDrawer.Form
+      form={form}
+      data-testid="location-edit-form"
+    >
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex flex-1 flex-col overflow-hidden"
       >
-        <RouteDrawer.Body className="flex flex-col gap-y-8 overflow-y-auto" data-testid="location-edit-form-body">
+        <RouteDrawer.Body
+          className="flex flex-col gap-y-8 overflow-y-auto"
+          data-testid="location-edit-form-body"
+        >
           <div className="grid grid-cols-1 gap-4">
             <Form.Field
               control={form.control}
@@ -85,13 +91,19 @@ export const EditLocationForm = ({ location }: EditLocationFormProps) => {
               render={({ field }) => {
                 return (
                   <Form.Item data-testid="location-edit-form-name-item">
-                    <Form.Label data-testid="location-edit-form-name-label">{t("fields.name")}</Form.Label>
+                    <Form.Label data-testid="location-edit-form-name-label">
+                      {t('fields.name')}
+                    </Form.Label>
                     <Form.Control data-testid="location-edit-form-name-control">
-                      <Input size="small" {...field} data-testid="location-edit-form-name-input" />
+                      <Input
+                        size="small"
+                        {...field}
+                        data-testid="location-edit-form-name-input"
+                      />
                     </Form.Control>
                     <Form.ErrorMessage data-testid="location-edit-form-name-error" />
                   </Form.Item>
-                )
+                );
               }}
             />
             <Form.Field
@@ -100,13 +112,16 @@ export const EditLocationForm = ({ location }: EditLocationFormProps) => {
               render={({ field }) => {
                 return (
                   <Form.Item>
-                    <Form.Label>{t("fields.address")}</Form.Label>
+                    <Form.Label>{t('fields.address')}</Form.Label>
                     <Form.Control>
-                      <Input size="small" {...field} />
+                      <Input
+                        size="small"
+                        {...field}
+                      />
                     </Form.Control>
                     <Form.ErrorMessage />
                   </Form.Item>
-                )
+                );
               }}
             />
             <Form.Field
@@ -115,13 +130,16 @@ export const EditLocationForm = ({ location }: EditLocationFormProps) => {
               render={({ field }) => {
                 return (
                   <Form.Item>
-                    <Form.Label optional>{t("fields.address2")}</Form.Label>
+                    <Form.Label optional>{t('fields.address2')}</Form.Label>
                     <Form.Control>
-                      <Input size="small" {...field} />
+                      <Input
+                        size="small"
+                        {...field}
+                      />
                     </Form.Control>
                     <Form.ErrorMessage />
                   </Form.Item>
-                )
+                );
               }}
             />
             <Form.Field
@@ -130,13 +148,16 @@ export const EditLocationForm = ({ location }: EditLocationFormProps) => {
               render={({ field }) => {
                 return (
                   <Form.Item>
-                    <Form.Label optional>{t("fields.postalCode")}</Form.Label>
+                    <Form.Label optional>{t('fields.postalCode')}</Form.Label>
                     <Form.Control>
-                      <Input size="small" {...field} />
+                      <Input
+                        size="small"
+                        {...field}
+                      />
                     </Form.Control>
                     <Form.ErrorMessage />
                   </Form.Item>
-                )
+                );
               }}
             />
             <Form.Field
@@ -145,13 +166,16 @@ export const EditLocationForm = ({ location }: EditLocationFormProps) => {
               render={({ field }) => {
                 return (
                   <Form.Item>
-                    <Form.Label optional>{t("fields.city")}</Form.Label>
+                    <Form.Label optional>{t('fields.city')}</Form.Label>
                     <Form.Control>
-                      <Input size="small" {...field} />
+                      <Input
+                        size="small"
+                        {...field}
+                      />
                     </Form.Control>
                     <Form.ErrorMessage />
                   </Form.Item>
-                )
+                );
               }}
             />
             <Form.Field
@@ -160,13 +184,13 @@ export const EditLocationForm = ({ location }: EditLocationFormProps) => {
               render={({ field }) => {
                 return (
                   <Form.Item>
-                    <Form.Label>{t("fields.country")}</Form.Label>
+                    <Form.Label>{t('fields.country')}</Form.Label>
                     <Form.Control>
                       <CountrySelect {...field} />
                     </Form.Control>
                     <Form.ErrorMessage />
                   </Form.Item>
-                )
+                );
               }}
             />
             <Form.Field
@@ -175,13 +199,16 @@ export const EditLocationForm = ({ location }: EditLocationFormProps) => {
               render={({ field }) => {
                 return (
                   <Form.Item>
-                    <Form.Label optional>{t("fields.state")}</Form.Label>
+                    <Form.Label optional>{t('fields.state')}</Form.Label>
                     <Form.Control>
-                      <Input size="small" {...field} />
+                      <Input
+                        size="small"
+                        {...field}
+                      />
                     </Form.Control>
                     <Form.ErrorMessage />
                   </Form.Item>
-                )
+                );
               }}
             />
             <Form.Field
@@ -190,13 +217,16 @@ export const EditLocationForm = ({ location }: EditLocationFormProps) => {
               render={({ field }) => {
                 return (
                   <Form.Item>
-                    <Form.Label optional>{t("fields.company")}</Form.Label>
+                    <Form.Label optional>{t('fields.company')}</Form.Label>
                     <Form.Control>
-                      <Input size="small" {...field} />
+                      <Input
+                        size="small"
+                        {...field}
+                      />
                     </Form.Control>
                     <Form.ErrorMessage />
                   </Form.Item>
-                )
+                );
               }}
             />
             <Form.Field
@@ -205,13 +235,16 @@ export const EditLocationForm = ({ location }: EditLocationFormProps) => {
               render={({ field }) => {
                 return (
                   <Form.Item>
-                    <Form.Label optional>{t("fields.phone")}</Form.Label>
+                    <Form.Label optional>{t('fields.phone')}</Form.Label>
                     <Form.Control>
-                      <Input size="small" {...field} />
+                      <Input
+                        size="small"
+                        {...field}
+                      />
                     </Form.Control>
                     <Form.ErrorMessage />
                   </Form.Item>
-                )
+                );
               }}
             />
           </div>
@@ -219,16 +252,25 @@ export const EditLocationForm = ({ location }: EditLocationFormProps) => {
         <RouteDrawer.Footer data-testid="location-edit-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary" data-testid="location-edit-form-cancel-button">
-                {t("actions.cancel")}
+              <Button
+                size="small"
+                variant="secondary"
+                data-testid="location-edit-form-cancel-button"
+              >
+                {t('actions.cancel')}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={isPending} data-testid="location-edit-form-save-button">
-              {t("actions.save")}
+            <Button
+              size="small"
+              type="submit"
+              isLoading={isPending}
+              data-testid="location-edit-form-save-button"
+            >
+              {t('actions.save')}
             </Button>
           </div>
         </RouteDrawer.Footer>
       </KeyboundForm>
     </RouteDrawer.Form>
-  )
-}
+  );
+};

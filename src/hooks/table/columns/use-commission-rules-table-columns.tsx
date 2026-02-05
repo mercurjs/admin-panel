@@ -1,65 +1,55 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import { createColumnHelper } from "@tanstack/react-table";
+import { createColumnHelper } from '@tanstack/react-table';
 
-import { StatusCell } from "@/components/table/table-cells/common/status-cell";
-import {
-  TextCell,
-  TextHeader,
-} from "@/components/table/table-cells/common/text-cell";
-import { CommissionActionMenu } from "@/routes/commission/components/commission-actions";
-import type { AdminCommissionAggregate } from "@/types/commission";
+import { StatusCell } from '@/components/table/table-cells/common/status-cell';
+import { TextCell, TextHeader } from '@/components/table/table-cells/common/text-cell';
+import { CommissionActionMenu } from '@/routes/commission/components/commission-actions';
+import type { AdminCommissionAggregate } from '@/types/commission';
 
 const columnHelper = createColumnHelper<AdminCommissionAggregate>();
 
-export const useCommissionRulesTableColumns = ({
-  onSuccess,
-}: {
-  onSuccess?: () => void;
-}) => {
-  return useMemo(
+export const useCommissionRulesTableColumns = ({ onSuccess }: { onSuccess?: () => void }) =>
+  useMemo(
     () => [
-      columnHelper.accessor("name", {
+      columnHelper.accessor('name', {
         header: () => <TextHeader text="Rule Name" />,
-        cell: ({ getValue }) => <TextCell text={getValue()} />,
+        cell: ({ getValue }) => <TextCell text={getValue()} />
       }),
-      columnHelper.accessor("reference", {
+      columnHelper.accessor('reference', {
         header: () => <TextHeader text="Type" />,
-        cell: ({ getValue }) => <TextCell text={getValue()} />,
+        cell: ({ getValue }) => <TextCell text={getValue()} />
       }),
-      columnHelper.accessor("ref_value", {
+      columnHelper.accessor('ref_value', {
         header: () => <TextHeader text="Attribute" />,
-        cell: ({ getValue }) => <TextCell text={getValue()} />,
+        cell: ({ getValue }) => <TextCell text={getValue()} />
       }),
-      columnHelper.accessor("fee_value", {
+      columnHelper.accessor('fee_value', {
         header: () => <TextHeader text="Fee" />,
-        cell: ({ getValue }) => <TextCell text={getValue()} />,
+        cell: ({ getValue }) => <TextCell text={getValue()} />
       }),
-      columnHelper.accessor("is_active", {
+      columnHelper.accessor('is_active', {
         header: () => <TextHeader text="Status" />,
         cell: ({ getValue }) => {
           const value = getValue();
 
           return (
-            <StatusCell color={value ? "green" : "grey"}>
-              {value ? "Enabled" : "Disabled"}
+            <StatusCell color={value ? 'green' : 'grey'}>
+              {value ? 'Enabled' : 'Disabled'}
             </StatusCell>
           );
-        },
+        }
       }),
-      columnHelper.accessor("id", {
+      columnHelper.accessor('id', {
         header: () => <TextHeader text="Status" />,
-        cell: (props) => {
-          return (
-            <CommissionActionMenu
-              id={props.row.original.id!}
-              is_active={props.row.original.is_active!}
-              onSuccess={onSuccess}
-            />
-          );
-        },
-      }),
+        cell: props => (
+          <CommissionActionMenu
+            id={props.row.original.id!}
+            is_active={props.row.original.is_active!}
+            onSuccess={onSuccess}
+          />
+        )
+      })
     ],
-    [],
+    []
   );
-};

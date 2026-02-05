@@ -1,47 +1,56 @@
-import { PencilSquare } from "@medusajs/icons"
-import { HttpTypes } from "@medusajs/types"
-import { Badge, Container, Heading, Tooltip } from "@medusajs/ui"
-import { useTranslation } from "react-i18next"
-import { Link } from "react-router-dom"
-import { ActionMenu } from "../../../../../components/common/action-menu"
-import { SectionRow } from "../../../../../components/common/section"
-import { useExtension } from "../../../../../providers/extension-provider"
+import { ActionMenu } from '@components/common/action-menu';
+import { SectionRow } from '@components/common/section';
+import { PencilSquare } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Badge, Container, Heading, Tooltip } from '@medusajs/ui';
+import { useExtension } from '@providers/extension-provider';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 type ProductOrganizationSectionProps = {
-  product: HttpTypes.AdminProduct
-}
+  product: HttpTypes.AdminProduct;
+};
 
-export const ProductOrganizationSection = ({
-  product,
-}: ProductOrganizationSectionProps) => {
-  const { t } = useTranslation()
-  const { getDisplays } = useExtension()
+export const ProductOrganizationSection = ({ product }: ProductOrganizationSectionProps) => {
+  const { t } = useTranslation();
+  const { getDisplays } = useExtension();
 
   return (
-    <Container className="divide-y p-0" data-testid="product-organization-section">
-      <div className="flex items-center justify-between px-6 py-4" data-testid="product-organization-header">
-        <Heading level="h2" data-testid="product-organization-title">{t("products.organization.header")}</Heading>
+    <Container
+      className="divide-y p-0"
+      data-testid="product-organization-section"
+    >
+      <div
+        className="flex items-center justify-between px-6 py-4"
+        data-testid="product-organization-header"
+      >
+        <Heading
+          level="h2"
+          data-testid="product-organization-title"
+        >
+          {t('products.organization.header')}
+        </Heading>
         <ActionMenu
           groups={[
             {
               actions: [
                 {
-                  label: t("actions.edit"),
-                  to: "organization",
-                  icon: <PencilSquare />,
-                },
-              ],
-            },
+                  label: t('actions.edit'),
+                  to: 'organization',
+                  icon: <PencilSquare />
+                }
+              ]
+            }
           ]}
           data-testid="product-organization-action-menu"
         />
       </div>
 
       <SectionRow
-        title={t("fields.tags")}
+        title={t('fields.tags')}
         value={
           product.tags?.length
-            ? product.tags.map((tag) => (
+            ? product.tags.map(tag => (
                 <OrganizationTag
                   key={tag.id}
                   label={tag.value}
@@ -53,7 +62,7 @@ export const ProductOrganizationSection = ({
         data-testid="product-tags-row"
       />
       <SectionRow
-        title={t("fields.type")}
+        title={t('fields.type')}
         value={
           product.type ? (
             <OrganizationTag
@@ -66,7 +75,7 @@ export const ProductOrganizationSection = ({
       />
 
       <SectionRow
-        title={t("fields.collection")}
+        title={t('fields.collection')}
         value={
           product.collection ? (
             <OrganizationTag
@@ -79,10 +88,10 @@ export const ProductOrganizationSection = ({
       />
 
       <SectionRow
-        title={t("fields.categories")}
+        title={t('fields.categories')}
         value={
           product.categories?.length
-            ? product.categories.map((pcat) => (
+            ? product.categories.map(pcat => (
                 <OrganizationTag
                   key={pcat.id}
                   label={pcat.name}
@@ -94,19 +103,29 @@ export const ProductOrganizationSection = ({
         data-testid="product-categories-row"
       />
 
-      {getDisplays("product", "organize").map((Component, i) => {
-        return <Component key={i} data={product} />
-      })}
+      {getDisplays('product', 'organize').map((Component, i) => (
+        <Component
+          key={i}
+          data={product}
+        />
+      ))}
     </Container>
-  )
-}
+  );
+};
 
-const OrganizationTag = ({ label, to }: { label: string; to: string }) => {
-  return (
-    <Tooltip content={label}>
-      <Badge size="2xsmall" className="block w-fit truncate" asChild>
-        <Link to={to} data-testid={`organization-tag-${label.toLowerCase().replace(/\s+/g, "-")}`}>{label}</Link>
-      </Badge>
-    </Tooltip>
-  )
-}
+const OrganizationTag = ({ label, to }: { label: string; to: string }) => (
+  <Tooltip content={label}>
+    <Badge
+      size="2xsmall"
+      className="block w-fit truncate"
+      asChild
+    >
+      <Link
+        to={to}
+        data-testid={`organization-tag-${label.toLowerCase().replace(/\s+/g, '-')}`}
+      >
+        {label}
+      </Link>
+    </Badge>
+  </Tooltip>
+);

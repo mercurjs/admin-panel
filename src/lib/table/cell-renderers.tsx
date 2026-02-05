@@ -1,80 +1,81 @@
-import React from "react";
+import type React from 'react';
 
-import { HttpTypes } from "@medusajs/types";
-import { Badge, StatusBadge, Tooltip } from "@medusajs/ui";
+import { DateCell } from '@components/table/table-cells/common/date-cell';
+import { MoneyAmountCell } from '@components/table/table-cells/common/money-amount-cell';
+import { DisplayIdCell } from '@components/table/table-cells/order/display-id-cell';
+import { TotalCell } from '@components/table/table-cells/order/total-cell';
+import { CollectionCell } from '@components/table/table-cells/product/collection-cell';
+import { ProductCell } from '@components/table/table-cells/product/product-cell';
+import { ProductStatusCell } from '@components/table/table-cells/product/product-status-cell';
+import { SalesChannelsCell } from '@components/table/table-cells/product/sales-channels-cell';
+import { VariantCell } from '@components/table/table-cells/product/variant-cell';
+import { getCountryByIso2 } from '@lib/data/countries';
+import type { HttpTypes } from '@medusajs/types';
+import { Badge, StatusBadge, Tooltip } from '@medusajs/ui';
+import type { TFunction } from 'i18next';
+import ReactCountryFlag from 'react-country-flag';
 
-import { TFunction } from "i18next";
-import ReactCountryFlag from "react-country-flag";
-
-import { DateCell } from "../../components/table/table-cells/common/date-cell";
-import { MoneyAmountCell } from "../../components/table/table-cells/common/money-amount-cell";
-import { DisplayIdCell } from "../../components/table/table-cells/order/display-id-cell";
-import { TotalCell } from "../../components/table/table-cells/order/total-cell";
-import { CollectionCell } from "../../components/table/table-cells/product/collection-cell";
-import { ProductCell } from "../../components/table/table-cells/product/product-cell";
-import { ProductStatusCell } from "../../components/table/table-cells/product/product-status-cell";
-import { SalesChannelsCell } from "../../components/table/table-cells/product/sales-channels-cell";
-import { VariantCell } from "../../components/table/table-cells/product/variant-cell";
-import { getCountryByIso2 } from "../data/countries";
-
+// @todo fix any type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type CellRenderer<TData = any> = (
+  // @todo fix any type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any,
   row: TData,
   column: HttpTypes.AdminColumn,
   t: TFunction,
-  dataTestId?: string,
+  dataTestId?: string
 ) => React.ReactNode;
 
 export type RendererRegistry = Map<string, CellRenderer>;
 
 const cellRenderers: RendererRegistry = new Map();
-
+// @todo fix any type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getNestedValue = (obj: any, path: string) => {
-  return path.split(".").reduce((current, key) => current?.[key], obj);
+  return path.split('.').reduce((current, key) => current?.[key], obj);
 };
 
 const TextRenderer: CellRenderer = (value, _row, _column, _t) => {
-  if (value === null || value === undefined) return "-";
+  if (value === null || value === undefined) return '-';
+
   return String(value);
 };
 
 const CountRenderer: CellRenderer = (value, _row, _column, t) => {
   const items = value || [];
   const count = Array.isArray(items) ? items.length : 0;
-  return t("general.items", { count });
+
+  return t('general.items', { count });
 };
 
 const StatusRenderer: CellRenderer = (value, row, column, t) => {
-  if (!value) return "-";
+  if (!value) return '-';
 
-  if (
-    column.field === "status" &&
-    row.status &&
-    (row.handle || row.is_giftcard !== undefined)
-  ) {
+  if (column.field === 'status' && row.status && (row.handle || row.is_giftcard !== undefined)) {
     return <ProductStatusCell status={row.status} />;
   }
 
   // Generic status badge
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
-      case "active":
-      case "published":
-      case "fulfilled":
-      case "paid":
-        return "green";
-      case "pending":
-      case "proposed":
-      case "processing":
-        return "orange";
-      case "draft":
-        return "grey";
-      case "rejected":
-      case "failed":
-      case "canceled":
-        return "red";
+      case 'active':
+      case 'published':
+      case 'fulfilled':
+      case 'paid':
+        return 'green';
+      case 'pending':
+      case 'proposed':
+      case 'processing':
+        return 'orange';
+      case 'draft':
+        return 'grey';
+      case 'rejected':
+      case 'failed':
+      case 'canceled':
+        return 'red';
       default:
-        return "grey";
+        return 'grey';
     }
   };
 
@@ -84,16 +85,16 @@ const StatusRenderer: CellRenderer = (value, row, column, t) => {
 
     const lowerStatus = status.toLowerCase();
     switch (lowerStatus) {
-      case "active":
-        return t("general.active", "Active") as string;
-      case "published":
-        return t("products.productStatus.published", "Published") as string;
-      case "draft":
-        return t("orders.status.draft", "Draft") as string;
-      case "pending":
-        return t("orders.status.pending", "Pending") as string;
-      case "canceled":
-        return t("orders.status.canceled", "Canceled") as string;
+      case 'active':
+        return t('general.active', 'Active') as string;
+      case 'published':
+        return t('products.productStatus.published', 'Published') as string;
+      case 'draft':
+        return t('orders.status.draft', 'Draft') as string;
+      case 'pending':
+        return t('orders.status.pending', 'Pending') as string;
+      case 'canceled':
+        return t('orders.status.canceled', 'Canceled') as string;
       default:
         // Try generic status translation with fallback
         return t(`status.${lowerStatus}`, status) as string;
@@ -102,17 +103,12 @@ const StatusRenderer: CellRenderer = (value, row, column, t) => {
 
   const translatedValue = getTranslatedStatus(value);
 
-  return (
-    <StatusBadge color={getStatusColor(value)}>{translatedValue}</StatusBadge>
-  );
+  return <StatusBadge color={getStatusColor(value)}>{translatedValue}</StatusBadge>;
 };
 
 const BadgeListRenderer: CellRenderer = (value, row, column, t, dataTestId) => {
   // For sales channels
-  if (
-    column.field === "sales_channels_display" ||
-    column.field === "sales_channels"
-  ) {
+  if (column.field === 'sales_channels_display' || column.field === 'sales_channels') {
     return (
       <SalesChannelsCell
         salesChannels={row.sales_channels}
@@ -122,7 +118,7 @@ const BadgeListRenderer: CellRenderer = (value, row, column, t, dataTestId) => {
   }
 
   // Generic badge list
-  if (!Array.isArray(value)) return "-";
+  if (!Array.isArray(value)) return '-';
 
   const items = value.slice(0, 2);
   const remaining = value.length - 2;
@@ -130,15 +126,21 @@ const BadgeListRenderer: CellRenderer = (value, row, column, t, dataTestId) => {
   return (
     <div className="flex gap-1">
       {items.map((item, index) => (
-        <Badge key={index} size="xsmall">
-          {typeof item === "string" ? item : item.name || item.title || "-"}
+        <Badge
+          key={index}
+          size="xsmall"
+        >
+          {typeof item === 'string' ? item : item.name || item.title || '-'}
         </Badge>
       ))}
       {remaining > 0 && (
-        <Badge size="xsmall" color="grey">
+        <Badge
+          size="xsmall"
+          color="grey"
+        >
           {t
-            ? t("general.plusCountMore", "+ {{count}} more", {
-                count: remaining,
+            ? t('general.plusCountMore', '+ {{count}} more', {
+                count: remaining
               })
             : `+${remaining}`}
         </Badge>
@@ -148,24 +150,36 @@ const BadgeListRenderer: CellRenderer = (value, row, column, t, dataTestId) => {
 };
 
 const ProductInfoRenderer: CellRenderer = (_, row, _column, _t, dataTestId) => {
-  return <ProductCell product={row} data-testid={dataTestId} />;
+  return (
+    <ProductCell
+      product={row}
+      data-testid={dataTestId}
+    />
+  );
 };
 
 const CollectionRenderer: CellRenderer = (_, row, _column, _t, dataTestId) => {
   return (
-    <CollectionCell collection={row.collection} data-testid={dataTestId} />
+    <CollectionCell
+      collection={row.collection}
+      data-testid={dataTestId}
+    />
   );
 };
 
 const VariantsRenderer: CellRenderer = (_, row, _column, _t, dataTestId) => {
-  return <VariantCell variants={row.variants} data-testid={dataTestId} />;
+  return (
+    <VariantCell
+      variants={row.variants}
+      data-testid={dataTestId}
+    />
+  );
 };
 
 // Order-specific renderers
 const CustomerNameRenderer: CellRenderer = (_, row, _column, t) => {
   if (row.customer?.first_name || row.customer?.last_name) {
-    const fullName =
-      `${row.customer.first_name || ""} ${row.customer.last_name || ""}`.trim();
+    const fullName = `${row.customer.first_name || ''} ${row.customer.last_name || ''}`.trim();
     if (fullName) return fullName;
   }
 
@@ -179,20 +193,20 @@ const CustomerNameRenderer: CellRenderer = (_, row, _column, t) => {
     return row.customer.phone;
   }
 
-  return t ? t("customers.guest", "Guest") : "Guest";
+  return t ? t('customers.guest', 'Guest') : 'Guest';
 };
 
 const AddressSummaryRenderer: CellRenderer = (_, row, column) => {
   let address = null;
-  if (column.field === "shipping_address_display") {
+  if (column.field === 'shipping_address_display') {
     address = row.shipping_address;
-  } else if (column.field === "billing_address_display") {
+  } else if (column.field === 'billing_address_display') {
     address = row.billing_address;
   } else {
     address = row.shipping_address || row.billing_address;
   }
 
-  if (!address) return "-";
+  if (!address) return '-';
 
   const parts = [];
 
@@ -206,14 +220,14 @@ const AddressSummaryRenderer: CellRenderer = (_, row, column) => {
   if (address.postal_code) locationParts.push(address.postal_code);
 
   if (locationParts.length > 0) {
-    parts.push(locationParts.join(", "));
+    parts.push(locationParts.join(', '));
   }
 
   if (address.country_code) {
     parts.push(address.country_code.toUpperCase());
   }
 
-  return parts.join(" • ") || "-";
+  return parts.join(' • ') || '-';
 };
 
 const CountryCodeRenderer: CellRenderer = (_, row) => {
@@ -232,8 +246,8 @@ const CountryCodeRenderer: CellRenderer = (_, row) => {
             countryCode={countryCode.toUpperCase()}
             svg
             style={{
-              width: "16px",
-              height: "16px",
+              width: '16px',
+              height: '16px'
             }}
             aria-label={displayName}
           />
@@ -244,27 +258,25 @@ const CountryCodeRenderer: CellRenderer = (_, row) => {
 };
 
 const DateRenderer: CellRenderer = (value, _row, _column, _t, dataTestId) => {
-  return <DateCell date={value} data-testid={dataTestId} />;
+  return (
+    <DateCell
+      date={value}
+      data-testid={dataTestId}
+    />
+  );
 };
 
-const DisplayIdRenderer: CellRenderer = (
-  value,
-  _row,
-  _column,
-  _t,
-  dataTestId,
-) => {
-  return <DisplayIdCell displayId={value} data-testid={dataTestId} />;
+const DisplayIdRenderer: CellRenderer = (value, _row, _column, _t, dataTestId) => {
+  return (
+    <DisplayIdCell
+      displayId={value}
+      data-testid={dataTestId}
+    />
+  );
 };
 
-const CurrencyRenderer: CellRenderer = (
-  value,
-  row,
-  _column,
-  _t,
-  dataTestId,
-) => {
-  const currencyCode = row.currency_code || "USD";
+const CurrencyRenderer: CellRenderer = (value, row, _column, _t, dataTestId) => {
+  const currencyCode = row.currency_code || 'USD';
 
   return (
     <MoneyAmountCell
@@ -277,58 +289,60 @@ const CurrencyRenderer: CellRenderer = (
 };
 
 const TotalRenderer: CellRenderer = (value, row) => {
-  const currencyCode = row.currency_code || "USD";
+  const currencyCode = row.currency_code || 'USD';
 
-  return <TotalCell currencyCode={currencyCode} total={value} />;
+  return (
+    <TotalCell
+      currencyCode={currencyCode}
+      total={value}
+    />
+  );
 };
 
 // Register built-in renderers
-cellRenderers.set("text", TextRenderer);
-cellRenderers.set("count", CountRenderer);
-cellRenderers.set("status", StatusRenderer);
-cellRenderers.set("badge_list", BadgeListRenderer);
-cellRenderers.set("date", DateRenderer);
-cellRenderers.set("timestamp", DateRenderer);
-cellRenderers.set("currency", CurrencyRenderer);
-cellRenderers.set("total", TotalRenderer);
+cellRenderers.set('text', TextRenderer);
+cellRenderers.set('count', CountRenderer);
+cellRenderers.set('status', StatusRenderer);
+cellRenderers.set('badge_list', BadgeListRenderer);
+cellRenderers.set('date', DateRenderer);
+cellRenderers.set('timestamp', DateRenderer);
+cellRenderers.set('currency', CurrencyRenderer);
+cellRenderers.set('total', TotalRenderer);
 
 // Register product-specific renderers
-cellRenderers.set("product_info", ProductInfoRenderer);
-cellRenderers.set("collection", CollectionRenderer);
-cellRenderers.set("variants", VariantsRenderer);
-cellRenderers.set("sales_channels_list", BadgeListRenderer);
+cellRenderers.set('product_info', ProductInfoRenderer);
+cellRenderers.set('collection', CollectionRenderer);
+cellRenderers.set('variants', VariantsRenderer);
+cellRenderers.set('sales_channels_list', BadgeListRenderer);
 
 // Register order-specific renderers
-cellRenderers.set("customer_name", CustomerNameRenderer);
-cellRenderers.set("address_summary", AddressSummaryRenderer);
-cellRenderers.set("country_code", CountryCodeRenderer);
-cellRenderers.set("display_id", DisplayIdRenderer);
+cellRenderers.set('customer_name', CustomerNameRenderer);
+cellRenderers.set('address_summary', AddressSummaryRenderer);
+cellRenderers.set('country_code', CountryCodeRenderer);
+cellRenderers.set('display_id', DisplayIdRenderer);
 
-export function getCellRenderer(
-  renderType?: string,
-  dataType?: string,
-): CellRenderer {
+export function getCellRenderer(renderType?: string, dataType?: string): CellRenderer {
   if (renderType && cellRenderers.has(renderType)) {
     return cellRenderers.get(renderType)!;
   }
 
   switch (dataType) {
-    case "number":
-    case "string":
+    case 'number':
+    case 'string':
       return TextRenderer;
-    case "date":
+    case 'date':
       return DateRenderer;
-    case "boolean":
+    case 'boolean':
       return (value, _row, _column, t) => {
         if (t) {
-          return value ? t("fields.yes", "Yes") : t("fields.no", "No");
+          return value ? t('fields.yes', 'Yes') : t('fields.no', 'No');
         }
-        
-        return value ? "Yes" : "No";
+
+        return value ? 'Yes' : 'No';
       };
-    case "enum":
+    case 'enum':
       return StatusRenderer;
-    case "currency":
+    case 'currency':
       return CurrencyRenderer;
     default:
       return TextRenderer;
@@ -338,7 +352,8 @@ export function getCellRenderer(
 export function registerCellRenderer(type: string, renderer: CellRenderer) {
   cellRenderers.set(type, renderer);
 }
-
+// @todo fix any type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getColumnValue(row: any, column: HttpTypes.AdminColumn): any {
   if (column.computed) {
     return row;

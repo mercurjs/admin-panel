@@ -1,16 +1,15 @@
 import {
-  FocusEvent,
-  KeyboardEvent,
   forwardRef,
   useImperativeHandle,
   useRef,
   useState,
-} from "react";
+  type FocusEvent,
+  type KeyboardEvent
+} from 'react';
 
-import { XMarkMini } from "@medusajs/icons";
-import { Badge, clx } from "@medusajs/ui";
-
-import { AnimatePresence, motion } from "motion/react";
+import { XMarkMini } from '@medusajs/icons';
+import { Badge, clx } from '@medusajs/ui';
+import { AnimatePresence, motion } from 'motion/react';
 
 type ChipInputProps = {
   value?: string[];
@@ -20,10 +19,10 @@ type ChipInputProps = {
   disabled?: boolean;
   allowDuplicates?: boolean;
   showRemove?: boolean;
-  variant?: "base" | "contrast";
+  variant?: 'base' | 'contrast';
   placeholder?: string;
   className?: string;
-  "data-testid"?: string;
+  'data-testid'?: string;
 };
 
 export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
@@ -35,24 +34,26 @@ export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
       disabled,
       name,
       showRemove = true,
-      variant = "base",
+      variant = 'base',
       allowDuplicates = false,
       placeholder,
       className,
-      "data-testid": dataTestId,
+      'data-testid': dataTestId
     },
-    ref,
+    ref
   ) => {
     const innerRef = useRef<HTMLInputElement>(null);
 
-    const isControlledRef = useRef(typeof value !== "undefined");
+    const isControlledRef = useRef(typeof value !== 'undefined');
+    //@todo fix this
+    // eslint-disable-next-line react-hooks/refs
     const isControlled = isControlledRef.current;
 
     const [uncontrolledValue, setUncontrolledValue] = useState<string[]>([]);
 
     useImperativeHandle<HTMLInputElement | null, HTMLInputElement | null>(
       ref,
-      () => innerRef.current,
+      () => innerRef.current
     );
 
     const [duplicateIndex, setDuplicateIndex] = useState<number | null>(null);
@@ -84,10 +85,10 @@ export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
     };
 
     const handleRemoveChip = (chip: string) => {
-      onChange?.(chips.filter((v) => v !== chip));
+      onChange?.(chips.filter(v => v !== chip));
 
       if (!isControlled) {
-        setUncontrolledValue(chips.filter((v) => v !== chip));
+        setUncontrolledValue(chips.filter(v => v !== chip));
       }
     };
 
@@ -96,24 +97,24 @@ export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
 
       if (e.target.value) {
         handleAddChip(e.target.value);
-        e.target.value = "";
+        e.target.value = '';
       }
     };
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter" || e.key === ",") {
+      if (e.key === 'Enter' || e.key === ',') {
         e.preventDefault();
 
         if (!innerRef.current?.value) {
           return;
         }
 
-        handleAddChip(innerRef.current?.value ?? "");
-        innerRef.current.value = "";
+        handleAddChip(innerRef.current?.value ?? '');
+        innerRef.current.value = '';
         innerRef.current?.focus();
       }
 
-      if (e.key === "Backspace" && innerRef.current?.value === "") {
+      if (e.key === 'Backspace' && innerRef.current?.value === '') {
         handleRemoveChip(chips[chips.length - 1]);
       }
     };
@@ -121,21 +122,20 @@ export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
     // create a shake animation using framer motion
     const shake = {
       x: [0, -2, 2, -2, 2, 0],
-      transition: { duration: 0.3 },
+      transition: { duration: 0.3 }
     };
 
     return (
       <div
         className={clx(
-          "flex min-h-8 flex-wrap items-center gap-1 rounded-md px-2 py-1.5 shadow-borders-base",
-          "transition-fg focus-within:shadow-borders-interactive-with-active",
-          "has-[input:disabled]:cursor-not-allowed has-[input:disabled]:bg-ui-bg-disabled has-[input:disabled]:text-ui-fg-disabled",
+          'flex min-h-8 flex-wrap items-center gap-1 rounded-md px-2 py-1.5 shadow-borders-base',
+          'transition-fg focus-within:shadow-borders-interactive-with-active',
+          'has-[input:disabled]:cursor-not-allowed has-[input:disabled]:bg-ui-bg-disabled has-[input:disabled]:text-ui-fg-disabled',
           {
-            "bg-ui-bg-field-component hover:bg-ui-bg-field-component-hover":
-              variant === "contrast",
-            "bg-ui-bg-field hover:bg-ui-bg-field-hover": variant === "base",
+            'bg-ui-bg-field-component hover:bg-ui-bg-field-component-hover': variant === 'contrast',
+            'bg-ui-bg-field hover:bg-ui-bg-field-hover': variant === 'base'
           },
-          className,
+          className
         )}
         tabIndex={-1}
         onClick={() => innerRef.current?.focus()}
@@ -146,24 +146,20 @@ export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
             <AnimatePresence key={`${v}-${index}`}>
               <Badge
                 size="2xsmall"
-                className={clx("gap-x-0.5 pl-1.5 pr-1.5", {
-                  "pr-1 transition-fg": showRemove,
-                  "shadow-borders-focus": index === duplicateIndex,
+                className={clx('gap-x-0.5 pl-1.5 pr-1.5', {
+                  'pr-1 transition-fg': showRemove,
+                  'shadow-borders-focus': index === duplicateIndex
                 })}
                 asChild
               >
-                <motion.div
-                  animate={index === duplicateIndex ? shake : undefined}
-                >
+                <motion.div animate={index === duplicateIndex ? shake : undefined}>
                   {v}
                   {showRemove && (
                     <button
                       tabIndex={-1}
                       type="button"
                       onClick={() => handleRemoveChip(v)}
-                      className={clx(
-                        "text-ui-fg-subtle outline-none transition-fg",
-                      )}
+                      className={clx('text-ui-fg-subtle outline-none transition-fg')}
                     >
                       <XMarkMini />
                     </button>
@@ -175,10 +171,10 @@ export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
         })}
         <input
           className={clx(
-            "txt-compact-small flex-1 appearance-none bg-transparent text-ui-fg-base caret-ui-fg-base",
-            "disabled:cursor-not-allowed disabled:text-ui-fg-disabled",
-            "focus:outline-none",
-            "placeholder:text-ui-fg-muted",
+            'txt-compact-small flex-1 appearance-none bg-transparent text-ui-fg-base caret-ui-fg-base',
+            'disabled:cursor-not-allowed disabled:text-ui-fg-disabled',
+            'focus:outline-none',
+            'placeholder:text-ui-fg-muted'
           )}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
@@ -191,7 +187,7 @@ export const ChipInput = forwardRef<HTMLInputElement, ChipInputProps>(
         />
       </div>
     );
-  },
+  }
 );
 
-ChipInput.displayName = "ChipInput";
+ChipInput.displayName = 'ChipInput';

@@ -1,4 +1,3 @@
-import { AlgoliaProduct } from './algolia-product'
-import { AlgoliaReview } from './algolia-review'
+import type { AlgoliaProduct, AlgoliaReview } from '@/types';
 
-export type AlgoliaEntity = AlgoliaProduct | AlgoliaReview
+export type AlgoliaEntity = AlgoliaProduct | AlgoliaReview;

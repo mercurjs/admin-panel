@@ -1,1 +1,1 @@
-export { OrderReturnRequestsPage as Component } from "./request-return-list";
+export { OrderReturnRequestsPage as Component } from './request-return-list';

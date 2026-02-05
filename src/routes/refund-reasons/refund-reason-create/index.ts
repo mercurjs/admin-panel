@@ -1,1 +1,1 @@
-export { RefundReasonCreate as Component } from "./refund-reason-create"
+export { RefundReasonCreate as Component } from './refund-reason-create';

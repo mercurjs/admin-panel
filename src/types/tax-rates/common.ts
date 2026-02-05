@@ -1,13 +1,13 @@
-import type { HttpTypes } from "@medusajs/types";
+import type { HttpTypes } from '@medusajs/types';
 
 export interface ExtendedAdminTaxRateRule extends HttpTypes.AdminTaxRateRule {
-    created_at?: string;
+  created_at?: string;
 }
 
 export interface ExtendedAdminTaxRate extends HttpTypes.AdminTaxRate {
-    rules: ExtendedAdminTaxRateRule[];
+  rules: ExtendedAdminTaxRateRule[];
 }
 
 export interface ExtendedAdminTaxRateResponse {
-    tax_rate: ExtendedAdminTaxRate;
+  tax_rate: ExtendedAdminTaxRate;
 }

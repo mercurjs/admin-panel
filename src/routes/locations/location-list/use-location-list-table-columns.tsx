@@ -1,147 +1,131 @@
-import type { HttpTypes } from "@medusajs/types"
-import { PencilSquare, Trash } from "@medusajs/icons"
-import {
-  createDataTableColumnHelper,
-  StatusBadge,
-  toast,
-  usePrompt,
-} from "@medusajs/ui"
-import { useTranslation } from "react-i18next"
-import { useMemo } from "react"
-import { useNavigate } from "react-router-dom"
-import type { FetchError } from "@medusajs/js-sdk"
-import { sdk } from "@lib/client"
-import { queryClient } from "@lib/query-client"
-import { stockLocationsQueryKeys } from "@hooks/api"
-import { PlaceholderCell } from "@components/table/table-cells/common/placeholder-cell"
-import { getFormattedAddress } from "@lib/addresses"
-import { FulfillmentSetType } from "../common/constants"
-import { ListSummary } from "@components/common/list-summary"
+import { useMemo } from 'react';
 
-const columnHelper = createDataTableColumnHelper<HttpTypes.AdminStockLocation>()
+import { ListSummary } from '@components/common/list-summary';
+import { PlaceholderCell } from '@components/table/table-cells/common/placeholder-cell';
+import { stockLocationsQueryKeys } from '@hooks/api';
+import { getFormattedAddress } from '@lib/addresses';
+import { sdk } from '@lib/client';
+import { queryClient } from '@lib/query-client';
+import { PencilSquare, Trash } from '@medusajs/icons';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes } from '@medusajs/types';
+import { createDataTableColumnHelper, StatusBadge, toast, usePrompt } from '@medusajs/ui';
+import { FulfillmentSetType } from '@routes/locations/common/constants';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+
+const columnHelper = createDataTableColumnHelper<HttpTypes.AdminStockLocation>();
 
 export const useLocationListTableColumns = () => {
-  const { t } = useTranslation()
-  const navigate = useNavigate()
-  const prompt = usePrompt()
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const prompt = usePrompt();
 
   const handleDelete = async (location: HttpTypes.AdminStockLocation) => {
     const result = await prompt({
-      title: t("general.areYouSure"),
-      description: t("stockLocations.delete.confirmation", {
-        name: location.name,
+      title: t('general.areYouSure'),
+      description: t('stockLocations.delete.confirmation', {
+        name: location.name
       }),
-      confirmText: t("actions.remove"),
-      cancelText: t("actions.cancel"),
-    })
+      confirmText: t('actions.remove'),
+      cancelText: t('actions.cancel')
+    });
 
     if (!result) {
-      return
+      return;
     }
 
     try {
-      await sdk.admin.stockLocation.delete(location.id)
+      await sdk.admin.stockLocation.delete(location.id);
       queryClient.invalidateQueries({
-        queryKey: stockLocationsQueryKeys.lists(),
-      })
+        queryKey: stockLocationsQueryKeys.lists()
+      });
 
       queryClient.invalidateQueries({
-        queryKey: stockLocationsQueryKeys.detail(location.id),
-      })
+        queryKey: stockLocationsQueryKeys.detail(location.id)
+      });
 
       toast.success(
-        t("stockLocations.delete.successToast", {
-          name: location.name,
+        t('stockLocations.delete.successToast', {
+          name: location.name
         })
-      )
+      );
     } catch (e) {
-      toast.error((e as FetchError).message)
+      toast.error((e as FetchError).message);
     }
-  }
+  };
 
   return useMemo(
     () => [
-      columnHelper.accessor("name", {
-        header: t("fields.name"),
+      columnHelper.accessor('name', {
+        header: t('fields.name'),
         cell: ({ getValue }) => {
-          const name = getValue()
+          const name = getValue();
           if (!name) {
-            return <PlaceholderCell />
+            return <PlaceholderCell />;
           }
 
-          return (
-            <span className="text-ui-fg-subtle text-small truncate">
-              {name}
-            </span>
-          )
-        },
+          return <span className="text-small truncate text-ui-fg-subtle">{name}</span>;
+        }
       }),
-      columnHelper.accessor("address", {
-        header: t("fields.address"),
+      columnHelper.accessor('address', {
+        header: t('fields.address'),
         cell: ({ getValue, row }) => {
-          const address = getValue()
-          const location = row.original
+          const address = getValue();
+          const location = row.original;
 
           if (!address) {
-            return <PlaceholderCell />
+            return <PlaceholderCell />;
           }
 
           return (
             <div className="flex flex-col">
-              <span className="text-ui-fg-subtle text-small truncate">
+              <span className="text-small truncate text-ui-fg-subtle">
                 {getFormattedAddress({
-                  address: location.address as HttpTypes.AdminOrderAddress,
-                }).join(", ")}
+                  address: location.address as HttpTypes.AdminOrderAddress
+                }).join(', ')}
               </span>
             </div>
-          )
-        },
+          );
+        }
       }),
-      columnHelper.accessor("fulfillment_sets", {
-        id: "shipping_fulfillment",
-        header: t("stockLocations.fulfillmentSets.shipping.header"),
+      columnHelper.accessor('fulfillment_sets', {
+        id: 'shipping_fulfillment',
+        header: t('stockLocations.fulfillmentSets.shipping.header'),
         cell: ({ getValue }) => {
-          const fulfillmentSets = getValue()
-          const shippingSet = fulfillmentSets?.find(
-            (f) => f.type === FulfillmentSetType.Shipping
-          )
-          const fulfillmentSetExists = !!shippingSet
+          const fulfillmentSets = getValue();
+          const shippingSet = fulfillmentSets?.find(f => f.type === FulfillmentSetType.Shipping);
+          const fulfillmentSetExists = !!shippingSet;
 
           return (
-            <StatusBadge color={fulfillmentSetExists ? "green" : "grey"}>
-              {t(
-                fulfillmentSetExists ? "statuses.enabled" : "statuses.disabled"
-              )}
+            <StatusBadge color={fulfillmentSetExists ? 'green' : 'grey'}>
+              {t(fulfillmentSetExists ? 'statuses.enabled' : 'statuses.disabled')}
             </StatusBadge>
-          )
-        },
+          );
+        }
       }),
-      columnHelper.accessor("fulfillment_sets", {
-        id: "pickup_fulfillment",
-        header: t("stockLocations.fulfillmentSets.pickup.header"),
+      columnHelper.accessor('fulfillment_sets', {
+        id: 'pickup_fulfillment',
+        header: t('stockLocations.fulfillmentSets.pickup.header'),
         cell: ({ getValue }) => {
-          const fulfillmentSets = getValue()
-          const pickupSet = fulfillmentSets?.find(
-            (f) => f.type === FulfillmentSetType.Pickup
-          )
-          const fulfillmentSetExists = !!pickupSet
+          const fulfillmentSets = getValue();
+          const pickupSet = fulfillmentSets?.find(f => f.type === FulfillmentSetType.Pickup);
+          const fulfillmentSetExists = !!pickupSet;
 
           return (
-            <StatusBadge color={fulfillmentSetExists ? "green" : "grey"}>
-              {t(
-                fulfillmentSetExists ? "statuses.enabled" : "statuses.disabled"
-              )}
+            <StatusBadge color={fulfillmentSetExists ? 'green' : 'grey'}>
+              {t(fulfillmentSetExists ? 'statuses.enabled' : 'statuses.disabled')}
             </StatusBadge>
-          )
-        },
+          );
+        }
       }),
-      columnHelper.accessor("sales_channels", {
-        header: t("stockLocations.salesChannels.label"),
+      columnHelper.accessor('sales_channels', {
+        header: t('stockLocations.salesChannels.label'),
         cell: ({ getValue }) => {
-          const salesChannels = getValue()
+          const salesChannels = getValue();
 
           if (!salesChannels?.length) {
-            return <PlaceholderCell />
+            return <PlaceholderCell />;
           }
 
           return (
@@ -149,37 +133,37 @@ export const useLocationListTableColumns = () => {
               <ListSummary
                 inline
                 n={1}
-                list={salesChannels.map((s) => s.name)}
+                list={salesChannels.map(s => s.name)}
               />
             </div>
-          )
-        },
+          );
+        }
       }),
       columnHelper.action({
-        actions: (ctx) => {
-          const location = ctx.row.original
+        actions: ctx => {
+          const location = ctx.row.original;
 
           return [
             [
               {
                 icon: <PencilSquare />,
-                label: t("actions.edit"),
+                label: t('actions.edit'),
                 onClick: () => {
-                  navigate(`/settings/locations/${location.id}/edit`)
-                },
-              },
+                  navigate(`/settings/locations/${location.id}/edit`);
+                }
+              }
             ],
             [
               {
                 icon: <Trash />,
-                label: t("actions.delete"),
-                onClick: () => handleDelete(location),
-              },
-            ],
-          ]
-        },
-      }),
+                label: t('actions.delete'),
+                onClick: () => handleDelete(location)
+              }
+            ]
+          ];
+        }
+      })
     ],
     []
-  )
-}
+  );
+};

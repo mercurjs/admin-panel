@@ -1,4 +1,4 @@
-import { currencies } from "./data/currencies";
+import { currencies } from './data/currencies';
 
 /**
  * Gets the number of decimal places in a number
@@ -13,21 +13,20 @@ import { currencies } from "./data/currencies";
 export function getNumberOfDecimalPlaces(num: number): number {
   // Convert to string and check if it contains a decimal point
   const str = num.toString();
-  if (str.indexOf(".") === -1) {
+  if (str.indexOf('.') === -1) {
     return 0;
   }
   // Return the length of the part after the decimal point
-  return str.split(".")[1].length;
+
+  return str.split('.')[1].length;
 }
 
 export const getDecimalDigits = (currency: string) => {
   return currencies[currency.toUpperCase()]?.decimal_digits ?? 0;
 };
 
-export const isAmountLessThenRoundingError = (
-  amount: number,
-  currencyCode: string
-) => {
+export const isAmountLessThenRoundingError = (amount: number, currencyCode: string) => {
   const decimalDigits = getDecimalDigits(currencyCode);
+
   return Math.abs(amount) < 1 / 10 ** decimalDigits / 2;
 };

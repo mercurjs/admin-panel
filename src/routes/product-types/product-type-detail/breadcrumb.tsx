@@ -1,24 +1,20 @@
-import { HttpTypes } from "@medusajs/types"
-import { UIMatch } from "react-router-dom"
+import { useProductType } from '@hooks/api';
+import type { HttpTypes } from '@medusajs/types';
+import type { UIMatch } from 'react-router-dom';
 
-import { useProductType } from "../../../hooks/api"
+type ProductTypeDetailBreadcrumbProps = UIMatch<HttpTypes.AdminProductTypeResponse>;
 
-type ProductTypeDetailBreadcrumbProps =
-  UIMatch<HttpTypes.AdminProductTypeResponse>
-
-export const ProductTypeDetailBreadcrumb = (
-  props: ProductTypeDetailBreadcrumbProps
-) => {
-  const { id } = props.params || {}
+export const ProductTypeDetailBreadcrumb = (props: ProductTypeDetailBreadcrumbProps) => {
+  const { id } = props.params || {};
 
   const { product_type } = useProductType(id!, undefined, {
     initialData: props.data,
-    enabled: Boolean(id),
-  })
+    enabled: Boolean(id)
+  });
 
   if (!product_type) {
-    return null
+    return null;
   }
 
-  return <span>{product_type.value}</span>
-}
+  return <span>{product_type.value}</span>;
+};

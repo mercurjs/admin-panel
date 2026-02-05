@@ -1,1 +1,1 @@
-export * from "./save-view-dialog"
+export * from './save-view-dialog';

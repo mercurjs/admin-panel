@@ -1,18 +1,17 @@
-import { useParams } from "react-router-dom"
-
-import { useTaxRegion, useUpdateTaxRegion } from "@hooks/api"
-import { MetadataForm } from "@components/forms/metadata-form"
-import { RouteDrawer } from "@components/modals"
-import { FetchError } from "@medusajs/js-sdk"
+import { MetadataForm } from '@components/forms/metadata-form';
+import { RouteDrawer } from '@components/modals';
+import { useTaxRegion, useUpdateTaxRegion } from '@hooks/api';
+import { FetchError } from '@medusajs/js-sdk';
+import { useParams } from 'react-router-dom';
 
 export const TaxRegionMetadata = () => {
-  const { id } = useParams()
+  const { id } = useParams();
 
-  const { tax_region, isPending, isError, error } = useTaxRegion(id!)
-  const { mutateAsync, isPending: isMutating } = useUpdateTaxRegion(id!)
+  const { tax_region, isPending, isError, error } = useTaxRegion(id!);
+  const { mutateAsync, isPending: isMutating } = useUpdateTaxRegion(id!);
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   const handleSubmit = async (
@@ -21,17 +20,17 @@ export const TaxRegionMetadata = () => {
   ) => {
     try {
       const result = await mutateAsync({
-        metadata: params.metadata === undefined ? undefined : params.metadata,
-      })
-      callbacks.onSuccess?.()
+        metadata: params.metadata === undefined ? undefined : params.metadata
+      });
+      callbacks.onSuccess?.();
 
-      return result
+      return result;
     } catch (error) {
-      const message = error instanceof FetchError ? error.message : 'An error occurred'
-      callbacks.onError?.(message)
-      throw error
+      const message = error instanceof FetchError ? error.message : 'An error occurred';
+      callbacks.onError?.(message);
+      throw error;
     }
-  }
+  };
 
   return (
     <RouteDrawer data-testid="tax-region-metadata-drawer">
@@ -42,5 +41,5 @@ export const TaxRegionMetadata = () => {
         metadata={tax_region?.metadata}
       />
     </RouteDrawer>
-  )
-}
+  );
+};

@@ -1,49 +1,51 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { History } from "@medusajs/icons";
-import type { ProductTypeDTO } from "@medusajs/types";
-import { Container, Heading, Table, Text } from "@medusajs/ui";
-
-import { formatDate } from "@lib/date";
-
-import type { AdminRequest } from "@custom-types/requests";
-
-import { useVendorRequests } from "@hooks/api/requests";
-
+import type { AdminRequest } from '@custom-types/requests';
+import { useVendorRequests } from '@hooks/api/requests';
+import { formatDate } from '@lib/date';
+import { History } from '@medusajs/icons';
+import type { ProductTypeDTO } from '@medusajs/types';
+import { Container, Heading, Table, Text } from '@medusajs/ui';
 import {
   FilterRequests,
-  type FilterState,
-} from "@routes/requests/common/components/filter-requests";
-import { RequestMenu } from "@routes/requests/common/components/request-menu";
-import { getRequestStatusBadge } from "@routes/requests/common/utils/get-status-badge";
-import { ProductTypeRequestDetail } from "@routes/requests/request-product-type-list/components/product-type-detail";
+  type FilterState
+} from '@routes/requests/common/components/filter-requests';
+import { RequestMenu } from '@routes/requests/common/components/request-menu';
+import { getRequestStatusBadge } from '@routes/requests/common/utils/get-status-badge';
+import { ProductTypeRequestDetail } from '@routes/requests/request-product-type-list/components/product-type-detail';
 
 const PAGE_SIZE = 20;
 
 export const RequestProductTypeList = () => {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [detailOpen, setDetailOpen] = useState(false);
-  const [detailRequest, setDetailRequest] = useState<AdminRequest | undefined>(
-    undefined,
-  );
+  const [detailRequest, setDetailRequest] = useState<AdminRequest | undefined>(undefined);
 
   const handleDetail = (request: AdminRequest) => {
     setDetailRequest(request);
     setDetailOpen(true);
   };
 
-  const [currentFilter, setCurrentFilter] = useState<FilterState>("");
+  const [currentFilter, setCurrentFilter] = useState<FilterState>('');
 
-  const { requests, isLoading, refetch, count = 0 } = useVendorRequests({
+  const {
+    requests,
+    isLoading,
+    refetch,
+    count = 0
+  } = useVendorRequests({
     offset: currentPage * PAGE_SIZE,
     limit: PAGE_SIZE,
-    type: "product_type",
-    status: currentFilter !== "" ? currentFilter : undefined,
+    type: 'product_type',
+    status: currentFilter !== '' ? currentFilter : undefined
   });
 
   return (
     <Container data-testid="request-product-type-list-container">
-      <div className="flex items-center justify-between px-6 py-4" data-testid="request-product-type-list-header">
+      <div
+        className="flex items-center justify-between px-6 py-4"
+        data-testid="request-product-type-list-header"
+      >
         <div>
           <Heading data-testid="request-product-type-list-heading">Product type requests</Heading>
           <ProductTypeRequestDetail
@@ -56,22 +58,35 @@ export const RequestProductTypeList = () => {
           />
 
           <FilterRequests
-            onChange={(val) => {
+            onChange={val => {
               setCurrentFilter(val);
             }}
           />
         </div>
       </div>
-      <div className="flex size-full flex-col overflow-hidden" data-testid="request-product-type-list-content">
+      <div
+        className="flex size-full flex-col overflow-hidden"
+        data-testid="request-product-type-list-content"
+      >
         {isLoading && <Text data-testid="request-product-type-list-loading">Loading...</Text>}
         <Table data-testid="request-product-type-list-table">
           <Table.Header data-testid="request-product-type-list-table-header">
             <Table.Row>
-              <Table.HeaderCell data-testid="request-product-type-list-table-header-value">Value</Table.HeaderCell>
-              <Table.HeaderCell data-testid="request-product-type-list-table-header-submitted-by">Submitted By</Table.HeaderCell>
-              <Table.HeaderCell data-testid="request-product-type-list-table-header-date">Date</Table.HeaderCell>
-              <Table.HeaderCell data-testid="request-product-type-list-table-header-status">Status</Table.HeaderCell>
-              <Table.HeaderCell data-testid="request-product-type-list-table-header-actions">Actions</Table.HeaderCell>
+              <Table.HeaderCell data-testid="request-product-type-list-table-header-value">
+                Value
+              </Table.HeaderCell>
+              <Table.HeaderCell data-testid="request-product-type-list-table-header-submitted-by">
+                Submitted By
+              </Table.HeaderCell>
+              <Table.HeaderCell data-testid="request-product-type-list-table-header-date">
+                Date
+              </Table.HeaderCell>
+              <Table.HeaderCell data-testid="request-product-type-list-table-header-status">
+                Status
+              </Table.HeaderCell>
+              <Table.HeaderCell data-testid="request-product-type-list-table-header-actions">
+                Actions
+              </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body data-testid="request-product-type-list-table-body">
@@ -79,9 +94,18 @@ export const RequestProductTypeList = () => {
               const requestData = request.data as ProductTypeDTO;
 
               return (
-                <Table.Row key={request.id} data-testid={`request-product-type-list-table-row-${index}`}>
-                  <Table.Cell data-testid={`request-product-type-list-table-row-${index}-value`}>{requestData.value}</Table.Cell>
-                  <Table.Cell data-testid={`request-product-type-list-table-row-${index}-submitted-by`}>{request.seller?.name}</Table.Cell>
+                <Table.Row
+                  key={request.id}
+                  data-testid={`request-product-type-list-table-row-${index}`}
+                >
+                  <Table.Cell data-testid={`request-product-type-list-table-row-${index}-value`}>
+                    {requestData.value}
+                  </Table.Cell>
+                  <Table.Cell
+                    data-testid={`request-product-type-list-table-row-${index}-submitted-by`}
+                  >
+                    {request.seller?.name}
+                  </Table.Cell>
                   <Table.Cell data-testid={`request-product-type-list-table-row-${index}-date`}>
                     <div className="flex items-center gap-2">
                       <History />

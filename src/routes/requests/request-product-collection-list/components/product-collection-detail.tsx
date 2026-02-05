@@ -1,14 +1,11 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { InformationCircle } from "@medusajs/icons";
-import type { ProductCollectionDTO } from "@medusajs/types";
-import { Button, Container, Drawer, Text } from "@medusajs/ui";
-
-import { formatDate } from "@lib/date";
-
-import type { AdminRequest } from "@custom-types/requests";
-
-import { ResolveRequestPrompt } from "@routes/requests/common/components/resolve-request";
+import type { AdminRequest } from '@custom-types/requests';
+import { formatDate } from '@lib/date';
+import { InformationCircle } from '@medusajs/icons';
+import type { ProductCollectionDTO } from '@medusajs/types';
+import { Button, Container, Drawer, Text } from '@medusajs/ui';
+import { ResolveRequestPrompt } from '@routes/requests/common/components/resolve-request';
 
 type Props = {
   request?: AdminRequest;
@@ -16,11 +13,7 @@ type Props = {
   close: () => void;
 };
 
-export function ProductCollectionRequestDetail({
-  request,
-  open,
-  close,
-}: Props) {
+export function ProductCollectionRequestDetail({ request, open, close }: Props) {
   if (!request) {
     return null;
   }
@@ -35,7 +28,11 @@ export function ProductCollectionRequestDetail({
   };
 
   return (
-    <Drawer open={open} onOpenChange={close} data-testid={`product-collection-detail-${request.id}`}>
+    <Drawer
+      open={open}
+      onOpenChange={close}
+      data-testid={`product-collection-detail-${request.id}`}
+    >
       <ResolveRequestPrompt
         close={() => {
           setPromptOpen(false);
@@ -49,43 +46,94 @@ export function ProductCollectionRequestDetail({
       />
       <Drawer.Content data-testid={`product-collection-detail-${request.id}-content`}>
         <Drawer.Header data-testid={`product-collection-detail-${request.id}-header`}>
-          <Drawer.Title data-testid={`product-collection-detail-${request.id}-title`}>Product category request</Drawer.Title>
+          <Drawer.Title data-testid={`product-collection-detail-${request.id}-title`}>
+            Product category request
+          </Drawer.Title>
         </Drawer.Header>
-        <Drawer.Body className="p-4" data-testid={`product-collection-detail-${request.id}-body`}>
+        <Drawer.Body
+          className="p-4"
+          data-testid={`product-collection-detail-${request.id}-body`}
+        >
           <fieldset data-testid={`product-collection-detail-${request.id}-title-fieldset`}>
-            <legend className="mb-2" data-testid={`product-collection-detail-${request.id}-title-legend`}>Collection title</legend>
+            <legend
+              className="mb-2"
+              data-testid={`product-collection-detail-${request.id}-title-legend`}
+            >
+              Collection title
+            </legend>
             <Container data-testid={`product-collection-detail-${request.id}-title-container`}>
-              <Text data-testid={`product-collection-detail-${request.id}-title-value`}>{requestData.title}</Text>
+              <Text data-testid={`product-collection-detail-${request.id}-title-value`}>
+                {requestData.title}
+              </Text>
             </Container>
           </fieldset>
-          <fieldset className="mt-2" data-testid={`product-collection-detail-${request.id}-handle-fieldset`}>
-            <legend className="mb-2" data-testid={`product-collection-detail-${request.id}-handle-legend`}>Handle</legend>
+          <fieldset
+            className="mt-2"
+            data-testid={`product-collection-detail-${request.id}-handle-fieldset`}
+          >
+            <legend
+              className="mb-2"
+              data-testid={`product-collection-detail-${request.id}-handle-legend`}
+            >
+              Handle
+            </legend>
             <Container data-testid={`product-collection-detail-${request.id}-handle-container`}>
-              <Text data-testid={`product-collection-detail-${request.id}-handle-value`}>{`/${requestData.handle}`}</Text>
+              <Text
+                data-testid={`product-collection-detail-${request.id}-handle-value`}
+              >{`/${requestData.handle}`}</Text>
             </Container>
           </fieldset>
-          <fieldset className="mt-2" data-testid={`product-collection-detail-${request.id}-submitted-by-fieldset`}>
-            <legend className="mb-2" data-testid={`product-collection-detail-${request.id}-submitted-by-legend`}>Submitted by</legend>
-            <Container data-testid={`product-collection-detail-${request.id}-submitted-by-container`}>
-              <Text data-testid={`product-collection-detail-${request.id}-submitted-by-value`}>{request.seller?.name}</Text>
+          <fieldset
+            className="mt-2"
+            data-testid={`product-collection-detail-${request.id}-submitted-by-fieldset`}
+          >
+            <legend
+              className="mb-2"
+              data-testid={`product-collection-detail-${request.id}-submitted-by-legend`}
+            >
+              Submitted by
+            </legend>
+            <Container
+              data-testid={`product-collection-detail-${request.id}-submitted-by-container`}
+            >
+              <Text data-testid={`product-collection-detail-${request.id}-submitted-by-value`}>
+                {request.seller?.name}
+              </Text>
             </Container>
           </fieldset>
-          <Container className="mt-4" data-testid={`product-collection-detail-${request.id}-request-information`}>
-            <div className="flex items-center gap-2" data-testid={`product-collection-detail-${request.id}-request-information-header`}>
+          <Container
+            className="mt-4"
+            data-testid={`product-collection-detail-${request.id}-request-information`}
+          >
+            <div
+              className="flex items-center gap-2"
+              data-testid={`product-collection-detail-${request.id}-request-information-header`}
+            >
               <InformationCircle />
-              <Text className="font-semibold" data-testid={`product-collection-detail-${request.id}-request-information-title`}>Request information</Text>
+              <Text
+                className="font-semibold"
+                data-testid={`product-collection-detail-${request.id}-request-information-title`}
+              >
+                Request information
+              </Text>
             </div>
-            <Text data-testid={`product-collection-detail-${request.id}-submitted-on`}>{`Submitted on ${formatDate(request.created_at)}`}</Text>
+            <Text
+              data-testid={`product-collection-detail-${request.id}-submitted-on`}
+            >{`Submitted on ${formatDate(request.created_at)}`}</Text>
             {request.reviewer_id && (
-              <Text data-testid={`product-collection-detail-${request.id}-reviewed-on`}>{`Reviewed on ${formatDate(request.updated_at)}`}</Text>
+              <Text
+                data-testid={`product-collection-detail-${request.id}-reviewed-on`}
+              >{`Reviewed on ${formatDate(request.updated_at)}`}</Text>
             )}
             {request.reviewer_note && (
-              <Text data-testid={`product-collection-detail-${request.id}-reviewer-note`}>{`Reviewer note: ${request.reviewer_note}`}</Text>
+              <Text
+                data-testid={`product-collection-detail-${request.id}-reviewer-note`}
+              >{`Reviewer note: ${request.reviewer_note}`}</Text>
             )}
           </Container>
         </Drawer.Body>
         <Drawer.Footer data-testid={`product-collection-detail-${request.id}-footer`}>
-          {request.status === "pending" && (
+          {request.status === 'pending' && (
             <>
               <Button
                 onClick={() => {
@@ -104,7 +152,11 @@ export function ProductCollectionRequestDetail({
               >
                 Reject
               </Button>
-              <Button variant="secondary" onClick={close} data-testid={`product-collection-detail-${request.id}-cancel-button`}>
+              <Button
+                variant="secondary"
+                onClick={close}
+                data-testid={`product-collection-detail-${request.id}-cancel-button`}
+              >
                 Cancel
               </Button>
             </>

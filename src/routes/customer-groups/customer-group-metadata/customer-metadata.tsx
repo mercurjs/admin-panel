@@ -1,17 +1,16 @@
-import { useParams } from "react-router-dom"
-
-import { FetchError } from "@medusajs/js-sdk"
-import { useCustomerGroup, useUpdateCustomerGroup } from "@hooks/api"
-import { MetadataForm } from "@components/forms/metadata-form"
+import { MetadataForm } from '@components/forms/metadata-form';
+import { useCustomerGroup, useUpdateCustomerGroup } from '@hooks/api';
+import { FetchError } from '@medusajs/js-sdk';
+import { useParams } from 'react-router-dom';
 
 export const CustomerGroupMetadata = () => {
-  const { id } = useParams()
+  const { id } = useParams();
 
-  const { customer_group, isPending, isError, error } = useCustomerGroup(id!)
-  const { mutateAsync, isPending: isMutating } = useUpdateCustomerGroup(id!)
+  const { customer_group, isPending, isError, error } = useCustomerGroup(id!);
+  const { mutateAsync, isPending: isMutating } = useUpdateCustomerGroup(id!);
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   const handleSubmit = async (
@@ -20,17 +19,17 @@ export const CustomerGroupMetadata = () => {
   ) => {
     try {
       const result = await mutateAsync({
-        metadata: params.metadata === undefined ? undefined : params.metadata,
-      })
-      callbacks.onSuccess?.()
-      
-      return result
+        metadata: params.metadata === undefined ? undefined : params.metadata
+      });
+      callbacks.onSuccess?.();
+
+      return result;
     } catch (error) {
-      const message = error instanceof FetchError ? error.message : 'An error occurred'
-      callbacks.onError?.(message)
-      throw error
+      const message = error instanceof FetchError ? error.message : 'An error occurred';
+      callbacks.onError?.(message);
+      throw error;
     }
-  }
+  };
 
   return (
     <div data-testid="customer-group-metadata">
@@ -41,5 +40,5 @@ export const CustomerGroupMetadata = () => {
         isMutating={isMutating}
       />
     </div>
-  )
-}
+  );
+};

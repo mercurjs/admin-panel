@@ -1,1 +1,1 @@
-export * from "./add-exchange-inbound-items-table"
+export * from './add-exchange-inbound-items-table';

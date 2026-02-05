@@ -1,5 +1,5 @@
-import { FetchError } from "@medusajs/js-sdk"
+import { FetchError } from '@medusajs/js-sdk';
 
-export const isFetchError = (error: any): error is FetchError => {
-  return error instanceof FetchError
-}
+// @todo fix any type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isFetchError = (error: any): error is FetchError => error instanceof FetchError;

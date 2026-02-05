@@ -1,10 +1,10 @@
-import {
+import type {
   DeleteResponse,
   FindParams,
   OperatorMap,
   PaginatedResponse,
-  SelectParams,
-} from "@medusajs/types";
+  SelectParams
+} from '@medusajs/types';
 
 export interface AdminRefundReason {
   /**
@@ -80,13 +80,12 @@ export interface AdminRefundReasonResponse {
   refund_reason: AdminRefundReason;
 }
 
-export interface AdminRefundReasonListResponse
-  extends PaginatedResponse<{
-    /**
-     * The list of refund reasons.
-     */
-    refund_reasons: AdminRefundReason[];
-  }> {}
+export interface AdminRefundReasonListResponse extends PaginatedResponse<{
+  /**
+   * The list of refund reasons.
+   */
+  refund_reasons: AdminRefundReason[];
+}> {}
 
 export type AdminBaseRefundReasonPayload = {
   /**
@@ -109,8 +108,7 @@ export type AdminBaseRefundReasonPayload = {
   metadata?: Record<string, unknown> | null;
 };
 
-export interface AdminRefundReasonDeleteResponse
-  extends DeleteResponse<"refund_reason"> {}
+export interface AdminRefundReasonDeleteResponse extends DeleteResponse<'refund_reason'> {}
 
 export interface AdminRefundReasonParams extends SelectParams {}
 

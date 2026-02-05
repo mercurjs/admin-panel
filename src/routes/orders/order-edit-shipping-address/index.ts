@@ -1,1 +1,1 @@
-export { OrderEditShippingAddress as Component } from "./order-edit-shipping-address"
+export { OrderEditShippingAddress as Component } from './order-edit-shipping-address';

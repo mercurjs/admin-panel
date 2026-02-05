@@ -1,48 +1,40 @@
-import { AdminReservationResponse } from "@medusajs/types"
-import { Container, Heading } from "@medusajs/ui"
-
-import { ActionMenu } from "../../../../../components/common/action-menu"
-import { PencilSquare } from "@medusajs/icons"
-import { SectionRow } from "../../../../../components/common/section"
-import { useInventoryItem } from "../../../../../hooks/api/inventory"
-import { useStockLocation } from "../../../../../hooks/api/stock-locations"
-import { useTranslation } from "react-i18next"
+import { ActionMenu } from '@components/common/action-menu';
+import { SectionRow } from '@components/common/section';
+import { useInventoryItem, useStockLocation } from '@hooks/api';
+import { PencilSquare } from '@medusajs/icons';
+import type { AdminReservationResponse } from '@medusajs/types';
+import { Container, Heading } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
 
 type ReservationGeneralSectionProps = {
-  reservation: AdminReservationResponse["reservation"]
-}
+  reservation: AdminReservationResponse['reservation'];
+};
 
-export const ReservationGeneralSection = ({
-  reservation,
-}: ReservationGeneralSectionProps) => {
-  const { t } = useTranslation()
+export const ReservationGeneralSection = ({ reservation }: ReservationGeneralSectionProps) => {
+  const { t } = useTranslation();
 
-  const { inventory_item: inventoryItem, isPending: isLoadingInventoryItem } =
-    useInventoryItem(reservation.inventory_item_id)
+  const { inventory_item: inventoryItem, isPending: isLoadingInventoryItem } = useInventoryItem(
+    reservation.inventory_item_id
+  );
 
-  const { stock_location: location, isPending: isLoadingLocation } =
-    useStockLocation(reservation.location_id)
+  const { stock_location: location, isPending: isLoadingLocation } = useStockLocation(
+    reservation.location_id
+  );
 
-  if (
-    isLoadingInventoryItem ||
-    !inventoryItem ||
-    isLoadingLocation ||
-    !location
-  ) {
-    return <div>Loading...</div>
+  if (isLoadingInventoryItem || !inventoryItem || isLoadingLocation || !location) {
+    return <div>Loading...</div>;
   }
 
   const locationLevel = inventoryItem.location_levels!.find(
-    (level) =>
-      level.location_id === reservation.location_id
-  )
+    level => level.location_id === reservation.location_id
+  );
 
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
         <Heading>
-          {t("inventory.reservation.header", {
-            itemName: inventoryItem.title ?? inventoryItem.sku,
+          {t('inventory.reservation.header', {
+            itemName: inventoryItem.title ?? inventoryItem.sku
           })}
         </Heading>
         <ActionMenu
@@ -51,38 +43,38 @@ export const ReservationGeneralSection = ({
               actions: [
                 {
                   icon: <PencilSquare />,
-                  label: t("actions.edit"),
-                  to: `edit`,
-                },
-              ],
-            },
+                  label: t('actions.edit'),
+                  to: `edit`
+                }
+              ]
+            }
           ]}
         />
       </div>
       <SectionRow
-        title={t("inventory.reservation.lineItemId")}
+        title={t('inventory.reservation.lineItemId')}
         value={reservation.line_item_id} // TODO fetch order instead + add link
       />
       <SectionRow
-        title={t("inventory.reservation.description")}
+        title={t('inventory.reservation.description')}
         value={reservation.description}
       />
       <SectionRow
-        title={t("inventory.reservation.location")}
+        title={t('inventory.reservation.location')}
         value={location?.name}
       />
       <SectionRow
-        title={t("inventory.reservation.inStockAtLocation")}
+        title={t('inventory.reservation.inStockAtLocation')}
         value={locationLevel?.stocked_quantity}
       />
       <SectionRow
-        title={t("inventory.reservation.availableAtLocation")}
+        title={t('inventory.reservation.availableAtLocation')}
         value={locationLevel?.available_quantity}
       />
       <SectionRow
-        title={t("inventory.reservation.reservedAtLocation")}
+        title={t('inventory.reservation.reservedAtLocation')}
         value={locationLevel?.reserved_quantity}
       />
     </Container>
-  )
-}
+  );
+};

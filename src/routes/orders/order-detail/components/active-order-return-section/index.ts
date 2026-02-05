@@ -1,1 +1,1 @@
-export * from "./active-order-return-section"
+export * from './active-order-return-section';

@@ -1,7 +1,7 @@
 export enum StoreStatus {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-  SUSPENDED = "SUSPENDED",
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  SUSPENDED = 'SUSPENDED'
 }
 
 export type SellerDTO = {
@@ -36,9 +36,9 @@ export type SellerWithPayoutAccountDTO = SellerDTO & {
 };
 
 export enum MemberRole {
-  OWNER = "owner",
-  ADMIN = "admin",
-  MEMBER = "member",
+  OWNER = 'owner',
+  ADMIN = 'admin',
+  MEMBER = 'member'
 }
 
 export type MemberDTO = {
@@ -90,7 +90,7 @@ export interface VendorMember {
   id: string;
   created_at: string;
   updated_at: string;
-  role: "owner" | "admin" | "member";
+  role: 'owner' | 'admin' | 'member';
   email: string;
   name?: string | null;
   bio?: string | null;

@@ -1,5 +1,6 @@
-import { useMemo } from "react"
-import { Path, useLocation } from "react-router-dom"
+import { useMemo } from 'react';
+
+import { useLocation, type Path } from 'react-router-dom';
 
 /**
  * Checks if the current location has a restore_params property.
@@ -11,22 +12,20 @@ import { Path, useLocation } from "react-router-dom"
  * the params that were present when the modal was opened.
  */
 export const useStateAwareTo = (prev: string | Partial<Path>) => {
-  const location = useLocation()
+  const location = useLocation();
 
-  const to = useMemo(() => {
-    const params = location.state?.restore_params
+  return useMemo(() => {
+    const params = location.state?.restore_params;
 
     if (params) {
-      return `${prev}?${params.toString()}`
+      return `${prev}?${params.toString()}`;
     }
 
     // If no restore_params in state, check if the current URL has search params
     if (location.search) {
-      return `${prev}${location.search}`
+      return `${prev}${location.search}`;
     }
 
-    return prev
-  }, [location.state, location.search, prev])
-
-  return to
-}
+    return prev;
+  }, [location.state, location.search, prev]);
+};

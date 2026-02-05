@@ -1,23 +1,17 @@
-import { useParams } from "react-router-dom"
-
-import { RouteDrawer } from "@components/modals"
-import { MetadataForm } from "@components/forms/metadata-form"
-import { useSalesChannel, useUpdateSalesChannel } from "@hooks/api"
-import { FetchError } from "@medusajs/js-sdk"
+import { MetadataForm } from '@components/forms/metadata-form';
+import { RouteDrawer } from '@components/modals';
+import { useSalesChannel, useUpdateSalesChannel } from '@hooks/api';
+import { FetchError } from '@medusajs/js-sdk';
+import { useParams } from 'react-router-dom';
 
 export const SalesChannelMetadata = () => {
-  const { id } = useParams()
+  const { id } = useParams();
 
-  const {
-    sales_channel: salesChannel,
-    isPending,
-    isError,
-    error,
-  } = useSalesChannel(id!)
-  const { mutateAsync, isPending: isMutating } = useUpdateSalesChannel(id!)
+  const { sales_channel: salesChannel, isPending, isError, error } = useSalesChannel(id!);
+  const { mutateAsync, isPending: isMutating } = useUpdateSalesChannel(id!);
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   const handleSubmit = async (
@@ -26,17 +20,17 @@ export const SalesChannelMetadata = () => {
   ) => {
     try {
       const result = await mutateAsync({
-        metadata: params.metadata === undefined ? undefined : params.metadata,
-      })
-      callbacks.onSuccess?.()
+        metadata: params.metadata === undefined ? undefined : params.metadata
+      });
+      callbacks.onSuccess?.();
 
-      return result
+      return result;
     } catch (error) {
-      const message = error instanceof FetchError ? error.message : 'An error occurred'
-      callbacks.onError?.(message)
-      throw error
+      const message = error instanceof FetchError ? error.message : 'An error occurred';
+      callbacks.onError?.(message);
+      throw error;
     }
-  }
+  };
 
   return (
     <RouteDrawer data-testid="sales-channel-metadata-drawer">
@@ -47,5 +41,5 @@ export const SalesChannelMetadata = () => {
         metadata={salesChannel?.metadata}
       />
     </RouteDrawer>
-  )
-}
+  );
+};

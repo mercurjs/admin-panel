@@ -1,23 +1,26 @@
-import { useParams } from "react-router-dom"
+import { RouteFocusModal } from '@components/modals';
+import { useProduct } from '@hooks/api';
+import { useParams } from 'react-router-dom';
 
-import { RouteFocusModal } from "../../../components/modals"
-import { useProduct } from "../../../hooks/api/products"
-import { PricingEdit } from "./pricing-edit"
+import { PricingEdit } from './pricing-edit';
 
 export const ProductPrices = () => {
-  const { id, variant_id } = useParams()
+  const { id, variant_id } = useParams();
 
-  const { product, isLoading, isError, error } = useProduct(id!)
+  const { product, isLoading, isError, error } = useProduct(id!);
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   return (
     <RouteFocusModal data-testid="product-prices-modal">
       {!isLoading && product && (
-        <PricingEdit product={product} variantId={variant_id} />
+        <PricingEdit
+          product={product}
+          variantId={variant_id}
+        />
       )}
     </RouteFocusModal>
-  )
-}
+  );
+};

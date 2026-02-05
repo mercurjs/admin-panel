@@ -1,17 +1,22 @@
-import { clx } from "@medusajs/ui"
-import { Children, ComponentPropsWithoutRef, ComponentType } from "react"
-import { Outlet } from "react-router-dom"
-import { JsonViewSection } from "../../../common/json-view-section"
-import { MetadataSection } from "../../../common/metadata-section"
-import { PageProps, WidgetProps } from "../types"
+import { Children, type ComponentPropsWithoutRef, type ComponentType } from 'react';
+
+import { JsonViewSection } from '@components/common/json-view-section';
+import { MetadataSection } from '@components/common/metadata-section';
+import type { PageProps, WidgetProps } from '@components/layout/pages/types';
+import { clx } from '@medusajs/ui';
+import { Outlet } from 'react-router-dom';
 
 interface TwoColumnWidgetProps extends WidgetProps {
-  sideBefore: ComponentType<any>[]
-  sideAfter: ComponentType<any>[]
+  // @todo fix any type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sideBefore: ComponentType<any>[];
+  // @todo fix any type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sideAfter: ComponentType<any>[];
 }
 
 interface TwoColumnPageProps<TData> extends PageProps<TData> {
-  widgets: TwoColumnWidgetProps
+  widgets: TwoColumnWidgetProps;
 }
 
 const Root = <TData,>({
@@ -35,53 +40,66 @@ const Root = <TData,>({
   /**
    * Whether to render an outlet for children routes. Defaults to true.
    */
-  hasOutlet = true,
+  hasOutlet = true
 }: TwoColumnPageProps<TData>) => {
-  const widgetProps = { data }
-  const { before, after, sideBefore, sideAfter } = widgets
+  const widgetProps = { data };
+  const { before, after, sideBefore, sideAfter } = widgets;
 
   if (showJSON && !data) {
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === 'development') {
       console.warn(
-        "`showJSON` is true but no data is provided. To display JSON, provide data prop."
-      )
+        '`showJSON` is true but no data is provided. To display JSON, provide data prop.'
+      );
     }
 
-    showJSON = false
+    showJSON = false;
   }
 
   if (showMetadata && !data) {
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === 'development') {
       console.warn(
-        "`showMetadata` is true but no data is provided. To display metadata, provide data prop."
-      )
+        '`showMetadata` is true but no data is provided. To display metadata, provide data prop.'
+      );
     }
 
-    showMetadata = false
+    showMetadata = false;
   }
 
-  const childrenArray = Children.toArray(children)
+  const childrenArray = Children.toArray(children);
 
   if (childrenArray.length !== 2) {
-    throw new Error("TwoColumnPage expects exactly two children")
+    throw new Error('TwoColumnPage expects exactly two children');
   }
 
-  const [main, sidebar] = childrenArray
-  const showExtraData = showJSON || showMetadata
+  const [main, sidebar] = childrenArray;
+  const showExtraData = showJSON || showMetadata;
 
   return (
     <div className="flex w-full flex-col gap-y-3">
       {before.map((Component, i) => {
-        return <Component {...widgetProps} key={i} />
+        return (
+          <Component
+            {...widgetProps}
+            key={i}
+          />
+        );
       })}
       <div className="flex w-full flex-col items-start gap-x-4 gap-y-3 xl:grid xl:grid-cols-[minmax(0,_1fr)_440px]">
         <div className="flex w-full min-w-0 flex-col gap-y-3">
           {main}
           {after.map((Component, i) => {
-            return <Component {...widgetProps} key={i} />
+            return (
+              <Component
+                {...widgetProps}
+                key={i}
+              />
+            );
           })}
           {showExtraData && (
-            <div className="hidden flex-col gap-y-3 xl:flex" data-testid="product-extra-data-desktop">
+            <div
+              className="hidden flex-col gap-y-3 xl:flex"
+              data-testid="product-extra-data-desktop"
+            >
               {showMetadata && <MetadataSection data={data!} />}
               {showJSON && <JsonViewSection data={data!} />}
             </div>
@@ -89,14 +107,27 @@ const Root = <TData,>({
         </div>
         <div className="flex w-full flex-col gap-y-3 xl:mt-0">
           {sideBefore.map((Component, i) => {
-            return <Component {...widgetProps} key={i} />
+            return (
+              <Component
+                {...widgetProps}
+                key={i}
+              />
+            );
           })}
           {sidebar}
           {sideAfter.map((Component, i) => {
-            return <Component {...widgetProps} key={i} />
+            return (
+              <Component
+                {...widgetProps}
+                key={i}
+              />
+            );
           })}
           {showExtraData && (
-            <div className="flex flex-col gap-y-3 xl:hidden" data-testid="product-extra-data-mobile">
+            <div
+              className="flex flex-col gap-y-3 xl:hidden"
+              data-testid="product-extra-data-mobile"
+            >
               {showMetadata && <MetadataSection data={data!} />}
               {showJSON && <JsonViewSection data={data!} />}
             </div>
@@ -105,37 +136,25 @@ const Root = <TData,>({
       </div>
       {hasOutlet && <Outlet />}
     </div>
-  )
-}
+  );
+};
 
-const Main = ({
-  children,
-  className,
-  ...props
-}: ComponentPropsWithoutRef<"div">) => {
-  return (
-    <div className={clx("flex w-full flex-col gap-y-3", className)} {...props}>
-      {children}
-    </div>
-  )
-}
+const Main = ({ children, className, ...props }: ComponentPropsWithoutRef<'div'>) => (
+  <div
+    className={clx('flex w-full flex-col gap-y-3', className)}
+    {...props}
+  >
+    {children}
+  </div>
+);
 
-const Sidebar = ({
-  children,
-  className,
-  ...props
-}: ComponentPropsWithoutRef<"div">) => {
-  return (
-    <div
-      className={clx(
-        "flex w-full max-w-[100%] flex-col gap-y-3 xl:mt-0 xl:max-w-[440px]",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </div>
-  )
-}
+const Sidebar = ({ children, className, ...props }: ComponentPropsWithoutRef<'div'>) => (
+  <div
+    className={clx('flex w-full max-w-[100%] flex-col gap-y-3 xl:mt-0 xl:max-w-[440px]', className)}
+    {...props}
+  >
+    {children}
+  </div>
+);
 
-export const TwoColumnPage = Object.assign(Root, { Main, Sidebar })
+export const TwoColumnPage = Object.assign(Root, { Main, Sidebar });

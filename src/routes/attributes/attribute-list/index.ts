@@ -1,1 +1,1 @@
-export { AttributeList as Component } from "./attribute-list";
+export { AttributeList as Component } from './attribute-list';

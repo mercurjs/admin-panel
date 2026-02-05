@@ -1,7 +1,8 @@
-import { clx, Input, Text } from "@medusajs/ui";
-import { getNumberOfDecimalPlaces } from "../../../lib/number-helpers";
-import { ComponentProps, ElementRef, forwardRef } from "react";
-import Primitive from "react-currency-input-field";
+import { forwardRef, type ComponentProps, type ElementRef } from 'react';
+
+import { getNumberOfDecimalPlaces } from '@lib/number-helpers';
+import { clx, Input, Text } from '@medusajs/ui';
+import Primitive from 'react-currency-input-field';
 
 const MIN_DECIMAL_SCALE = 2;
 
@@ -11,64 +12,48 @@ function resolveDecimalScale(
   if (value == null || Array.isArray(value)) {
     return MIN_DECIMAL_SCALE;
   }
-  return Math.max(
-    getNumberOfDecimalPlaces(parseFloat(value.toString())),
-    MIN_DECIMAL_SCALE
-  );
+
+  return Math.max(getNumberOfDecimalPlaces(parseFloat(value.toString())), MIN_DECIMAL_SCALE);
 }
 
 export const DeprecatedPercentageInput = forwardRef<
   ElementRef<typeof Input>,
-  Omit<ComponentProps<typeof Input>, "type">
->(({ min = 0, max = 100, step = 0.0001, ...props }, ref) => {
-  return (
-    <div className="relative">
-      <div className="absolute inset-y-0 left-0 z-10 flex w-8 items-center justify-center border-r">
-        <Text
-          className="text-ui-fg-muted"
-          size="small"
-          leading="compact"
-          weight="plus"
-        >
-          %
-        </Text>
-      </div>
-      <Input
-        ref={ref}
-        type="number"
-        min={min}
-        max={max}
-        step={step}
-        {...props}
-        className="pl-10"
-      />
+  Omit<ComponentProps<typeof Input>, 'type'>
+>(({ min = 0, max = 100, step = 0.0001, ...props }, ref) => (
+  <div className="relative">
+    <div className="absolute inset-y-0 left-0 z-10 flex w-8 items-center justify-center border-r">
+      <Text
+        className="text-ui-fg-muted"
+        size="small"
+        leading="compact"
+        weight="plus"
+      >
+        %
+      </Text>
     </div>
-  );
-});
-DeprecatedPercentageInput.displayName = "PercentageInput";
+    <Input
+      ref={ref}
+      type="number"
+      min={min}
+      max={max}
+      step={step}
+      {...props}
+      className="pl-10"
+    />
+  </div>
+));
+DeprecatedPercentageInput.displayName = 'PercentageInput';
 
-export const PercentageInput = forwardRef<
-  ElementRef<"input">,
-  ComponentProps<typeof Primitive>
->(
-  (
-    {
-      min = 0,
-      max = 100,
-      decimalScale,
-      decimalsLimit,
-      value,
-      className,
-      ...props
-    },
-    ref
-  ) => {
+export const PercentageInput = forwardRef<ElementRef<'input'>, ComponentProps<typeof Primitive>>(
+  ({ min = 0, max = 100, decimalScale, decimalsLimit, value, className, ...props }, ref) => {
     const resolvedDecimalScale = decimalScale ?? resolveDecimalScale(value);
     const resolvedDecimalsLimit = decimalsLimit ?? resolvedDecimalScale;
 
     return (
       <div className="relative">
         <Primitive
+          // @todo fix any type
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ref={ref as any} // dependency is typed incorrectly
           min={min}
           max={max}
@@ -78,13 +63,13 @@ export const PercentageInput = forwardRef<
           value={value}
           {...props}
           className={clx(
-            "caret-ui-fg-base bg-ui-bg-field shadow-buttons-neutral transition-fg txt-compact-small flex w-full select-none appearance-none items-center justify-between rounded-md px-2 py-1.5 pl-10 text-left outline-none",
-            "placeholder:text-ui-fg-muted text-ui-fg-base",
-            "hover:bg-ui-bg-field-hover",
-            "focus-visible:shadow-borders-interactive-with-active data-[state=open]:!shadow-borders-interactive-with-active",
-            "aria-[invalid=true]:border-ui-border-error aria-[invalid=true]:shadow-borders-error",
-            "invalid::border-ui-border-error invalid:shadow-borders-error",
-            "disabled:!bg-ui-bg-disabled disabled:!text-ui-fg-disabled",
+            'txt-compact-small flex w-full select-none appearance-none items-center justify-between rounded-md bg-ui-bg-field px-2 py-1.5 pl-10 text-left caret-ui-fg-base shadow-buttons-neutral outline-none transition-fg',
+            'text-ui-fg-base placeholder:text-ui-fg-muted',
+            'hover:bg-ui-bg-field-hover',
+            'focus-visible:shadow-borders-interactive-with-active data-[state=open]:!shadow-borders-interactive-with-active',
+            'aria-[invalid=true]:border-ui-border-error aria-[invalid=true]:shadow-borders-error',
+            'invalid::border-ui-border-error invalid:shadow-borders-error',
+            'disabled:!bg-ui-bg-disabled disabled:!text-ui-fg-disabled',
             className
           )}
         />
@@ -102,4 +87,4 @@ export const PercentageInput = forwardRef<
     );
   }
 );
-PercentageInput.displayName = "PercentageInput";
+PercentageInput.displayName = 'PercentageInput';

@@ -1,89 +1,79 @@
-import { HttpTypes } from "@medusajs/types"
-import { createColumnHelper } from "@tanstack/react-table"
-import { useMemo } from "react"
-import { useTranslation } from "react-i18next"
+import { useMemo } from 'react';
 
-import { DateCell } from "../../../components/table/table-cells/common/date-cell"
-import { TextCell } from "../../../components/table/table-cells/common/text-cell"
-import { getFormattedShippingOptionLocationName } from "../../../lib/shipping-options"
+import { DateCell } from '@components/table/table-cells/common/date-cell';
+import { TextCell } from '@components/table/table-cells/common/text-cell';
+import { getFormattedShippingOptionLocationName } from '@lib/shipping-options';
+import type { HttpTypes } from '@medusajs/types';
+import { createColumnHelper } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
 
-const columnHelper = createColumnHelper<HttpTypes.AdminShippingOption>()
+const columnHelper = createColumnHelper<HttpTypes.AdminShippingOption>();
 
 export const useShippingOptionTableColumns = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return useMemo(
     () => [
-      columnHelper.accessor("name", {
-        header: () => t("fields.name"),
-        cell: ({ getValue }) => <TextCell text={getValue()} />,
+      columnHelper.accessor('name', {
+        header: () => t('fields.name'),
+        cell: ({ getValue }) => <TextCell text={getValue()} />
       }),
-      columnHelper.accessor("shipping_profile", {
-        header: () => t("fields.shippingProfile"),
-        cell: ({ row }) => (
-          <TextCell text={row.original.shipping_profile?.name || "N/A"} />
-        ),
+      columnHelper.accessor('shipping_profile', {
+        header: () => t('fields.shippingProfile'),
+        cell: ({ row }) => <TextCell text={row.original.shipping_profile?.name || 'N/A'} />
       }),
       columnHelper.display({
-        id: "location",
-        header: () => t("fields.location"),
+        id: 'location',
+        header: () => t('fields.location'),
         cell: ({ row }) => {
-          const locationName = getFormattedShippingOptionLocationName(
-            row.original
-          )
+          const locationName = getFormattedShippingOptionLocationName(row.original);
 
-          return <TextCell text={locationName} />
-        },
+          return <TextCell text={locationName} />;
+        }
       }),
       columnHelper.display({
-        id: "service_zone",
-        header: () => t("fields.serviceZone"),
+        id: 'service_zone',
+        header: () => t('fields.serviceZone'),
         cell: ({ row }) => {
-          const serviceZoneName = row.original.service_zone?.name
+          const serviceZoneName = row.original.service_zone?.name;
 
-          return <TextCell text={serviceZoneName || "N/A"} />
-        },
+          return <TextCell text={serviceZoneName || 'N/A'} />;
+        }
       }),
       columnHelper.display({
-        id: "enabled_in_store",
-        header: () => t("fields.enabledInStore"),
+        id: 'enabled_in_store',
+        header: () => t('fields.enabledInStore'),
         cell: ({ row }) => {
-          let text = "N/A"
-          const val = row.original.rules?.find(
-            (r) => r.attribute === "enabled_in_store"
-          )
+          let text = 'N/A';
+          const val = row.original.rules?.find(r => r.attribute === 'enabled_in_store');
 
           if (val) {
-            text = val.value === "true" ? "Yes" : "No"
+            text = val.value === 'true' ? 'Yes' : 'No';
           }
 
-          return <TextCell text={text} />
-        },
+          return <TextCell text={text} />;
+        }
       }),
       columnHelper.display({
-        id: "is_return",
-        header: () => t("fields.isReturn"),
+        id: 'is_return',
+        header: () => t('fields.isReturn'),
         cell: ({ row }) => {
-          let text = "N/A"
-          const val = row.original.rules?.find(
-            (r) => r.attribute === "is_return"
-          )
+          let text = 'N/A';
+          const val = row.original.rules?.find(r => r.attribute === 'is_return');
 
           if (val) {
-            text = val.value === "true" ? "Yes" : "No"
+            text = val.value === 'true' ? 'Yes' : 'No';
           }
 
-          return <TextCell text={text} />
-        },
+          return <TextCell text={text} />;
+        }
       }),
-      columnHelper.accessor("created_at", {
-        header: () => t("fields.createdAt"),
+      columnHelper.accessor('created_at', {
+        header: () => t('fields.createdAt'),
 
-        cell: ({ getValue }) => {
-          return <DateCell date={getValue()} />
-        },
-      }),
+        cell: ({ getValue }) => <DateCell date={getValue()} />
+      })
     ],
     [t]
-  )
-}
+  );
+};

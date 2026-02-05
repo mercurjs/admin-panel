@@ -1,1 +1,1 @@
-export { SellerEdit as Component } from "./seller-edit";
+export { SellerEdit as Component } from './seller-edit';

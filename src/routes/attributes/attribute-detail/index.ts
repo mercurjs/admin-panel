@@ -1,1 +1,1 @@
-export { AttributeDetail as Component } from "./attribute-detail";
+export { AttributeDetail as Component } from './attribute-detail';

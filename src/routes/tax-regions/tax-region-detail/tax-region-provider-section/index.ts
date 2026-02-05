@@ -1,1 +1,1 @@
-export * from "./tax-region-provider-section"
+export * from './tax-region-provider-section';

@@ -1,23 +1,23 @@
-import { sdk } from "@lib/client";
-import { queryKeysFactory } from "@lib/query-key-factory";
-import type {
-  QueryKey,
-  UseMutationOptions,
-  UseQueryOptions,
-} from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
-
-import type { CommissionLine } from "@custom-types/commission";
+import type { CommissionLine } from '@custom-types/commission';
+import { sdk } from '@lib/client';
+import { queryKeysFactory } from '@lib/query-key-factory';
+import {
+  useMutation,
+  useQuery,
+  type QueryKey,
+  type UseMutationOptions,
+  type UseQueryOptions
+} from '@tanstack/react-query';
 
 import type {
   AdminCommissionAggregate,
   CommissionRule,
   CreateCommissionRule,
   UpdateCommissionRule,
-  UpsertDefaultCommissionRule,
-} from "@/types/commission";
+  UpsertDefaultCommissionRule
+} from '@/types/commission';
 
-export const commissionRulesQueryKeys = queryKeysFactory("commission_rule");
+export const commissionRulesQueryKeys = queryKeysFactory('commission_rule');
 export const useCommissionRules = (
   query?: Record<string, string | number>,
   options?: Omit<
@@ -27,8 +27,8 @@ export const useCommissionRules = (
       { commission_rules: AdminCommissionAggregate[]; count?: number },
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...other } = useQuery<
     Record<string, string | number>,
@@ -37,11 +37,11 @@ export const useCommissionRules = (
   >({
     queryKey: commissionRulesQueryKeys.list(query),
     queryFn: () =>
-      sdk.client.fetch("/admin/commission/rules", {
-        method: "GET",
-        query,
+      sdk.client.fetch('/admin/commission/rules', {
+        method: 'GET',
+        query
       }),
-    ...options,
+    ...options
   });
 
   return { ...data, ...other };
@@ -49,22 +49,17 @@ export const useCommissionRules = (
 
 export const useDefaultCommissionRule = (
   options?: Omit<
-    UseQueryOptions<
-      unknown,
-      Error,
-      { commission_rule?: AdminCommissionAggregate },
-      QueryKey
-    >,
-    "queryFn" | "queryKey"
-  >,
+    UseQueryOptions<unknown, Error, { commission_rule?: AdminCommissionAggregate }, QueryKey>,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...other } = useQuery({
-    queryKey: commissionRulesQueryKeys.detail(""),
+    queryKey: commissionRulesQueryKeys.detail(''),
     queryFn: () =>
-      sdk.client.fetch("/admin/commission/default", {
-        method: "GET",
+      sdk.client.fetch('/admin/commission/default', {
+        method: 'GET'
       }),
-    ...options,
+    ...options
   });
 
   return { ...data, ...other };
@@ -73,41 +68,32 @@ export const useDefaultCommissionRule = (
 export const useCommissionRule = (
   id: string,
   options?: Omit<
-    UseQueryOptions<
-      unknown,
-      Error,
-      { commission_rule?: CommissionRule },
-      QueryKey
-    >,
-    "queryFn" | "queryKey"
-  >,
+    UseQueryOptions<unknown, Error, { commission_rule?: CommissionRule }, QueryKey>,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...other } = useQuery({
     queryKey: commissionRulesQueryKeys.detail(id),
     queryFn: () =>
       sdk.client.fetch(`/admin/commission/rules/${id}`, {
-        method: "GET",
+        method: 'GET'
       }),
-    ...options,
+    ...options
   });
 
   return { ...data, ...other };
 };
 
 export const useCreateCommisionRule = (
-  options: UseMutationOptions<
-    { commission_rule?: CommissionRule },
-    Error,
-    CreateCommissionRule
-  >,
+  options: UseMutationOptions<{ commission_rule?: CommissionRule }, Error, CreateCommissionRule>
 ) => {
   return useMutation({
-    mutationFn: (payload) =>
-      sdk.client.fetch("/admin/commission/rules", {
-        method: "POST",
-        body: payload,
+    mutationFn: payload =>
+      sdk.client.fetch('/admin/commission/rules', {
+        method: 'POST',
+        body: payload
       }),
-    ...options,
+    ...options
   });
 };
 
@@ -116,15 +102,15 @@ export const useUpdateCommisionRule = (
     { commission_rule?: CommissionRule },
     Error,
     { id: string } & UpdateCommissionRule
-  >,
+  >
 ) => {
   return useMutation({
-    mutationFn: (payload) =>
+    mutationFn: payload =>
       sdk.client.fetch(`/admin/commission/rules/${payload.id}`, {
-        method: "POST",
-        body: { is_active: payload.is_active },
+        method: 'POST',
+        body: { is_active: payload.is_active }
       }),
-    ...options,
+    ...options
   });
 };
 
@@ -133,15 +119,15 @@ export const useUpsertDefaultCommisionRule = (
     { commission_rule?: CommissionRule },
     Error,
     UpsertDefaultCommissionRule
-  >,
+  >
 ) => {
   return useMutation({
-    mutationFn: (payload) =>
-      sdk.client.fetch("/admin/commission/default", {
-        method: "POST",
-        body: payload,
+    mutationFn: payload =>
+      sdk.client.fetch('/admin/commission/default', {
+        method: 'POST',
+        body: payload
       }),
-    ...options,
+    ...options
   });
 };
 
@@ -154,20 +140,18 @@ export const useDeleteCommisionRule = (
     },
     Error,
     { id: string }
-  >,
+  >
 ) => {
   return useMutation({
-    mutationFn: (payload) =>
+    mutationFn: payload =>
       sdk.client.fetch(`/admin/commission/rules/${payload.id}`, {
-        method: "DELETE",
+        method: 'DELETE'
       }),
-    ...options,
+    ...options
   });
 };
 
-export const useListCommissionLines = (
-  query?: Record<string, string | number>,
-) => {
+export const useListCommissionLines = (query?: Record<string, string | number>) => {
   return useQuery<
     {
       commission_lines: CommissionLine[];
@@ -175,11 +159,11 @@ export const useListCommissionLines = (
     },
     Error
   >({
-    queryKey: ["commission-lines", query],
+    queryKey: ['commission-lines', query],
     queryFn: () =>
       sdk.client.fetch(`/admin/commission/commission-lines`, {
-        method: "GET",
-        query,
-      }),
+        method: 'GET',
+        query
+      })
   });
 };

@@ -1,75 +1,54 @@
-import type { HttpTypes } from "@medusajs/types"
-import { Button, Checkbox } from "@medusajs/ui"
-import { keepPreviousData } from "@tanstack/react-query"
-import {
-  OnChangeFn,
-  RowSelectionState,
-  createColumnHelper,
-} from "@tanstack/react-table"
-import { useEffect, useMemo, useState } from "react"
-import { useTranslation } from "react-i18next"
+import { useEffect, useMemo, useState } from 'react';
 
-import { useSearchParams } from "react-router-dom"
-import {
-  StackedDrawer,
-  StackedFocusModal,
-} from "../../../../../components/modals"
-import { _DataTable } from "../../../../../components/table/data-table"
-import {
-  useProductTypes,
-  useProducts,
-  useShippingOptions,
-  useStockLocations,
-} from "../../../../../hooks/api"
-import {
-  useProductTableColumns,
-  useProductTypeTableColumns,
-} from "../../../../../hooks/table/columns"
+import { StackedDrawer, StackedFocusModal } from '@components/modals';
+import { _DataTable } from '@components/table/data-table';
+import { useProducts, useProductTypes, useShippingOptions, useStockLocations } from '@hooks/api';
+import { useProductTableColumns, useProductTypeTableColumns } from '@hooks/table/columns';
+import { useShippingOptionTableColumns } from '@hooks/table/columns/use-shipping-option-table-columns.tsx';
 import {
   useProductTableFilters,
   useProductTypeTableFilters,
-  useShippingOptionTableFilters,
-} from "../../../../../hooks/table/filters"
+  useShippingOptionTableFilters
+} from '@hooks/table/filters';
 import {
   useProductTableQuery,
   useProductTypeTableQuery,
-  useShippingOptionTableQuery,
-} from "../../../../../hooks/table/query"
-import { useDataTable } from "../../../../../hooks/use-data-table"
-import { TaxRateRuleReferenceType } from "../../constants"
-import { TaxRateRuleReference } from "../../schemas"
-import { useShippingOptionTableColumns } from "../../../../../hooks/table/columns/use-shipping-option-table-columns"
+  useShippingOptionTableQuery
+} from '@hooks/table/query';
+import { useDataTable } from '@hooks/use-data-table';
+import type { HttpTypes } from '@medusajs/types';
+import { Button, Checkbox } from '@medusajs/ui';
+import { TaxRateRuleReferenceType } from '@routes/tax-regions/common/constants.ts';
+import type { TaxRateRuleReference } from '@routes/tax-regions/common/schemas.ts';
+import { keepPreviousData } from '@tanstack/react-query';
+import { createColumnHelper, type OnChangeFn, type RowSelectionState } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 
 type TargetFormProps = {
-  referenceType: TaxRateRuleReferenceType
-  type: "focus" | "drawer"
-  state: TaxRateRuleReference[]
-  setState: (state: TaxRateRuleReference[]) => void
-}
+  referenceType: TaxRateRuleReferenceType;
+  type: 'focus' | 'drawer';
+  state: TaxRateRuleReference[];
+  setState: (state: TaxRateRuleReference[]) => void;
+};
 
 function initRowSelection(state: TaxRateRuleReference[]) {
   return state.reduce((acc, reference) => {
-    acc[reference.value] = true
-    
-    return acc
-  }, {} as RowSelectionState)
+    acc[reference.value] = true;
+
+    return acc;
+  }, {} as RowSelectionState);
 }
 
-export const TargetForm = ({
-  referenceType,
-  type,
-  setState,
-  state,
-}: TargetFormProps) => {
-  const { t } = useTranslation()
-  const Component = type === "focus" ? StackedFocusModal : StackedDrawer
+export const TargetForm = ({ referenceType, type, setState, state }: TargetFormProps) => {
+  const { t } = useTranslation();
+  const Component = type === 'focus' ? StackedFocusModal : StackedDrawer;
 
-  const [intermediate, setIntermediate] =
-    useState<TaxRateRuleReference[]>(state)
+  const [intermediate, setIntermediate] = useState<TaxRateRuleReference[]>(state);
 
   const handleSave = () => {
-    setState(intermediate)
-  }
+    setState(intermediate);
+  };
 
   return (
     <div className="flex size-full flex-col overflow-hidden">
@@ -83,51 +62,59 @@ export const TargetForm = ({
       </Component.Body>
       <Component.Footer>
         <Component.Close asChild>
-          <Button variant="secondary" size="small" type="button">
-            {t("actions.cancel")}
+          <Button
+            variant="secondary"
+            size="small"
+            type="button"
+          >
+            {t('actions.cancel')}
           </Button>
         </Component.Close>
-        <Button type="button" size="small" onClick={handleSave}>
-          {t("actions.save")}
+        <Button
+          type="button"
+          size="small"
+          onClick={handleSave}
+        >
+          {t('actions.save')}
         </Button>
       </Component.Footer>
     </div>
-  )
-}
+  );
+};
 
 type TableProps = {
-  referenceType: TaxRateRuleReferenceType
-  initialRowState: RowSelectionState
-  intermediate: TaxRateRuleReference[]
-  setIntermediate: (state: TaxRateRuleReference[]) => void
-}
+  referenceType: TaxRateRuleReferenceType;
+  initialRowState: RowSelectionState;
+  intermediate: TaxRateRuleReference[];
+  setIntermediate: (state: TaxRateRuleReference[]) => void;
+};
 
 const Table = ({ referenceType, ...props }: TableProps) => {
   switch (referenceType) {
     // case TaxRateRuleReferenceType.CUSTOMER_GROUP:
     // return <CustomerGroupTable {...props} />
     case TaxRateRuleReferenceType.PRODUCT:
-      return <ProductTable {...props} />
+      return <ProductTable {...props} />;
     // case TaxRateRuleReferenceType.PRODUCT_COLLECTION:
     // return <ProductCollectionTable {...props} />
     case TaxRateRuleReferenceType.PRODUCT_TYPE:
-      return <ProductTypeTable {...props} />
+      return <ProductTypeTable {...props} />;
     // case TaxRateRuleReferenceType.PRODUCT_TAG:
     // return <ProductTagTable {...props} />
     case TaxRateRuleReferenceType.SHIPPING_OPTION:
-      return <ShippingOptionTable {...props} />
+      return <ShippingOptionTable {...props} />;
     default:
-      return null
+      return null;
   }
-}
+};
 
 type TableImplementationProps = {
-  initialRowState: RowSelectionState
-  intermediate: TaxRateRuleReference[]
-  setIntermediate: (state: TaxRateRuleReference[]) => void
-}
+  initialRowState: RowSelectionState;
+  intermediate: TaxRateRuleReference[];
+  setIntermediate: (state: TaxRateRuleReference[]) => void;
+};
 
-const PAGE_SIZE = 50
+const PAGE_SIZE = 50;
 
 // const PREFIX_CUSTOMER_GROUP = "cg"
 
@@ -260,59 +247,53 @@ const PAGE_SIZE = 50
 //   )
 // }
 
-const PREFIX_PRODUCT = "p"
+const PREFIX_PRODUCT = 'p';
 
 const ProductTable = ({
   initialRowState,
   intermediate,
-  setIntermediate,
+  setIntermediate
 }: TableImplementationProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const [rowSelection, setRowSelection] =
-    useState<RowSelectionState>(initialRowState)
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>(initialRowState);
 
-  useCleanupSearchParams(PREFIX_PRODUCT)
+  useCleanupSearchParams(PREFIX_PRODUCT);
 
   const { searchParams, raw } = useProductTableQuery({
     pageSize: PAGE_SIZE,
-    prefix: PREFIX_PRODUCT,
-  })
+    prefix: PREFIX_PRODUCT
+  });
 
-  const { products, count, isLoading, isError, error } = useProducts(
-    searchParams,
-    {
-      placeholderData: keepPreviousData,
-    }
-  )
+  const { products, count, isLoading, isError, error } = useProducts(searchParams, {
+    placeholderData: keepPreviousData
+  });
 
-  const updater: OnChangeFn<RowSelectionState> = (value) => {
-    const state = typeof value === "function" ? value(rowSelection) : value
-    const currentIds = Object.keys(rowSelection)
+  const updater: OnChangeFn<RowSelectionState> = value => {
+    const state = typeof value === 'function' ? value(rowSelection) : value;
+    const currentIds = Object.keys(rowSelection);
 
-    const ids = Object.keys(state)
+    const ids = Object.keys(state);
 
-    const newIds = ids.filter((id) => !currentIds.includes(id))
-    const removedIds = currentIds.filter((id) => !ids.includes(id))
+    const newIds = ids.filter(id => !currentIds.includes(id));
+    const removedIds = currentIds.filter(id => !ids.includes(id));
 
     const newProducts =
       products
-        ?.filter((p) => newIds.includes(p.id))
-        .map((p) => ({
+        ?.filter(p => newIds.includes(p.id))
+        .map(p => ({
           value: p.id,
-          label: p.title!,
-        })) || []
+          label: p.title!
+        })) || [];
 
-    const filteredIntermediate = intermediate.filter(
-      (p) => !removedIds.includes(p.value)
-    )
+    const filteredIntermediate = intermediate.filter(p => !removedIds.includes(p.value));
 
-    setIntermediate([...filteredIntermediate, ...newProducts])
-    setRowSelection(state)
-  }
+    setIntermediate([...filteredIntermediate, ...newProducts]);
+    setRowSelection(state);
+  };
 
-  const filters = useProductTableFilters()
-  const columns = useProductColumns()
+  const filters = useProductTableFilters();
+  const columns = useProductColumns();
 
   const { table } = useDataTable({
     data: products || [],
@@ -320,17 +301,17 @@ const ProductTable = ({
     count,
     enablePagination: true,
     enableRowSelection: true,
-    getRowId: (row) => row.id,
+    getRowId: row => row.id,
     rowSelection: {
       state: rowSelection,
-      updater,
+      updater
     },
     pageSize: PAGE_SIZE,
-    prefix: PREFIX_PRODUCT,
-  })
+    prefix: PREFIX_PRODUCT
+  });
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   return (
@@ -342,9 +323,9 @@ const ProductTable = ({
       isLoading={isLoading}
       filters={filters}
       orderBy={[
-        { key: "title", label: t("fields.title") },
-        { key: "created_at", label: t("fields.createdAt") },
-        { key: "updated_at", label: t("fields.updatedAt") },
+        { key: 'title', label: t('fields.title') },
+        { key: 'created_at', label: t('fields.createdAt') },
+        { key: 'updated_at', label: t('fields.updatedAt') }
       ]}
       layout="fill"
       pagination
@@ -352,49 +333,47 @@ const ProductTable = ({
       prefix={PREFIX_PRODUCT}
       queryObject={raw}
     />
-  )
-}
+  );
+};
 
-const pColumnHelper = createColumnHelper<HttpTypes.AdminProduct>()
+const pColumnHelper = createColumnHelper<HttpTypes.AdminProduct>();
 
 const useProductColumns = () => {
-  const base = useProductTableColumns()
+  const base = useProductTableColumns();
 
   return useMemo(
     () => [
       pColumnHelper.display({
-        id: "select",
+        id: 'select',
         header: ({ table }) => {
           return (
             <Checkbox
               checked={
                 table.getIsSomePageRowsSelected()
-                  ? "indeterminate"
+                  ? 'indeterminate'
                   : table.getIsAllPageRowsSelected()
               }
-              onCheckedChange={(value) =>
-                table.toggleAllPageRowsSelected(!!value)
-              }
+              onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
             />
-          )
+          );
         },
         cell: ({ row }) => {
           return (
             <Checkbox
               checked={row.getIsSelected()}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              onClick={(e) => {
-                e.stopPropagation()
+              onCheckedChange={value => row.toggleSelected(!!value)}
+              onClick={e => {
+                e.stopPropagation();
               }}
             />
-          )
-        },
+          );
+        }
       }),
-      ...base,
+      ...base
     ],
     [base]
-  )
-}
+  );
+};
 
 // const PREFIX_PRODUCT_COLLECTION = "pc"
 
@@ -533,59 +512,53 @@ const useProductColumns = () => {
 //   )
 // }
 
-const PREFIX_PRODUCT_TYPE = "pt"
+const PREFIX_PRODUCT_TYPE = 'pt';
 
 const ProductTypeTable = ({
   initialRowState,
   intermediate,
-  setIntermediate,
+  setIntermediate
 }: TableImplementationProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const [rowSelection, setRowSelection] =
-    useState<RowSelectionState>(initialRowState)
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>(initialRowState);
 
-  useCleanupSearchParams(PREFIX_PRODUCT_TYPE)
+  useCleanupSearchParams(PREFIX_PRODUCT_TYPE);
 
   const { searchParams, raw } = useProductTypeTableQuery({
     pageSize: PAGE_SIZE,
-    prefix: PREFIX_PRODUCT_TYPE,
-  })
+    prefix: PREFIX_PRODUCT_TYPE
+  });
 
-  const { product_types, count, isLoading, isError, error } = useProductTypes(
-    searchParams,
-    {
-      placeholderData: keepPreviousData,
-    }
-  )
+  const { product_types, count, isLoading, isError, error } = useProductTypes(searchParams, {
+    placeholderData: keepPreviousData
+  });
 
-  const updater: OnChangeFn<RowSelectionState> = (value) => {
-    const state = typeof value === "function" ? value(rowSelection) : value
-    const currentIds = Object.keys(rowSelection)
+  const updater: OnChangeFn<RowSelectionState> = value => {
+    const state = typeof value === 'function' ? value(rowSelection) : value;
+    const currentIds = Object.keys(rowSelection);
 
-    const ids = Object.keys(state)
+    const ids = Object.keys(state);
 
-    const newIds = ids.filter((id) => !currentIds.includes(id))
-    const removedIds = currentIds.filter((id) => !ids.includes(id))
+    const newIds = ids.filter(id => !currentIds.includes(id));
+    const removedIds = currentIds.filter(id => !ids.includes(id));
 
     const newTypes =
       product_types
-        ?.filter((p) => newIds.includes(p.id))
-        .map((p) => ({
+        ?.filter(p => newIds.includes(p.id))
+        .map(p => ({
           value: p.id,
-          label: p.value,
-        })) || []
+          label: p.value
+        })) || [];
 
-    const filteredIntermediate = intermediate.filter(
-      (p) => !removedIds.includes(p.value)
-    )
+    const filteredIntermediate = intermediate.filter(p => !removedIds.includes(p.value));
 
-    setIntermediate([...filteredIntermediate, ...newTypes])
-    setRowSelection(state)
-  }
+    setIntermediate([...filteredIntermediate, ...newTypes]);
+    setRowSelection(state);
+  };
 
-  const filters = useProductTypeTableFilters()
-  const columns = useProductTypeColumns()
+  const filters = useProductTypeTableFilters();
+  const columns = useProductTypeColumns();
 
   const { table } = useDataTable({
     data: product_types || [],
@@ -593,17 +566,17 @@ const ProductTypeTable = ({
     count,
     enablePagination: true,
     enableRowSelection: true,
-    getRowId: (row) => row.id,
+    getRowId: row => row.id,
     rowSelection: {
       state: rowSelection,
-      updater,
+      updater
     },
     pageSize: PAGE_SIZE,
-    prefix: PREFIX_PRODUCT_TYPE,
-  })
+    prefix: PREFIX_PRODUCT_TYPE
+  });
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   return (
@@ -615,9 +588,9 @@ const ProductTypeTable = ({
       isLoading={isLoading}
       filters={filters}
       orderBy={[
-        { key: "value", label: t("fields.value") },
-        { key: "created_at", label: t("fields.createdAt") },
-        { key: "updated_at", label: t("fields.updatedAt") },
+        { key: 'value', label: t('fields.value') },
+        { key: 'created_at', label: t('fields.createdAt') },
+        { key: 'updated_at', label: t('fields.updatedAt') }
       ]}
       layout="fill"
       pagination
@@ -625,111 +598,105 @@ const ProductTypeTable = ({
       prefix={PREFIX_PRODUCT_TYPE}
       queryObject={raw}
     />
-  )
-}
+  );
+};
 
-const ptColumnHelper = createColumnHelper<HttpTypes.AdminProductType>()
+const ptColumnHelper = createColumnHelper<HttpTypes.AdminProductType>();
 
 const useProductTypeColumns = () => {
-  const base = useProductTypeTableColumns()
+  const base = useProductTypeTableColumns();
 
   return useMemo(
     () => [
       ptColumnHelper.display({
-        id: "select",
+        id: 'select',
         header: ({ table }) => {
           return (
             <Checkbox
               checked={
                 table.getIsSomePageRowsSelected()
-                  ? "indeterminate"
+                  ? 'indeterminate'
                   : table.getIsAllPageRowsSelected()
               }
-              onCheckedChange={(value) =>
-                table.toggleAllPageRowsSelected(!!value)
-              }
+              onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
             />
-          )
+          );
         },
         cell: ({ row }) => {
           return (
             <Checkbox
               checked={row.getIsSelected()}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              onClick={(e) => {
-                e.stopPropagation()
+              onCheckedChange={value => row.toggleSelected(!!value)}
+              onClick={e => {
+                e.stopPropagation();
               }}
             />
-          )
-        },
+          );
+        }
       }),
-      ...base,
+      ...base
     ],
     [base]
-  )
-}
+  );
+};
 
-const PREFIX_SHIPPING_OPTION = "so"
+const PREFIX_SHIPPING_OPTION = 'so';
 
 const ShippingOptionTable = ({
   initialRowState,
   intermediate,
-  setIntermediate,
+  setIntermediate
 }: TableImplementationProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const [rowSelection, setRowSelection] =
-    useState<RowSelectionState>(initialRowState)
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>(initialRowState);
 
-  useCleanupSearchParams(PREFIX_SHIPPING_OPTION)
+  useCleanupSearchParams(PREFIX_SHIPPING_OPTION);
 
   const { searchParams, raw } = useShippingOptionTableQuery({
     pageSize: PAGE_SIZE,
-    prefix: PREFIX_SHIPPING_OPTION,
-  })
+    prefix: PREFIX_SHIPPING_OPTION
+  });
 
-  const { shipping_options, count, isLoading, isError, error } =
-    useShippingOptions(
-      {
-        ...searchParams,
-        fields: "+service_zone.fulfillment_set.location.*",
-      },
-      {
-        placeholderData: keepPreviousData,
-      }
-    )
+  const { shipping_options, count, isLoading, isError, error } = useShippingOptions(
+    {
+      ...searchParams,
+      fields: '+service_zone.fulfillment_set.location.*'
+    },
+    {
+      placeholderData: keepPreviousData
+    }
+  );
 
-  const updater: OnChangeFn<RowSelectionState> = (value) => {
-    const state = typeof value === "function" ? value(rowSelection) : value
-    const currentIds = Object.keys(rowSelection)
+  const updater: OnChangeFn<RowSelectionState> = value => {
+    const state = typeof value === 'function' ? value(rowSelection) : value;
+    const currentIds = Object.keys(rowSelection);
 
-    const ids = Object.keys(state)
+    const ids = Object.keys(state);
 
-    const newIds = ids.filter((id) => !currentIds.includes(id))
-    const removedIds = currentIds.filter((id) => !ids.includes(id))
+    const newIds = ids.filter(id => !currentIds.includes(id));
+    const removedIds = currentIds.filter(id => !ids.includes(id));
 
     const newShippingOptions =
       shipping_options
-        ?.filter((p) => newIds.includes(p.id))
-        .map((p) => ({
+        ?.filter(p => newIds.includes(p.id))
+        .map(p => ({
           value: p.id,
-          label: p.name,
-        })) || []
+          label: p.name
+        })) || [];
 
-    const filteredIntermediate = intermediate.filter(
-      (p) => !removedIds.includes(p.value)
-    )
+    const filteredIntermediate = intermediate.filter(p => !removedIds.includes(p.value));
 
-    setIntermediate([...filteredIntermediate, ...newShippingOptions])
-    setRowSelection(state)
-  }
+    setIntermediate([...filteredIntermediate, ...newShippingOptions]);
+    setRowSelection(state);
+  };
 
   const { stock_locations } = useStockLocations({
-    limit: 1000,
-  })
+    limit: 1000
+  });
 
-  const filters = useShippingOptionTableFilters(stock_locations || [])
-  const columns = useShippingOptionColumns()
+  const filters = useShippingOptionTableFilters(stock_locations || []);
+  const columns = useShippingOptionColumns();
 
   const { table } = useDataTable({
     data: shipping_options || [],
@@ -737,17 +704,17 @@ const ShippingOptionTable = ({
     count,
     enablePagination: true,
     enableRowSelection: true,
-    getRowId: (row) => row.id,
+    getRowId: row => row.id,
     rowSelection: {
       state: rowSelection,
-      updater,
+      updater
     },
     pageSize: PAGE_SIZE,
-    prefix: PREFIX_SHIPPING_OPTION,
-  })
+    prefix: PREFIX_SHIPPING_OPTION
+  });
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   return (
@@ -759,9 +726,9 @@ const ShippingOptionTable = ({
       isLoading={isLoading}
       filters={filters}
       orderBy={[
-        { key: "name", label: t("fields.name") },
-        { key: "created_at", label: t("fields.createdAt") },
-        { key: "updated_at", label: t("fields.updatedAt") },
+        { key: 'name', label: t('fields.name') },
+        { key: 'created_at', label: t('fields.createdAt') },
+        { key: 'updated_at', label: t('fields.updatedAt') }
       ]}
       layout="fill"
       pagination
@@ -769,49 +736,47 @@ const ShippingOptionTable = ({
       prefix={PREFIX_SHIPPING_OPTION}
       queryObject={raw}
     />
-  )
-}
+  );
+};
 
-const soColumnHelper = createColumnHelper<HttpTypes.AdminShippingOption>()
+const soColumnHelper = createColumnHelper<HttpTypes.AdminShippingOption>();
 
 const useShippingOptionColumns = () => {
-  const base = useShippingOptionTableColumns()
+  const base = useShippingOptionTableColumns();
 
   return useMemo(
     () => [
       soColumnHelper.display({
-        id: "select",
+        id: 'select',
         header: ({ table }) => {
           return (
             <Checkbox
               checked={
                 table.getIsSomePageRowsSelected()
-                  ? "indeterminate"
+                  ? 'indeterminate'
                   : table.getIsAllPageRowsSelected()
               }
-              onCheckedChange={(value) =>
-                table.toggleAllPageRowsSelected(!!value)
-              }
+              onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
             />
-          )
+          );
         },
         cell: ({ row }) => {
           return (
             <Checkbox
               checked={row.getIsSelected()}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              onClick={(e) => {
-                e.stopPropagation()
+              onCheckedChange={value => row.toggleSelected(!!value)}
+              onClick={e => {
+                e.stopPropagation();
               }}
             />
-          )
-        },
+          );
+        }
       }),
-      ...base,
+      ...base
     ],
     [base]
-  )
-}
+  );
+};
 
 // const PREFIX_PRODUCT_TAG = "ptag"
 
@@ -951,24 +916,24 @@ const useShippingOptionColumns = () => {
 // }
 
 const useCleanupSearchParams = (prefix?: string) => {
-  const [, setSearchParams] = useSearchParams()
+  const [, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     return () => {
-      setSearchParams((prev) => {
+      setSearchParams(prev => {
         if (!prefix) {
-          return prev
+          return prev;
         }
 
-        const next = new URLSearchParams(prev)
-        Array.from(next.keys()).forEach((key) => {
+        const next = new URLSearchParams(prev);
+        Array.from(next.keys()).forEach(key => {
           if (key.startsWith(`${prefix}_`)) {
-            next.delete(key)
+            next.delete(key);
           }
-        })
+        });
 
-        return next
-      })
-    }
-  }, [prefix])
-}
+        return next;
+      });
+    };
+  }, [prefix]);
+};

@@ -1,22 +1,21 @@
-import { Buildings, PencilSquare, Trash } from "@medusajs/icons"
-import type { HttpTypes } from "@medusajs/types"
-import { Container, StatusBadge, Text, toast, usePrompt } from "@medusajs/ui"
-import { useTranslation } from "react-i18next"
-
-import { ActionMenu } from "../../../../../components/common/action-menu"
-import { BadgeListSummary } from "../../../../../components/common/badge-list-summary"
-import { LinkButton } from "../../../../../components/common/link-button"
-import { useDeleteStockLocation } from "../../../../../hooks/api/stock-locations"
-import { getFormattedAddress } from "../../../../../lib/addresses"
-import { FulfillmentSetType } from "../../../common/constants"
+import { ActionMenu } from '@components/common/action-menu';
+import { BadgeListSummary } from '@components/common/badge-list-summary';
+import { LinkButton } from '@components/common/link-button';
+import { useDeleteStockLocation } from '@hooks/api';
+import { getFormattedAddress } from '@lib/addresses';
+import { Buildings, PencilSquare, Trash } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Container, StatusBadge, Text, toast, usePrompt } from '@medusajs/ui';
+import { FulfillmentSetType } from '@routes/locations/common/constants';
+import { useTranslation } from 'react-i18next';
 
 type SalesChannelsProps = {
-  salesChannels?: HttpTypes.AdminSalesChannel[] | null
-}
+  salesChannels?: HttpTypes.AdminSalesChannel[] | null;
+};
 
 function SalesChannels(props: SalesChannelsProps) {
-  const { t } = useTranslation()
-  const { salesChannels } = props
+  const { t } = useTranslation();
+  const { salesChannels } = props;
 
   return (
     <div className="flex flex-col px-6 py-4">
@@ -24,7 +23,7 @@ function SalesChannels(props: SalesChannelsProps) {
         <Text
           size="small"
           weight="plus"
-          className="text-ui-fg-subtle flex-1"
+          className="flex-1 text-ui-fg-subtle"
           as="div"
         >
           {t(`stockLocations.salesChannels.label`)}
@@ -35,27 +34,27 @@ function SalesChannels(props: SalesChannelsProps) {
               rounded
               inline
               n={3}
-              list={salesChannels.map((s) => s.name)}
+              list={salesChannels.map(s => s.name)}
             />
           ) : (
-            "-"
+            '-'
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 type FulfillmentSetProps = {
-  fulfillmentSet?: HttpTypes.AdminFulfillmentSet
-  type: FulfillmentSetType
-}
+  fulfillmentSet?: HttpTypes.AdminFulfillmentSet;
+  type: FulfillmentSetType;
+};
 
 function FulfillmentSet(props: FulfillmentSetProps) {
-  const { t } = useTranslation()
-  const { fulfillmentSet, type } = props
+  const { t } = useTranslation();
+  const { fulfillmentSet, type } = props;
 
-  const fulfillmentSetExists = !!fulfillmentSet
+  const fulfillmentSetExists = !!fulfillmentSet;
 
   return (
     <div className="flex flex-col px-6 py-4">
@@ -63,104 +62,127 @@ function FulfillmentSet(props: FulfillmentSetProps) {
         <Text
           size="small"
           weight="plus"
-          className="text-ui-fg-subtle flex-1"
+          className="flex-1 text-ui-fg-subtle"
           as="div"
         >
           {t(`stockLocations.fulfillmentSets.${type}.header`)}
         </Text>
         <div className="flex-1 text-left">
-          <StatusBadge color={fulfillmentSetExists ? "green" : "grey"}>
-            {t(fulfillmentSetExists ? "statuses.enabled" : "statuses.disabled")}
+          <StatusBadge color={fulfillmentSetExists ? 'green' : 'grey'}>
+            {t(fulfillmentSetExists ? 'statuses.enabled' : 'statuses.disabled')}
           </StatusBadge>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 type LocationProps = {
-  location: HttpTypes.AdminStockLocation
-}
+  location: HttpTypes.AdminStockLocation;
+};
 
 function LocationListItem(props: LocationProps) {
-  const { location } = props
-  const { t } = useTranslation()
-  const prompt = usePrompt()
+  const { location } = props;
+  const { t } = useTranslation();
+  const prompt = usePrompt();
 
-  const { mutateAsync: deleteLocation } = useDeleteStockLocation(location.id)
+  const { mutateAsync: deleteLocation } = useDeleteStockLocation(location.id);
 
   const handleDelete = async () => {
     const result = await prompt({
-      title: t("general.areYouSure"),
-      description: t("stockLocations.delete.confirmation", {
-        name: location.name,
+      title: t('general.areYouSure'),
+      description: t('stockLocations.delete.confirmation', {
+        name: location.name
       }),
-      confirmText: t("actions.remove"),
-      cancelText: t("actions.cancel"),
-    })
+      confirmText: t('actions.remove'),
+      cancelText: t('actions.cancel')
+    });
 
     if (!result) {
-      return
+      return;
     }
 
     await deleteLocation(undefined, {
       onSuccess: () => {
         toast.success(
-          t("shippingProfile.delete.successToast", {
-            name: location.name,
+          t('shippingProfile.delete.successToast', {
+            name: location.name
           })
-        )
+        );
       },
-      onError: (e) => {
-        toast.error(e.message)
-      },
-    })
-  }
+      onError: e => {
+        toast.error(e.message);
+      }
+    });
+  };
 
   return (
-    <Container className="flex flex-col divide-y p-0" data-testid={`location-list-item-${location.id}`}>
-      <div className="px-6 py-4" data-testid={`location-list-item-header-${location.id}`}>
+    <Container
+      className="flex flex-col divide-y p-0"
+      data-testid={`location-list-item-${location.id}`}
+    >
+      <div
+        className="px-6 py-4"
+        data-testid={`location-list-item-header-${location.id}`}
+      >
         <div className="flex flex-row items-center justify-between gap-x-4">
-          <div className="shadow-borders-base flex size-7 items-center justify-center rounded-md">
-            <div className="bg-ui-bg-field flex size-6 items-center justify-center rounded-[4px]">
+          <div className="flex size-7 items-center justify-center rounded-md shadow-borders-base">
+            <div className="flex size-6 items-center justify-center rounded-[4px] bg-ui-bg-field">
               <Buildings className="text-ui-fg-subtle" />
             </div>
           </div>
 
-          <div className="grow-1 flex flex-1 flex-col" data-testid={`location-list-item-info-${location.id}`}>
-            <Text weight="plus" data-testid={`location-list-item-name-${location.id}`}>{location.name}</Text>
-            <Text className="text-ui-fg-subtle txt-small" data-testid={`location-list-item-address-${location.id}`}>
-              {getFormattedAddress({ address: location.address }).join(", ")}
+          <div
+            className="grow-1 flex flex-1 flex-col"
+            data-testid={`location-list-item-info-${location.id}`}
+          >
+            <Text
+              weight="plus"
+              data-testid={`location-list-item-name-${location.id}`}
+            >
+              {location.name}
+            </Text>
+            <Text
+              className="txt-small text-ui-fg-subtle"
+              data-testid={`location-list-item-address-${location.id}`}
+            >
+              {getFormattedAddress({ address: location.address }).join(', ')}
             </Text>
           </div>
 
-          <div className="flex grow-0 items-center gap-4" data-testid={`location-list-item-actions-${location.id}`}>
+          <div
+            className="flex grow-0 items-center gap-4"
+            data-testid={`location-list-item-actions-${location.id}`}
+          >
             <ActionMenu
               groups={[
                 {
                   actions: [
                     {
-                      label: t("actions.edit"),
+                      label: t('actions.edit'),
                       icon: <PencilSquare />,
-                      to: `/settings/locations/${location.id}/edit`,
-                    },
-                  ],
+                      to: `/settings/locations/${location.id}/edit`
+                    }
+                  ]
                 },
                 {
                   actions: [
                     {
-                      label: t("actions.delete"),
+                      label: t('actions.delete'),
                       icon: <Trash />,
-                      onClick: handleDelete,
-                    },
-                  ],
-                },
+                      onClick: handleDelete
+                    }
+                  ]
+                }
               ]}
               data-testid={`location-list-item-action-menu-${location.id}`}
             />
-            <div className="bg-ui-border-strong h-[12px] w-[1px]" />
-            <LinkButton to={`/settings/locations/${location.id}`} data-testid={`location-list-item-view-details-button-${location.id}`}>
-              {t("actions.viewDetails")}
+            <div className="h-[12px] w-[1px] bg-ui-border-strong" />
+            <LinkButton
+              to={`/settings/locations/${location.id}`}
+              data-testid={`location-list-item-view-details-button-${location.id}`}
+            >
+              {t('actions.viewDetails')}
             </LinkButton>
           </div>
         </div>
@@ -170,18 +192,16 @@ function LocationListItem(props: LocationProps) {
 
       <FulfillmentSet
         type={FulfillmentSetType.Pickup}
-        fulfillmentSet={location.fulfillment_sets?.find(
-          (f) => f.type === FulfillmentSetType.Pickup
-        )}
+        fulfillmentSet={location.fulfillment_sets?.find(f => f.type === FulfillmentSetType.Pickup)}
       />
       <FulfillmentSet
         type={FulfillmentSetType.Shipping}
         fulfillmentSet={location.fulfillment_sets?.find(
-          (f) => f.type === FulfillmentSetType.Shipping
+          f => f.type === FulfillmentSetType.Shipping
         )}
       />
     </Container>
-  )
+  );
 }
 
-export default LocationListItem
+export default LocationListItem;

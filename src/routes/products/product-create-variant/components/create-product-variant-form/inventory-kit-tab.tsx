@@ -1,66 +1,73 @@
-import { z } from "zod"
-import { useFieldArray, UseFormReturn } from "react-hook-form"
-import { Button, Heading, IconButton, Input, Label } from "@medusajs/ui"
+import { Form } from '@components/common/form';
+import { Combobox } from '@components/inputs/combobox';
+import { useComboboxData } from '@hooks/use-combobox-data';
+import { sdk } from '@lib/client';
+import { XMarkMini } from '@medusajs/icons';
+import { Button, Heading, IconButton, Input, Label } from '@medusajs/ui';
+import { useFieldArray, type UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import type { z } from 'zod';
 
-import { CreateProductVariantSchema } from "./constants"
-import { XMarkMini } from "@medusajs/icons"
-import { useTranslation } from "react-i18next"
-
-import { useComboboxData } from "../../../../../hooks/use-combobox-data"
-import { sdk } from "../../../../../lib/client"
-import { Form } from "../../../../../components/common/form"
-import { Combobox } from "../../../../../components/inputs/combobox"
+import type { CreateProductVariantSchema } from './constants';
 
 type InventoryKitTabProps = {
-  form: UseFormReturn<z.infer<typeof CreateProductVariantSchema>>
-}
+  form: UseFormReturn<z.infer<typeof CreateProductVariantSchema>>;
+};
 
 function InventoryKitTab({ form }: InventoryKitTabProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const inventory = useFieldArray({
     control: form.control,
-    name: `inventory`,
-  })
+    name: `inventory`
+  });
 
-  const inventoryFormData = inventory.fields
+  const inventoryFormData = inventory.fields;
 
   const items = useComboboxData({
-    queryKey: ["inventory_items"],
-    queryFn: (params) => sdk.admin.inventoryItem.list(params),
-    getOptions: (data) =>
-      data.inventory_items.map((item) => ({
+    queryKey: ['inventory_items'],
+    queryFn: params => sdk.admin.inventoryItem.list(params),
+    getOptions: data =>
+      data.inventory_items.map(item => ({
         label: item.title,
-        value: item.id,
-      })),
-  })
+        value: item.id
+      }))
+  });
 
   /**
    * Will mark an option as disabled if another input already selected that option
    * @param option
    * @param inventoryIndex
    */
-  const isItemOptionDisabled = (
-    option: (typeof items.options)[0],
-    inventoryIndex: number
-  ) => {
+  const isItemOptionDisabled = (option: (typeof items.options)[0], inventoryIndex: number) => {
     return inventoryFormData?.some(
-      (i, index) =>
-        index != inventoryIndex && i.inventory_item_id === option.value
-    )
-  }
+      (i, index) => index != inventoryIndex && i.inventory_item_id === option.value
+    );
+  };
 
   return (
-    <div className="flex flex-col items-center p-16" data-testid="product-variant-create-form-inventory-kit-tab">
+    <div
+      className="flex flex-col items-center p-16"
+      data-testid="product-variant-create-form-inventory-kit-tab"
+    >
       <div className="flex w-full max-w-[720px] flex-col gap-y-8">
-        <div id="organize" className="flex flex-col gap-y-8">
-          <Heading data-testid="product-variant-create-form-inventory-kit-heading">{t("products.create.inventory.heading")}</Heading>
+        <div
+          id="organize"
+          className="flex flex-col gap-y-8"
+        >
+          <Heading data-testid="product-variant-create-form-inventory-kit-heading">
+            {t('products.create.inventory.heading')}
+          </Heading>
 
           <div className="grid gap-y-4">
             <div className="flex items-start justify-between gap-x-4">
               <div className="flex flex-col">
-                <Form.Label data-testid="product-variant-create-form-inventory-kit-variant-label">{form.getValues("title")}</Form.Label>
-                <Form.Hint data-testid="product-variant-create-form-inventory-kit-hint">{t("products.create.inventory.label")}</Form.Hint>
+                <Form.Label data-testid="product-variant-create-form-inventory-kit-variant-label">
+                  {form.getValues('title')}
+                </Form.Label>
+                <Form.Hint data-testid="product-variant-create-form-inventory-kit-hint">
+                  {t('products.create.inventory.label')}
+                </Form.Hint>
               </div>
               <Button
                 size="small"
@@ -68,19 +75,19 @@ function InventoryKitTab({ form }: InventoryKitTabProps) {
                 type="button"
                 onClick={() => {
                   inventory.append({
-                    inventory_item_id: "",
-                    required_quantity: "",
-                  })
+                    inventory_item_id: '',
+                    required_quantity: ''
+                  });
                 }}
                 data-testid="product-variant-create-form-inventory-kit-add-button"
               >
-                {t("actions.add")}
+                {t('actions.add')}
               </Button>
             </div>
             {inventory.fields.map((inventoryItem, inventoryIndex) => (
               <li
                 key={inventoryItem.id}
-                className="bg-ui-bg-component shadow-elevation-card-rest grid grid-cols-[1fr_28px] items-center gap-1.5 rounded-xl p-1.5"
+                className="grid grid-cols-[1fr_28px] items-center gap-1.5 rounded-xl bg-ui-bg-component p-1.5 shadow-elevation-card-rest"
                 data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}`}
               >
                 <div className="grid grid-cols-[min-content,1fr] items-center gap-1.5">
@@ -92,40 +99,39 @@ function InventoryKitTab({ form }: InventoryKitTabProps) {
                       htmlFor={`inventory.${inventoryIndex}.inventory_item_id`}
                       data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-item-label`}
                     >
-                      {t("fields.item")}
+                      {t('fields.item')}
                     </Label>
                   </div>
 
                   <Form.Field
                     control={form.control}
                     name={`inventory.${inventoryIndex}.inventory_item_id`}
-                    render={({ field }) => {
-                      return (
-                        <Form.Item data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-item-field`}>
-                          <Form.Control data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-item-control`}>
-                            <Combobox
-                              {...field}
-                              options={items.options.map((o) => ({
-                                ...o,
-                                disabled: isItemOptionDisabled(
-                                  o,
-                                  inventoryIndex
-                                ),
-                              }))}
-                              searchValue={items.searchValue}
-                              onSearchValueChange={items.onSearchValueChange}
-                              fetchNextPage={items.fetchNextPage}
-                              className="bg-ui-bg-field-component hover:bg-ui-bg-field-component-hover"
-                              placeholder={t(
-                                "products.create.inventory.itemPlaceholder"
-                              )}
-                              data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-item-combobox`}
-                            />
-                          </Form.Control>
-                          <Form.ErrorMessage data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-item-error`} />
-                        </Form.Item>
-                      )
-                    }}
+                    render={({ field }) => (
+                      <Form.Item
+                        data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-item-field`}
+                      >
+                        <Form.Control
+                          data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-item-control`}
+                        >
+                          <Combobox
+                            {...field}
+                            options={items.options.map(o => ({
+                              ...o,
+                              disabled: isItemOptionDisabled(o, inventoryIndex)
+                            }))}
+                            searchValue={items.searchValue}
+                            onSearchValueChange={items.onSearchValueChange}
+                            fetchNextPage={items.fetchNextPage}
+                            className="bg-ui-bg-field-component hover:bg-ui-bg-field-component-hover"
+                            placeholder={t('products.create.inventory.itemPlaceholder')}
+                            data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-item-combobox`}
+                          />
+                        </Form.Control>
+                        <Form.ErrorMessage
+                          data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-item-error`}
+                        />
+                      </Form.Item>
+                    )}
                   />
 
                   <div className="flex items-center px-2 py-1.5">
@@ -136,41 +142,43 @@ function InventoryKitTab({ form }: InventoryKitTabProps) {
                       htmlFor={`inventory.${inventoryIndex}.required_quantity`}
                       data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-quantity-label`}
                     >
-                      {t("fields.quantity")}
+                      {t('fields.quantity')}
                     </Label>
                   </div>
                   <Form.Field
                     control={form.control}
                     name={`inventory.${inventoryIndex}.required_quantity`}
-                    render={({ field: { onChange, value, ...field } }) => {
-                      return (
-                        <Form.Item data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-quantity-field`}>
-                          <Form.Control data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-quantity-control`}>
-                            <Input
-                              type="number"
-                              className="bg-ui-bg-field-component"
-                              min={0}
-                              value={value}
-                              onChange={(e) => {
-                                const value = e.target.value
+                    render={({ field: { onChange, value, ...field } }) => (
+                      <Form.Item
+                        data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-quantity-field`}
+                      >
+                        <Form.Control
+                          data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-quantity-control`}
+                        >
+                          <Input
+                            type="number"
+                            className="bg-ui-bg-field-component"
+                            min={0}
+                            value={value}
+                            onChange={e => {
+                              const value = e.target.value;
 
-                                if (value === "") {
-                                  onChange(null)
-                                } else {
-                                  onChange(Number(value))
-                                }
-                              }}
-                              {...field}
-                              placeholder={t(
-                                "products.create.inventory.quantityPlaceholder"
-                              )}
-                              data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-quantity-input`}
-                            />
-                          </Form.Control>
-                          <Form.ErrorMessage data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-quantity-error`} />
-                        </Form.Item>
-                      )
-                    }}
+                              if (value === '') {
+                                onChange(null);
+                              } else {
+                                onChange(Number(value));
+                              }
+                            }}
+                            {...field}
+                            placeholder={t('products.create.inventory.quantityPlaceholder')}
+                            data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-quantity-input`}
+                          />
+                        </Form.Control>
+                        <Form.ErrorMessage
+                          data-testid={`product-variant-create-form-inventory-kit-item-${inventoryIndex}-quantity-error`}
+                        />
+                      </Form.Item>
+                    )}
                   />
                 </div>
                 <IconButton
@@ -189,7 +197,7 @@ function InventoryKitTab({ form }: InventoryKitTabProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default InventoryKitTab
+export default InventoryKitTab;

@@ -242,7 +242,7 @@ export const AttributeList = () => {
                           onClick={() => addFilter('filterable', true)}
                           data-testid="attribute-list-filterable-dropdown-yes"
                         >
-                          {filters.filterable === true ? (
+                          {filters.filterable ? (
                             <span className="mr-2">•</span>
                           ) : (
                             <span className="ml-4" />
@@ -253,7 +253,7 @@ export const AttributeList = () => {
                           onClick={() => addFilter('filterable', false)}
                           data-testid="attribute-list-filterable-dropdown-no"
                         >
-                          {filters.filterable === false ? (
+                          {!filters.filterable ? (
                             <span className="mr-2">•</span>
                           ) : (
                             <span className="ml-4" />
@@ -295,7 +295,7 @@ export const AttributeList = () => {
                           onClick={() => addFilter('global', true)}
                           data-testid="attribute-list-global-dropdown-yes"
                         >
-                          {filters.global === true ? (
+                          {filters.global ? (
                             <span className="mr-2">•</span>
                           ) : (
                             <span className="ml-4" />
@@ -306,7 +306,7 @@ export const AttributeList = () => {
                           onClick={() => addFilter('global', false)}
                           data-testid="attribute-list-global-dropdown-no"
                         >
-                          {filters.global === false ? (
+                          {!filters.global ? (
                             <span className="mr-2">•</span>
                           ) : (
                             <span className="ml-4" />

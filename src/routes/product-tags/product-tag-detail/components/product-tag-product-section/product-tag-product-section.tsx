@@ -1,55 +1,64 @@
-import type { HttpTypes } from "@medusajs/types"
-import { Container, Heading } from "@medusajs/ui"
-import { useTranslation } from "react-i18next"
-import { _DataTable } from "../../../../../components/table/data-table"
-import { useProducts } from "../../../../../hooks/api"
-import { useProductTableColumns } from "../../../../../hooks/table/columns"
-import { useProductTableFilters } from "../../../../../hooks/table/filters"
-import { useProductTableQuery } from "../../../../../hooks/table/query"
-import { useDataTable } from "../../../../../hooks/use-data-table"
+import { _DataTable } from '@components/table/data-table';
+import { useProducts } from '@hooks/api';
+import { useProductTableColumns } from '@hooks/table/columns';
+import { useProductTableFilters } from '@hooks/table/filters';
+import { useProductTableQuery } from '@hooks/table/query';
+import { useDataTable } from '@hooks/use-data-table';
+import type { HttpTypes } from '@medusajs/types';
+import { Container, Heading } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
 
 type ProductTagProductSectionProps = {
-  productTag: HttpTypes.AdminProductTag
-}
+  productTag: HttpTypes.AdminProductTag;
+};
 
-const PAGE_SIZE = 10
-const PREFIX = "pt"
+const PAGE_SIZE = 10;
+const PREFIX = 'pt';
 
-export const ProductTagProductSection = ({
-  productTag,
-}: ProductTagProductSectionProps) => {
-  const { t } = useTranslation()
+export const ProductTagProductSection = ({ productTag }: ProductTagProductSectionProps) => {
+  const { t } = useTranslation();
 
   const { searchParams, raw } = useProductTableQuery({
     pageSize: PAGE_SIZE,
-    prefix: PREFIX,
-  })
+    prefix: PREFIX
+  });
 
   const { products, count, isPending, isError, error } = useProducts({
     ...searchParams,
-    tag_id: productTag.id,
-  })
+    tag_id: productTag.id
+  });
 
-  const filters = useProductTableFilters(["product_tags"])
-  const columns = useProductTableColumns()
+  const filters = useProductTableFilters(['product_tags']);
+  const columns = useProductTableColumns();
 
   const { table } = useDataTable({
     data: products,
     count,
     columns,
-    getRowId: (row) => row.id,
+    getRowId: row => row.id,
     pageSize: PAGE_SIZE,
-    prefix: PREFIX,
-  })
+    prefix: PREFIX
+  });
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   return (
-    <Container className="divide-y px-0 py-0" data-testid="product-tag-product-section-container">
-      <div className="px-6 py-4" data-testid="product-tag-product-section-header">
-        <Heading level="h2" data-testid="product-tag-product-section-heading">{t("products.domain")}</Heading>
+    <Container
+      className="divide-y px-0 py-0"
+      data-testid="product-tag-product-section-container"
+    >
+      <div
+        className="px-6 py-4"
+        data-testid="product-tag-product-section-header"
+      >
+        <Heading
+          level="h2"
+          data-testid="product-tag-product-section-heading"
+        >
+          {t('products.domain')}
+        </Heading>
       </div>
       <_DataTable
         table={table}
@@ -59,17 +68,17 @@ export const ProductTagProductSection = ({
         columns={columns}
         pageSize={PAGE_SIZE}
         count={count}
-        navigateTo={(row) => `/products/${row.original.id}`}
+        navigateTo={row => `/products/${row.original.id}`}
         search
         pagination
         orderBy={[
-          { key: "title", label: t("fields.title") },
-          { key: "status", label: t("fields.status") },
-          { key: "created_at", label: t("fields.createdAt") },
-          { key: "updated_at", label: t("fields.updatedAt") },
+          { key: 'title', label: t('fields.title') },
+          { key: 'status', label: t('fields.status') },
+          { key: 'created_at', label: t('fields.createdAt') },
+          { key: 'updated_at', label: t('fields.updatedAt') }
         ]}
         data-testid="product-tag-product-section-table"
       />
     </Container>
-  )
-}
+  );
+};

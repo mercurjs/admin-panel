@@ -1,39 +1,35 @@
-import { HttpTypes } from "@medusajs/types"
-import { useTranslation } from "react-i18next"
-
-import { countries as COUNTRIES } from "../../../../../lib/data/countries"
-import { ListSummary } from "../../../../common/list-summary"
-import { PlaceholderCell } from "../../common/placeholder-cell"
+import { ListSummary } from '@components/common/list-summary';
+import { PlaceholderCell } from '@components/table/table-cells/common/placeholder-cell';
+import { countries as COUNTRIES } from '@lib/data/countries';
+import type { HttpTypes } from '@medusajs/types';
+import { useTranslation } from 'react-i18next';
 
 type CountriesCellProps = {
-  countries?: HttpTypes.AdminRegionCountry[] | null
-}
+  countries?: HttpTypes.AdminRegionCountry[] | null;
+};
 
 export const CountriesCell = ({ countries }: CountriesCellProps) => {
   if (!countries || countries.length === 0) {
-    return <PlaceholderCell />
+    return <PlaceholderCell />;
   }
 
   const list = countries
-    .map(
-      (country) =>
-        COUNTRIES.find((c) => c.iso_2 === country.iso_2)?.display_name
-    )
-    .filter(Boolean) as string[]
+    .map(country => COUNTRIES.find(c => c.iso_2 === country.iso_2)?.display_name)
+    .filter(Boolean) as string[];
 
   return (
     <div className="flex size-full items-center overflow-hidden">
       <ListSummary list={list} />
     </div>
-  )
-}
+  );
+};
 
 export const CountriesHeader = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <div className="flex size-full items-center">
-      <span>{t("fields.countries")}</span>
+      <span>{t('fields.countries')}</span>
     </div>
-  )
-}
+  );
+};

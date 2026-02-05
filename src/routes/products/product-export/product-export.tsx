@@ -1,48 +1,48 @@
-import { Button, Heading, toast } from "@medusajs/ui"
-import { RouteDrawer, useRouteModal } from "../../../components/modals"
-import { useTranslation } from "react-i18next"
-import { ExportFilters } from "./components/export-filters"
-import { useExportProducts } from "../../../hooks/api"
-import { useProductTableQuery } from "../../../hooks/table/query"
+import { RouteDrawer, useRouteModal } from '@components/modals';
+import { useExportProducts } from '@hooks/api';
+import { useProductTableQuery } from '@hooks/table/query';
+import { Button, Heading, toast } from '@medusajs/ui';
+import { ExportFilters } from '@routes/products/product-export/components/export-filters';
+import { useTranslation } from 'react-i18next';
 
 export const ProductExport = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <RouteDrawer>
       <RouteDrawer.Header>
         <RouteDrawer.Title asChild>
-          <Heading>{t("products.export.header")}</Heading>
+          <Heading>{t('products.export.header')}</Heading>
         </RouteDrawer.Title>
         <RouteDrawer.Description className="sr-only">
-          {t("products.export.description")}
+          {t('products.export.description')}
         </RouteDrawer.Description>
       </RouteDrawer.Header>
       <ProductExportContent />
     </RouteDrawer>
-  )
-}
+  );
+};
 
 const ProductExportContent = () => {
-  const { t } = useTranslation()
-  const { searchParams } = useProductTableQuery({})
+  const { t } = useTranslation();
+  const { searchParams } = useProductTableQuery({});
 
-  const { mutateAsync } = useExportProducts({ ...searchParams })
-  const { handleSuccess } = useRouteModal()
+  const { mutateAsync } = useExportProducts({ ...searchParams });
+  const { handleSuccess } = useRouteModal();
 
   const handleExportRequest = async () => {
     await mutateAsync(searchParams, {
       onSuccess: () => {
-        toast.info(t("products.export.success.title"), {
-          description: t("products.export.success.description"),
-        })
-        handleSuccess()
+        toast.info(t('products.export.success.title'), {
+          description: t('products.export.success.description')
+        });
+        handleSuccess();
       },
-      onError: (err) => {
-        toast.error(err.message)
-      },
-    })
-  }
+      onError: err => {
+        toast.error(err.message);
+      }
+    });
+  };
 
   return (
     <>
@@ -53,15 +53,21 @@ const ProductExportContent = () => {
       <RouteDrawer.Footer>
         <div className="flex items-center gap-x-2">
           <RouteDrawer.Close asChild>
-            <Button size="small" variant="secondary">
-              {t("actions.cancel")}
+            <Button
+              size="small"
+              variant="secondary"
+            >
+              {t('actions.cancel')}
             </Button>
           </RouteDrawer.Close>
-          <Button onClick={handleExportRequest} size="small">
-            {t("actions.export")}
+          <Button
+            onClick={handleExportRequest}
+            size="small"
+          >
+            {t('actions.export')}
           </Button>
         </div>
       </RouteDrawer.Footer>
     </>
-  )
-}
+  );
+};

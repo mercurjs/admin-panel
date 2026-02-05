@@ -1,103 +1,92 @@
-import { useMemo } from "react"
-import { Checkbox } from "@medusajs/ui"
-import { createColumnHelper } from "@tanstack/react-table"
-import { useTranslation } from "react-i18next"
+import { useMemo } from 'react';
 
-import {
-  ProductCell,
-  ProductHeader,
-} from "../../../../../components/table/table-cells/product/product-cell"
-import { getStylizedAmount } from "../../../../../lib/money-amount-helpers"
-import { getReturnableQuantity } from "../../../../../lib/rma"
+import { ProductCell, ProductHeader } from '@components/table/table-cells/product/product-cell';
+import { getStylizedAmount } from '@lib/money-amount-helpers';
+import { getReturnableQuantity } from '@lib/rma';
+import { Checkbox } from '@medusajs/ui';
+import { createColumnHelper } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
 
-const columnHelper = createColumnHelper<any>()
+// @todo fix any type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const columnHelper = createColumnHelper<any>();
 
 export const useClaimItemTableColumns = (currencyCode: string) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return useMemo(
     () => [
       columnHelper.display({
-        id: "select",
-        header: ({ table }) => {
-          return (
-            <Checkbox
-              checked={
-                table.getIsSomePageRowsSelected()
-                  ? "indeterminate"
-                  : table.getIsAllPageRowsSelected()
-              }
-              onCheckedChange={(value) =>
-                table.toggleAllPageRowsSelected(!!value)
-              }
-            />
-          )
-        },
+        id: 'select',
+        header: ({ table }) => (
+          <Checkbox
+            checked={
+              table.getIsSomePageRowsSelected() ? 'indeterminate' : table.getIsAllPageRowsSelected()
+            }
+            onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+          />
+        ),
         cell: ({ row }) => {
-          const isSelectable = row.getCanSelect()
+          const isSelectable = row.getCanSelect();
 
           return (
             <Checkbox
               disabled={!isSelectable}
               checked={row.getIsSelected()}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              onClick={(e) => {
-                e.stopPropagation()
+              onCheckedChange={value => row.toggleSelected(!!value)}
+              onClick={e => {
+                e.stopPropagation();
               }}
             />
-          )
-        },
+          );
+        }
       }),
       columnHelper.display({
-        id: "product",
+        id: 'product',
         header: () => <ProductHeader />,
         cell: ({ row }) => (
           <ProductCell
             product={{
               thumbnail: row.original.thumbnail,
-              title: row.original.product_title,
+              title: row.original.product_title
             }}
           />
-        ),
+        )
       }),
-      columnHelper.accessor("variant.sku", {
-        header: t("fields.sku"),
-        cell: ({ getValue }) => {
-          return getValue() || "-"
-        },
+      columnHelper.accessor('variant.sku', {
+        header: t('fields.sku'),
+        cell: ({ getValue }) => getValue() || '-'
       }),
-      columnHelper.accessor("variant.title", {
-        header: t("fields.variant"),
+      columnHelper.accessor('variant.title', {
+        header: t('fields.variant')
       }),
-      columnHelper.accessor("quantity", {
+      columnHelper.accessor('quantity', {
         header: () => (
           <div className="flex size-full items-center overflow-hidden text-right">
-            <span className="truncate">{t("fields.quantity")}</span>
+            <span className="truncate">{t('fields.quantity')}</span>
           </div>
         ),
-        cell: ({ row }) => {
-          return getReturnableQuantity(row.original)
-        },
+        cell: ({ row }) => getReturnableQuantity(row.original)
       }),
-      columnHelper.accessor("refundable_total", {
+      columnHelper.accessor('refundable_total', {
         header: () => (
           <div className="flex size-full items-center justify-end overflow-hidden text-right">
-            <span className="truncate">{t("fields.price")}</span>
+            <span className="truncate">{t('fields.price')}</span>
           </div>
         ),
         cell: ({ getValue }) => {
-          const amount = getValue() || 0
+          const amount = getValue() || 0;
 
-          const stylized = getStylizedAmount(amount, currencyCode)
+          const stylized = getStylizedAmount(amount, currencyCode);
 
           return (
             <div className="flex size-full items-center justify-end overflow-hidden text-right">
               <span className="truncate">{stylized}</span>
             </div>
-          )
-        },
-      }),
+          );
+        }
+      })
     ],
     [t, currencyCode]
-  )
-}
+  );
+};

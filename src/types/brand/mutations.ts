@@ -1,3 +1,3 @@
 export type CreateBrandDTO = {
-  brand_name: string
-}
+  brand_name: string;
+};

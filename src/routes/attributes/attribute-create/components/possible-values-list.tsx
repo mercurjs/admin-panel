@@ -46,44 +46,44 @@ const SortableItem = ({ id, index, onRemove }: SortableItemProps) => {
     transition,
   };
 
-  const fieldError = Array.isArray(errors?.possible_values) 
-    ? errors.possible_values[index]?.value 
+  const fieldError = Array.isArray(errors?.possible_values)
+    ? errors.possible_values[index]?.value
     : undefined;
 
   return (
     <>
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="flex items-center gap-2 p-2 bg-ui-bg-component border border-ui-border-base rounded-xl mb-2"
-      data-testid={`attribute-form-possible-value-item-${index}`}
-    >
-      <button
-        className="cursor-grab active:cursor-grabbing"
-        {...attributes}
-        {...listeners}
-        data-testid={`attribute-form-possible-value-drag-handle-${index}`}
+      <div
+        ref={setNodeRef}
+        style={style}
+        className="flex items-center gap-2 p-2 bg-ui-bg-component border border-ui-border-base rounded-xl mb-2"
+        data-testid={`attribute-form-possible-value-item-${index}`}
       >
-        <DotsSix className="text-ui-fg-subtle" />
-      </button>
-      <div className="flex-1">
-        <Input
-          className="flex-1"
-          aria-invalid={!!fieldError}
-          placeholder="Enter value"
-          {...register(`possible_values.${index}.value`)}
-          data-testid={`attribute-form-possible-value-input-${index}`}
-        />
+        <button
+          className="cursor-grab active:cursor-grabbing"
+          {...attributes}
+          {...listeners}
+          data-testid={`attribute-form-possible-value-drag-handle-${index}`}
+        >
+          <DotsSix className="text-ui-fg-subtle" />
+        </button>
+        <div className="flex-1">
+          <Input
+            className="flex-1"
+            aria-invalid={!!fieldError}
+            placeholder="Enter value"
+            {...register(`possible_values.${index}.value`)}
+            data-testid={`attribute-form-possible-value-input-${index}`}
+          />
+        </div>
+        <IconButton variant="transparent" size="small" onClick={onRemove} data-testid={`attribute-form-possible-value-remove-button-${index}`}>
+          <XMark />
+        </IconButton>
       </div>
-      <IconButton variant="transparent" size="small" onClick={onRemove} data-testid={`attribute-form-possible-value-remove-button-${index}`}>
-        <XMark />
-      </IconButton>
-    </div>
-    {fieldError && (
-      <Text className="text-red-500 text-sm mt-1" data-testid="attribute-form-name-error">
-        {fieldError.message as string}
-      </Text>
-    )}
+      {fieldError && (
+        <Text className="text-red-500 text-sm mt-1" data-testid="attribute-form-name-error">
+          {fieldError.message as string}
+        </Text>
+      )}
     </>
   );
 };
@@ -174,10 +174,10 @@ const PossibleValuesList = () => {
         </SortableContext>
       </DndContext>
       {shouldShowListError && (
-          <Hint variant="error" className="text-red-500 text-sm mt-1" data-testid="attribute-form-name-error">
-            {formState.errors.possible_values?.message as string}
-          </Hint>
-        )}
+        <Hint variant="error" className="text-red-500 text-sm mt-1" data-testid="attribute-form-name-error">
+          {formState.errors.possible_values?.message as string}
+        </Hint>
+      )}
     </div>
   );
 };

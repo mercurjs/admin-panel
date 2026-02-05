@@ -1,20 +1,19 @@
-import { useParams } from "react-router-dom"
-import { RouteFocusModal } from "../../../components/modals"
-import { useProductCategory } from "../../../hooks/api/categories"
-import { EditCategoryProductsForm } from "./components/edit-category-products-form"
+import { RouteFocusModal } from '@components/modals';
+import { useProductCategory } from '@hooks/api';
+import { EditCategoryProductsForm } from '@routes/categories/category-products/components/edit-category-products-form';
+import { useParams } from 'react-router-dom';
 
 export const CategoryProducts = () => {
-  const { id } = useParams()
+  const { id } = useParams();
 
-  const { product_category, isPending, isFetching, isError, error } =
-    useProductCategory(id!, {
-      fields: "products.id",
-    })
+  const { product_category, isPending, isFetching, isError, error } = useProductCategory(id!, {
+    fields: 'products.id'
+  });
 
-  const ready = !isPending && !isFetching && !!product_category
+  const ready = !isPending && !isFetching && !!product_category;
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   return (
@@ -26,5 +25,5 @@ export const CategoryProducts = () => {
         />
       )}
     </RouteFocusModal>
-  )
-}
+  );
+};

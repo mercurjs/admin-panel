@@ -1,1 +1,1 @@
-export { OrderMetadata as Component } from "./order-metadata"
+export { OrderMetadata as Component } from './order-metadata';

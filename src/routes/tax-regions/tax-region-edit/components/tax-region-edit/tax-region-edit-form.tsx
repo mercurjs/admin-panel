@@ -1,81 +1,88 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { HttpTypes } from "@medusajs/types"
-import { Button, toast } from "@medusajs/ui"
-import { useForm } from "react-hook-form"
-import { useTranslation } from "react-i18next"
-import { z } from "zod"
-
-import { Form } from "../../../../../components/common/form"
-import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
-import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import { useComboboxData } from "../../../../../hooks/use-combobox-data"
-import { sdk } from "../../../../../lib/client"
-import { Combobox } from "../../../../../components/inputs/combobox"
-import { formatProvider } from "../../../../../lib/format-provider"
-import { useUpdateTaxRegion } from "../../../../../hooks/api"
+import { Form } from '@components/common/form';
+import { Combobox } from '@components/inputs/combobox';
+import { RouteDrawer, useRouteModal } from '@components/modals';
+import { KeyboundForm } from '@components/utilities/keybound-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useUpdateTaxRegion } from '@hooks/api';
+import { useComboboxData } from '@hooks/use-combobox-data';
+import { sdk } from '@lib/client';
+import { formatProvider } from '@lib/format-provider';
+import type { HttpTypes } from '@medusajs/types';
+import { Button, toast } from '@medusajs/ui';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
 type TaxRegionEditFormProps = {
-  taxRegion: HttpTypes.AdminTaxRegion
-}
+  taxRegion: HttpTypes.AdminTaxRegion;
+};
 
 const TaxRegionEditSchema = z.object({
-  provider_id: z.string().min(1),
-})
+  provider_id: z.string().min(1)
+});
 
 export const TaxRegionEditForm = ({ taxRegion }: TaxRegionEditFormProps) => {
-  const { t } = useTranslation()
-  const { handleSuccess } = useRouteModal()
+  const { t } = useTranslation();
+  const { handleSuccess } = useRouteModal();
 
   const taxProviders = useComboboxData({
-    queryKey: ["tax_providers"],
-    queryFn: (params) => sdk.admin.taxProvider.list(params),
-    getOptions: (data) =>
-      data.tax_providers.map((provider) => ({
+    queryKey: ['tax_providers'],
+    queryFn: params => sdk.admin.taxProvider.list(params),
+    getOptions: data =>
+      data.tax_providers.map(provider => ({
         label: formatProvider(provider.id),
-        value: provider.id,
-      })),
-  })
+        value: provider.id
+      }))
+  });
 
   const form = useForm<z.infer<typeof TaxRegionEditSchema>>({
     defaultValues: {
-      provider_id: taxRegion.provider_id ?? undefined,
+      provider_id: taxRegion.provider_id ?? undefined
     },
-    resolver: zodResolver(TaxRegionEditSchema),
-  })
+    resolver: zodResolver(TaxRegionEditSchema)
+  });
 
-  const { mutateAsync, isPending } = useUpdateTaxRegion(taxRegion.id)
+  const { mutateAsync, isPending } = useUpdateTaxRegion(taxRegion.id);
 
-  const handleSubmit = form.handleSubmit(async (values) => {
+  const handleSubmit = form.handleSubmit(async values => {
     await mutateAsync(
       {
-        provider_id: values.provider_id,
+        provider_id: values.provider_id
       },
       {
         onSuccess: () => {
-          toast.success(t("taxRegions.edit.successToast"))
-          handleSuccess()
+          toast.success(t('taxRegions.edit.successToast'));
+          handleSuccess();
         },
-        onError: (error) => {
-          toast.error(error.message)
-        },
+        onError: error => {
+          toast.error(error.message);
+        }
       }
-    )
-  })
+    );
+  });
 
   return (
-    <RouteDrawer.Form form={form} data-testid="tax-region-edit-form">
+    <RouteDrawer.Form
+      form={form}
+      data-testid="tax-region-edit-form"
+    >
       <KeyboundForm
         className="flex flex-1 flex-col overflow-hidden"
         onSubmit={handleSubmit}
       >
-        <RouteDrawer.Body className="flex flex-1 flex-col gap-y-6 overflow-auto" data-testid="tax-region-edit-form-body">
+        <RouteDrawer.Body
+          className="flex flex-1 flex-col gap-y-6 overflow-auto"
+          data-testid="tax-region-edit-form-body"
+        >
           <div className="flex flex-col gap-y-4">
             <Form.Field
               control={form.control}
               name="provider_id"
               render={({ field }) => (
                 <Form.Item data-testid="tax-region-edit-form-provider-item">
-                  <Form.Label data-testid="tax-region-edit-form-provider-label">{t("taxRegions.fields.taxProvider")}</Form.Label>
+                  <Form.Label data-testid="tax-region-edit-form-provider-label">
+                    {t('taxRegions.fields.taxProvider')}
+                  </Form.Label>
                   <Form.Control data-testid="tax-region-edit-form-provider-control">
                     <Combobox
                       {...field}
@@ -92,19 +99,31 @@ export const TaxRegionEditForm = ({ taxRegion }: TaxRegionEditFormProps) => {
             />
           </div>
         </RouteDrawer.Body>
-        <RouteDrawer.Footer className="shrink-0" data-testid="tax-region-edit-form-footer">
+        <RouteDrawer.Footer
+          className="shrink-0"
+          data-testid="tax-region-edit-form-footer"
+        >
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary" data-testid="tax-region-edit-form-cancel-button">
-                {t("actions.cancel")}
+              <Button
+                size="small"
+                variant="secondary"
+                data-testid="tax-region-edit-form-cancel-button"
+              >
+                {t('actions.cancel')}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" isLoading={isPending} data-testid="tax-region-edit-form-save-button">
-              {t("actions.save")}
+            <Button
+              size="small"
+              type="submit"
+              isLoading={isPending}
+              data-testid="tax-region-edit-form-save-button"
+            >
+              {t('actions.save')}
             </Button>
           </div>
         </RouteDrawer.Footer>
       </KeyboundForm>
     </RouteDrawer.Form>
-  )
-}
+  );
+};

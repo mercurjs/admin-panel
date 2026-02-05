@@ -1,22 +1,23 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { PromotionDTO, PromotionRuleDTO } from "@medusajs/types";
-import { Button } from "@medusajs/ui";
+import { RouteDrawer } from '@components/modals';
+import { KeyboundForm } from '@components/utilities/keybound-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import type { PromotionDTO, PromotionRuleDTO } from '@medusajs/types';
+import { Button } from '@medusajs/ui';
+import { RulesFormField } from '@routes/promotions/common/edit-rules/components/rules-form-field';
+import type { RuleTypeValues } from '@routes/promotions/common/edit-rules/edit-rules.tsx';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-
-import { RouteDrawer } from "../../../../../../components/modals";
-import { KeyboundForm } from "../../../../../../components/utilities/keybound-form";
-import { RuleTypeValues } from "../../edit-rules";
-import { RulesFormField } from "../rules-form-field";
-import { EditRules, EditRulesType } from "./form-schema";
+import { EditRules, type EditRulesType } from './form-schema';
 
 type EditPromotionFormProps = {
   promotion: PromotionDTO;
   rules: PromotionRuleDTO[];
   ruleType: RuleTypeValues;
+  // @todo fix any type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleSubmit: any;
   isSubmitting: boolean;
 };
@@ -25,7 +26,7 @@ export const EditRulesForm = ({
   promotion,
   ruleType,
   handleSubmit,
-  isSubmitting,
+  isSubmitting
 }: EditPromotionFormProps) => {
   const { t } = useTranslation();
   const [rulesToRemove, setRulesToRemove] = useState([]);
@@ -35,10 +36,10 @@ export const EditRulesForm = ({
       rules: [],
       type: promotion.type,
       application_method: {
-        target_type: promotion.application_method?.target_type,
-      },
+        target_type: promotion.application_method?.target_type
+      }
     },
-    resolver: zodResolver(EditRules),
+    resolver: zodResolver(EditRules)
   });
 
   const handleFormSubmit = form.handleSubmit(handleSubmit(rulesToRemove));
@@ -57,6 +58,8 @@ export const EditRulesForm = ({
           className="flex-1 overflow-y-auto"
         >
           <RulesFormField
+            // @todo fix any type
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             form={form as any}
             ruleType={ruleType}
             setRulesToRemove={setRulesToRemove}
@@ -66,9 +69,7 @@ export const EditRulesForm = ({
           />
         </RouteDrawer.Body>
 
-        <RouteDrawer.Footer
-          data-testid={`promotion-edit-rules-form-footer-${ruleType}`}
-        >
+        <RouteDrawer.Footer data-testid={`promotion-edit-rules-form-footer-${ruleType}`}>
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
               <Button
@@ -77,7 +78,7 @@ export const EditRulesForm = ({
                 disabled={isSubmitting}
                 data-testid={`promotion-edit-rules-form-cancel-button-${ruleType}`}
               >
-                {t("actions.cancel")}
+                {t('actions.cancel')}
               </Button>
             </RouteDrawer.Close>
 
@@ -87,7 +88,7 @@ export const EditRulesForm = ({
               isLoading={isSubmitting}
               data-testid={`promotion-edit-rules-form-save-button-${ruleType}`}
             >
-              {t("actions.save")}
+              {t('actions.save')}
             </Button>
           </div>
         </RouteDrawer.Footer>

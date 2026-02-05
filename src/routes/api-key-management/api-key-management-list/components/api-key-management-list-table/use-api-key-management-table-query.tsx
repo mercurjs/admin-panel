@@ -1,21 +1,21 @@
-import { HttpTypes } from "@medusajs/types"
-import { useQueryParams } from "../../../../../hooks/use-query-params"
+import { useQueryParams } from '@hooks/use-query-params.tsx';
+import type { HttpTypes } from '@medusajs/types';
 
 type UseApiKeyManagementTableQueryProps = {
-  prefix?: string
-  pageSize?: number
-}
+  prefix?: string;
+  pageSize?: number;
+};
 
 export const useApiKeyManagementTableQuery = ({
   prefix,
-  pageSize = 20,
+  pageSize = 20
 }: UseApiKeyManagementTableQueryProps) => {
   const queryObject = useQueryParams(
-    ["offset", "q", "created_at", "updated_at", "revoked_at", "order"],
+    ['offset', 'q', 'created_at', 'updated_at', 'revoked_at', 'order'],
     prefix
-  )
+  );
 
-  const { offset, created_at, updated_at, revoked_at, q, order } = queryObject
+  const { offset, created_at, updated_at, revoked_at, q, order } = queryObject;
 
   const searchParams: HttpTypes.AdminGetApiKeysParams = {
     limit: pageSize,
@@ -24,11 +24,11 @@ export const useApiKeyManagementTableQuery = ({
     updated_at: updated_at ? JSON.parse(updated_at) : undefined,
     revoked_at: revoked_at ? JSON.parse(revoked_at) : undefined,
     order,
-    q,
-  }
+    q
+  };
 
   return {
     searchParams,
-    raw: queryObject,
-  }
-}
+    raw: queryObject
+  };
+};

@@ -1,37 +1,32 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { Alert, Button, Heading, Input, Text, toast } from "@medusajs/ui";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Trans, useTranslation } from "react-i18next";
-import { decodeToken } from "react-jwt";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import * as z from "zod";
-
-import { Form } from "../../components/common/form";
-import { LogoBox } from "../../components/common/logo-box";
-import { i18n } from "../../components/utilities/i18n";
-import {
-  useResetPasswordForEmailPass,
-  useUpdateProviderForEmailPass,
-} from "../../hooks/api/auth";
+import { Form } from '@components/common/form';
+import { LogoBox } from '@components/common/logo-box';
+import { i18n } from '@components/utilities/i18n';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useResetPasswordForEmailPass, useUpdateProviderForEmailPass } from '@hooks/api';
+import { Alert, Button, Heading, Input, Text, toast } from '@medusajs/ui';
+import { useForm } from 'react-hook-form';
+import { Trans, useTranslation } from 'react-i18next';
+import { decodeToken } from 'react-jwt';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import * as z from 'zod';
 
 const ResetPasswordInstructionsSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email()
 });
 
 const ResetPasswordSchema = z
   .object({
     password: z.string().min(1),
-    repeat_password: z.string().min(1),
+    repeat_password: z.string().min(1)
   })
   .superRefine(({ password, repeat_password }, ctx) => {
     if (password !== repeat_password) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: i18n.t("resetPassword.passwordMismatch"),
-        path: ["repeat_password"],
+        message: i18n.t('resetPassword.passwordMismatch'),
+        path: ['repeat_password']
       });
     }
   });
@@ -40,7 +35,7 @@ const ResetPasswordTokenSchema = z.object({
   entity_id: z.string(),
   provider: z.string(),
   exp: z.number(),
-  iat: z.number(),
+  iat: z.number()
 });
 
 type DecodedResetPasswordToken = {
@@ -49,10 +44,9 @@ type DecodedResetPasswordToken = {
   exp: string;
   iat: string;
 };
-
-const validateDecodedResetPasswordToken = (
-  decoded: any,
-): decoded is DecodedResetPasswordToken => {
+// @todo fix any type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const validateDecodedResetPasswordToken = (decoded: any): decoded is DecodedResetPasswordToken => {
   return ResetPasswordTokenSchema.safeParse(decoded).success;
 };
 
@@ -75,24 +69,24 @@ const InvalidResetToken = () => {
           data-testid="reset-password-invalid-token-header"
         >
           <Heading data-testid="reset-password-invalid-token-title">
-            {t("resetPassword.invalidLinkTitle")}
+            {t('resetPassword.invalidLinkTitle')}
           </Heading>
           <Text
             size="small"
             className="text-center text-ui-fg-subtle"
             data-testid="reset-password-invalid-token-hint"
           >
-            {t("resetPassword.invalidLinkHint")}
+            {t('resetPassword.invalidLinkHint')}
           </Text>
         </div>
         <div className="flex w-full flex-col gap-y-3">
           <Button
-            onClick={() => navigate("/reset-password", { replace: true })}
+            onClick={() => navigate('/reset-password', { replace: true })}
             className="w-full"
             type="submit"
             data-testid="reset-password-invalid-token-button"
           >
-            {t("resetPassword.goToResetPassword")}
+            {t('resetPassword.goToResetPassword')}
           </Button>
         </div>
         <span
@@ -107,7 +101,7 @@ const InvalidResetToken = () => {
                 to="/login"
                 className="text-ui-fg-interactive outline-none transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover"
                 data-testid="reset-password-invalid-token-back-to-login-link"
-              />,
+              />
             ]}
           />
         </span>
@@ -121,19 +115,16 @@ const ChooseNewPassword = ({ token }: { token: string }) => {
 
   const [showAlert, setShowAlert] = useState(false);
 
-  const invite: DecodedResetPasswordToken | null = token
-    ? decodeToken(token)
-    : null;
+  const invite: DecodedResetPasswordToken | null = token ? decodeToken(token) : null;
 
-  const isValidResetPasswordToken =
-    invite && validateDecodedResetPasswordToken(invite);
+  const isValidResetPasswordToken = invite && validateDecodedResetPasswordToken(invite);
 
   const form = useForm<z.infer<typeof ResetPasswordSchema>>({
     resolver: zodResolver(ResetPasswordSchema),
     defaultValues: {
-      password: "",
-      repeat_password: "",
-    },
+      password: '',
+      repeat_password: ''
+    }
   });
 
   const { mutateAsync, isPending } = useUpdateProviderForEmailPass(token);
@@ -145,18 +136,18 @@ const ChooseNewPassword = ({ token }: { token: string }) => {
 
     await mutateAsync(
       {
-        password,
+        password
       },
       {
         onSuccess: () => {
-          form.setValue("password", "");
-          form.setValue("repeat_password", "");
+          form.setValue('password', '');
+          form.setValue('repeat_password', '');
           setShowAlert(true);
         },
-        onError: (error) => {
+        onError: error => {
           toast.error(error.message);
-        },
-      },
+        }
+      }
     );
   });
 
@@ -179,14 +170,14 @@ const ChooseNewPassword = ({ token }: { token: string }) => {
           data-testid="reset-password-choose-new-password-header"
         >
           <Heading data-testid="reset-password-choose-new-password-title">
-            {t("resetPassword.resetPassword")}
+            {t('resetPassword.resetPassword')}
           </Heading>
           <Text
             size="small"
             className="text-center text-ui-fg-subtle"
             data-testid="reset-password-choose-new-password-hint"
           >
-            {t("resetPassword.newPasswordHint")}
+            {t('resetPassword.newPasswordHint')}
           </Text>
         </div>
         <div className="flex w-full flex-col gap-y-3">
@@ -214,7 +205,7 @@ const ChooseNewPassword = ({ token }: { token: string }) => {
                             autoComplete="new-password"
                             type="password"
                             {...field}
-                            placeholder={t("resetPassword.newPassword")}
+                            placeholder={t('resetPassword.newPassword')}
                             data-testid="reset-password-new-password-input"
                           />
                         </Form.Control>
@@ -234,7 +225,7 @@ const ChooseNewPassword = ({ token }: { token: string }) => {
                             autoComplete="off"
                             type="password"
                             {...field}
-                            placeholder={t("resetPassword.repeatNewPassword")}
+                            placeholder={t('resetPassword.repeatNewPassword')}
                             data-testid="reset-password-repeat-password-input"
                           />
                         </Form.Control>
@@ -252,9 +243,9 @@ const ChooseNewPassword = ({ token }: { token: string }) => {
                 >
                   <div className="flex flex-col">
                     <span className="mb-1 text-ui-fg-base">
-                      {t("resetPassword.successfulResetTitle")}
+                      {t('resetPassword.successfulResetTitle')}
                     </span>
-                    <span>{t("resetPassword.successfulReset")}</span>
+                    <span>{t('resetPassword.successfulReset')}</span>
                   </div>
                 </Alert>
               )}
@@ -265,7 +256,7 @@ const ChooseNewPassword = ({ token }: { token: string }) => {
                   isLoading={isPending}
                   data-testid="reset-password-submit-button"
                 >
-                  {t("resetPassword.resetPassword")}
+                  {t('resetPassword.resetPassword')}
                 </Button>
               )}
             </form>
@@ -283,7 +274,7 @@ const ChooseNewPassword = ({ token }: { token: string }) => {
                 to="/login"
                 className="hover:text-ui-fg-base-hover focus-visible:text-ui-fg-base-hover text-ui-fg-base outline-none transition-fg"
                 data-testid="reset-password-choose-new-password-back-to-login-link"
-              />,
+              />
             ]}
           />
         </span>
@@ -297,13 +288,13 @@ export const ResetPassword = () => {
   const [searchParams] = useSearchParams();
   const [showAlert, setShowAlert] = useState(false);
 
-  const token = searchParams.get("token");
+  const token = searchParams.get('token');
 
   const form = useForm<z.infer<typeof ResetPasswordInstructionsSchema>>({
     resolver: zodResolver(ResetPasswordInstructionsSchema),
     defaultValues: {
-      email: "",
-    },
+      email: ''
+    }
   });
 
   const { mutateAsync, isPending } = useResetPasswordForEmailPass();
@@ -311,17 +302,17 @@ export const ResetPassword = () => {
   const handleSubmit = form.handleSubmit(async ({ email }) => {
     await mutateAsync(
       {
-        email,
+        email
       },
       {
         onSuccess: () => {
-          form.setValue("email", "");
+          form.setValue('email', '');
           setShowAlert(true);
         },
-        onError: (error) => {
+        onError: error => {
           toast.error(error.message);
-        },
-      },
+        }
+      }
     );
   });
 
@@ -343,15 +334,13 @@ export const ResetPassword = () => {
           className="mb-4 flex flex-col items-center"
           data-testid="reset-password-header"
         >
-          <Heading data-testid="reset-password-title">
-            {t("resetPassword.resetPassword")}
-          </Heading>
+          <Heading data-testid="reset-password-title">{t('resetPassword.resetPassword')}</Heading>
           <Text
             size="small"
             className="text-center text-ui-fg-subtle"
             data-testid="reset-password-hint"
           >
-            {t("resetPassword.hint")}
+            {t('resetPassword.hint')}
           </Text>
         </div>
         <div className="flex w-full flex-col gap-y-3">
@@ -372,7 +361,7 @@ export const ResetPassword = () => {
                           <Input
                             autoComplete="email"
                             {...field}
-                            placeholder={t("fields.email")}
+                            placeholder={t('fields.email')}
                             data-testid="reset-password-email-input"
                           />
                         </Form.Control>
@@ -390,9 +379,9 @@ export const ResetPassword = () => {
                 >
                   <div className="flex flex-col">
                     <span className="mb-1 text-ui-fg-base">
-                      {t("resetPassword.successfulRequestTitle")}
+                      {t('resetPassword.successfulRequestTitle')}
                     </span>
-                    <span>{t("resetPassword.successfulRequest")}</span>
+                    <span>{t('resetPassword.successfulRequest')}</span>
                   </div>
                 </Alert>
               )}
@@ -402,7 +391,7 @@ export const ResetPassword = () => {
                 isLoading={isPending}
                 data-testid="reset-password-submit-button"
               >
-                {t("resetPassword.sendResetInstructions")}
+                {t('resetPassword.sendResetInstructions')}
               </Button>
             </form>
           </Form>
@@ -419,7 +408,7 @@ export const ResetPassword = () => {
                 to="/login"
                 className="hover:text-ui-fg-base-hover focus-visible:text-ui-fg-base-hover text-ui-fg-base outline-none transition-fg"
                 data-testid="reset-password-back-to-login-link"
-              />,
+              />
             ]}
           />
         </span>

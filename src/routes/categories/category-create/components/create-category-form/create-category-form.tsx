@@ -7,14 +7,14 @@ import { useState } from "react"
 import {
   RouteFocusModal,
   useRouteModal,
-} from "../../../../../components/modals"
-import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import { useCreateProductCategory } from "../../../../../hooks/api/categories"
-import { transformNullableFormData } from "../../../../../lib/form-helpers"
+} from '@components/modals'
+import { KeyboundForm } from '@components/utilities/keybound-form'
+import { useCreateProductCategory } from '@hooks/api'
+import { transformNullableFormData } from '@lib/form-helpers'
 import { CreateCategoryDetails } from "./create-category-details"
 import { CreateCategoryNesting } from "./create-category-nesting"
 import { CreateCategoryDetailsSchema, CreateCategorySchema } from "./schema"
-import { useDocumentDirection } from "../../../../../hooks/use-document-direction"
+import { useDocumentDirection } from '@hooks/use-document-direction'
 
 type CreateCategoryFormProps = {
   parentCategoryId: string | null
@@ -26,8 +26,8 @@ enum Tab {
 }
 
 export const CreateCategoryForm = ({
-  parentCategoryId,
-}: CreateCategoryFormProps) => {
+                                     parentCategoryId,
+                                   }: CreateCategoryFormProps) => {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
   const direction = useDocumentDirection()
@@ -130,8 +130,8 @@ export const CreateCategoryForm = ({
         onSubmit={handleSubmit}
         className="flex size-full flex-col overflow-hidden"
       >
-         <ProgressTabs
-        dir={direction}value={activeTab}
+        <ProgressTabs
+          dir={direction}value={activeTab}
           onValueChange={(tab) => handleTabChange(tab as Tab)}
           className="flex size-full flex-col"
         >

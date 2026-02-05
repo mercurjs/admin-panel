@@ -1,38 +1,36 @@
-import { createColumnHelper } from "@tanstack/react-table";
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import { formatDate } from "../../../lib/date";
-import { VendorSeller } from "../../../types";
-import { SellerStatusBadge } from "../../../components/common/seller-status-badge";
+import { SellerStatusBadge } from '@components/common/seller-status-badge';
+import { formatDate } from '@lib/date';
+import { createColumnHelper } from '@tanstack/react-table';
+
+import type { VendorSeller } from '@/types';
 
 const columnHelper = createColumnHelper<VendorSeller>();
 
-export const useSellersTableColumns = () => {
-  return useMemo(
+export const useSellersTableColumns = () =>
+  useMemo(
     () => [
       columnHelper.display({
-        id: "email",
-        header: "Email",
-        cell: ({ row }) => row.original.email,
+        id: 'email',
+        header: 'Email',
+        cell: ({ row }) => row.original.email
       }),
       columnHelper.display({
-        id: "name",
-        header: "Name",
-        cell: ({ row }) => row.original.name,
+        id: 'name',
+        header: 'Name',
+        cell: ({ row }) => row.original.name
       }),
       columnHelper.display({
-        id: "store_status",
-        header: "Account Status",
-        cell: ({ row }) => (
-          <SellerStatusBadge status={row.original.store_status || "-"} />
-        ),
+        id: 'store_status',
+        header: 'Account Status',
+        cell: ({ row }) => <SellerStatusBadge status={row.original.store_status || '-'} />
       }),
       columnHelper.display({
-        id: "created_at",
-        header: "Created",
-        cell: ({ row }) => formatDate(row.original.created_at),
-      }),
+        id: 'created_at',
+        header: 'Created',
+        cell: ({ row }) => formatDate(row.original.created_at)
+      })
     ],
     []
   );
-};

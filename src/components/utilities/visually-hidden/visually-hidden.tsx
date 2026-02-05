@@ -1,5 +1,5 @@
-import { PropsWithChildren } from "react"
+import type { PropsWithChildren } from 'react';
 
-export const VisuallyHidden = ({ children }: PropsWithChildren) => {
-  return <span className="sr-only">{children}</span>
-}
+export const VisuallyHidden = ({ children }: PropsWithChildren) => (
+  <span className="sr-only">{children}</span>
+);

@@ -1,1 +1,1 @@
-export { OrderReceiveReturn as Component } from "./order-receive-return"
+export { OrderReceiveReturn as Component } from './order-receive-return';

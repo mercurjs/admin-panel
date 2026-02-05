@@ -1,32 +1,34 @@
-import { useParams } from "react-router-dom"
-
-import { AdminApiKeyResponse, AdminSalesChannelResponse } from "@medusajs/types"
-import { RouteFocusModal } from "../../../components/modals"
-import { useApiKey } from "../../../hooks/api/api-keys"
-import { ApiKeySalesChannelsForm } from "./components/api-key-sales-channels-form"
+import { RouteFocusModal } from '@components/modals';
+import { useApiKey } from '@hooks/api';
+import type { AdminApiKeyResponse, AdminSalesChannelResponse } from '@medusajs/types';
+import { ApiKeySalesChannelsForm } from '@routes/api-key-management/api-key-management-sales-channels/components/api-key-sales-channels-form';
+import { useParams } from 'react-router-dom';
 
 export const ApiKeyManagementAddSalesChannels = () => {
-  const { id } = useParams()
+  const { id } = useParams();
 
-  const { api_key, isLoading, isError, error } = useApiKey(id!)
+  const { api_key, isLoading, isError, error } = useApiKey(id!);
 
   const preSelected = (
-    api_key as AdminApiKeyResponse["api_key"] & {
-      sales_channels: AdminSalesChannelResponse["sales_channel"][] | null
+    api_key as AdminApiKeyResponse['api_key'] & {
+      sales_channels: AdminSalesChannelResponse['sales_channel'][] | null;
     }
-  )?.sales_channels?.map((sc) => sc.id)
+  )?.sales_channels?.map(sc => sc.id);
 
-  const ready = !isLoading && api_key
+  const ready = !isLoading && api_key;
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   return (
     <RouteFocusModal data-testid="publishable-api-key-sales-channels-modal">
       {ready && (
-        <ApiKeySalesChannelsForm apiKey={id!} preSelected={preSelected} />
+        <ApiKeySalesChannelsForm
+          apiKey={id!}
+          preSelected={preSelected}
+        />
       )}
     </RouteFocusModal>
-  )
-}
+  );
+};

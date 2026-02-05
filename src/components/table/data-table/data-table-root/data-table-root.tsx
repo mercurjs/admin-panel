@@ -1,11 +1,22 @@
-import { ComponentPropsWithoutRef, Fragment, UIEvent, useEffect, useRef, useState } from 'react';
+import {
+  Fragment,
+  useEffect,
+  useRef,
+  useState,
+  type ComponentPropsWithoutRef,
+  type UIEvent
+} from 'react';
 
+import { NoResults } from '@components/common/empty-table-content';
 import { clx, CommandBar, Table } from '@medusajs/ui';
-import { ColumnDef, flexRender, Table as ReactTable, Row } from '@tanstack/react-table';
+import {
+  flexRender,
+  type ColumnDef,
+  type Table as ReactTable,
+  type Row
+} from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-
-import { NoResults } from '../../../common/empty-table-content';
 
 type BulkCommand = {
   label: string;
@@ -21,6 +32,8 @@ export interface DataTableRootProps<TData> {
   /**
    * The columns to render
    */
+  // @todo fix any type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<TData, any>[];
   /**
    * Function to generate a link to navigate to when clicking on a row
@@ -130,53 +143,51 @@ export const DataTableRoot = <TData,>({
           <Table className="relative w-full">
             {!noHeader && (
               <Table.Header className="border-t-0">
-                {table.getHeaderGroups().map(headerGroup => {
-                  return (
-                    <Table.Row
-                      key={headerGroup.id}
-                      className={clx({
-                        'relative border-b-0 [&_th:last-of-type]:w-[1%] [&_th:last-of-type]:whitespace-nowrap':
-                          hasActions,
-                        '[&_th:first-of-type]:w-[1%] [&_th:first-of-type]:whitespace-nowrap':
-                          hasSelect
-                      })}
-                    >
-                      {headerGroup.headers.map((header, index) => {
-                        const isActionHeader = header.id === 'actions';
-                        const isSelectHeader = header.id === 'select';
-                        const isSpecialHeader = isActionHeader || isSelectHeader;
+                {table.getHeaderGroups().map(headerGroup => (
+                  <Table.Row
+                    key={headerGroup.id}
+                    className={clx({
+                      'relative border-b-0 [&_th:last-of-type]:w-[1%] [&_th:last-of-type]:whitespace-nowrap':
+                        hasActions,
+                      '[&_th:first-of-type]:w-[1%] [&_th:first-of-type]:whitespace-nowrap':
+                        hasSelect
+                    })}
+                  >
+                    {headerGroup.headers.map((header, index) => {
+                      const isActionHeader = header.id === 'actions';
+                      const isSelectHeader = header.id === 'select';
+                      const isSpecialHeader = isActionHeader || isSelectHeader;
 
-                        const firstHeader = headerGroup.headers.findIndex(h => h.id !== 'select');
-                        const isFirstHeader =
-                          firstHeader !== -1
-                            ? header.id === headerGroup.headers[firstHeader].id
-                            : index === 0;
+                      const firstHeader = headerGroup.headers.findIndex(h => h.id !== 'select');
+                      const isFirstHeader =
+                        firstHeader !== -1
+                          ? header.id === headerGroup.headers[firstHeader].id
+                          : index === 0;
 
-                        const isStickyHeader = isSelectHeader || isFirstHeader;
+                      const isStickyHeader = isSelectHeader || isFirstHeader;
 
-                        return (
-                          <Table.HeaderCell
-                            data-table-header-id={header.id}
-                            key={header.id}
-                            data-testid={`data-table-header-${header.id}`}
-                            style={{
-                              width: !isSpecialHeader ? `${colWidth}%` : undefined
-                            }}
-                            className={clx({
-                              "sticky left-0 bg-ui-bg-subtle after:absolute after:inset-y-0 after:right-0 after:h-full after:w-px after:bg-transparent after:content-['']":
-                                isStickyHeader,
-                              'left-[68px]': isStickyHeader && hasSelect && !isSelectHeader,
-                              'after:bg-ui-border-base':
-                                showStickyBorder && isStickyHeader && !isSpecialHeader
-                            })}
-                          >
-                            {flexRender(header.column.columnDef.header, header.getContext())}
-                          </Table.HeaderCell>
-                        );
-                      })}
-                    </Table.Row>
-                  );
-                })}
+                      return (
+                        <Table.HeaderCell
+                          data-table-header-id={header.id}
+                          key={header.id}
+                          data-testid={`data-table-header-${header.id}`}
+                          style={{
+                            width: !isSpecialHeader ? `${colWidth}%` : undefined
+                          }}
+                          className={clx({
+                            "sticky left-0 bg-ui-bg-subtle after:absolute after:inset-y-0 after:right-0 after:h-full after:w-px after:bg-transparent after:content-['']":
+                              isStickyHeader,
+                            'left-[68px]': isStickyHeader && hasSelect && !isSelectHeader,
+                            'after:bg-ui-border-base':
+                              showStickyBorder && isStickyHeader && !isSpecialHeader
+                          })}
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                        </Table.HeaderCell>
+                      );
+                    })}
+                  </Table.Row>
+                ))}
               </Table.Header>
             )}
             <Table.Body className="border-b-0">
@@ -227,7 +238,7 @@ export const DataTableRoot = <TData,>({
 
                       const Inner = flexRender(cell.column.columnDef.cell, cell.getContext());
 
-                            const isTabableLink = isFirstCell && !!to;
+                      const isTabableLink = isFirstCell && !!to;
                       const shouldRenderAsLink = !!to && !isSelectCell;
 
                       return (

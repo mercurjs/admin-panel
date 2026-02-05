@@ -1,22 +1,20 @@
-import { HttpTypes } from "@medusajs/types"
-import { UIMatch } from "react-router-dom"
-import { usePromotion } from "../../../hooks/api"
+import { usePromotion } from '@hooks/api';
+import type { HttpTypes } from '@medusajs/types';
+import type { UIMatch } from 'react-router-dom';
 
-type PromotionDetailBreadcrumbProps = UIMatch<HttpTypes.AdminPromotionResponse>
+type PromotionDetailBreadcrumbProps = UIMatch<HttpTypes.AdminPromotionResponse>;
 
-export const PromotionDetailBreadcrumb = (
-  props: PromotionDetailBreadcrumbProps
-) => {
-  const { id } = props.params || {}
+export const PromotionDetailBreadcrumb = (props: PromotionDetailBreadcrumbProps) => {
+  const { id } = props.params || {};
 
   const { promotion } = usePromotion(id!, {
     initialData: props.data,
-    enabled: Boolean(id),
-  })
+    enabled: Boolean(id)
+  });
 
   if (!promotion) {
-    return null
+    return null;
   }
 
-  return <span>{promotion.code}</span>
-}
+  return <span>{promotion.code}</span>;
+};

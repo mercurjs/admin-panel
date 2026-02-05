@@ -8,8 +8,8 @@ import { ExtendedReservationItem } from "../../../../inventory/inventory-detail/
 import { toast } from "@medusajs/ui"
 
 export const ReservationActions = ({
-  reservation,
-}: {
+                                     reservation,
+                                   }: {
   reservation: ExtendedReservationItem
 }) => {
   const { t } = useTranslation()

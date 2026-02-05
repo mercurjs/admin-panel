@@ -1,21 +1,21 @@
-import { PencilSquare, Trash } from "@medusajs/icons"
-import { HttpTypes } from "@medusajs/types"
-import { useTranslation } from "react-i18next"
-import { ActionMenu } from "../../../../../components/common/action-menu"
-import { useDeleteShippingOptionTypeAction } from "../../../common/hooks/use-delete-shipping-option-type-action"
+import { ActionMenu } from '@components/common/action-menu';
+import { PencilSquare, Trash } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { useDeleteShippingOptionTypeAction } from '@routes/shipping-option-types/common/hooks/use-delete-shipping-option-type-action';
+import { useTranslation } from 'react-i18next';
 
 type ShippingOptionTypeRowActionsProps = {
-  shippingOptionType: HttpTypes.AdminShippingOptionType
-}
+  shippingOptionType: HttpTypes.AdminShippingOptionType;
+};
 
 export const ShippingOptionTypeRowActions = ({
-  shippingOptionType,
+  shippingOptionType
 }: ShippingOptionTypeRowActionsProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const handleDelete = useDeleteShippingOptionTypeAction(
     shippingOptionType.id,
     shippingOptionType.label
-  )
+  );
 
   return (
     <ActionMenu
@@ -23,23 +23,23 @@ export const ShippingOptionTypeRowActions = ({
         {
           actions: [
             {
-              label: t("actions.edit"),
+              label: t('actions.edit'),
               icon: <PencilSquare />,
-              to: `/settings/locations/shipping-option-types/${shippingOptionType.id}/edit`,
-            },
-          ],
+              to: `/settings/locations/shipping-option-types/${shippingOptionType.id}/edit`
+            }
+          ]
         },
         {
           actions: [
             {
-              label: t("actions.delete"),
+              label: t('actions.delete'),
               icon: <Trash />,
-              onClick: handleDelete,
-            },
-          ],
-        },
+              onClick: handleDelete
+            }
+          ]
+        }
       ]}
       data-testid={`shipping-option-type-list-table-action-menu-${shippingOptionType.id}`}
     />
-  )
-}
+  );
+};

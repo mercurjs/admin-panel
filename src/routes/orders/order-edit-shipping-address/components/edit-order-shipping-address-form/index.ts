@@ -1,1 +1,1 @@
-export * from "./edit-order-shipping-address-form"
+export * from './edit-order-shipping-address-form';

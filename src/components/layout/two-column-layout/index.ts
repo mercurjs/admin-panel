@@ -1,1 +1,1 @@
-export * from "./two-column-layout";
+export * from './two-column-layout';

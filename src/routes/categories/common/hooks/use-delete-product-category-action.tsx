@@ -1,49 +1,45 @@
-import { HttpTypes } from "@medusajs/types"
-import { toast, usePrompt } from "@medusajs/ui"
-import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
-import { useDeleteProductCategory } from "../../../../hooks/api/categories"
+import { useDeleteProductCategory } from '@hooks/api';
+import type { HttpTypes } from '@medusajs/types';
+import { toast, usePrompt } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
-export const useDeleteProductCategoryAction = (
-  category: HttpTypes.AdminProductCategory
-) => {
-  const { t } = useTranslation()
-  const navigate = useNavigate()
-  const prompt = usePrompt()
+export const useDeleteProductCategoryAction = (category: HttpTypes.AdminProductCategory) => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const prompt = usePrompt();
 
-  const { mutateAsync } = useDeleteProductCategory(category.id)
+  const { mutateAsync } = useDeleteProductCategory(category.id);
 
-  const handleDelete = async () => {
+  return async () => {
     const res = await prompt({
-      title: t("general.areYouSure"),
-      description: t("categories.delete.confirmation", {
-        name: category.name,
+      title: t('general.areYouSure'),
+      description: t('categories.delete.confirmation', {
+        name: category.name
       }),
-      confirmText: t("actions.delete"),
-      cancelText: t("actions.cancel"),
-    })
+      confirmText: t('actions.delete'),
+      cancelText: t('actions.cancel')
+    });
 
     if (!res) {
-      return
+      return;
     }
 
     await mutateAsync(undefined, {
       onSuccess: () => {
         toast.success(
-          t("categories.delete.successToast", {
-            name: category.name,
+          t('categories.delete.successToast', {
+            name: category.name
           })
-        )
+        );
 
-        navigate("/categories", {
-          replace: true,
-        })
+        navigate('/categories', {
+          replace: true
+        });
       },
-      onError: (e) => {
-        toast.error(e.message)
-      },
-    })
-  }
-
-  return handleDelete
-}
+      onError: e => {
+        toast.error(e.message);
+      }
+    });
+  };
+};

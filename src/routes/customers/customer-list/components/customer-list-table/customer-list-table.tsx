@@ -1,58 +1,71 @@
-import { PencilSquare } from "@medusajs/icons"
-import { Button, Container, Heading } from "@medusajs/ui"
-import { keepPreviousData } from "@tanstack/react-query"
-import { createColumnHelper } from "@tanstack/react-table"
-import { useMemo } from "react"
-import { useTranslation } from "react-i18next"
-import { Link } from "react-router-dom"
+import { useMemo } from 'react';
 
-import { HttpTypes } from "@medusajs/types"
-import { ActionMenu } from "../../../../../components/common/action-menu"
-import { _DataTable } from "../../../../../components/table/data-table"
-import { useCustomers } from "../../../../../hooks/api/customers"
-import { useCustomerTableColumns } from "../../../../../hooks/table/columns/use-customer-table-columns"
-import { useCustomerTableFilters } from "../../../../../hooks/table/filters/use-customer-table-filters"
-import { useCustomerTableQuery } from "../../../../../hooks/table/query/use-customer-table-query"
-import { useDataTable } from "../../../../../hooks/use-data-table"
+import { ActionMenu } from '@components/common/action-menu';
+import { _DataTable } from '@components/table/data-table';
+import { useCustomers } from '@hooks/api';
+import { useCustomerTableColumns } from '@hooks/table/columns';
+import { useCustomerTableFilters } from '@hooks/table/filters';
+import { useCustomerTableQuery } from '@hooks/table/query';
+import { useDataTable } from '@hooks/use-data-table';
+import { PencilSquare } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Button, Container, Heading } from '@medusajs/ui';
+import { keepPreviousData } from '@tanstack/react-query';
+import { createColumnHelper } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 20;
 
 export const CustomerListTable = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const { searchParams, raw } = useCustomerTableQuery({ pageSize: PAGE_SIZE })
+  const { searchParams, raw } = useCustomerTableQuery({ pageSize: PAGE_SIZE });
   const { customers, count, isLoading, isError, error } = useCustomers(
     {
-      ...searchParams,
+      ...searchParams
     },
     {
-      placeholderData: keepPreviousData,
+      placeholderData: keepPreviousData
     }
-  )
+  );
 
-  const filters = useCustomerTableFilters()
-  const columns = useColumns()
+  const filters = useCustomerTableFilters();
+  const columns = useColumns();
 
   const { table } = useDataTable({
     data: customers ?? [],
     columns,
     count,
     enablePagination: true,
-    getRowId: (row) => row.id,
-    pageSize: PAGE_SIZE,
-  })
+    getRowId: row => row.id,
+    pageSize: PAGE_SIZE
+  });
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   return (
-    <Container className="divide-y p-0" data-testid="customer-list-container">
-      <div className="flex items-center justify-between px-6 py-4" data-testid="customer-list-header">
-        <Heading data-testid="customer-list-heading">{t("customers.domain")}</Heading>
-        <Link to="/customers/create" data-testid="customer-list-create-link">
-          <Button size="small" variant="secondary" data-testid="customer-list-create-button">
-            {t("actions.create")}
+    <Container
+      className="divide-y p-0"
+      data-testid="customer-list-container"
+    >
+      <div
+        className="flex items-center justify-between px-6 py-4"
+        data-testid="customer-list-header"
+      >
+        <Heading data-testid="customer-list-heading">{t('customers.domain')}</Heading>
+        <Link
+          to="/customers/create"
+          data-testid="customer-list-create-link"
+        >
+          <Button
+            size="small"
+            variant="secondary"
+            data-testid="customer-list-create-button"
+          >
+            {t('actions.create')}
           </Button>
         </Link>
       </div>
@@ -63,31 +76,27 @@ export const CustomerListTable = () => {
         count={count}
         filters={filters}
         orderBy={[
-          { key: "email", label: t("fields.email") },
-          { key: "first_name", label: t("fields.firstName") },
-          { key: "last_name", label: t("fields.lastName") },
-          { key: "has_account", label: t("customers.hasAccount") },
-          { key: "created_at", label: t("fields.createdAt") },
-          { key: "updated_at", label: t("fields.updatedAt") },
+          { key: 'email', label: t('fields.email') },
+          { key: 'first_name', label: t('fields.firstName') },
+          { key: 'last_name', label: t('fields.lastName') },
+          { key: 'has_account', label: t('customers.hasAccount') },
+          { key: 'created_at', label: t('fields.createdAt') },
+          { key: 'updated_at', label: t('fields.updatedAt') }
         ]}
         isLoading={isLoading}
-        navigateTo={(row) => row.original.id}
+        navigateTo={row => row.original.id}
         search
         queryObject={raw}
         noRecords={{
-          message: t("customers.list.noRecordsMessage"),
+          message: t('customers.list.noRecordsMessage')
         }}
       />
     </Container>
-  )
-}
+  );
+};
 
-const CustomerActions = ({
-  customer,
-}: {
-  customer: HttpTypes.AdminCustomer
-}) => {
-  const { t } = useTranslation()
+const CustomerActions = ({ customer }: { customer: HttpTypes.AdminCustomer }) => {
+  const { t } = useTranslation();
 
   return (
     <ActionMenu
@@ -97,29 +106,29 @@ const CustomerActions = ({
           actions: [
             {
               icon: <PencilSquare />,
-              label: t("actions.edit"),
-              to: `/customers/${customer.id}/edit`,
-            },
-          ],
-        },
+              label: t('actions.edit'),
+              to: `/customers/${customer.id}/edit`
+            }
+          ]
+        }
       ]}
     />
-  )
-}
+  );
+};
 
-const columnHelper = createColumnHelper<HttpTypes.AdminCustomer>()
+const columnHelper = createColumnHelper<HttpTypes.AdminCustomer>();
 
 const useColumns = () => {
-  const columns = useCustomerTableColumns()
+  const columns = useCustomerTableColumns();
 
   return useMemo(
     () => [
       ...columns,
       columnHelper.display({
-        id: "actions",
-        cell: ({ row }) => <CustomerActions customer={row.original} />,
-      }),
+        id: 'actions',
+        cell: ({ row }) => <CustomerActions customer={row.original} />
+      })
     ],
     [columns]
-  )
-}
+  );
+};

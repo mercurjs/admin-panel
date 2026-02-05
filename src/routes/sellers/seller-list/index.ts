@@ -1,1 +1,1 @@
-export { SellersList as Component } from "./seller-list";
+export { SellersList as Component } from './seller-list';

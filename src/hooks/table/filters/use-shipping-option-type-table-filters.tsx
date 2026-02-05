@@ -1,5 +1,3 @@
-import { useDateTableFilters } from "./use-date-table-filters"
+import { useDateTableFilters } from './use-date-table-filters';
 
-export const useShippingOptionTypeTableFilters = () => {
-  return useDateTableFilters()
-}
+export const useShippingOptionTypeTableFilters = () => useDateTableFilters();

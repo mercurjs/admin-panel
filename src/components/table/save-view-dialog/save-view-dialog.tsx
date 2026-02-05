@@ -1,35 +1,32 @@
-import type React from 'react'
-import { useState } from "react"
+import type React from 'react';
+import { useState } from 'react';
+
 import {
-  Button,
-  Input,
-  Label,
-  Drawer,
-  Heading,
-  Text,
-} from "@medusajs/ui"
-import { useForm } from "react-hook-form"
-import { useViewConfigurations, useViewConfiguration } from "../../../hooks/use-view-configurations"
-import type { ViewConfiguration } from "../../../hooks/use-view-configurations"
+  useViewConfiguration,
+  useViewConfigurations,
+  type ViewConfiguration
+} from '@hooks/use-view-configurations';
+import { Button, Drawer, Heading, Input, Label, Text } from '@medusajs/ui';
+import { useForm } from 'react-hook-form';
 
 type SaveViewFormData = {
-  name: string
-}
+  name: string;
+};
 
 interface SaveViewDialogProps {
-  entity: string
+  entity: string;
   currentColumns?: {
-    visible: string[]
-    order: string[]
-  }
+    visible: string[];
+    order: string[];
+  };
   currentConfiguration?: {
-    filters?: Record<string, unknown>
-    sorting?: { id: string; desc: boolean } | null
-    search?: string
-  }
-  editingView?: ViewConfiguration | null
-  onClose: () => void
-  onSaved: (view: ViewConfiguration) => void
+    filters?: Record<string, unknown>;
+    sorting?: { id: string; desc: boolean } | null;
+    search?: string;
+  };
+  editingView?: ViewConfiguration | null;
+  onClose: () => void;
+  onSaved: (view: ViewConfiguration) => void;
 }
 
 export const SaveViewDialog: React.FC<SaveViewDialogProps> = ({
@@ -38,28 +35,28 @@ export const SaveViewDialog: React.FC<SaveViewDialogProps> = ({
   currentConfiguration,
   editingView,
   onClose,
-  onSaved,
+  onSaved
 }) => {
-  const { createView } = useViewConfigurations(entity)
-  const { updateView } = useViewConfiguration(entity, editingView?.id || '')
-  const [isLoading, setIsLoading] = useState(false)
+  const { createView } = useViewConfigurations(entity);
+  const { updateView } = useViewConfiguration(entity, editingView?.id || '');
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }
   } = useForm<SaveViewFormData>({
     defaultValues: {
-      name: editingView?.name || "",
-    },
-  })
+      name: editingView?.name || ''
+    }
+  });
 
   const onSubmit = async (data: SaveViewFormData) => {
     if (!data.name.trim()) {
-      return
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       if (editingView) {
         // Update existing view
@@ -70,10 +67,10 @@ export const SaveViewDialog: React.FC<SaveViewDialogProps> = ({
             column_order: currentColumns?.order || editingView.configuration.column_order,
             filters: currentConfiguration?.filters || editingView.configuration.filters || {},
             sorting: currentConfiguration?.sorting || editingView.configuration.sorting || null,
-            search: currentConfiguration?.search || editingView.configuration.search || "",
-          },
-        })
-        onSaved(result.view_configuration)
+            search: currentConfiguration?.search || editingView.configuration.search || ''
+          }
+        });
+        onSaved(result.view_configuration);
       } else {
         // Create new view
         const result = await createView.mutateAsync({
@@ -84,55 +81,60 @@ export const SaveViewDialog: React.FC<SaveViewDialogProps> = ({
             column_order: currentColumns?.order || [],
             filters: currentConfiguration?.filters || {},
             sorting: currentConfiguration?.sorting || null,
-            search: currentConfiguration?.search || "",
-          },
-        })
-        onSaved(result.view_configuration)
+            search: currentConfiguration?.search || ''
+          }
+        });
+        onSaved(result.view_configuration);
       }
     } catch (error) {
       // Error is handled by the hook
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <Drawer open onOpenChange={onClose}>
+    <Drawer
+      open
+      onOpenChange={onClose}
+    >
       <Drawer.Content className="flex flex-col">
         <Drawer.Header>
           <Drawer.Title asChild>
-            <Heading>
-              {editingView ? "Edit View Name" : "Save as New View"}
-            </Heading>
+            <Heading>{editingView ? 'Edit View Name' : 'Save as New View'}</Heading>
           </Drawer.Title>
           <Drawer.Description asChild>
             <Text>
               {editingView
-                ? "Change the name of your saved view"
-                : "Save your current configuration as a new view"}
+                ? 'Change the name of your saved view'
+                : 'Save your current configuration as a new view'}
             </Text>
           </Drawer.Description>
         </Drawer.Header>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 flex-col">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-1 flex-col"
+        >
           <Drawer.Body className="flex-1">
             <div className="flex flex-col gap-y-2">
-              <Label htmlFor="name" weight="plus">
+              <Label
+                htmlFor="name"
+                weight="plus"
+              >
                 View Name
               </Label>
               <Input
-                {...register("name", {
-                  required: "Name is required",
-                  validate: value => value.trim().length > 0 || "Name cannot be empty"
+                {...register('name', {
+                  required: 'Name is required',
+                  validate: value => value.trim().length > 0 || 'Name cannot be empty'
                 })}
                 type="text"
                 placeholder="Enter view name"
                 autoFocus
               />
               {errors.name && (
-                <span className="text-sm text-ui-fg-error">
-                  {errors.name.message}
-                </span>
+                <span className="text-sm text-ui-fg-error">{errors.name.message}</span>
               )}
             </div>
           </Drawer.Body>
@@ -153,11 +155,11 @@ export const SaveViewDialog: React.FC<SaveViewDialogProps> = ({
               type="submit"
               isLoading={isLoading}
             >
-              {editingView ? "Update" : "Save"}
+              {editingView ? 'Update' : 'Save'}
             </Button>
           </Drawer.Footer>
         </form>
       </Drawer.Content>
     </Drawer>
-  )
-}
+  );
+};

@@ -1,47 +1,46 @@
-import { useParams, useSearchParams } from "react-router-dom"
-
-import { RouteFocusModal } from "../../../components/modals"
-import { useStockLocation } from "../../../hooks/api/stock-locations"
-import { CreateShippingOptionsForm } from "./components/create-shipping-options-form"
-import { LOC_CREATE_SHIPPING_OPTION_FIELDS } from "./constants"
-import { FulfillmentSetType } from "../common/constants"
+import { RouteFocusModal } from '@components/modals';
+import { useStockLocation } from '@hooks/api';
+import type { FulfillmentSetType } from '@routes/locations/common/constants.ts';
+import { CreateShippingOptionsForm } from '@routes/locations/location-service-zone-shipping-option-create/components/create-shipping-options-form';
+import { LOC_CREATE_SHIPPING_OPTION_FIELDS } from '@routes/locations/location-service-zone-shipping-option-create/constants.ts';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 export function LocationServiceZoneShippingOptionCreate() {
-  const { location_id, fset_id, zone_id } = useParams()
-  const [searchParams] = useSearchParams()
-  const isReturn = searchParams.has("is_return")
+  const { location_id, fset_id, zone_id } = useParams();
+  const [searchParams] = useSearchParams();
+  const isReturn = searchParams.has('is_return');
 
-  const { stock_location, isPending, isFetching, isError, error } =
-    useStockLocation(location_id!, {
-      fields: LOC_CREATE_SHIPPING_OPTION_FIELDS,
-    })
+  const { stock_location, isPending, isFetching, isError, error } = useStockLocation(location_id!, {
+    fields: LOC_CREATE_SHIPPING_OPTION_FIELDS
+  });
 
-  const fulfillmentSet = stock_location?.fulfillment_sets?.find(
-    (f) => f.id === fset_id
-  )
+  const fulfillmentSet = stock_location?.fulfillment_sets?.find(f => f.id === fset_id);
 
   if (!isPending && !isFetching && !fulfillmentSet) {
     throw new Response(
       JSON.stringify({ message: `Fulfillment set with ID ${fset_id} was not found` }),
-      { status: 404, headers: { "Content-Type": "application/json" } }
-    )
+      { status: 404, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 
-  const zone = fulfillmentSet?.service_zones?.find((z) => z.id === zone_id)
+  const zone = fulfillmentSet?.service_zones?.find(z => z.id === zone_id);
 
   if (!isPending && !isFetching && !zone) {
     throw new Response(
       JSON.stringify({ message: `Service zone with ID ${zone_id} was not found` }),
-      { status: 404, headers: { "Content-Type": "application/json" } }
-    )
+      { status: 404, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   return (
-    <RouteFocusModal prev={`/settings/locations/${location_id}`} data-testid="location-shipping-option-create-modal">
+    <RouteFocusModal
+      prev={`/settings/locations/${location_id}`}
+      data-testid="location-shipping-option-create-modal"
+    >
       {zone && (
         <CreateShippingOptionsForm
           zone={zone}
@@ -51,5 +50,5 @@ export function LocationServiceZoneShippingOptionCreate() {
         />
       )}
     </RouteFocusModal>
-  )
+  );
 }

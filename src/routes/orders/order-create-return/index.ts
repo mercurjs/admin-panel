@@ -1,1 +1,1 @@
-export { ReturnCreate as Component } from "./return-create"
+export { ReturnCreate as Component } from './return-create';

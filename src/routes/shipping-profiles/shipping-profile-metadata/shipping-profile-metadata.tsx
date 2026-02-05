@@ -1,23 +1,16 @@
-import { useParams } from "react-router-dom"
-import { MetadataForm } from "@components/forms/metadata-form/metadata-form"
-import {
-  useShippingProfile,
-  useUpdateShippingProfile,
-} from "@hooks/api"
-import { FetchError } from "@medusajs/js-sdk"
+import { MetadataForm } from '@components/forms/metadata-form/metadata-form';
+import { useShippingProfile, useUpdateShippingProfile } from '@hooks/api';
+import { FetchError } from '@medusajs/js-sdk';
+import { useParams } from 'react-router-dom';
 
 export const ShippingProfileMetadata = () => {
-  const { shipping_profile_id } = useParams()
+  const { shipping_profile_id } = useParams();
 
-  const { shipping_profile, isPending, isError, error } = useShippingProfile(
-    shipping_profile_id!
-  )
-  const { mutateAsync, isPending: isMutating } = useUpdateShippingProfile(
-    shipping_profile_id!
-  )
+  const { shipping_profile, isPending, isError, error } = useShippingProfile(shipping_profile_id!);
+  const { mutateAsync, isPending: isMutating } = useUpdateShippingProfile(shipping_profile_id!);
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   const handleSubmit = async (
@@ -26,17 +19,17 @@ export const ShippingProfileMetadata = () => {
   ) => {
     try {
       const result = await mutateAsync({
-        metadata: params.metadata === undefined ? undefined : params.metadata,
-      })
-      callbacks.onSuccess?.()
+        metadata: params.metadata === undefined ? undefined : params.metadata
+      });
+      callbacks.onSuccess?.();
 
-      return result
+      return result;
     } catch (error) {
-      const message = error instanceof FetchError ? error.message : 'An error occurred'
-      callbacks.onError?.(message)
-      throw error
+      const message = error instanceof FetchError ? error.message : 'An error occurred';
+      callbacks.onError?.(message);
+      throw error;
     }
-  }
+  };
 
   return (
     <MetadataForm
@@ -45,5 +38,5 @@ export const ShippingProfileMetadata = () => {
       isPending={isPending}
       isMutating={isMutating}
     />
-  )
-}
+  );
+};

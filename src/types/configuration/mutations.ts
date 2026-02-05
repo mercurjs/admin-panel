@@ -1,11 +1,11 @@
-import { ConfigurationRuleType } from './common'
+import type { ConfigurationRuleType } from '@/types';
 
 export interface CreateConfigurationRuleDTO {
-  rule_type: ConfigurationRuleType
-  is_enabled: boolean
+  rule_type: ConfigurationRuleType;
+  is_enabled: boolean;
 }
 
 export interface UpdateConfigurationRuleDTO {
-  id: string
-  is_enabled: boolean
+  id: string;
+  is_enabled: boolean;
 }

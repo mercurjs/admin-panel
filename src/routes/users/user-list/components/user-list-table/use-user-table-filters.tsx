@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 
+import type { Filter } from '@components/table/data-table';
 import { useTranslation } from 'react-i18next';
-
-import { Filter } from '../../../../../components/table/data-table';
 
 export const useUserTableFilters = (): Filter[] => {
   const { t } = useTranslation();

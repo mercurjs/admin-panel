@@ -1,9 +1,8 @@
-import { useParams } from "react-router-dom";
-
-import { MetadataForm } from "@components/forms/metadata-form"
-import { RouteDrawer } from "@components/modals"
-import { useUpdateUser, useUser } from "@hooks/api"
-import { FetchError } from "@medusajs/js-sdk"
+import { MetadataForm } from '@components/forms/metadata-form';
+import { RouteDrawer } from '@components/modals';
+import { useUpdateUser, useUser } from '@hooks/api';
+import { FetchError } from '@medusajs/js-sdk';
+import { useParams } from 'react-router-dom';
 
 export const UserMetadata = () => {
   const { id } = useParams();
@@ -21,17 +20,17 @@ export const UserMetadata = () => {
   ) => {
     try {
       const result = await mutateAsync({
-        metadata: params.metadata === undefined ? undefined : params.metadata,
-      })
-      callbacks.onSuccess?.()
+        metadata: params.metadata === undefined ? undefined : params.metadata
+      });
+      callbacks.onSuccess?.();
 
-      return result
+      return result;
     } catch (error) {
-      const message = error instanceof FetchError ? error.message : 'An error occurred'
-      callbacks.onError?.(message)
-      throw error
+      const message = error instanceof FetchError ? error.message : 'An error occurred';
+      callbacks.onError?.(message);
+      throw error;
     }
-  }
+  };
 
   return (
     <RouteDrawer data-testid="user-metadata-drawer">

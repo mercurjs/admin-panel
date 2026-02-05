@@ -1,27 +1,38 @@
-import { PencilSquare } from "@medusajs/icons"
-import { HttpTypes } from "@medusajs/types"
-import { Container, Heading } from "@medusajs/ui"
-import { useTranslation } from "react-i18next"
-import { ActionMenu } from "../../../../../components/common/action-menu"
-import { DateRangeDisplay } from "../../../../../components/common/date-range-display"
-import { ListSummary } from "../../../../../components/common/list-summary"
-import { Skeleton } from "../../../../../components/common/skeleton"
-import { useCustomerGroups } from "../../../../../hooks/api/customer-groups"
+import { ActionMenu } from '@components/common/action-menu';
+import { DateRangeDisplay } from '@components/common/date-range-display';
+import { ListSummary } from '@components/common/list-summary';
+import { Skeleton } from '@components/common/skeleton';
+import { useCustomerGroups } from '@hooks/api';
+import { PencilSquare } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Container, Heading } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
 
 type PriceListConfigurationSectionProps = {
-  priceList: HttpTypes.AdminPriceList
-}
+  priceList: HttpTypes.AdminPriceList;
+};
 
 export const PriceListConfigurationSection = ({
-  priceList,
+  priceList
 }: PriceListConfigurationSectionProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
-    <Container className="flex flex-col gap-y-4" data-testid="price-list-configuration-section-container">
-      <div className="flex items-center justify-between" data-testid="price-list-configuration-section-header">
+    <Container
+      className="flex flex-col gap-y-4"
+      data-testid="price-list-configuration-section-container"
+    >
+      <div
+        className="flex items-center justify-between"
+        data-testid="price-list-configuration-section-header"
+      >
         <div>
-          <Heading level="h2" data-testid="price-list-configuration-section-heading">{t("priceLists.configuration.header")}</Heading>
+          <Heading
+            level="h2"
+            data-testid="price-list-configuration-section-heading"
+          >
+            {t('priceLists.configuration.header')}
+          </Heading>
           <CustomerGroupDisplay priceList={priceList} />
         </div>
         <ActionMenu
@@ -29,12 +40,12 @@ export const PriceListConfigurationSection = ({
             {
               actions: [
                 {
-                  label: t("actions.edit"),
-                  to: "configuration",
-                  icon: <PencilSquare />,
-                },
-              ],
-            },
+                  label: t('actions.edit'),
+                  to: 'configuration',
+                  icon: <PencilSquare />
+                }
+              ]
+            }
           ]}
           data-testid="price-list-configuration-section-action-menu"
         />
@@ -47,52 +58,46 @@ export const PriceListConfigurationSection = ({
         data-testid="price-list-configuration-section-date-range"
       />
     </Container>
-  )
-}
+  );
+};
 
-const CustomerGroupDisplay = ({
-  priceList,
-}: {
-  priceList: HttpTypes.AdminPriceList
-}) => {
-  const { t } = useTranslation()
+const CustomerGroupDisplay = ({ priceList }: { priceList: HttpTypes.AdminPriceList }) => {
+  const { t } = useTranslation();
 
-  const customerGroupIds = priceList.rules["customer.groups.id"] as
-    | string[]
-    | undefined
+  const customerGroupIds = priceList.rules['customer.groups.id'] as string[] | undefined;
 
   const { customer_groups, isPending, isError, error } = useCustomerGroups(
     {
-      id: customerGroupIds,
+      id: customerGroupIds
     },
     {
-      enabled: !!customerGroupIds?.length,
+      enabled: !!customerGroupIds?.length
     }
-  )
+  );
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   if (!customerGroupIds?.length) {
-    return null
+    return null;
   }
 
   if (isPending || !customer_groups) {
-    return <Skeleton className="h-5 w-full max-w-48" />
+    return <Skeleton className="h-5 w-full max-w-48" />;
   }
 
   return (
-    <div className="txt-small-plus text-ui-fg-muted flex items-center gap-x-1.5">
+    <div className="txt-small-plus flex items-center gap-x-1.5 text-ui-fg-muted">
       <span className="text-ui-fg-subtle">
-        {t("priceLists.fields.customerAvailability.attribute")}
+        {t('priceLists.fields.customerAvailability.attribute')}
       </span>
       <span>·</span>
       <ListSummary
-        list={customer_groups.map((group) => group.name!)}
+        list={customer_groups.map(group => group.name!)}
         n={1}
         className="txt-small-plus text-ui-fg-muted"
       />
     </div>
-  )
-}
+  );
+};

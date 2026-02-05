@@ -1,33 +1,35 @@
-import { Command } from "../../../hooks/use-command-history"
+// @todo fix types
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Command } from '@hooks/use-command-history.tsx';
 
 export type DataGridUpdateCommandArgs = {
-  prev: any
-  next: any
-  setter: (value: any) => void
-}
+  prev: any;
+  next: any;
+  setter: (value: any) => void;
+};
 
 export class DataGridUpdateCommand implements Command {
-  private _prev: any
-  private _next: any
+  private _prev: any;
+  private _next: any;
 
-  private _setter: (value: any) => void
+  private _setter: (value: any) => void;
 
   constructor({ prev, next, setter }: DataGridUpdateCommandArgs) {
-    this._prev = prev
-    this._next = next
+    this._prev = prev;
+    this._next = next;
 
-    this._setter = setter
+    this._setter = setter;
   }
 
   execute(): void {
-    this._setter(this._next)
+    this._setter(this._next);
   }
 
   undo(): void {
-    this._setter(this._prev)
+    this._setter(this._prev);
   }
 
   redo(): void {
-    this.execute()
+    this.execute();
   }
 }

@@ -1,4 +1,5 @@
-import { createContext } from "react"
-import { KeybindContextState } from "./types"
+import { createContext } from 'react';
 
-export const KeybindContext = createContext<KeybindContextState | null>(null)
+import type { KeybindContextState } from './types';
+
+export const KeybindContext = createContext<KeybindContextState | null>(null);

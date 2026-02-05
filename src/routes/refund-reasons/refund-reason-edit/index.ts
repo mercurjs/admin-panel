@@ -1,1 +1,1 @@
-export { RefundReasonEdit as Component } from "./refund-reason-edit"
+export { RefundReasonEdit as Component } from './refund-reason-edit';

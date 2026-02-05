@@ -1,10 +1,9 @@
-import { MouseEvent } from "react";
+import type { MouseEvent } from 'react';
 
-import { XMarkMini } from "@medusajs/icons";
-import { Text, clx } from "@medusajs/ui";
-
-import { Popover as RadixPopover } from "radix-ui";
-import { useTranslation } from "react-i18next";
+import { XMarkMini } from '@medusajs/icons';
+import { clx, Text } from '@medusajs/ui';
+import { Popover as RadixPopover } from 'radix-ui';
+import { useTranslation } from 'react-i18next';
 
 export type FilterChipProps = {
   hadPreviousValue?: boolean;
@@ -13,7 +12,7 @@ export type FilterChipProps = {
   readonly?: boolean;
   hasOperator?: boolean;
   onRemove: () => void;
-  "data-testid"?: string;
+  'data-testid'?: string;
 };
 
 const FilterChip = ({
@@ -23,7 +22,7 @@ const FilterChip = ({
   readonly,
   hasOperator,
   onRemove,
-  "data-testid": dataTestId,
+  'data-testid': dataTestId
 }: FilterChipProps) => {
   const { t } = useTranslation();
 
@@ -39,15 +38,16 @@ const FilterChip = ({
     >
       {!hadPreviousValue && <RadixPopover.Anchor />}
       <div
-        className={clx(
-          "flex items-center justify-center whitespace-nowrap px-2 py-1",
-          {
-            "border-r": !!(value || hadPreviousValue),
-          },
-        )}
+        className={clx('flex items-center justify-center whitespace-nowrap px-2 py-1', {
+          'border-r': !!(value || hadPreviousValue)
+        })}
         data-testid={dataTestId ? `${dataTestId}-label` : undefined}
       >
-        <Text size="small" weight="plus" leading="compact">
+        <Text
+          size="small"
+          weight="plus"
+          leading="compact"
+        >
           {label}
         </Text>
       </div>
@@ -63,20 +63,17 @@ const FilterChip = ({
               leading="compact"
               className="text-ui-fg-muted"
             >
-              {t("general.is")}
+              {t('general.is')}
             </Text>
           </div>
         )}
         {!!(value || hadPreviousValue) && (
           <RadixPopover.Trigger
             asChild
-            className={clx(
-              "flex-1 cursor-pointer overflow-hidden border-r p-1 px-2",
-              {
-                "hover:bg-ui-bg-field-hover": !readonly,
-                "data-[state=open]:bg-ui-bg-field-hover": !readonly,
-              },
-            )}
+            className={clx('flex-1 cursor-pointer overflow-hidden border-r p-1 px-2', {
+              'hover:bg-ui-bg-field-hover': !readonly,
+              'data-[state=open]:bg-ui-bg-field-hover': !readonly
+            })}
             data-testid={dataTestId ? `${dataTestId}-value` : undefined}
           >
             <Text
@@ -85,7 +82,7 @@ const FilterChip = ({
               weight="plus"
               className="truncate text-nowrap"
             >
-              {value || "\u00A0"}
+              {value || '\u00A0'}
             </Text>
           </RadixPopover.Trigger>
         )}
@@ -94,9 +91,9 @@ const FilterChip = ({
         <button
           onClick={handleRemove}
           className={clx(
-            "flex items-center justify-center p-1 text-ui-fg-muted transition-fg",
-            "hover:bg-ui-bg-subtle-hover",
-            "active:bg-ui-bg-subtle-pressed active:text-ui-fg-base",
+            'flex items-center justify-center p-1 text-ui-fg-muted transition-fg',
+            'hover:bg-ui-bg-subtle-hover',
+            'active:bg-ui-bg-subtle-pressed active:text-ui-fg-base'
           )}
           data-testid={dataTestId ? `${dataTestId}-remove` : undefined}
         >

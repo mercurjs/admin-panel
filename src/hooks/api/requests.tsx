@@ -1,16 +1,15 @@
-import { sdk } from "@lib/client";
-import { queryKeysFactory } from "@lib/query-key-factory";
+import type { AdminRequest, AdminReviewRequest } from '@custom-types/requests';
+import { sdk } from '@lib/client';
+import { queryKeysFactory } from '@lib/query-key-factory';
 import {
-  type QueryKey,
-  type UseMutationOptions,
-  type UseQueryOptions,
   useMutation,
   useQuery,
-} from "@tanstack/react-query";
+  type QueryKey,
+  type UseMutationOptions,
+  type UseQueryOptions
+} from '@tanstack/react-query';
 
-import type { AdminRequest, AdminReviewRequest } from "@custom-types/requests";
-
-export const requestsQueryKeys = queryKeysFactory("requests");
+export const requestsQueryKeys = queryKeysFactory('requests');
 
 export const useVendorRequests = (
   query?: Record<string, string | number | undefined>,
@@ -24,17 +23,17 @@ export const useVendorRequests = (
       },
       QueryKey
     >,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...other } = useQuery({
     queryKey: requestsQueryKeys.list(query),
     queryFn: () =>
-      sdk.client.fetch<Record<string, string | number>>("/admin/requests", {
-        method: "GET",
-        query,
+      sdk.client.fetch<Record<string, string | number>>('/admin/requests', {
+        method: 'GET',
+        query
       }),
-    ...options,
+    ...options
   });
 
   return { ...data, ...other };
@@ -44,16 +43,16 @@ export const useVendorRequest = (
   id: string,
   options?: Omit<
     UseQueryOptions<unknown, Error, { request?: AdminRequest }, QueryKey>,
-    "queryFn" | "queryKey"
-  >,
+    'queryFn' | 'queryKey'
+  >
 ) => {
   const { data, ...other } = useQuery({
     queryKey: requestsQueryKeys.detail(id),
     queryFn: () =>
       sdk.client.fetch(`/admin/requests/${id}`, {
-        method: "GET",
+        method: 'GET'
       }),
-    ...options,
+    ...options
   });
 
   return { ...data, ...other };
@@ -64,14 +63,14 @@ export const useReviewRequest = (
     { id?: string; status?: string },
     Error,
     { id: string; payload: AdminReviewRequest }
-  >,
+  >
 ) => {
   return useMutation({
     mutationFn: ({ id, payload }) =>
       sdk.client.fetch(`/admin/requests/${id}`, {
-        method: "POST",
-        body: payload,
+        method: 'POST',
+        body: payload
       }),
-    ...options,
+    ...options
   });
 };

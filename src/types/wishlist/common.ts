@@ -1,25 +1,21 @@
-import type {
-  PriceDTO,
-  ProductDTO,
-  ProductVariantDTO
-} from '@medusajs/types'
+import type { PriceDTO, ProductDTO, ProductVariantDTO } from '@medusajs/types';
 
 export interface WishlistProductVariantDTO extends ProductVariantDTO {
-  prices: PriceDTO[]
+  prices: PriceDTO[];
 }
 
 export interface WishlistProduct extends ProductDTO {
-  variants: WishlistProductVariantDTO[]
+  variants: WishlistProductVariantDTO[];
 }
 
 export type Wishlist = {
-  id: string
-  products: WishlistProduct[]
-}
+  id: string;
+  products: WishlistProduct[];
+};
 
 export type WishlistItem = {
-  wishlist_id: string
-  wishlist: Wishlist
-}
+  wishlist_id: string;
+  wishlist: Wishlist;
+};
 
-export type WishlistResponse = WishlistItem[]
+export type WishlistResponse = WishlistItem[];

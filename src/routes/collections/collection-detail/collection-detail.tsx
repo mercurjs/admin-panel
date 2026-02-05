@@ -1,38 +1,41 @@
-import { useLoaderData, useParams } from "react-router-dom"
-
-import { SingleColumnPageSkeleton } from "../../../components/common/skeleton"
-import { SingleColumnPage } from "../../../components/layout/pages"
-import { useCollection } from "../../../hooks/api/collections"
-import { useExtension } from "../../../providers/extension-provider"
-import { CollectionGeneralSection } from "./components/collection-general-section"
-import { CollectionProductSection } from "./components/collection-product-section"
-import { collectionLoader } from "./loader"
+import { SingleColumnPageSkeleton } from '@components/common/skeleton';
+import { SingleColumnPage } from '@components/layout/pages';
+import { useCollection } from '@hooks/api';
+import { useExtension } from '@providers/extension-provider';
+import { CollectionGeneralSection } from '@routes/collections/collection-detail/components/collection-general-section';
+import { CollectionProductSection } from '@routes/collections/collection-detail/components/collection-product-section';
+import type { collectionLoader } from '@routes/collections/collection-detail/loader.ts';
+import { useLoaderData, useParams } from 'react-router-dom';
 
 export const CollectionDetail = () => {
-  const initialData = useLoaderData() as Awaited<
-    ReturnType<typeof collectionLoader>
-  >
+  const initialData = useLoaderData() as Awaited<ReturnType<typeof collectionLoader>>;
 
-  const { id } = useParams()
+  const { id } = useParams();
   const { collection, isLoading, isError, error } = useCollection(id!, {
-    initialData,
-  })
+    initialData
+  });
 
-  const { getWidgets } = useExtension()
+  const { getWidgets } = useExtension();
 
   if (isLoading || !collection) {
-    return <SingleColumnPageSkeleton sections={2} showJSON showMetadata />
+    return (
+      <SingleColumnPageSkeleton
+        sections={2}
+        showJSON
+        showMetadata
+      />
+    );
   }
 
   if (isError) {
-    throw error
+    throw error;
   }
 
   return (
     <SingleColumnPage
       widgets={{
-        after: getWidgets("product_collection.details.after"),
-        before: getWidgets("product_collection.details.before"),
+        after: getWidgets('product_collection.details.after'),
+        before: getWidgets('product_collection.details.before')
       }}
       showJSON
       showMetadata
@@ -41,5 +44,5 @@ export const CollectionDetail = () => {
       <CollectionGeneralSection collection={collection} />
       <CollectionProductSection collection={collection} />
     </SingleColumnPage>
-  )
-}
+  );
+};

@@ -1,26 +1,37 @@
-import { PencilSquare } from "@medusajs/icons"
-import { HttpTypes } from "@medusajs/types"
-import { Container, Heading, Text } from "@medusajs/ui"
-import { useTranslation } from "react-i18next"
-import { ActionMenu } from "../../../../../components/common/action-menu"
-import { languages } from "../../../../../i18n/languages"
+import { ActionMenu } from '@components/common/action-menu';
+import { PencilSquare } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Container, Heading, Text } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
+
+import { languages } from '@/i18n/languages.ts';
 
 type ProfileGeneralSectionProps = {
-  user: HttpTypes.AdminUser
-}
+  user: HttpTypes.AdminUser;
+};
 
 export const ProfileGeneralSection = ({ user }: ProfileGeneralSectionProps) => {
-  const { i18n, t } = useTranslation()
+  const { i18n, t } = useTranslation();
 
-  const name = [user.first_name, user.last_name].filter(Boolean).join(" ")
+  const name = [user.first_name, user.last_name].filter(Boolean).join(' ');
 
   return (
-    <Container className="divide-y p-0" data-testid="profile-general-section">
-      <div className="flex items-center justify-between px-6 py-4" data-testid="profile-general-section-header">
+    <Container
+      className="divide-y p-0"
+      data-testid="profile-general-section"
+    >
+      <div
+        className="flex items-center justify-between px-6 py-4"
+        data-testid="profile-general-section-header"
+      >
         <div>
-          <Heading data-testid="profile-general-section-heading">{t("profile.domain")}</Heading>
-          <Text className="text-ui-fg-subtle" size="small" data-testid="profile-general-section-description">
-            {t("profile.manageYourProfileDetails")}
+          <Heading data-testid="profile-general-section-heading">{t('profile.domain')}</Heading>
+          <Text
+            className="text-ui-fg-subtle"
+            size="small"
+            data-testid="profile-general-section-description"
+          >
+            {t('profile.manageYourProfileDetails')}
           </Text>
         </div>
         <ActionMenu
@@ -28,39 +39,74 @@ export const ProfileGeneralSection = ({ user }: ProfileGeneralSectionProps) => {
             {
               actions: [
                 {
-                  label: t("actions.edit"),
-                  to: "edit",
-                  icon: <PencilSquare />,
-                },
-              ],
-            },
+                  label: t('actions.edit'),
+                  to: 'edit',
+                  icon: <PencilSquare />
+                }
+              ]
+            }
           ]}
           data-testid="profile-general-section-action-menu"
         />
       </div>
-      <div className="text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4" data-testid="profile-general-section-name-row">
-        <Text size="small" leading="compact" weight="plus" data-testid="profile-general-section-name-label">
-          {t("fields.name")}
+      <div
+        className="grid grid-cols-2 items-center px-6 py-4 text-ui-fg-subtle"
+        data-testid="profile-general-section-name-row"
+      >
+        <Text
+          size="small"
+          leading="compact"
+          weight="plus"
+          data-testid="profile-general-section-name-label"
+        >
+          {t('fields.name')}
         </Text>
-        <Text size="small" leading="compact" data-testid="profile-general-section-name-value">
-          {name || "-"}
+        <Text
+          size="small"
+          leading="compact"
+          data-testid="profile-general-section-name-value"
+        >
+          {name || '-'}
         </Text>
       </div>
-      <div className="grid grid-cols-2 items-center px-6 py-4" data-testid="profile-general-section-email-row">
-        <Text size="small" leading="compact" weight="plus" data-testid="profile-general-section-email-label">
-          {t("fields.email")}
+      <div
+        className="grid grid-cols-2 items-center px-6 py-4"
+        data-testid="profile-general-section-email-row"
+      >
+        <Text
+          size="small"
+          leading="compact"
+          weight="plus"
+          data-testid="profile-general-section-email-label"
+        >
+          {t('fields.email')}
         </Text>
-        <Text size="small" leading="compact" data-testid="profile-general-section-email-value">
+        <Text
+          size="small"
+          leading="compact"
+          data-testid="profile-general-section-email-value"
+        >
           {user.email}
         </Text>
       </div>
-      <div className="grid grid-cols-2 items-center px-6 py-4" data-testid="profile-general-section-language-row">
-        <Text size="small" leading="compact" weight="plus" data-testid="profile-general-section-language-label">
-          {t("profile.fields.languageLabel")}
+      <div
+        className="grid grid-cols-2 items-center px-6 py-4"
+        data-testid="profile-general-section-language-row"
+      >
+        <Text
+          size="small"
+          leading="compact"
+          weight="plus"
+          data-testid="profile-general-section-language-label"
+        >
+          {t('profile.fields.languageLabel')}
         </Text>
-        <Text size="small" leading="compact" data-testid="profile-general-section-language-value">
-          {languages.find((lang) => lang.code === i18n.language)
-            ?.display_name || "-"}
+        <Text
+          size="small"
+          leading="compact"
+          data-testid="profile-general-section-language-value"
+        >
+          {languages.find(lang => lang.code === i18n.language)?.display_name || '-'}
         </Text>
       </div>
       {/* TODO: Do we want to implement usage insights in V2? */}
@@ -73,5 +119,5 @@ export const ProfileGeneralSection = ({ user }: ProfileGeneralSectionProps) => {
         </StatusBadge>
       </div> */}
     </Container>
-  )
-}
+  );
+};

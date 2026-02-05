@@ -1,18 +1,16 @@
 import { useMemo } from 'react';
 
+import { RouteFocusModal, useRouteModal } from '@components/modals';
+import { KeyboundForm } from '@components/utilities/keybound-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { HttpTypes } from '@medusajs/types';
+import { useRegions, useUpdateProductVariantsBatch } from '@hooks/api';
+import { castNumber } from '@lib/cast-number';
+import type { HttpTypes } from '@medusajs/types';
 import { Button } from '@medusajs/ui';
+import { VariantPricingForm } from '@routes/products/common/variant-pricing-form.tsx';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import * as zod from 'zod';
-
-import { RouteFocusModal, useRouteModal } from '../../../components/modals';
-import { KeyboundForm } from '../../../components/utilities/keybound-form';
-import { useUpdateProductVariantsBatch } from '../../../hooks/api/products';
-import { useRegions } from '../../../hooks/api/regions';
-import { castNumber } from '../../../lib/cast-number';
-import { VariantPricingForm } from '../common/variant-pricing-form';
 
 export const UpdateVariantPricesSchema = zod.object({
   variants: zod.array(
@@ -43,6 +41,7 @@ export const PricingEdit = ({
 
     return regions.reduce((acc, reg) => {
       acc[reg.id] = reg.currency_code;
+
       return acc;
     }, {});
   }, [regions]);
@@ -51,16 +50,23 @@ export const PricingEdit = ({
 
   const form = useForm<UpdateVariantPricesSchemaType>({
     defaultValues: {
+      // @todo fix any type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       variants: variants?.map((variant: any) => ({
         title: variant.title,
+        // @todo fix any type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         prices: variant.prices.reduce((acc: any, price: any) => {
           if (price.rules?.region_id) {
             acc[price.rules.region_id] = price.amount;
           } else {
             acc[price.currency_code] = price.amount;
           }
+
           return acc;
         }, {})
+        // @todo fix any type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       })) as any
     },
 
@@ -126,6 +132,8 @@ export const PricingEdit = ({
         >
           <div data-testid="product-prices-form-variant-pricing-wrapper">
             <VariantPricingForm
+              // @todo fix any type
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               form={form as any}
               data-testid="product-prices-form-variant-pricing"
             />

@@ -1,1 +1,1 @@
-export * from "./shipping-option-type-list-table"
+export * from './shipping-option-type-list-table';

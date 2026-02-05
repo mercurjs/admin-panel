@@ -1,25 +1,26 @@
-import { FetchError } from "@medusajs/js-sdk"
-import { HttpTypes, PaginatedResponse } from "@medusajs/types"
+import { sdk } from '@lib/client';
+import { queryClient } from '@lib/query-client.ts';
+import { queryKeysFactory } from '@lib/query-key-factory';
+import type { FetchError } from '@medusajs/js-sdk';
+import type { HttpTypes, PaginatedResponse } from '@medusajs/types';
 import {
-  QueryKey,
-  UseMutationOptions,
-  UseQueryOptions,
   useMutation,
   useQuery,
-} from "@tanstack/react-query"
-import { sdk } from "../../lib/client"
-import { queryClient } from "../../lib/query-client"
-import { queryKeysFactory } from "../../lib/query-key-factory"
-import { customerGroupsQueryKeys } from "./customer-groups"
+  type QueryKey,
+  type UseMutationOptions,
+  type UseQueryOptions
+} from '@tanstack/react-query';
 
-const CUSTOMERS_QUERY_KEY = "customers" as const
-export const customersQueryKeys = queryKeysFactory(CUSTOMERS_QUERY_KEY)
-export const customerAddressesQueryKeys = queryKeysFactory(
-  `${CUSTOMERS_QUERY_KEY}-addresses`
-)
+import { customerGroupsQueryKeys } from './customer-groups';
+
+const CUSTOMERS_QUERY_KEY = 'customers' as const;
+export const customersQueryKeys = queryKeysFactory(CUSTOMERS_QUERY_KEY);
+export const customerAddressesQueryKeys = queryKeysFactory(`${CUSTOMERS_QUERY_KEY}-addresses`);
 
 export const useCustomer = (
   id: string,
+  // @todo fix any type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query?: Record<string, any>,
   options?: Omit<
     UseQueryOptions<
@@ -28,19 +29,21 @@ export const useCustomer = (
       { customer: HttpTypes.AdminCustomer },
       QueryKey
     >,
-    "queryFn" | "queryKey"
+    'queryFn' | 'queryKey'
   >
 ) => {
   const { data, ...rest } = useQuery({
     queryKey: customersQueryKeys.detail(id),
     queryFn: async () => sdk.admin.customer.retrieve(id, query),
-    ...options,
-  })
+    ...options
+  });
 
-  return { ...data, ...rest }
-}
+  return { ...data, ...rest };
+};
 
 export const useCustomers = (
+  // @todo fix any type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query?: Record<string, any>,
   options?: Omit<
     UseQueryOptions<
@@ -49,17 +52,17 @@ export const useCustomers = (
       PaginatedResponse<{ customers: HttpTypes.AdminCustomer[] }>,
       QueryKey
     >,
-    "queryFn" | "queryKey"
+    'queryFn' | 'queryKey'
   >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.customer.list(query),
     queryKey: customersQueryKeys.list(query),
-    ...options,
-  })
+    ...options
+  });
 
-  return { ...data, ...rest }
-}
+  return { ...data, ...rest };
+};
 
 export const useCreateCustomer = (
   options?: UseMutationOptions<
@@ -69,14 +72,14 @@ export const useCreateCustomer = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload) => sdk.admin.customer.create(payload),
+    mutationFn: payload => sdk.admin.customer.create(payload),
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() })
-      options?.onSuccess?.(data, variables, context)
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() });
+      options?.onSuccess?.(data, variables, context);
     },
-    ...options,
-  })
-}
+    ...options
+  });
+};
 
 export const useUpdateCustomer = (
   id: string,
@@ -87,38 +90,34 @@ export const useUpdateCustomer = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload) => sdk.admin.customer.update(id, payload),
+    mutationFn: payload => sdk.admin.customer.update(id, payload),
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: customersQueryKeys.detail(id) })
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.detail(id) });
 
-      options?.onSuccess?.(data, variables, context)
+      options?.onSuccess?.(data, variables, context);
     },
-    ...options,
-  })
-}
+    ...options
+  });
+};
 
 export const useDeleteCustomer = (
   id: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminCustomerDeleteResponse,
-    FetchError,
-    void
-  >
+  options?: UseMutationOptions<HttpTypes.AdminCustomerDeleteResponse, FetchError, void>
 ) => {
   return useMutation({
     mutationFn: () => sdk.admin.customer.delete(id),
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() });
       queryClient.invalidateQueries({
-        queryKey: customersQueryKeys.detail(id),
-      })
+        queryKey: customersQueryKeys.detail(id)
+      });
 
-      options?.onSuccess?.(data, variables, context)
+      options?.onSuccess?.(data, variables, context);
     },
-    ...options,
-  })
-}
+    ...options
+  });
+};
 
 export const useBatchCustomerCustomerGroups = (
   id: string,
@@ -129,28 +128,27 @@ export const useBatchCustomerCustomerGroups = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload) =>
-      sdk.admin.customer.batchCustomerGroups(id, payload),
+    mutationFn: payload => sdk.admin.customer.batchCustomerGroups(id, payload),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
-        queryKey: customerGroupsQueryKeys.details(),
-      })
+        queryKey: customerGroupsQueryKeys.details()
+      });
       queryClient.invalidateQueries({
-        queryKey: customerGroupsQueryKeys.lists(),
-      })
+        queryKey: customerGroupsQueryKeys.lists()
+      });
 
       queryClient.invalidateQueries({
-        queryKey: customersQueryKeys.lists(),
-      })
+        queryKey: customersQueryKeys.lists()
+      });
       queryClient.invalidateQueries({
-        queryKey: customersQueryKeys.details(),
-      })
+        queryKey: customersQueryKeys.details()
+      });
 
-      options?.onSuccess?.(data, variables, context)
+      options?.onSuccess?.(data, variables, context);
     },
-    ...options,
-  })
-}
+    ...options
+  });
+};
 
 export const useCreateCustomerAddress = (
   id: string,
@@ -161,19 +159,19 @@ export const useCreateCustomerAddress = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload) => sdk.admin.customer.createAddress(id, payload),
+    mutationFn: payload => sdk.admin.customer.createAddress(id, payload),
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: customersQueryKeys.detail(id) })
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.detail(id) });
       queryClient.invalidateQueries({
-        queryKey: customerAddressesQueryKeys.list(id),
-      })
+        queryKey: customerAddressesQueryKeys.list(id)
+      });
 
-      options?.onSuccess?.(data, variables, context)
+      options?.onSuccess?.(data, variables, context);
     },
-    ...options,
-  })
-}
+    ...options
+  });
+};
 
 export const useUpdateCustomerAddress = (
   id: string,
@@ -185,47 +183,43 @@ export const useUpdateCustomerAddress = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload) =>
-      sdk.admin.customer.updateAddress(id, addressId, payload),
+    mutationFn: payload => sdk.admin.customer.updateAddress(id, addressId, payload),
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: customersQueryKeys.detail(id) })
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.detail(id) });
       queryClient.invalidateQueries({
-        queryKey: customerAddressesQueryKeys.list(id),
-      })
+        queryKey: customerAddressesQueryKeys.list(id)
+      });
 
-      options?.onSuccess?.(data, variables, context)
+      options?.onSuccess?.(data, variables, context);
     },
-    ...options,
-  })
-}
+    ...options
+  });
+};
 
 export const useDeleteCustomerAddress = (
   id: string,
-  options?: UseMutationOptions<
-    HttpTypes.AdminCustomerResponse,
-    FetchError,
-    string
-  >
+  options?: UseMutationOptions<HttpTypes.AdminCustomerResponse, FetchError, string>
 ) => {
   return useMutation({
-    mutationFn: (addressId: string) =>
-      sdk.admin.customer.deleteAddress(id, addressId),
+    mutationFn: (addressId: string) => sdk.admin.customer.deleteAddress(id, addressId),
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: customersQueryKeys.detail(id) })
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.detail(id) });
       queryClient.invalidateQueries({
-        queryKey: customerAddressesQueryKeys.list(id),
-      })
+        queryKey: customerAddressesQueryKeys.list(id)
+      });
 
-      options?.onSuccess?.(data, variables, context)
+      options?.onSuccess?.(data, variables, context);
     },
-    ...options,
-  })
-}
+    ...options
+  });
+};
 
 export const useListCustomerAddresses = (
   id: string,
+  // @todo fix any type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query?: Record<string, any>,
   options?: UseQueryOptions<
     HttpTypes.AdminCustomerResponse,
@@ -237,11 +231,11 @@ export const useListCustomerAddresses = (
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.customer.listAddresses(id, query),
     queryKey: customerAddressesQueryKeys.list(id),
-    ...options,
-  })
+    ...options
+  });
 
-  return { ...data, ...rest }
-}
+  return { ...data, ...rest };
+};
 
 export const useCustomerAddress = (
   id: string,
@@ -256,8 +250,8 @@ export const useCustomerAddress = (
   const { data, ...rest } = useQuery({
     queryFn: () => sdk.admin.customer.retrieveAddress(id, addressId),
     queryKey: customerAddressesQueryKeys.detail(id),
-    ...options,
-  })
+    ...options
+  });
 
-  return { ...data, ...rest }
-}
+  return { ...data, ...rest };
+};

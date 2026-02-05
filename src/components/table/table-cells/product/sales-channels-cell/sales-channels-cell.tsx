@@ -1,69 +1,80 @@
-import { Tooltip } from "@medusajs/ui"
-import { useTranslation } from "react-i18next"
-
-import { SalesChannelDTO } from "@medusajs/types"
-import { PlaceholderCell } from "../../common/placeholder-cell"
+import { PlaceholderCell } from '@components/table/table-cells/common/placeholder-cell';
+import type { SalesChannelDTO } from '@medusajs/types';
+import { Tooltip } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
 
 type SalesChannelsCellProps = {
-  salesChannels?: SalesChannelDTO[] | null
-  "data-testid"?: string
-}
+  salesChannels?: SalesChannelDTO[] | null;
+  'data-testid'?: string;
+};
 
 export const SalesChannelsCell = ({
   salesChannels,
-  "data-testid": dataTestId,
+  'data-testid': dataTestId
 }: SalesChannelsCellProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   if (!salesChannels || !salesChannels.length) {
-    return <PlaceholderCell />
+    return <PlaceholderCell />;
   }
 
   if (salesChannels.length > 2) {
     return (
       <div className="flex h-full w-full items-center gap-x-1 overflow-hidden">
-        <span className="truncate" data-testid={dataTestId}>
+        <span
+          className="truncate"
+          data-testid={dataTestId}
+        >
           {salesChannels
             .slice(0, 2)
-            .map((sc) => sc.name)
-            .join(", ")}
+            .map(sc => sc.name)
+            .join(', ')}
         </span>
         <Tooltip
           content={
             <ul>
-              {salesChannels.slice(2).map((sc) => (
+              {salesChannels.slice(2).map(sc => (
                 <li key={sc.id}>{sc.name}</li>
               ))}
             </ul>
           }
         >
           <span className="text-xs">
-            {t("general.plusCountMore", {
-              count: salesChannels.length - 2,
+            {t('general.plusCountMore', {
+              count: salesChannels.length - 2
             })}
           </span>
         </Tooltip>
       </div>
-    )
+    );
   }
 
-  const channels = salesChannels.map((sc) => sc.name).join(", ")
+  const channels = salesChannels.map(sc => sc.name).join(', ');
 
   return (
-    <div className="flex h-full w-full items-center overflow-hidden max-w-[250px]">
-      <span title={channels} className="truncate" data-testid={dataTestId}>
+    <div className="flex h-full w-full max-w-[250px] items-center overflow-hidden">
+      <span
+        title={channels}
+        className="truncate"
+        data-testid={dataTestId}
+      >
         {channels}
       </span>
     </div>
-  )
-}
+  );
+};
 
 export const SalesChannelHeader = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
-    <div className="flex h-full w-full items-center" data-testid="products-table-header-sales-channels">
-      <span data-testid="products-table-header-sales-channels-text">{t("fields.salesChannels")}</span>
+    <div
+      className="flex h-full w-full items-center"
+      data-testid="products-table-header-sales-channels"
+    >
+      <span data-testid="products-table-header-sales-channels-text">
+        {t('fields.salesChannels')}
+      </span>
     </div>
-  )
-}
+  );
+};

@@ -2,7 +2,7 @@ import { Avatar, Copy, Text } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 import { HttpTypes } from "@medusajs/types"
-import { getFormattedAddress, isSameAddress } from "../../../lib/addresses"
+import { getFormattedAddress, isSameAddress } from '@lib/addresses'
 
 const ID = ({ data }: { data: HttpTypes.AdminOrder }) => {
   const { t } = useTranslation()
@@ -107,9 +107,9 @@ const Contact = ({ data }: { data: HttpTypes.AdminOrder }) => {
 }
 
 const AddressPrint = ({
-  address,
-  type,
-}: {
+                        address,
+                        type,
+                      }: {
   address:
     | HttpTypes.AdminOrder["shipping_address"]
     | HttpTypes.AdminOrder["billing_address"]
@@ -193,9 +193,9 @@ export const CustomerInfo = Object.assign(
 
 const getOrderCustomer = (obj: HttpTypes.AdminOrder) => {
   const { first_name: sFirstName, last_name: sLastName } =
-    obj.shipping_address || {}
+  obj.shipping_address || {}
   const { first_name: bFirstName, last_name: bLastName } =
-    obj.billing_address || {}
+  obj.billing_address || {}
   const { first_name: cFirstName, last_name: cLastName } = obj.customer || {}
 
   const customerName = [cFirstName, cLastName].filter(Boolean).join(" ")

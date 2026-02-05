@@ -1,40 +1,27 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo } from 'react';
 
-import { PencilSquare, Trash } from "@medusajs/icons";
-import { HttpTypes } from "@medusajs/types";
-import {
-  Container,
-  createDataTableColumnHelper,
-  toast,
-  usePrompt,
-} from "@medusajs/ui";
-
-import { keepPreviousData } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-
-import { DataTable } from "../../../../../components/data-table";
-import {
-  useDeleteRefundReasonLazy,
-  useRefundReasons,
-} from "../../../../../hooks/api";
-import { useRefundReasonTableColumns } from "../../../../../hooks/table/columns";
-import { useRefundReasonTableQuery } from "../../../../../hooks/table/query";
+import { DataTable } from '@components/data-table';
+import { useDeleteRefundReasonLazy, useRefundReasons } from '@hooks/api';
+import { useRefundReasonTableColumns } from '@hooks/table/columns';
+import { useRefundReasonTableQuery } from '@hooks/table/query';
+import { PencilSquare, Trash } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Container, createDataTableColumnHelper, toast, usePrompt } from '@medusajs/ui';
+import { keepPreviousData } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 const PAGE_SIZE = 20;
 
 export const RefundReasonListTable = () => {
   const { t } = useTranslation();
   const { searchParams } = useRefundReasonTableQuery({
-    pageSize: PAGE_SIZE,
+    pageSize: PAGE_SIZE
   });
 
-  const { refund_reasons, count, isLoading, isError, error } = useRefundReasons(
-    searchParams,
-    {
-      placeholderData: keepPreviousData,
-    },
-  );
+  const { refund_reasons, count, isLoading, isError, error } = useRefundReasons(searchParams, {
+    placeholderData: keepPreviousData
+  });
 
   const columns = useColumns();
 
@@ -43,29 +30,32 @@ export const RefundReasonListTable = () => {
   }
 
   return (
-    <Container className="divide-y px-0 py-0" data-testid="refund-reason-list-table-container">
+    <Container
+      className="divide-y px-0 py-0"
+      data-testid="refund-reason-list-table-container"
+    >
       <DataTable
         data={refund_reasons}
         columns={columns}
         rowCount={count}
         pageSize={PAGE_SIZE}
-        getRowId={(row) => row.id}
-        heading={t("refundReasons.domain")}
-        subHeading={t("refundReasons.subtitle")}
+        getRowId={row => row.id}
+        heading={t('refundReasons.domain')}
+        subHeading={t('refundReasons.subtitle')}
         emptyState={{
           empty: {
-            heading: t("general.noRecordsMessage"),
+            heading: t('general.noRecordsMessage')
           },
           filtered: {
-            heading: t("general.noRecordsMessage"),
-            description: t("general.noRecordsMessageFiltered"),
-          },
+            heading: t('general.noRecordsMessage'),
+            description: t('general.noRecordsMessageFiltered')
+          }
         }}
         actions={[
           {
-            label: t("actions.create"),
-            to: "create",
-          },
+            label: t('actions.create'),
+            to: 'create'
+          }
         ]}
         isLoading={isLoading}
         enableSearch={true}
@@ -87,12 +77,12 @@ const useColumns = () => {
   const handleDelete = useCallback(
     async (refundReason: HttpTypes.AdminRefundReason) => {
       const confirm = await prompt({
-        title: t("general.areYouSure"),
-        description: t("refundReasons.delete.confirmation", {
-          label: refundReason.label,
+        title: t('general.areYouSure'),
+        description: t('refundReasons.delete.confirmation', {
+          label: refundReason.label
         }),
-        confirmText: t("actions.delete"),
-        cancelText: t("actions.cancel"),
+        confirmText: t('actions.delete'),
+        cancelText: t('actions.cancel')
       });
 
       if (!confirm) {
@@ -101,41 +91,38 @@ const useColumns = () => {
 
       await mutateAsync(refundReason.id, {
         onSuccess: () => {
-          toast.success(t("refundReasons.delete.successToast"));
+          toast.success(t('refundReasons.delete.successToast'));
         },
-        onError: (e) => {
+        onError: e => {
           toast.error(e.message);
-        },
+        }
       });
     },
-    [t, prompt, mutateAsync],
+    [t, prompt, mutateAsync]
   );
 
   return useMemo(
     () => [
       ...base,
       columnHelper.action({
-        actions: (ctx) => [
+        actions: ctx => [
           [
             {
               icon: <PencilSquare />,
-              label: t("actions.edit"),
-              onClick: () =>
-                navigate(
-                  `/settings/refund-reasons/${ctx.row.original.id}/edit`,
-                ),
-            },
+              label: t('actions.edit'),
+              onClick: () => navigate(`/settings/refund-reasons/${ctx.row.original.id}/edit`)
+            }
           ],
           [
             {
               icon: <Trash />,
-              label: t("actions.delete"),
-              onClick: () => handleDelete(ctx.row.original),
-            },
-          ],
-        ],
-      }),
+              label: t('actions.delete'),
+              onClick: () => handleDelete(ctx.row.original)
+            }
+          ]
+        ]
+      })
     ],
-    [base, handleDelete, navigate, t],
+    [base, handleDelete, navigate, t]
   );
 };

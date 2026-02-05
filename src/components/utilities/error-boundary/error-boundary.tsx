@@ -1,30 +1,35 @@
-import { ExclamationCircle } from "@medusajs/icons"
-import { Text } from "@medusajs/ui"
-import { useTranslation } from "react-i18next"
-import { Navigate, useLocation, useRouteError } from "react-router-dom"
-
-import { getAuthToken, isTokenExpired } from "@lib/client"
-import { isFetchError } from "@lib/is-fetch-error"
+import { getAuthToken, isTokenExpired } from '@lib/client';
+import { isFetchError } from '@lib/is-fetch-error';
+import { ExclamationCircle } from '@medusajs/icons';
+import { Text } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
+import { Navigate, useLocation, useRouteError } from 'react-router-dom';
 
 export const ErrorBoundary = () => {
-  const error = useRouteError()
-  const location = useLocation()
-  const { t } = useTranslation()
+  const error = useRouteError();
+  const location = useLocation();
+  const { t } = useTranslation();
 
-  let code: number | null = null
+  let code: number | null = null;
 
   if (isFetchError(error)) {
     if (error.status === 401) {
-      const token = getAuthToken()
+      const token = getAuthToken();
 
       if (isTokenExpired(token)) {
-        localStorage.removeItem("medusa_auth_token")
+        localStorage.removeItem('medusa_auth_token');
 
-        return <Navigate to="/login?reason=unauthorized" state={{ from: location }} replace />
+        return (
+          <Navigate
+            to="/login?reason=unauthorized"
+            state={{ from: location }}
+            replace
+          />
+        );
       }
     }
 
-    code = error.status ?? null
+    code = error.status ?? null;
   }
 
   /**
@@ -33,44 +38,48 @@ export const ErrorBoundary = () => {
    * react-router-dom will sometimes swallow the error,
    * so this ensures that we always log it.
    */
-  if (process.env.NODE_ENV === "development") {
-    console.error(error)
+  if (process.env.NODE_ENV === 'development') {
+    console.error(error);
   }
 
-  let title: string
-  let message: string
+  let title: string;
+  let message: string;
 
   switch (code) {
     case 400:
-      title = t("errorBoundary.badRequestTitle")
-      message = t("errorBoundary.badRequestMessage")
-      break
+      title = t('errorBoundary.badRequestTitle');
+      message = t('errorBoundary.badRequestMessage');
+      break;
     case 404:
-      title = t("errorBoundary.notFoundTitle")
-      message = t("errorBoundary.notFoundMessage")
-      break
+      title = t('errorBoundary.notFoundTitle');
+      message = t('errorBoundary.notFoundMessage');
+      break;
     case 500:
-      title = t("errorBoundary.internalServerErrorTitle")
-      message = t("errorBoundary.internalServerErrorMessage")
-      break
+      title = t('errorBoundary.internalServerErrorTitle');
+      message = t('errorBoundary.internalServerErrorMessage');
+      break;
     default:
-      title = t("errorBoundary.defaultTitle")
-      message = t("errorBoundary.defaultMessage")
-      break
+      title = t('errorBoundary.defaultTitle');
+      message = t('errorBoundary.defaultMessage');
+      break;
   }
 
   return (
     <div className="flex size-full min-h-[calc(100vh-57px-24px)] items-center justify-center">
       <div className="flex flex-col gap-y-6">
-        <div className="text-ui-fg-subtle flex flex-col items-center gap-y-3">
+        <div className="flex flex-col items-center gap-y-3 text-ui-fg-subtle">
           <ExclamationCircle />
           <div className="flex flex-col items-center justify-center gap-y-1">
-            <Text size="small" leading="compact" weight="plus">
+            <Text
+              size="small"
+              leading="compact"
+              weight="plus"
+            >
               {title}
             </Text>
             <Text
               size="small"
-              className="text-ui-fg-muted text-balance text-center"
+              className="text-balance text-center text-ui-fg-muted"
             >
               {message}
             </Text>
@@ -78,5 +87,5 @@ export const ErrorBoundary = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

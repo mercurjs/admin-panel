@@ -5,7 +5,11 @@ export const AttributeSelect = ({
   field,
   'data-testid': dataTestId
 }: {
+  // @todo fix any type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   values: any[];
+  // @todo fix any type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   field: any;
   'data-testid'?: string;
 }) => {

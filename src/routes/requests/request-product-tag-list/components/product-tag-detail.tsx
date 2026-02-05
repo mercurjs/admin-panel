@@ -1,14 +1,11 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { InformationCircle } from "@medusajs/icons";
-import type { ProductTagDTO } from "@medusajs/types";
-import { Button, Container, Drawer, Text } from "@medusajs/ui";
-
-import type { AdminRequest } from "@custom-types/requests";
-
-import { formatDate } from "@lib/date";
-
-import { ResolveRequestPrompt } from "@routes/requests/common/components/resolve-request";
+import type { AdminRequest } from '@custom-types/requests';
+import { formatDate } from '@lib/date';
+import { InformationCircle } from '@medusajs/icons';
+import type { ProductTagDTO } from '@medusajs/types';
+import { Button, Container, Drawer, Text } from '@medusajs/ui';
+import { ResolveRequestPrompt } from '@routes/requests/common/components/resolve-request';
 
 type Props = {
   request?: AdminRequest;
@@ -57,21 +54,15 @@ export function ProductTagRequestDetail({ request, open, close }: Props) {
           className="p-4"
           data-testid={`product-tag-detail-${request.id}-body`}
         >
-          <fieldset
-            data-testid={`product-tag-detail-${request.id}-value-fieldset`}
-          >
+          <fieldset data-testid={`product-tag-detail-${request.id}-value-fieldset`}>
             <legend
               className="mb-2"
               data-testid={`product-tag-detail-${request.id}-value-legend`}
             >
               Product tag value
             </legend>
-            <Container
-              data-testid={`product-tag-detail-${request.id}-value-container`}
-            >
-              <Text
-                data-testid={`product-tag-detail-${request.id}-value-value`}
-              >
+            <Container data-testid={`product-tag-detail-${request.id}-value-container`}>
+              <Text data-testid={`product-tag-detail-${request.id}-value-value`}>
                 {requestData.value}
               </Text>
             </Container>
@@ -86,12 +77,8 @@ export function ProductTagRequestDetail({ request, open, close }: Props) {
             >
               Submitted by
             </legend>
-            <Container
-              data-testid={`product-tag-detail-${request.id}-submitted-by-container`}
-            >
-              <Text
-                data-testid={`product-tag-detail-${request.id}-submitted-by-value`}
-              >
+            <Container data-testid={`product-tag-detail-${request.id}-submitted-by-container`}>
+              <Text data-testid={`product-tag-detail-${request.id}-submitted-by-value`}>
                 {request.seller?.name}
               </Text>
             </Container>
@@ -128,7 +115,7 @@ export function ProductTagRequestDetail({ request, open, close }: Props) {
           </Container>
         </Drawer.Body>
         <Drawer.Footer data-testid={`product-tag-detail-${request.id}-footer`}>
-          {request.status === "pending" && (
+          {request.status === 'pending' && (
             <>
               <Button
                 onClick={() => {

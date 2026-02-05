@@ -1,18 +1,16 @@
-import { useWatch } from "react-hook-form"
-import { useDataGridContext } from "../context"
+import { useDataGridContext } from '@components/data-grid/context';
+import { useWatch } from 'react-hook-form';
 
 interface UseDataGridDuplicateCellOptions {
-  duplicateOf: string
+  duplicateOf: string;
 }
 
-export const useDataGridDuplicateCell = ({
-  duplicateOf,
-}: UseDataGridDuplicateCellOptions) => {
-  const { control } = useDataGridContext()
+export const useDataGridDuplicateCell = ({ duplicateOf }: UseDataGridDuplicateCellOptions) => {
+  const { control } = useDataGridContext();
 
-  const watchedValue = useWatch({ control, name: duplicateOf })
+  const watchedValue = useWatch({ control, name: duplicateOf });
 
   return {
-    watchedValue,
-  }
-}
+    watchedValue
+  };
+};

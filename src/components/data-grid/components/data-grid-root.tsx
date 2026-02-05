@@ -1,32 +1,32 @@
 import React, {
-  CSSProperties,
-  ReactNode,
   useCallback,
   useEffect,
   useMemo,
   useRef,
-  useState
+  useState,
+  type CSSProperties,
+  type ReactNode
 } from 'react';
 
+import { useCommandHistory } from '@hooks/use-command-history';
+import { useDocumentDirection } from '@hooks/use-document-direction';
 import { Adjustments, AdjustmentsDone, ExclamationCircle } from '@medusajs/icons';
 import { Button, clx, DropdownMenu } from '@medusajs/ui';
 import {
-  Cell,
-  CellContext,
-  Column,
-  ColumnDef,
   flexRender,
   getCoreRowModel,
-  Row,
   useReactTable,
-  VisibilityState
+  type Cell,
+  type CellContext,
+  type Column,
+  type ColumnDef,
+  type Row,
+  type VisibilityState
 } from '@tanstack/react-table';
-import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual';
-import { FieldValues, UseFormReturn } from 'react-hook-form';
+import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
+import type { FieldValues, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { useCommandHistory } from '../../../hooks/use-command-history';
-import { useDocumentDirection } from '../../../hooks/use-document-direction';
 import { ConditionalTooltip } from '../../common/conditional-tooltip';
 import { DataGridContext, useDataGridContext } from '../context';
 import {
@@ -43,7 +43,7 @@ import {
   useDataGridQueryTool
 } from '../hooks';
 import { DataGridMatrix } from '../models';
-import { DataGridCoordinates, GridColumnOption } from '../types';
+import type { DataGridCoordinates, GridColumnOption } from '../types';
 import { isCellMatch, isSpecialFocusKey } from '../utils';
 import { DataGridKeyboardShortcutModal } from './data-grid-keyboard-shortcut-modal';
 
@@ -403,6 +403,7 @@ export const DataGridRoot = <TData, TFieldValues extends FieldValues = FieldValu
     const specialFocusHandler = (e: KeyboardEvent) => {
       if (isSpecialFocusKey(e)) {
         handleSpecialFocusKeys(e);
+
         return;
       }
     };
@@ -676,6 +677,7 @@ const DataGridHeader = ({
     onHeaderInteractionChange(value);
     setColumnsOpen(value);
   };
+
   return (
     <div className="flex items-center justify-between border-b bg-ui-bg-base p-4">
       <div className="flex items-center gap-x-2">

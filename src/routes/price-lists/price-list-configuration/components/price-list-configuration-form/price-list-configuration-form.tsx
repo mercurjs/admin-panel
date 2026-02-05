@@ -1,33 +1,21 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { MagnifyingGlass, XMark } from "@medusajs/icons"
-import { HttpTypes } from "@medusajs/types"
-import {
-  Button,
-  DatePicker,
-  Divider,
-  Heading,
-  IconButton,
-  Text,
-  clx,
-  toast,
-} from "@medusajs/ui"
-import { useFieldArray, useForm } from "react-hook-form"
-import { useTranslation } from "react-i18next"
-import { z } from "zod"
-
-import { Form } from "../../../../../components/common/form"
-import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
-import { StackedDrawer } from "../../../../../components/modals/stacked-drawer"
-import { useStackedModal } from "../../../../../components/modals/stacked-modal-provider"
-import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import { useUpdatePriceList } from "../../../../../hooks/api/price-lists"
-import { PriceListCustomerGroupRuleForm } from "../../../common/components/price-list-customer-group-rule-form"
-import { PricingCustomerGroupsArrayType } from "../../../price-list-create/components/price-list-create-form/schema"
+import { Form } from '@components/common/form';
+import { RouteDrawer, StackedDrawer, useRouteModal, useStackedModal } from '@components/modals';
+import { KeyboundForm } from '@components/utilities/keybound-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useUpdatePriceList } from '@hooks/api';
+import { MagnifyingGlass, XMark } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Button, clx, DatePicker, Divider, Heading, IconButton, Text, toast } from '@medusajs/ui';
+import { PriceListCustomerGroupRuleForm } from '@routes/price-lists/common/components/price-list-customer-group-rule-form';
+import type { PricingCustomerGroupsArrayType } from '@routes/price-lists/price-list-create/components/price-list-create-form/schema.ts';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
 type PriceListConfigurationFormProps = {
-  priceList: HttpTypes.AdminPriceList
-  customerGroups: { id: string; name: string }[]
-}
+  priceList: HttpTypes.AdminPriceList;
+  customerGroups: { id: string; name: string }[];
+};
 
 const PriceListConfigurationSchema = z.object({
   ends_at: z.date().nullable(),
@@ -35,280 +23,289 @@ const PriceListConfigurationSchema = z.object({
   customer_group_id: z.array(
     z.object({
       id: z.string(),
-      name: z.string(),
+      name: z.string()
     })
-  ),
-})
+  )
+});
 
-const STACKED_MODAL_ID = "cg"
+const STACKED_MODAL_ID = 'cg';
 
 export const PriceListConfigurationForm = ({
   priceList,
-  customerGroups,
+  customerGroups
 }: PriceListConfigurationFormProps) => {
-  const { t } = useTranslation()
-  const { handleSuccess } = useRouteModal()
-  const { setIsOpen } = useStackedModal()
+  const { t } = useTranslation();
+  const { handleSuccess } = useRouteModal();
+  const { setIsOpen } = useStackedModal();
 
   const form = useForm<z.infer<typeof PriceListConfigurationSchema>>({
     defaultValues: {
       ends_at: priceList.ends_at ? new Date(priceList.ends_at) : null,
       starts_at: priceList.starts_at ? new Date(priceList.starts_at) : null,
-      customer_group_id: customerGroups,
+      customer_group_id: customerGroups
     },
-    resolver: zodResolver(PriceListConfigurationSchema),
-  })
+    resolver: zodResolver(PriceListConfigurationSchema)
+  });
 
   const { fields, remove, append } = useFieldArray({
     control: form.control,
-    name: "customer_group_id",
-    keyName: "cg_id",
-  })
+    name: 'customer_group_id',
+    keyName: 'cg_id'
+  });
 
   const handleAddCustomerGroup = (groups: PricingCustomerGroupsArrayType) => {
     if (!groups.length) {
-      form.setValue("customer_group_id", [])
-      setIsOpen(STACKED_MODAL_ID, false)
-      return
+      form.setValue('customer_group_id', []);
+      setIsOpen(STACKED_MODAL_ID, false);
+
+      return;
     }
 
-    const newIds = groups.map((group) => group.id)
+    const newIds = groups.map(group => group.id);
 
-    const fieldsToAdd = groups.filter(
-      (group) => !fields.some((field) => field.id === group.id)
-    )
+    const fieldsToAdd = groups.filter(group => !fields.some(field => field.id === group.id));
 
     for (const field of fields) {
       if (!newIds.includes(field.id)) {
-        remove(fields.indexOf(field))
+        remove(fields.indexOf(field));
       }
     }
 
-    append(fieldsToAdd)
-    setIsOpen(STACKED_MODAL_ID, false)
-  }
+    append(fieldsToAdd);
+    setIsOpen(STACKED_MODAL_ID, false);
+  };
 
-  const { mutateAsync } = useUpdatePriceList(priceList.id)
+  const { mutateAsync } = useUpdatePriceList(priceList.id);
 
-  const handleSubmit = form.handleSubmit(async (values) => {
-    const groupIds = values.customer_group_id.map((group) => group.id)
-    const rules = { ...priceList.rules } // preserve other rules set on the PL
+  const handleSubmit = form.handleSubmit(async values => {
+    const groupIds = values.customer_group_id.map(group => group.id);
+    const rules = { ...priceList.rules }; // preserve other rules set on the PL
 
     if (groupIds.length) {
-      rules["customer.groups.id"] = groupIds
+      rules['customer.groups.id'] = groupIds;
     } else {
-      delete rules["customer.groups.id"]
+      delete rules['customer.groups.id'];
     }
 
     await mutateAsync(
       {
         starts_at: values.starts_at?.toISOString() || null,
         ends_at: values.ends_at?.toISOString() || null,
-        rules: rules,
+        rules: rules
       },
       {
         onSuccess: () => {
-          toast.success(t("priceLists.configuration.edit.successToast"))
-          handleSuccess()
+          toast.success(t('priceLists.configuration.edit.successToast'));
+          handleSuccess();
         },
-        onError: (error) => toast.error(error.message),
+        onError: error => toast.error(error.message)
       }
-    )
-  })
+    );
+  });
 
   return (
-    <RouteDrawer.Form form={form} data-testid="price-list-configuration-form">
+    <RouteDrawer.Form
+      form={form}
+      data-testid="price-list-configuration-form"
+    >
       <RouteDrawer.Description className="sr-only">
-        {t("priceLists.configuration.edit.description")}
+        {t('priceLists.configuration.edit.description')}
       </RouteDrawer.Description>
       <KeyboundForm
         className="flex flex-1 flex-col overflow-hidden"
         onSubmit={handleSubmit}
       >
-        <RouteDrawer.Body className="flex flex-1 flex-col gap-y-8 overflow-auto" data-testid="price-list-configuration-form-body">
+        <RouteDrawer.Body
+          className="flex flex-1 flex-col gap-y-8 overflow-auto"
+          data-testid="price-list-configuration-form-body"
+        >
           <Form.Field
             control={form.control}
             name="starts_at"
-            render={({ field }) => {
-              return (
-                <Form.Item>
-                  <div className="grid grid-cols-1 gap-3">
-                    <div className="flex flex-col">
-                      <Form.Label optional>
-                        {t("priceLists.fields.startsAt.label")}
-                      </Form.Label>
-                      <Form.Hint>
-                        {t("priceLists.fields.startsAt.hint")}
-                      </Form.Hint>
-                    </div>
-                    <Form.Control>
-                      <DatePicker
-                        granularity="minute"
-                        shouldCloseOnSelect={false}
-                        {...field}
-                      />
-                    </Form.Control>
+            render={({ field }) => (
+              <Form.Item>
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="flex flex-col">
+                    <Form.Label optional>{t('priceLists.fields.startsAt.label')}</Form.Label>
+                    <Form.Hint>{t('priceLists.fields.startsAt.hint')}</Form.Hint>
                   </div>
-                  <Form.ErrorMessage />
-                </Form.Item>
-              )
-            }}
+                  <Form.Control>
+                    <DatePicker
+                      granularity="minute"
+                      shouldCloseOnSelect={false}
+                      {...field}
+                    />
+                  </Form.Control>
+                </div>
+                <Form.ErrorMessage />
+              </Form.Item>
+            )}
           />
           <Divider />
           <Form.Field
             control={form.control}
             name="ends_at"
-            render={({ field }) => {
-              return (
-                <Form.Item>
-                  <div className="grid grid-cols-1 gap-3">
-                    <div className="flex flex-col">
-                      <Form.Label optional>
-                        {t("priceLists.fields.endsAt.label")}
-                      </Form.Label>
-                      <Form.Hint>
-                        {t("priceLists.fields.endsAt.hint")}
-                      </Form.Hint>
-                    </div>
-                    <Form.Control>
-                      <DatePicker
-                        granularity="minute"
-                        shouldCloseOnSelect={false}
-                        {...field}
-                      />
-                    </Form.Control>
+            render={({ field }) => (
+              <Form.Item>
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="flex flex-col">
+                    <Form.Label optional>{t('priceLists.fields.endsAt.label')}</Form.Label>
+                    <Form.Hint>{t('priceLists.fields.endsAt.hint')}</Form.Hint>
                   </div>
-                  <Form.ErrorMessage />
-                </Form.Item>
-              )
-            }}
+                  <Form.Control>
+                    <DatePicker
+                      granularity="minute"
+                      shouldCloseOnSelect={false}
+                      {...field}
+                    />
+                  </Form.Control>
+                </div>
+                <Form.ErrorMessage />
+              </Form.Item>
+            )}
           />
           <Divider />
           <Form.Field
             control={form.control}
             name="customer_group_id"
-            render={({ field }) => {
-              return (
-                <Form.Item>
-                  <div>
-                    <Form.Label optional>
-                      {t("priceLists.fields.customerAvailability.label")}
-                    </Form.Label>
-                    <Form.Hint>
-                      {t("priceLists.fields.customerAvailability.hint")}
-                    </Form.Hint>
-                  </div>
-                  <Form.Control>
-                    <div
-                      className={clx(
-                        "bg-ui-bg-component shadow-elevation-card-rest transition-fg grid gap-1.5 rounded-xl py-1.5",
-                        "aria-[invalid='true']:shadow-borders-error"
-                      )}
-                      role="application"
-                      ref={field.ref}
-                    >
-                      <div className="text-ui-fg-subtle grid gap-1.5 px-1.5 md:grid-cols-2">
-                        <div className="bg-ui-bg-field shadow-borders-base txt-compact-small rounded-md px-2 py-1.5">
-                          {t(
-                            "priceLists.fields.customerAvailability.attribute"
-                          )}
-                        </div>
-                        <div className="bg-ui-bg-field shadow-borders-base txt-compact-small rounded-md px-2 py-1.5">
-                          {t("operators.in")}
-                        </div>
+            render={({ field }) => (
+              <Form.Item>
+                <div>
+                  <Form.Label optional>
+                    {t('priceLists.fields.customerAvailability.label')}
+                  </Form.Label>
+                  <Form.Hint>{t('priceLists.fields.customerAvailability.hint')}</Form.Hint>
+                </div>
+                <Form.Control>
+                  <div
+                    className={clx(
+                      'grid gap-1.5 rounded-xl bg-ui-bg-component py-1.5 shadow-elevation-card-rest transition-fg',
+                      "aria-[invalid='true']:shadow-borders-error"
+                    )}
+                    role="application"
+                    ref={field.ref}
+                  >
+                    <div className="grid gap-1.5 px-1.5 text-ui-fg-subtle md:grid-cols-2">
+                      <div className="txt-compact-small rounded-md bg-ui-bg-field px-2 py-1.5 shadow-borders-base">
+                        {t('priceLists.fields.customerAvailability.attribute')}
                       </div>
-                      <div className="flex items-center gap-1.5 px-1.5" data-testid="price-list-configuration-customer-groups-dropdown">
-                        <StackedDrawer id={STACKED_MODAL_ID} data-testid="price-list-configuration-customer-groups-stacked-drawer">
-                          <StackedDrawer.Trigger asChild>
-                            <button
-                              type="button"
-                              className="bg-ui-bg-field shadow-borders-base txt-compact-small text-ui-fg-muted flex flex-1 items-center gap-x-2 rounded-md px-2 py-1.5"
-                              data-testid="price-list-configuration-customer-groups-search-button"
-                            >
-                              <MagnifyingGlass />
-                              {t(
-                                "priceLists.fields.customerAvailability.placeholder"
-                              )}
-                            </button>
-                          </StackedDrawer.Trigger>
-                          <StackedDrawer.Trigger asChild>
-                            <Button variant="secondary" data-testid="price-list-configuration-customer-groups-browse-button">
-                              {t("actions.browse")}
-                            </Button>
-                          </StackedDrawer.Trigger>
-                          <StackedDrawer.Content data-testid="price-list-configuration-customer-groups-drawer-content">
-                            <StackedDrawer.Header data-testid="price-list-configuration-customer-groups-drawer-header">
-                              <StackedDrawer.Title asChild>
-                                <Heading data-testid="price-list-configuration-customer-groups-drawer-title">
-                                  {t(
-                                    "priceLists.fields.customerAvailability.header"
-                                  )}
-                                </Heading>
-                              </StackedDrawer.Title>
-                              <StackedDrawer.Description className="sr-only" data-testid="price-list-configuration-customer-groups-drawer-description">
-                                {t(
-                                  "priceLists.fields.customerAvailability.hint"
-                                )}
-                              </StackedDrawer.Description>
-                            </StackedDrawer.Header>
-                            <PriceListCustomerGroupRuleForm
-                              type="drawer"
-                              setState={handleAddCustomerGroup}
-                              state={fields}
-                            />
-                          </StackedDrawer.Content>
-                        </StackedDrawer>
+                      <div className="txt-compact-small rounded-md bg-ui-bg-field px-2 py-1.5 shadow-borders-base">
+                        {t('operators.in')}
                       </div>
-                      {fields.length > 0 ? (
-                        <div className="flex flex-col gap-y-1.5" data-testid="price-list-configuration-customer-groups-list">
-                          <Divider variant="dashed" />
-                          <div className="flex flex-col gap-y-1.5 px-1.5">
-                            {fields.map((field, index) => {
-                              return (
-                                <div
-                                  key={field.cg_id}
-                                  className="bg-ui-bg-field-component shadow-borders-base flex items-center justify-between gap-2 rounded-md px-2 py-0.5"
-                                  data-testid={`price-list-configuration-customer-groups-item-${index}`}
-                                >
-                                  <Text size="small" leading="compact" data-testid={`price-list-configuration-customer-groups-item-${index}-name`}>
-                                    {field.name}
-                                  </Text>
-                                  <IconButton
-                                    size="small"
-                                    variant="transparent"
-                                    type="button"
-                                    onClick={() => remove(index)}
-                                    data-testid={`price-list-configuration-customer-groups-item-${index}-remove-button`}
-                                  >
-                                    <XMark />
-                                  </IconButton>
-                                </div>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      ) : null}
                     </div>
-                  </Form.Control>
-                  <Form.ErrorMessage />
-                </Form.Item>
-              )
-            }}
+                    <div
+                      className="flex items-center gap-1.5 px-1.5"
+                      data-testid="price-list-configuration-customer-groups-dropdown"
+                    >
+                      <StackedDrawer
+                        id={STACKED_MODAL_ID}
+                        data-testid="price-list-configuration-customer-groups-stacked-drawer"
+                      >
+                        <StackedDrawer.Trigger asChild>
+                          <button
+                            type="button"
+                            className="txt-compact-small flex flex-1 items-center gap-x-2 rounded-md bg-ui-bg-field px-2 py-1.5 text-ui-fg-muted shadow-borders-base"
+                            data-testid="price-list-configuration-customer-groups-search-button"
+                          >
+                            <MagnifyingGlass />
+                            {t('priceLists.fields.customerAvailability.placeholder')}
+                          </button>
+                        </StackedDrawer.Trigger>
+                        <StackedDrawer.Trigger asChild>
+                          <Button
+                            variant="secondary"
+                            data-testid="price-list-configuration-customer-groups-browse-button"
+                          >
+                            {t('actions.browse')}
+                          </Button>
+                        </StackedDrawer.Trigger>
+                        <StackedDrawer.Content data-testid="price-list-configuration-customer-groups-drawer-content">
+                          <StackedDrawer.Header data-testid="price-list-configuration-customer-groups-drawer-header">
+                            <StackedDrawer.Title asChild>
+                              <Heading data-testid="price-list-configuration-customer-groups-drawer-title">
+                                {t('priceLists.fields.customerAvailability.header')}
+                              </Heading>
+                            </StackedDrawer.Title>
+                            <StackedDrawer.Description
+                              className="sr-only"
+                              data-testid="price-list-configuration-customer-groups-drawer-description"
+                            >
+                              {t('priceLists.fields.customerAvailability.hint')}
+                            </StackedDrawer.Description>
+                          </StackedDrawer.Header>
+                          <PriceListCustomerGroupRuleForm
+                            type="drawer"
+                            setState={handleAddCustomerGroup}
+                            state={fields}
+                          />
+                        </StackedDrawer.Content>
+                      </StackedDrawer>
+                    </div>
+                    {fields.length > 0 ? (
+                      <div
+                        className="flex flex-col gap-y-1.5"
+                        data-testid="price-list-configuration-customer-groups-list"
+                      >
+                        <Divider variant="dashed" />
+                        <div className="flex flex-col gap-y-1.5 px-1.5">
+                          {fields.map((field, index) => (
+                            <div
+                              key={field.cg_id}
+                              className="flex items-center justify-between gap-2 rounded-md bg-ui-bg-field-component px-2 py-0.5 shadow-borders-base"
+                              data-testid={`price-list-configuration-customer-groups-item-${index}`}
+                            >
+                              <Text
+                                size="small"
+                                leading="compact"
+                                data-testid={`price-list-configuration-customer-groups-item-${index}-name`}
+                              >
+                                {field.name}
+                              </Text>
+                              <IconButton
+                                size="small"
+                                variant="transparent"
+                                type="button"
+                                onClick={() => remove(index)}
+                                data-testid={`price-list-configuration-customer-groups-item-${index}-remove-button`}
+                              >
+                                <XMark />
+                              </IconButton>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                </Form.Control>
+                <Form.ErrorMessage />
+              </Form.Item>
+            )}
           />
         </RouteDrawer.Body>
-        <RouteDrawer.Footer className="shrink-0" data-testid="price-list-configuration-form-footer">
+        <RouteDrawer.Footer
+          className="shrink-0"
+          data-testid="price-list-configuration-form-footer"
+        >
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary" data-testid="price-list-configuration-form-cancel-button">
-                {t("actions.cancel")}
+              <Button
+                size="small"
+                variant="secondary"
+                data-testid="price-list-configuration-form-cancel-button"
+              >
+                {t('actions.cancel')}
               </Button>
             </RouteDrawer.Close>
-            <Button size="small" type="submit" data-testid="price-list-configuration-form-save-button">
-              {t("actions.save")}
+            <Button
+              size="small"
+              type="submit"
+              data-testid="price-list-configuration-form-save-button"
+            >
+              {t('actions.save')}
             </Button>
           </div>
         </RouteDrawer.Footer>
       </KeyboundForm>
     </RouteDrawer.Form>
-  )
-}
+  );
+};

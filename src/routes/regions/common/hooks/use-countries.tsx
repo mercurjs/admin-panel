@@ -8,12 +8,12 @@ const acceptedOrderKeys = ["name", "code"]
  * that can be used to filter and sort the static list of countries.
  */
 export const useCountries = ({
-  countries,
-  q,
-  order = "name",
-  limit,
-  offset = 0,
-}: {
+                               countries,
+                               q,
+                               order = "name",
+                               limit,
+                               offset = 0,
+                             }: {
   countries: StaticCountry[]
   limit: number
   offset?: number

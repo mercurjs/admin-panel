@@ -12,9 +12,9 @@ import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { MetadataEditor } from "../../../components/common/metadata-editor";
-import { useAttribute } from "../../../hooks/api/attributes";
-import { useUpdateAttributePossibleValue } from "../../../hooks/api/attributes";
+import { MetadataEditor } from '@components/common/metadata-editor';
+import { useAttribute } from '@hooks/api/attributes';
+import { useUpdateAttributePossibleValue } from '@hooks/api/attributes.tsx';
 
 const formSchema = z.object({
   value: z.string().min(1, "Value is required"),
@@ -201,7 +201,7 @@ export const EditPossibleValue = () => {
               <Button
                 variant="secondary"
                 onClick={handleClose}
-                disabled={!!isPending}
+                disabled={isPending}
                 data-testid="attribute-edit-possible-value-cancel-button"
               >
                 Cancel
@@ -209,7 +209,7 @@ export const EditPossibleValue = () => {
               <Button
                 type="submit"
                 form="edit-possible-value-form"
-                disabled={!!isPending}
+                disabled={isPending}
                 data-testid="attribute-edit-possible-value-save-button"
               >
                 Save

@@ -1,1 +1,1 @@
-export * from "./shipping-option-type-general-section"
+export * from './shipping-option-type-general-section';

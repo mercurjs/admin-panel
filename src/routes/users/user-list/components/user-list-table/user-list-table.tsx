@@ -1,19 +1,19 @@
 import { useMemo } from 'react';
 
+import { ActionMenu } from '@components/common/action-menu';
+import { _DataTable } from '@components/table/data-table';
+import { DateCell } from '@components/table/table-cells/common/date-cell';
+import { useUsers } from '@hooks/api';
+import { useUserTableQuery } from '@hooks/table/query/use-user-table-query';
+import { useDataTable } from '@hooks/use-data-table';
 import { PencilSquare } from '@medusajs/icons';
-import { HttpTypes } from '@medusajs/types';
+import type { HttpTypes } from '@medusajs/types';
 import { Button, Container, Heading } from '@medusajs/ui';
 import { keepPreviousData } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { ActionMenu } from '../../../../../components/common/action-menu';
-import { _DataTable } from '../../../../../components/table/data-table/data-table';
-import { DateCell } from '../../../../../components/table/table-cells/common/date-cell';
-import { useUsers } from '../../../../../hooks/api/users';
-import { useUserTableQuery } from '../../../../../hooks/table/query/use-user-table-query';
-import { useDataTable } from '../../../../../hooks/use-data-table';
 import { useUserTableFilters } from './use-user-table-filters';
 
 const PAGE_SIZE = 20;
@@ -188,6 +188,7 @@ const useColumns = () => {
         ),
         cell: ({ getValue, row }) => {
           const date = getValue();
+
           return (
             <DateCell
               date={date ? new Date(date) : null}
@@ -207,6 +208,7 @@ const useColumns = () => {
         ),
         cell: ({ getValue, row }) => {
           const date = getValue();
+
           return (
             <DateCell
               date={date ? new Date(date) : null}

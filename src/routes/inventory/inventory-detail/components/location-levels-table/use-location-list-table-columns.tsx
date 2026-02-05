@@ -1,22 +1,14 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import { PencilSquare, Trash } from "@medusajs/icons";
-import { createDataTableColumnHelper, toast, usePrompt } from "@medusajs/ui";
-
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-
-import type { ExtendedInventoryItemLevel } from "@custom-types/inventory";
-
-import { PlaceholderCell } from "@components/table/table-cells/common/placeholder-cell";
-
-import {
-  inventoryItemLevelsQueryKeys,
-  inventoryItemsQueryKeys,
-} from "@hooks/api";
-
-import { sdk } from "@lib/client";
-import { queryClient } from "@lib/query-client";
+import { PlaceholderCell } from '@components/table/table-cells/common/placeholder-cell';
+import type { ExtendedInventoryItemLevel } from '@custom-types/inventory';
+import { inventoryItemLevelsQueryKeys, inventoryItemsQueryKeys } from '@hooks/api';
+import { sdk } from '@lib/client';
+import { queryClient } from '@lib/query-client';
+import { PencilSquare, Trash } from '@medusajs/icons';
+import { createDataTableColumnHelper, toast, usePrompt } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 const columnHelper = createDataTableColumnHelper<ExtendedInventoryItemLevel>();
 
@@ -28,10 +20,10 @@ export const useLocationListTableColumns = () => {
 
   const handleDelete = async (level: ExtendedInventoryItemLevel) => {
     const res = await prompt({
-      title: t("general.areYouSure"),
-      description: t("inventory.deleteWarning"),
-      confirmText: t("actions.delete"),
-      cancelText: t("actions.cancel"),
+      title: t('general.areYouSure'),
+      description: t('inventory.deleteWarning'),
+      confirmText: t('actions.delete'),
+      cancelText: t('actions.cancel')
     });
 
     if (!res) {
@@ -39,41 +31,38 @@ export const useLocationListTableColumns = () => {
     }
 
     try {
-      await sdk.admin.inventoryItem.deleteLevel(
-        level.inventory_item_id,
-        level.location_id,
-      );
+      await sdk.admin.inventoryItem.deleteLevel(level.inventory_item_id, level.location_id);
 
-      toast.success(t("inventory.levelDeleted"));
+      toast.success(t('inventory.levelDeleted'));
 
       queryClient.invalidateQueries({
-        queryKey: inventoryItemsQueryKeys.lists(),
+        queryKey: inventoryItemsQueryKeys.lists()
       });
       queryClient.invalidateQueries({
         queryKey: inventoryItemLevelsQueryKeys.list({
-          inventoryItemId: level.inventory_item_id,
-        }),
+          inventoryItemId: level.inventory_item_id
+        })
       });
       queryClient.invalidateQueries({
-        queryKey: inventoryItemsQueryKeys.detail(level.inventory_item_id),
+        queryKey: inventoryItemsQueryKeys.detail(level.inventory_item_id)
       });
       queryClient.invalidateQueries({
-        queryKey: inventoryItemLevelsQueryKeys.detail(level.inventory_item_id),
+        queryKey: inventoryItemLevelsQueryKeys.detail(level.inventory_item_id)
       });
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "An error occurred");
+      toast.error(e instanceof Error ? e.message : 'An error occurred');
     }
   };
 
   return useMemo(
     () => [
       columnHelper.display({
-        id: "location",
-        header: t("fields.location"),
+        id: 'location',
+        header: t('fields.location'),
         cell: ({ row }) => {
           const locationName = row.original.stock_locations
-            ?.map((location) => location.name)
-            .join(", ");
+            ?.map(location => location.name)
+            .join(', ');
 
           if (!locationName) {
             return <PlaceholderCell />;
@@ -84,10 +73,10 @@ export const useLocationListTableColumns = () => {
               <span className="truncate">{locationName.toString()}</span>
             </div>
           );
-        },
+        }
       }),
-      columnHelper.accessor("reserved_quantity", {
-        header: t("inventory.reserved"),
+      columnHelper.accessor('reserved_quantity', {
+        header: t('inventory.reserved'),
         cell: ({ getValue }) => {
           const quantity = getValue();
 
@@ -101,10 +90,10 @@ export const useLocationListTableColumns = () => {
             </div>
           );
         },
-        enableSorting: true,
+        enableSorting: true
       }),
-      columnHelper.accessor("stocked_quantity", {
-        header: t("fields.inStock"),
+      columnHelper.accessor('stocked_quantity', {
+        header: t('fields.inStock'),
         cell: ({ getValue }) => {
           const stockedQuantity = getValue();
 
@@ -118,10 +107,10 @@ export const useLocationListTableColumns = () => {
             </div>
           );
         },
-        enableSorting: true,
+        enableSorting: true
       }),
-      columnHelper.accessor("available_quantity", {
-        header: t("inventory.available"),
+      columnHelper.accessor('available_quantity', {
+        header: t('inventory.available'),
         cell: ({ getValue }) => {
           const availableQuantity = getValue();
 
@@ -134,35 +123,35 @@ export const useLocationListTableColumns = () => {
               <span className="truncate">{availableQuantity}</span>
             </div>
           );
-        },
+        }
       }),
       columnHelper.action({
-        actions: (ctx) => {
+        actions: ctx => {
           const level = ctx.row.original;
+
           return [
             [
               {
                 icon: <PencilSquare />,
-                label: t("actions.edit"),
+                label: t('actions.edit'),
 
                 onClick: () => {
                   navigate(`locations/${level.location_id}`);
-                },
-              },
+                }
+              }
             ],
             [
               {
                 icon: <Trash />,
-                label: t("actions.delete"),
+                label: t('actions.delete'),
                 onClick: () => handleDelete(level),
-                disabled:
-                  level.reserved_quantity > 0 || level.stocked_quantity > 0,
-              },
-            ],
+                disabled: level.reserved_quantity > 0 || level.stocked_quantity > 0
+              }
+            ]
           ];
-        },
-      }),
+        }
+      })
     ],
-    [t],
+    [t]
   );
 };

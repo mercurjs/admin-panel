@@ -1,48 +1,50 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { History } from "@medusajs/icons";
-import type { ProductTagDTO } from "@medusajs/types";
-import { Container, Heading, Table, Text } from "@medusajs/ui";
-
-import { formatDate } from "@lib/date";
-
-import type { AdminRequest } from "@custom-types/requests";
-
-import { useVendorRequests } from "@hooks/api/requests";
-
+import type { AdminRequest } from '@custom-types/requests';
+import { useVendorRequests } from '@hooks/api/requests';
+import { formatDate } from '@lib/date';
+import { History } from '@medusajs/icons';
+import type { ProductTagDTO } from '@medusajs/types';
+import { Container, Heading, Table, Text } from '@medusajs/ui';
 import {
   FilterRequests,
-  type FilterState,
-} from "@routes/requests/common/components/filter-requests";
-import { RequestMenu } from "@routes/requests/common/components/request-menu";
-import { getRequestStatusBadge } from "@routes/requests/common/utils/get-status-badge";
-import { ProductTagRequestDetail } from "@routes/requests/request-product-tag-list/components/product-tag-detail";
+  type FilterState
+} from '@routes/requests/common/components/filter-requests';
+import { RequestMenu } from '@routes/requests/common/components/request-menu';
+import { getRequestStatusBadge } from '@routes/requests/common/utils/get-status-badge';
+import { ProductTagRequestDetail } from '@routes/requests/request-product-tag-list/components/product-tag-detail';
 
 const PAGE_SIZE = 20;
 export const RequestProductTagList = () => {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [detailOpen, setDetailOpen] = useState(false);
-  const [detailRequest, setDetailRequest] = useState<AdminRequest | undefined>(
-    undefined,
-  );
+  const [detailRequest, setDetailRequest] = useState<AdminRequest | undefined>(undefined);
 
   const handleDetail = (request: AdminRequest) => {
     setDetailRequest(request);
     setDetailOpen(true);
   };
 
-  const [currentFilter, setCurrentFilter] = useState<FilterState>("");
+  const [currentFilter, setCurrentFilter] = useState<FilterState>('');
 
-  const { requests, isLoading, refetch, count = 0 } = useVendorRequests({
+  const {
+    requests,
+    isLoading,
+    refetch,
+    count = 0
+  } = useVendorRequests({
     offset: currentPage * PAGE_SIZE,
     limit: PAGE_SIZE,
-    type: "product_tag",
-    status: currentFilter !== "" ? currentFilter : undefined,
+    type: 'product_tag',
+    status: currentFilter !== '' ? currentFilter : undefined
   });
 
   return (
     <Container data-testid="request-product-tag-list-container">
-      <div className="flex items-center justify-between px-6 py-4" data-testid="request-product-tag-list-header">
+      <div
+        className="flex items-center justify-between px-6 py-4"
+        data-testid="request-product-tag-list-header"
+      >
         <div>
           <Heading data-testid="request-product-tag-list-heading">Product tag requests</Heading>
           <ProductTagRequestDetail
@@ -55,22 +57,35 @@ export const RequestProductTagList = () => {
           />
 
           <FilterRequests
-            onChange={(val) => {
+            onChange={val => {
               setCurrentFilter(val);
             }}
           />
         </div>
       </div>
-      <div className="flex size-full flex-col overflow-hidden" data-testid="request-product-tag-list-content">
+      <div
+        className="flex size-full flex-col overflow-hidden"
+        data-testid="request-product-tag-list-content"
+      >
         {isLoading && <Text data-testid="request-product-tag-list-loading">Loading...</Text>}
         <Table data-testid="request-product-tag-list-table">
           <Table.Header data-testid="request-product-tag-list-table-header">
             <Table.Row>
-              <Table.HeaderCell data-testid="request-product-tag-list-table-header-value">Value</Table.HeaderCell>
-              <Table.HeaderCell data-testid="request-product-tag-list-table-header-submitted-by">Submitted By</Table.HeaderCell>
-              <Table.HeaderCell data-testid="request-product-tag-list-table-header-date">Date</Table.HeaderCell>
-              <Table.HeaderCell data-testid="request-product-tag-list-table-header-status">Status</Table.HeaderCell>
-              <Table.HeaderCell data-testid="request-product-tag-list-table-header-actions">Actions</Table.HeaderCell>
+              <Table.HeaderCell data-testid="request-product-tag-list-table-header-value">
+                Value
+              </Table.HeaderCell>
+              <Table.HeaderCell data-testid="request-product-tag-list-table-header-submitted-by">
+                Submitted By
+              </Table.HeaderCell>
+              <Table.HeaderCell data-testid="request-product-tag-list-table-header-date">
+                Date
+              </Table.HeaderCell>
+              <Table.HeaderCell data-testid="request-product-tag-list-table-header-status">
+                Status
+              </Table.HeaderCell>
+              <Table.HeaderCell data-testid="request-product-tag-list-table-header-actions">
+                Actions
+              </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body data-testid="request-product-tag-list-table-body">
@@ -78,9 +93,18 @@ export const RequestProductTagList = () => {
               const requestData = request.data as ProductTagDTO;
 
               return (
-                <Table.Row key={request.id} data-testid={`request-product-tag-list-table-row-${index}`}>
-                  <Table.Cell data-testid={`request-product-tag-list-table-row-${index}-value`}>{requestData.value}</Table.Cell>
-                  <Table.Cell data-testid={`request-product-tag-list-table-row-${index}-submitted-by`}>{request.seller?.name}</Table.Cell>
+                <Table.Row
+                  key={request.id}
+                  data-testid={`request-product-tag-list-table-row-${index}`}
+                >
+                  <Table.Cell data-testid={`request-product-tag-list-table-row-${index}-value`}>
+                    {requestData.value}
+                  </Table.Cell>
+                  <Table.Cell
+                    data-testid={`request-product-tag-list-table-row-${index}-submitted-by`}
+                  >
+                    {request.seller?.name}
+                  </Table.Cell>
                   <Table.Cell data-testid={`request-product-tag-list-table-row-${index}-date`}>
                     <div className="flex items-center gap-2">
                       <History />

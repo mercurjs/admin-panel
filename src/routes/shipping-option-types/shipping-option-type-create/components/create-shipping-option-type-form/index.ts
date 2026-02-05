@@ -1,1 +1,1 @@
-export * from "./create-shipping-option-type-form"
+export * from './create-shipping-option-type-form';

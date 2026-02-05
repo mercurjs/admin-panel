@@ -1,7 +1,14 @@
 import { useCallback, useMemo } from 'react';
 
+import { DataTable } from '@components/data-table';
+import {
+  useDataTableDateColumns,
+  useDataTableDateFilters
+} from '@components/data-table/helpers/general';
+import { useDeleteVariantLazy, useProductVariants } from '@hooks/api';
+import { useQueryParams } from '@hooks/use-query-params';
 import { Buildings, Component, PencilSquare, Trash } from '@medusajs/icons';
-import { HttpTypes } from '@medusajs/types';
+import type { HttpTypes } from '@medusajs/types';
 import {
   Badge,
   clx,
@@ -9,20 +16,15 @@ import {
   createDataTableColumnHelper,
   createDataTableCommandHelper,
   createDataTableFilterHelper,
-  DataTableAction,
   Tooltip,
-  usePrompt
+  usePrompt,
+  type DataTableAction
 } from '@medusajs/ui';
 import { keepPreviousData } from '@tanstack/react-query';
-import { CellContext } from '@tanstack/react-table';
+import type { CellContext } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-import { DataTable } from '../../../../../components/data-table';
-import { useDataTableDateColumns } from '../../../../../components/data-table/helpers/general/use-data-table-date-columns';
-import { useDataTableDateFilters } from '../../../../../components/data-table/helpers/general/use-data-table-date-filters';
-import { useDeleteVariantLazy, useProductVariants } from '../../../../../hooks/api/products';
-import { useQueryParams } from '../../../../../hooks/use-query-params';
 import { PRODUCT_VARIANT_IDS_KEY } from '../../../common/constants';
 
 type ProductVariantSectionProps = {
@@ -141,6 +143,7 @@ const useColumns = (product: HttpTypes.AdminProduct) => {
         filtered.append(key, value);
       }
     }
+
     return filtered;
   }, [searchParams]);
 

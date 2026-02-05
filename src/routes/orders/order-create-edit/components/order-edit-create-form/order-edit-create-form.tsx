@@ -1,16 +1,16 @@
+import { Form } from '@components/common/form';
+import { RouteFocusModal, useRouteModal } from '@components/modals';
+import { KeyboundForm } from '@components/utilities/keybound-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AdminOrder, AdminOrderPreview } from '@medusajs/types';
+import { useCancelOrderEdit, useRequestOrderEdit } from '@hooks/api/order-edits';
+import { getStylizedAmount } from '@lib/money-amount-helpers';
+import type { AdminOrder, AdminOrderPreview } from '@medusajs/types';
 import { Button, Heading, Input, Switch, toast, usePrompt } from '@medusajs/ui';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { Form } from '../../../../../components/common/form';
-import { RouteFocusModal, useRouteModal } from '../../../../../components/modals';
-import { KeyboundForm } from '../../../../../components/utilities/keybound-form';
-import { useCancelOrderEdit, useRequestOrderEdit } from '../../../../../hooks/api/order-edits';
-import { getStylizedAmount } from '../../../../../lib/money-amount-helpers';
 import { OrderEditItemsSection } from './order-edit-items-section';
-import { CreateOrderEditSchemaType, OrderEditCreateSchema } from './schema';
+import { OrderEditCreateSchema, type CreateOrderEditSchemaType } from './schema';
 
 type ReturnCreateFormProps = {
   order: AdminOrder;

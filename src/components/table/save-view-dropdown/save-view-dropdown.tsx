@@ -1,21 +1,15 @@
-import React from "react"
-import {
-  DropdownMenu,
-  Button,
-  usePrompt,
-} from "@medusajs/ui"
-import {
-  CloudArrowUp,
-  SquaresPlus,
-} from "@medusajs/icons"
+import type React from 'react';
+
+import { CloudArrowUp, SquaresPlus } from '@medusajs/icons';
+import { Button, DropdownMenu, usePrompt } from '@medusajs/ui';
 
 interface SaveViewDropdownProps {
-  isDefaultView: boolean
-  currentViewId?: string | null
-  currentViewName?: string | null
-  onSaveAsDefault?: () => void
-  onUpdateExisting?: () => void
-  onSaveAsNew?: () => void
+  isDefaultView: boolean;
+  currentViewId?: string | null;
+  currentViewName?: string | null;
+  onSaveAsDefault?: () => void;
+  onUpdateExisting?: () => void;
+  onSaveAsNew?: () => void;
 }
 
 export const SaveViewDropdown: React.FC<SaveViewDropdownProps> = ({
@@ -24,40 +18,44 @@ export const SaveViewDropdown: React.FC<SaveViewDropdownProps> = ({
   currentViewName,
   onSaveAsDefault,
   onUpdateExisting,
-  onSaveAsNew,
+  onSaveAsNew
 }) => {
-  const prompt = usePrompt()
+  const prompt = usePrompt();
 
   const handleSaveAsDefault = async () => {
     const result = await prompt({
-      title: "Save as system default",
-      description: "This will save the current configuration as the system default. All users will see this configuration by default unless they have their own personal views. Are you sure?",
-      confirmText: "Save as default",
-      cancelText: "Cancel",
-    })
+      title: 'Save as system default',
+      description:
+        'This will save the current configuration as the system default. All users will see this configuration by default unless they have their own personal views. Are you sure?',
+      confirmText: 'Save as default',
+      cancelText: 'Cancel'
+    });
 
     if (result && onSaveAsDefault) {
-      onSaveAsDefault()
+      onSaveAsDefault();
     }
-  }
+  };
 
   const handleUpdateExisting = async () => {
     const result = await prompt({
-      title: "Update existing view",
+      title: 'Update existing view',
       description: `Update "${currentViewName}" with the current configuration?`,
-      confirmText: "Update",
-      cancelText: "Cancel",
-    })
+      confirmText: 'Update',
+      cancelText: 'Cancel'
+    });
 
     if (result && onUpdateExisting) {
-      onUpdateExisting()
+      onUpdateExisting();
     }
-  }
+  };
 
   return (
     <DropdownMenu>
       <DropdownMenu.Trigger asChild>
-        <Button variant="secondary" size="small">
+        <Button
+          variant="secondary"
+          size="small"
+        >
           Save
         </Button>
       </DropdownMenu.Trigger>
@@ -82,5 +80,5 @@ export const SaveViewDropdown: React.FC<SaveViewDropdownProps> = ({
         )}
       </DropdownMenu.Content>
     </DropdownMenu>
-  )
-}
+  );
+};

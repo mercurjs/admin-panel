@@ -1,54 +1,52 @@
-import { useTranslation } from "react-i18next"
-
-import type { Filter } from "../../../components/table/data-table"
-import { useRegions } from "../../api/regions"
-import { useSalesChannels } from "../../api/sales-channels"
+import type { Filter } from '@components/table/data-table';
+import { useRegions, useSalesChannels } from '@hooks/api';
+import { useTranslation } from 'react-i18next';
 
 export const useOrderTableFilters = (): Filter[] => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const { regions } = useRegions({
     limit: 1000,
-    fields: "id,name",
-  })
+    fields: 'id,name'
+  });
 
   const { sales_channels } = useSalesChannels({
     limit: 1000,
-    fields: "id,name",
-  })
+    fields: 'id,name'
+  });
 
-  let filters: Filter[] = []
+  let filters: Filter[] = [];
 
   if (regions) {
     const regionFilter: Filter = {
-      key: "region_id",
-      label: t("fields.region"),
-      type: "select",
-      options: regions.map((r) => ({
+      key: 'region_id',
+      label: t('fields.region'),
+      type: 'select',
+      options: regions.map(r => ({
         label: r.name,
-        value: r.id,
+        value: r.id
       })),
       multiple: true,
-      searchable: true,
-    }
+      searchable: true
+    };
 
-    filters = [...filters, regionFilter]
+    filters = [...filters, regionFilter];
   }
 
   if (sales_channels) {
     const salesChannelFilter: Filter = {
-      key: "sales_channel_id",
-      label: t("fields.salesChannel"),
-      type: "select",
+      key: 'sales_channel_id',
+      label: t('fields.salesChannel'),
+      type: 'select',
       multiple: true,
       searchable: true,
-      options: sales_channels.map((s) => ({
+      options: sales_channels.map(s => ({
         label: s.name,
-        value: s.id,
-      })),
-    }
+        value: s.id
+      }))
+    };
 
-    filters = [...filters, salesChannelFilter]
+    filters = [...filters, salesChannelFilter];
   }
 
   // Commented out as it's not used yet. Seems it might be helpful in future
@@ -135,21 +133,21 @@ export const useOrderTableFilters = (): Filter[] => {
   // }
 
   const dateFilters: Filter[] = [
-    { label: "Created At", key: "created_at" },
-    { label: "Updated At", key: "updated_at" },
-  ].map((f) => ({
+    { label: 'Created At', key: 'created_at' },
+    { label: 'Updated At', key: 'updated_at' }
+  ].map(f => ({
     key: f.key,
     label: f.label,
-    type: "date",
-  }))
+    type: 'date'
+  }));
 
   filters = [
     ...filters,
     // TODO: enable when Payment, Fulfillments <> Orders are linked
     // paymentStatusFilter,
     // fulfillmentStatusFilter,
-    ...dateFilters,
-  ]
+    ...dateFilters
+  ];
 
-  return filters
-}
+  return filters;
+};

@@ -1,7 +1,6 @@
-import { EllipsisHorizontal, Eye } from "@medusajs/icons";
-import { DropdownMenu } from "@medusajs/ui";
-
-import type { AdminRequest } from "@custom-types/requests";
+import type { AdminRequest } from '@custom-types/requests';
+import { EllipsisHorizontal, Eye } from '@medusajs/icons';
+import { DropdownMenu } from '@medusajs/ui';
 
 type Props = {
   handleDetail: (request: AdminRequest) => void;

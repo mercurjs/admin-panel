@@ -1,209 +1,210 @@
 import {
-  de,
+  ar,
   bg,
+  bs,
+  cs,
+  de,
+  el,
   enUS,
   es,
+  faIR,
   fr,
   he,
+  hu,
+  id,
   it,
   ja,
+  ko,
+  lt,
+  mk,
+  mn,
+  nl,
   pl,
   ptBR,
+  ro,
+  ru,
   th,
   tr,
   uk,
-  ro,
-  mk,
-  mn,
-  ar,
-  zhCN,
-  faIR,
-  cs,
-  ru,
-  el,
-  lt,
   vi,
-  ko,
-  nl,
-  hu,
-  bs,
-  id,
-} from "date-fns/locale"
-import { Language } from "./types"
+  zhCN
+} from 'date-fns/locale';
+
+import type { Language } from './types';
 
 export const languages: Language[] = [
   {
-    code: "bs",
-    display_name: "Bosanski",
+    code: 'bs',
+    display_name: 'Bosanski',
     ltr: true,
-    date_locale: bs,
+    date_locale: bs
   },
   {
-    code: "bg",
-    display_name: "Български",
+    code: 'bg',
+    display_name: 'Български',
     ltr: true,
-    date_locale: bg,
+    date_locale: bg
   },
   {
-    code: "en",
-    display_name: "English",
+    code: 'en',
+    display_name: 'English',
     ltr: true,
-    date_locale: enUS,
+    date_locale: enUS
   },
   {
-    code: "es",
-    display_name: "Español",
+    code: 'es',
+    display_name: 'Español',
     ltr: true,
-    date_locale: es,
+    date_locale: es
   },
   {
-    code: "el",
-    display_name: "Ελληνικά",
+    code: 'el',
+    display_name: 'Ελληνικά',
     ltr: true,
-    date_locale: el,
+    date_locale: el
   },
   {
-    code: "de",
-    display_name: "Deutsch",
+    code: 'de',
+    display_name: 'Deutsch',
     ltr: true,
-    date_locale: de,
+    date_locale: de
   },
   {
-    code: "fr",
-    display_name: "Français",
+    code: 'fr',
+    display_name: 'Français',
     ltr: true,
-    date_locale: fr,
+    date_locale: fr
   },
   {
-    code: "he",
-    display_name: "עברית",
+    code: 'he',
+    display_name: 'עברית',
     ltr: false,
-    date_locale: he,
+    date_locale: he
   },
   {
-    code: "hu",
-    display_name: "Magyar",
+    code: 'hu',
+    display_name: 'Magyar',
     ltr: true,
-    date_locale: hu,
+    date_locale: hu
   },
   {
-    code: "it",
-    display_name: "Italiano",
+    code: 'it',
+    display_name: 'Italiano',
     ltr: true,
-    date_locale: it,
+    date_locale: it
   },
   {
-    code: "ja",
-    display_name: "日本語",
+    code: 'ja',
+    display_name: '日本語',
     ltr: true,
-    date_locale: ja,
+    date_locale: ja
   },
   {
-    code: "pl",
-    display_name: "Polski",
+    code: 'pl',
+    display_name: 'Polski',
     ltr: true,
-    date_locale: pl,
+    date_locale: pl
   },
   {
-    code: "ptBR",
-    display_name: "Português (Brasil)",
+    code: 'ptBR',
+    display_name: 'Português (Brasil)',
     ltr: true,
-    date_locale: ptBR,
+    date_locale: ptBR
   },
   {
-    code: "tr",
-    display_name: "Türkçe",
+    code: 'tr',
+    display_name: 'Türkçe',
     ltr: true,
-    date_locale: tr,
+    date_locale: tr
   },
   {
-    code: "th",
-    display_name: "ไทย",
+    code: 'th',
+    display_name: 'ไทย',
     ltr: true,
-    date_locale: th,
+    date_locale: th
   },
   {
-    code: "uk",
-    display_name: "Українська",
+    code: 'uk',
+    display_name: 'Українська',
     ltr: true,
-    date_locale: uk,
+    date_locale: uk
   },
   {
-    code: "ro",
-    display_name: "Română",
+    code: 'ro',
+    display_name: 'Română',
     ltr: true,
-    date_locale: ro,
+    date_locale: ro
   },
   {
-    code: "mk",
-    display_name: "Македонски",
+    code: 'mk',
+    display_name: 'Македонски',
     ltr: true,
-    date_locale: mk,
+    date_locale: mk
   },
   {
-    code: "mn",
-    display_name: "Монгол",
+    code: 'mn',
+    display_name: 'Монгол',
     ltr: true,
-    date_locale: mn,
+    date_locale: mn
   },
   {
-    code: "ar",
-    display_name: "العربية",
+    code: 'ar',
+    display_name: 'العربية',
     ltr: false,
-    date_locale: ar,
+    date_locale: ar
   },
   {
-    code: "zhCN",
-    display_name: "简体中文",
+    code: 'zhCN',
+    display_name: '简体中文',
     ltr: true,
-    date_locale: zhCN,
+    date_locale: zhCN
   },
   {
-    code: "fa",
-    display_name: "فارسی",
+    code: 'fa',
+    display_name: 'فارسی',
     ltr: false,
-    date_locale: faIR,
+    date_locale: faIR
   },
   {
-    code: "cs",
-    display_name: "Čeština",
+    code: 'cs',
+    display_name: 'Čeština',
     ltr: true,
-    date_locale: cs,
+    date_locale: cs
   },
   {
-    code: "ru",
-    display_name: "Русский",
+    code: 'ru',
+    display_name: 'Русский',
     ltr: true,
-    date_locale: ru,
+    date_locale: ru
   },
   {
-    code: "lt",
-    display_name: "Lietuviškai",
+    code: 'lt',
+    display_name: 'Lietuviškai',
     ltr: true,
-    date_locale: lt,
+    date_locale: lt
   },
   {
-    code: "vi",
-    display_name: "Tiếng Việt",
+    code: 'vi',
+    display_name: 'Tiếng Việt',
     ltr: true,
-    date_locale: vi,
+    date_locale: vi
   },
   {
-    code: "id",
-    display_name: "Bahasa Indonesia",
+    code: 'id',
+    display_name: 'Bahasa Indonesia',
     ltr: true,
-    date_locale: id,
+    date_locale: id
   },
   {
-    code: "ko",
-    display_name: "한국어",
+    code: 'ko',
+    display_name: '한국어',
     ltr: true,
-    date_locale: ko,
+    date_locale: ko
   },
   {
-    code: "nl",
-    display_name: "Nederlands",
+    code: 'nl',
+    display_name: 'Nederlands',
     ltr: true,
-    date_locale: nl,
-  },
-]
+    date_locale: nl
+  }
+];

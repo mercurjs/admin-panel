@@ -1,41 +1,39 @@
-import { useLoaderData, useParams } from "react-router-dom";
+import { TwoColumnPageSkeleton } from '@components/common/skeleton';
+import { TwoColumnPage } from '@components/layout/pages';
+import { useProduct } from '@hooks/api';
+import { useExtension } from '@providers/extension-provider';
+import { ProductAdditionalAttributeSection } from '@routes/products/product-detail/components/product-additional-attribute-section';
+import { ProductAttributeSection } from '@routes/products/product-detail/components/product-attribute-section';
+import { ProductGeneralSection } from '@routes/products/product-detail/components/product-general-section';
+import { ProductMediaSection } from '@routes/products/product-detail/components/product-media-section';
+import { ProductOptionSection } from '@routes/products/product-detail/components/product-option-section';
+import { ProductOrganizationSection } from '@routes/products/product-detail/components/product-organization-section';
+import { ProductSalesChannelSection } from '@routes/products/product-detail/components/product-sales-channel-section';
+import { ProductShippingProfileSection } from '@routes/products/product-detail/components/product-shipping-profile-section';
+import { ProductVariantSection } from '@routes/products/product-detail/components/product-variant-section';
+import { useLoaderData, useParams } from 'react-router-dom';
 
-import { TwoColumnPageSkeleton } from "../../../components/common/skeleton";
-import { TwoColumnPage } from "../../../components/layout/pages";
-import { useProduct } from "../../../hooks/api/products";
-import { useExtension } from "../../../providers/extension-provider";
-import { ProductAdditionalAttributeSection } from "./components/product-additional-attribute-section";
-import { ProductAttributeSection } from "./components/product-attribute-section";
-import { ProductGeneralSection } from "./components/product-general-section";
-import { ProductMediaSection } from "./components/product-media-section";
-import { ProductOptionSection } from "./components/product-option-section";
-import { ProductOrganizationSection } from "./components/product-organization-section";
-import { ProductSalesChannelSection } from "./components/product-sales-channel-section";
-import { ProductShippingProfileSection } from "./components/product-shipping-profile-section";
-import { ProductVariantSection } from "./components/product-variant-section";
-import { PRODUCT_DETAIL_FIELDS } from "./constants";
-import { productLoader } from "./loader";
+import { PRODUCT_DETAIL_FIELDS } from './constants';
+import type { productLoader } from './loader';
 
 export const ProductDetail = () => {
-  const initialData = useLoaderData() as Awaited<
-    ReturnType<typeof productLoader>
-  >;
+  const initialData = useLoaderData() as Awaited<ReturnType<typeof productLoader>>;
 
   const { id } = useParams();
   const { product, isLoading, isError, error } = useProduct(
     id!,
     { fields: PRODUCT_DETAIL_FIELDS },
     {
-      initialData: initialData,
-    },
+      initialData: initialData
+    }
   );
 
   const { getWidgets } = useExtension();
 
-  const after = getWidgets("product.details.after");
-  const before = getWidgets("product.details.before");
-  const sideAfter = getWidgets("product.details.side.after");
-  const sideBefore = getWidgets("product.details.side.before");
+  const after = getWidgets('product.details.after');
+  const before = getWidgets('product.details.before');
+  const sideAfter = getWidgets('product.details.side.after');
+  const sideBefore = getWidgets('product.details.side.before');
 
   if (isLoading || !product) {
     return (
@@ -59,7 +57,7 @@ export const ProductDetail = () => {
           after,
           before,
           sideAfter,
-          sideBefore,
+          sideBefore
         }}
         showJSON
         showMetadata

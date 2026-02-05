@@ -1,5 +1,6 @@
-import { z } from "zod";
-import { StoreStatus } from "../seller";
+import { z } from 'zod';
+
+import { StoreStatus } from '@/types';
 
 export type AlgoliaProduct = z.infer<typeof AlgoliaProductValidator>;
 export const AlgoliaProductValidator = z.object({
@@ -17,27 +18,27 @@ export const AlgoliaProductValidator = z.object({
       z.object({
         id: z.string(),
         url: z.string(),
-        rank: z.number(),
+        rank: z.number()
       })
     )
     .nullable()
     .optional(),
   collection: z
     .object({
-      title: z.string(),
+      title: z.string()
     })
     .nullable()
     .optional(),
   type: z
     .object({
-      value: z.string(),
+      value: z.string()
     })
     .nullable()
     .optional(),
   tags: z
     .array(
       z.object({
-        value: z.string(),
+        value: z.string()
       })
     )
     .optional(),
@@ -45,14 +46,14 @@ export const AlgoliaProductValidator = z.object({
     .array(
       z.object({
         name: z.string(),
-        id: z.string(),
+        id: z.string()
       })
     )
     .optional(),
   variants: z.any().nullable().default(null),
   brand: z
     .object({
-      name: z.string(),
+      name: z.string()
     })
     .optional(),
   attribute_values: z
@@ -61,7 +62,7 @@ export const AlgoliaProductValidator = z.object({
         name: z.string(),
         value: z.string(),
         is_filterable: z.boolean(),
-        ui_component: z.string(),
+        ui_component: z.string()
       })
     )
     .optional(),
@@ -81,9 +82,9 @@ export const AlgoliaProductValidator = z.object({
     .object({
       id: z.string(),
       handle: z.string().nullish(),
-      store_status: z.nativeEnum(StoreStatus).nullish(),
+      store_status: z.nativeEnum(StoreStatus).nullish()
     })
-    .nullable(),
+    .nullable()
 });
 
 export const AlgoliaVariantValidator = z.object({
@@ -110,8 +111,8 @@ export const AlgoliaVariantValidator = z.object({
       value: z.string(),
       option: z.object({
         id: z.string(),
-        title: z.string(),
-      }),
+        title: z.string()
+      })
     })
   ),
   prices: z.array(
@@ -122,7 +123,7 @@ export const AlgoliaVariantValidator = z.object({
       min_quantity: z.number().nullish(),
       max_quantity: z.number().nullish(),
       rules_count: z.number(),
-      amount: z.number(),
+      amount: z.number()
     })
-  ),
+  )
 });

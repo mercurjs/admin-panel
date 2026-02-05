@@ -1,24 +1,18 @@
-import type { ExtendedInventoryItemLevel } from "@custom-types/inventory";
+import { _DataTable } from '@components/table/data-table';
+import type { ExtendedInventoryItemLevel } from '@custom-types/inventory';
+import { useInventoryItemLevels } from '@hooks/api';
+import { useDataTable } from '@hooks/use-data-table';
 
-import { _DataTable } from "@components/table/data-table";
-
-import { useInventoryItemLevels } from "@hooks/api";
-import { useDataTable } from "@hooks/use-data-table";
-
-import { useLocationListTableColumns } from "./use-location-list-table-columns";
-import { useLocationLevelTableQuery } from "./use-location-list-table-query";
+import { useLocationListTableColumns } from './use-location-list-table-columns';
+import { useLocationLevelTableQuery } from './use-location-list-table-query';
 
 const PAGE_SIZE = 20;
-const PREFIX = "invlvl";
+const PREFIX = 'invlvl';
 
-export const ItemLocationListTable = ({
-  inventory_item_id,
-}: {
-  inventory_item_id: string;
-}) => {
+export const ItemLocationListTable = ({ inventory_item_id }: { inventory_item_id: string }) => {
   const { searchParams, raw } = useLocationLevelTableQuery({
     pageSize: PAGE_SIZE,
-    prefix: PREFIX,
+    prefix: PREFIX
   });
 
   const {
@@ -26,10 +20,10 @@ export const ItemLocationListTable = ({
     count,
     isPending: isLoading,
     isError,
-    error,
+    error
   } = useInventoryItemLevels(inventory_item_id, {
     ...searchParams,
-    fields: "+stock_locations.id,+stock_locations.name",
+    fields: '+stock_locations.id,+stock_locations.name'
   });
 
   const columns = useLocationListTableColumns();
@@ -43,8 +37,8 @@ export const ItemLocationListTable = ({
     columns,
     count,
     enablePagination: true,
-    getRowId: (row) => row.id,
-    pageSize: PAGE_SIZE,
+    getRowId: row => row.id,
+    pageSize: PAGE_SIZE
   });
 
   return (

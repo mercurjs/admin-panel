@@ -1,1 +1,1 @@
-export { RequestProductCollectionList as Component } from "./request-product-collection-list";
+export { RequestProductCollectionList as Component } from './request-product-collection-list';

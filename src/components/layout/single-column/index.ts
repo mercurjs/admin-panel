@@ -1,1 +1,1 @@
-export * from "./single-column";
+export * from './single-column';

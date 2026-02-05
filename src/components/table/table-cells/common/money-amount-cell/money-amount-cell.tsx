@@ -1,41 +1,46 @@
-import { clx } from "@medusajs/ui"
-import { getStylizedAmount } from "../../../../../lib/money-amount-helpers"
-import { PlaceholderCell } from "../placeholder-cell"
+import { PlaceholderCell } from '@components/table/table-cells/common/placeholder-cell';
+import { getStylizedAmount } from '@lib/money-amount-helpers';
+import { clx } from '@medusajs/ui';
 
 type MoneyAmountCellProps = {
-  currencyCode: string
-  amount?: number | null
-  align?: "left" | "right"
-  className?: string
-  "data-testid"?: string
-}
+  currencyCode: string;
+  amount?: number | null;
+  align?: 'left' | 'right';
+  className?: string;
+  'data-testid'?: string;
+};
 
 export const MoneyAmountCell = ({
   currencyCode,
   amount,
-  align = "left",
+  align = 'left',
   className,
-  "data-testid": dataTestId,
+  'data-testid': dataTestId
 }: MoneyAmountCellProps) => {
-  if (typeof amount === "undefined" || amount === null) {
-    return <PlaceholderCell />
+  if (typeof amount === 'undefined' || amount === null) {
+    return <PlaceholderCell />;
   }
 
-  const formatted = getStylizedAmount(amount, currencyCode)
+  const formatted = getStylizedAmount(amount, currencyCode);
 
   return (
     <div
       className={clx(
-        "flex h-full w-full items-center overflow-hidden",
+        'flex h-full w-full items-center overflow-hidden',
         {
-          "justify-start text-left": align === "left",
-          "justify-end text-right": align === "right",
+          'justify-start text-left': align === 'left',
+          'justify-end text-right': align === 'right'
         },
         className
       )}
       data-testid={dataTestId}
     >
-      <span className="truncate" data-testid={dataTestId ? `${dataTestId}-text` : undefined}>{formatted}</span>
+      <span
+        className="truncate"
+        data-testid={dataTestId ? `${dataTestId}-text` : undefined}
+      >
+        {formatted}
+      </span>
     </div>
-  )
-}
+  );
+};

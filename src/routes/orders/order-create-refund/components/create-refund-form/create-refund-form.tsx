@@ -1,24 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { Form } from '@components/common/form';
+import { RouteDrawer, useRouteModal } from '@components/modals';
+import { KeyboundForm } from '@components/utilities/keybound-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { HttpTypes } from '@medusajs/types';
+import { useRefundPayment, useRefundReasons } from '@hooks/api';
+import { useDocumentDirection } from '@hooks/use-document-direction';
+import { currencies } from '@lib/data/currencies';
+import { formatCurrency } from '@lib/format-currency';
+import { formatProvider } from '@lib/format-provider';
+import { getLocaleAmount } from '@lib/money-amount-helpers';
+import { getPaymentsFromOrder } from '@lib/orders';
+import type { HttpTypes } from '@medusajs/types';
 import { Button, CurrencyInput, Label, Select, Textarea, toast } from '@medusajs/ui';
 import { formatValue } from 'react-currency-input-field';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import * as zod from 'zod';
-
-import { Form } from '../../../../../components/common/form';
-import { RouteDrawer, useRouteModal } from '../../../../../components/modals';
-import { KeyboundForm } from '../../../../../components/utilities/keybound-form';
-import { useRefundPayment, useRefundReasons } from '../../../../../hooks/api';
-import { useDocumentDirection } from '../../../../../hooks/use-document-direction';
-import { currencies } from '../../../../../lib/data/currencies';
-import { formatCurrency } from '../../../../../lib/format-currency';
-import { formatProvider } from '../../../../../lib/format-provider.ts';
-import { getLocaleAmount } from '../../../../../lib/money-amount-helpers';
-import { getPaymentsFromOrder } from '../../../../../lib/orders';
 
 type CreateRefundFormProps = {
   order: HttpTypes.AdminOrder;
@@ -260,7 +259,7 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
 
             <Form.Field
               control={form.control}
-              name={`note`}
+              name="note"
               render={({ field }) => {
                 return (
                   <Form.Item data-testid="order-create-refund-note-item">

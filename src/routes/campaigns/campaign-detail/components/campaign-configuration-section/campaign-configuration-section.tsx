@@ -1,35 +1,43 @@
-import { HttpTypes } from "@medusajs/types"
-import { Container, Heading } from "@medusajs/ui"
-
-import { PencilSquare } from "@medusajs/icons"
-import { useTranslation } from "react-i18next"
-import { ActionMenu } from "../../../../../components/common/action-menu"
-import { DateRangeDisplay } from "../../../../../components/common/date-range-display"
+import { ActionMenu } from '@components/common/action-menu';
+import { DateRangeDisplay } from '@components/common/date-range-display';
+import { PencilSquare } from '@medusajs/icons';
+import type { HttpTypes } from '@medusajs/types';
+import { Container, Heading } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
 
 type CampaignConfigurationSectionProps = {
-  campaign: HttpTypes.AdminCampaign
-}
+  campaign: HttpTypes.AdminCampaign;
+};
 
-export const CampaignConfigurationSection = ({
-  campaign,
-}: CampaignConfigurationSectionProps) => {
-  const { t } = useTranslation()
+export const CampaignConfigurationSection = ({ campaign }: CampaignConfigurationSectionProps) => {
+  const { t } = useTranslation();
 
   return (
-    <Container className="flex flex-col gap-y-4" data-testid="campaign-configuration-section-container">
-      <div className="flex items-center justify-between" data-testid="campaign-configuration-section-header">
-        <Heading level="h2" data-testid="campaign-configuration-section-heading">{t("campaigns.configuration.header")}</Heading>
+    <Container
+      className="flex flex-col gap-y-4"
+      data-testid="campaign-configuration-section-container"
+    >
+      <div
+        className="flex items-center justify-between"
+        data-testid="campaign-configuration-section-header"
+      >
+        <Heading
+          level="h2"
+          data-testid="campaign-configuration-section-heading"
+        >
+          {t('campaigns.configuration.header')}
+        </Heading>
         <ActionMenu
           groups={[
             {
               actions: [
                 {
-                  label: t("actions.edit"),
+                  label: t('actions.edit'),
                   icon: <PencilSquare />,
-                  to: "configuration",
-                },
-              ],
-            },
+                  to: 'configuration'
+                }
+              ]
+            }
           ]}
           data-testid="campaign-configuration-section-action-menu"
         />
@@ -41,5 +49,5 @@ export const CampaignConfigurationSection = ({
         data-testid="campaign-configuration-section-date-range"
       />
     </Container>
-  )
-}
+  );
+};

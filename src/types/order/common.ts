@@ -1,6 +1,5 @@
-import type { AdminOrder, PaginatedResponse } from "@medusajs/types";
-
-import type { SellerDTO } from "@custom-types/seller";
+import type { SellerDTO } from '@custom-types/seller';
+import type { AdminOrder, PaginatedResponse } from '@medusajs/types';
 
 export interface Order {
   id: string;

@@ -1,1 +1,1 @@
-export { SaveViewDropdown } from "./save-view-dropdown"
+export { SaveViewDropdown } from './save-view-dropdown';

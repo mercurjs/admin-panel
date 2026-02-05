@@ -1,1 +1,1 @@
-export * from "./order-receive-return-form.tsx"
+export * from './order-receive-return-form.tsx';

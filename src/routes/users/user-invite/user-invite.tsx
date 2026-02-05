@@ -1,10 +1,8 @@
-import { RouteFocusModal } from "../../../components/modals"
-import { InviteUserForm } from "./components/invite-user-form/invite-user-form"
+import { RouteFocusModal } from '@components/modals';
+import { InviteUserForm } from '@routes/users/user-invite/components/invite-user-form/invite-user-form';
 
-export const UserInvite = () => {
-  return (
-    <RouteFocusModal>
-      <InviteUserForm />
-    </RouteFocusModal>
-  )
-}
+export const UserInvite = () => (
+  <RouteFocusModal>
+    <InviteUserForm />
+  </RouteFocusModal>
+);

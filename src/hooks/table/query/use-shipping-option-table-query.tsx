@@ -1,38 +1,31 @@
-import { HttpTypes } from "@medusajs/types"
-import { useQueryParams } from "../../use-query-params"
+import { useQueryParams } from '@hooks/use-query-params';
+import type { HttpTypes } from '@medusajs/types';
 
 type UseShippingOptionTableQueryProps = {
-  isReturn?: boolean
-  pageSize?: number
-  prefix?: string
-}
+  isReturn?: boolean;
+  pageSize?: number;
+  prefix?: string;
+};
 
 export const useShippingOptionTableQuery = ({
   pageSize = 10,
-  prefix,
+  prefix
 }: UseShippingOptionTableQueryProps) => {
   const queryObject = useQueryParams(
     [
-      "offset",
-      "q",
-      "order",
-      "admin_only",
-      "is_return",
-      "created_at",
-      "updated_at",
-      "stock_location_id",
+      'offset',
+      'q',
+      'order',
+      'admin_only',
+      'is_return',
+      'created_at',
+      'updated_at',
+      'stock_location_id'
     ],
     prefix
-  )
+  );
 
-  const {
-    offset,
-    order,
-    q,
-    created_at,
-    updated_at,
-    stock_location_id,
-  } = queryObject
+  const { offset, order, q, created_at, updated_at, stock_location_id } = queryObject;
 
   const searchParams: HttpTypes.AdminShippingOptionListParams = {
     limit: pageSize,
@@ -47,11 +40,11 @@ export const useShippingOptionTableQuery = ({
     order,
     stock_location_id,
     created_at: created_at ? JSON.parse(created_at) : undefined,
-    updated_at: updated_at ? JSON.parse(updated_at) : undefined,
-  }
+    updated_at: updated_at ? JSON.parse(updated_at) : undefined
+  };
 
   return {
     searchParams,
-    raw: queryObject,
-  }
-}
+    raw: queryObject
+  };
+};

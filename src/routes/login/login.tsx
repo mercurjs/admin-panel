@@ -1,19 +1,18 @@
-import { Alert, Button, Heading, Hint, Input, Text } from "@medusajs/ui";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Trans, useTranslation } from "react-i18next";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import * as z from "zod";
-import AvatarBox from "@components/common/logo-box/avatar-box";
-import { Form } from "@components/common/form";
-import { useExtension } from "@providers/extension-provider";
-import { useSignInWithEmailPass } from "@hooks/api";
-import { isFetchError } from "@lib/is-fetch-error";
+import { Form } from '@components/common/form';
+import AvatarBox from '@components/common/logo-box/avatar-box';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useSignInWithEmailPass } from '@hooks/api';
+import { isFetchError } from '@lib/is-fetch-error';
+import { Alert, Button, Heading, Hint, Input, Text } from '@medusajs/ui';
+import { useExtension } from '@providers/extension-provider';
+import { useForm } from 'react-hook-form';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import * as z from 'zod';
 
 const LoginSchema = z.object({
   email: z.string().email(),
-  password: z.string(),
+  password: z.string()
 });
 
 export const Login = () => {
@@ -21,19 +20,19 @@ export const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { getWidgets } = useExtension();
-  const [searchParams] = useSearchParams()
+  const [searchParams] = useSearchParams();
 
-
-  const reason = searchParams.get("reason") || ""
-  const reasonMessage = reason && reason.toLowerCase() === "unauthorized" ? "Session expired" : reason
-  const from = location.state?.from?.pathname || "/orders";
+  const reason = searchParams.get('reason') || '';
+  const reasonMessage =
+    reason && reason.toLowerCase() === 'unauthorized' ? 'Session expired' : reason;
+  const from = location.state?.from?.pathname || '/orders';
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      email: "",
-      password: "",
-    },
+      email: '',
+      password: ''
+    }
   });
 
   const { mutateAsync, isPending } = useSignInWithEmailPass();
@@ -42,37 +41,36 @@ export const Login = () => {
     await mutateAsync(
       {
         email,
-        password,
+        password
       },
       {
-        onError: (error) => {
+        onError: error => {
           if (isFetchError(error)) {
             if (error.status === 401) {
-              form.setError("email", {
-                type: "manual",
-                message: error.message,
+              form.setError('email', {
+                type: 'manual',
+                message: error.message
               });
 
               return;
             }
           }
 
-          form.setError("root.serverError", {
-            type: "manual",
-            message: error.message,
+          form.setError('root.serverError', {
+            type: 'manual',
+            message: error.message
           });
         },
         onSuccess: () => {
           navigate(from, { replace: true });
-        },
-      },
+        }
+      }
     );
   });
 
   const serverError = form.formState.errors?.root?.serverError?.message || reasonMessage;
   const validationError =
-    form.formState.errors.email?.message ||
-    form.formState.errors.password?.message;
+    form.formState.errors.email?.message || form.formState.errors.password?.message;
 
   return (
     <div
@@ -88,17 +86,17 @@ export const Login = () => {
           className="mb-4 flex flex-col items-center"
           data-testid="login-header"
         >
-          <Heading data-testid="login-title">{t("login.title")}</Heading>
+          <Heading data-testid="login-title">{t('login.title')}</Heading>
           <Text
             size="small"
             className="text-center text-ui-fg-subtle"
             data-testid="login-hint"
           >
-            {t("login.hint")}
+            {t('login.hint')}
           </Text>
         </div>
         <div className="flex w-full flex-col gap-y-3">
-          {getWidgets("login.before").map((Component, i) => {
+          {getWidgets('login.before').map((Component, i) => {
             return <Component key={i} />;
           })}
           <Form {...form}>
@@ -119,7 +117,7 @@ export const Login = () => {
                             autoComplete="email"
                             {...field}
                             className="bg-ui-bg-field-component"
-                            placeholder={t("fields.email")}
+                            placeholder={t('fields.email')}
                             data-testid="login-email-input"
                           />
                         </Form.Control>
@@ -140,7 +138,7 @@ export const Login = () => {
                             autoComplete="current-password"
                             {...field}
                             className="bg-ui-bg-field-component"
-                            placeholder={t("fields.password")}
+                            placeholder={t('fields.password')}
                             data-testid="login-password-input"
                           />
                         </Form.Control>
@@ -179,11 +177,11 @@ export const Login = () => {
                 isLoading={isPending}
                 data-testid="login-submit-button"
               >
-                {t("actions.continueWithEmail")}
+                {t('actions.continueWithEmail')}
               </Button>
             </form>
           </Form>
-          {getWidgets("login.after").map((Component, i) => {
+          {getWidgets('login.after').map((Component, i) => {
             return <Component key={i} />;
           })}
         </div>
@@ -199,7 +197,7 @@ export const Login = () => {
                 to="/reset-password"
                 className="font-medium text-ui-fg-interactive outline-none transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover"
                 data-testid="login-reset-password-link"
-              />,
+              />
             ]}
           />
         </span>

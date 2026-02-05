@@ -1,1 +1,1 @@
-export * from "./product-status-badge";
+export * from './product-status-badge';

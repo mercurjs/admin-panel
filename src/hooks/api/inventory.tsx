@@ -270,7 +270,7 @@ export const useBatchInventoryItemsLocationLevels = (
     mutationFn: (payload) => {
       return sdk.admin.inventoryItem.batchInventoryItemsLocationLevels({
         ...payload,
-      // force: true is required for admin batch endpoint to delete levels with stocked items
+        // force: true is required for admin batch endpoint to delete levels with stocked items
         force: !!payload?.delete?.length || payload.force,
       })
     },

@@ -1,29 +1,23 @@
-import { XMarkMini } from "@medusajs/icons"
-import { IconButton, Text } from "@medusajs/ui"
-import { useProduct } from "../../../../../hooks/api"
+import { useProduct } from '@hooks/api';
+import { XMarkMini } from '@medusajs/icons';
+import { IconButton, Text } from '@medusajs/ui';
 
 type TargetItemProps = {
-  index: number
-  onRemove: (index: number) => void
-  label: string
-  value: string
-}
+  index: number;
+  onRemove: (index: number) => void;
+  label: string;
+  value: string;
+};
 
-export const TargetItem = ({
-  index,
-  label,
-  onRemove,
-  value,
-}: TargetItemProps) => {
-  const { product } = useProduct(
-    value,
-    { fields: "id,title" },
-    { enabled: !label }
-  )
+export const TargetItem = ({ index, label, onRemove, value }: TargetItemProps) => {
+  const { product } = useProduct(value, { fields: 'id,title' }, { enabled: !label });
 
   return (
-    <div className="bg-ui-bg-field-component shadow-borders-base flex items-center justify-between gap-2 rounded-md px-2 py-0.5">
-      <Text size="small" leading="compact">
+    <div className="flex items-center justify-between gap-2 rounded-md bg-ui-bg-field-component px-2 py-0.5 shadow-borders-base">
+      <Text
+        size="small"
+        leading="compact"
+      >
         {label || product?.title}
       </Text>
       <IconButton
@@ -35,5 +29,5 @@ export const TargetItem = ({
         <XMarkMini />
       </IconButton>
     </div>
-  )
-}
+  );
+};

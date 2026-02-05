@@ -1,16 +1,15 @@
-import { Button, Container, Heading } from "@medusajs/ui";
+import type { ExtendedAdminInventoryItem } from '@custom-types/inventory';
+import { Button, Container, Heading } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-
-import { ItemLocationListTable } from "./location-levels-table/location-list-table";
-import type { ExtendedAdminInventoryItem } from "@custom-types/inventory";
+import { ItemLocationListTable } from './location-levels-table/location-list-table';
 
 type InventoryItemLocationLevelsSectionProps = {
   inventoryItem: ExtendedAdminInventoryItem;
 };
 export const InventoryItemLocationLevelsSection = ({
-  inventoryItem,
+  inventoryItem
 }: InventoryItemLocationLevelsSectionProps) => {
   const { t } = useTranslation();
 
@@ -24,7 +23,7 @@ export const InventoryItemLocationLevelsSection = ({
         data-testid="inventory-item-location-levels-header"
       >
         <Heading data-testid="inventory-item-location-levels-title">
-          {t("inventory.locationLevels")}
+          {t('inventory.locationLevels')}
         </Heading>
         <Button
           size="small"
@@ -32,8 +31,11 @@ export const InventoryItemLocationLevelsSection = ({
           asChild
           data-testid="inventory-manage-locations-button"
         >
-          <Link to="locations" data-testid="inventory-manage-locations-link">
-            {t("inventory.manageLocations")}
+          <Link
+            to="locations"
+            data-testid="inventory-manage-locations-link"
+          >
+            {t('inventory.manageLocations')}
           </Link>
         </Button>
       </div>

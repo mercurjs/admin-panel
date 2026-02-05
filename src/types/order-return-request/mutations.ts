@@ -7,11 +7,11 @@ export type CreateOrderReturnRequestDTO = {
 };
 
 export type OrderReturnRequestStatus =
-  | "pending"
-  | "refunded"
-  | "withdrawn"
-  | "escalated"
-  | "canceled";
+  | 'pending'
+  | 'refunded'
+  | 'withdrawn'
+  | 'escalated'
+  | 'canceled';
 
 export type VendorUpdateOrderReturnRequestDTO = {
   id: string;

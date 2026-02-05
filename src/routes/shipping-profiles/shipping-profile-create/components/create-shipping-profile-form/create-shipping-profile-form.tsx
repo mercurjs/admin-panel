@@ -1,77 +1,84 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button, Heading, Input, Text, toast } from "@medusajs/ui"
-import { useForm } from "react-hook-form"
-import { useTranslation } from "react-i18next"
-import * as zod from "zod"
-
-import { Form } from "../../../../../components/common/form"
-import {
-  RouteFocusModal,
-  useRouteModal,
-} from "../../../../../components/modals"
-import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import { useCreateShippingProfile } from "../../../../../hooks/api/shipping-profiles"
+import { Form } from '@components/common/form';
+import { RouteFocusModal, useRouteModal } from '@components/modals';
+import { KeyboundForm } from '@components/utilities/keybound-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useCreateShippingProfile } from '@hooks/api';
+import { Button, Heading, Input, Text, toast } from '@medusajs/ui';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import * as zod from 'zod';
 
 const CreateShippingOptionsSchema = zod.object({
   name: zod.string().min(1),
-  type: zod.string().min(1),
-})
+  type: zod.string().min(1)
+});
 
 export function CreateShippingProfileForm() {
-  const { t } = useTranslation()
-  const { handleSuccess } = useRouteModal()
+  const { t } = useTranslation();
+  const { handleSuccess } = useRouteModal();
 
   const form = useForm<zod.infer<typeof CreateShippingOptionsSchema>>({
     defaultValues: {
-      name: "",
-      type: "",
+      name: '',
+      type: ''
     },
-    resolver: zodResolver(CreateShippingOptionsSchema),
-  })
+    resolver: zodResolver(CreateShippingOptionsSchema)
+  });
 
-  const { mutateAsync, isPending } = useCreateShippingProfile()
+  const { mutateAsync, isPending } = useCreateShippingProfile();
 
-  const handleSubmit = form.handleSubmit(async (values) => {
+  const handleSubmit = form.handleSubmit(async values => {
     await mutateAsync(
       {
         name: values.name,
-        type: values.type,
+        type: values.type
       },
       {
         onSuccess: ({ shipping_profile }) => {
           toast.success(
-            t("shippingProfile.create.successToast", {
-              name: shipping_profile.name,
+            t('shippingProfile.create.successToast', {
+              name: shipping_profile.name
             })
-          )
+          );
 
-          handleSuccess(
-            `/settings/locations/shipping-profiles/${shipping_profile.id}`
-          )
+          handleSuccess(`/settings/locations/shipping-profiles/${shipping_profile.id}`);
         },
-        onError: (error) => {
-          toast.error(error.message)
-        },
+        onError: error => {
+          toast.error(error.message);
+        }
       }
-    )
-  })
+    );
+  });
 
   return (
-    <RouteFocusModal.Form form={form} data-testid="shipping-profile-create-form">
+    <RouteFocusModal.Form
+      form={form}
+      data-testid="shipping-profile-create-form"
+    >
       <KeyboundForm
         onSubmit={handleSubmit}
         className="flex h-full flex-col overflow-hidden"
       >
         <RouteFocusModal.Header data-testid="shipping-profile-create-form-header" />
-        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-hidden" data-testid="shipping-profile-create-form-body">
+        <RouteFocusModal.Body
+          className="flex flex-1 flex-col overflow-hidden"
+          data-testid="shipping-profile-create-form-body"
+        >
           <div className="flex flex-1 flex-col items-center overflow-y-auto">
             <div className="mx-auto flex w-full max-w-[720px] flex-col gap-y-8 px-2 py-16">
               <div data-testid="shipping-profile-create-form-header-section">
-                <Heading className="capitalize" data-testid="shipping-profile-create-form-heading">
-                  {t("shippingProfile.create.header")}
+                <Heading
+                  className="capitalize"
+                  data-testid="shipping-profile-create-form-heading"
+                >
+                  {t('shippingProfile.create.header')}
                 </Heading>
-                <Text size="small" className="text-ui-fg-subtle" data-testid="shipping-profile-create-form-hint">
-                  {t("shippingProfile.create.hint")}
+                <Text
+                  size="small"
+                  className="text-ui-fg-subtle"
+                  data-testid="shipping-profile-create-form-hint"
+                >
+                  {t('shippingProfile.create.hint')}
                 </Text>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -81,13 +88,18 @@ export function CreateShippingProfileForm() {
                   render={({ field }) => {
                     return (
                       <Form.Item data-testid="shipping-profile-create-form-name-item">
-                        <Form.Label data-testid="shipping-profile-create-form-name-label">{t("fields.name")}</Form.Label>
+                        <Form.Label data-testid="shipping-profile-create-form-name-label">
+                          {t('fields.name')}
+                        </Form.Label>
                         <Form.Control data-testid="shipping-profile-create-form-name-control">
-                          <Input {...field} data-testid="shipping-profile-create-form-name-input" />
+                          <Input
+                            {...field}
+                            data-testid="shipping-profile-create-form-name-input"
+                          />
                         </Form.Control>
                         <Form.ErrorMessage data-testid="shipping-profile-create-form-name-error" />
                       </Form.Item>
-                    )
+                    );
                   }}
                 />
                 <Form.Field
@@ -96,15 +108,21 @@ export function CreateShippingProfileForm() {
                   render={({ field }) => {
                     return (
                       <Form.Item data-testid="shipping-profile-create-form-type-item">
-                        <Form.Label tooltip={t("shippingProfile.tooltip.type")} data-testid="shipping-profile-create-form-type-label">
-                          {t("fields.type")}
+                        <Form.Label
+                          tooltip={t('shippingProfile.tooltip.type')}
+                          data-testid="shipping-profile-create-form-type-label"
+                        >
+                          {t('fields.type')}
                         </Form.Label>
                         <Form.Control data-testid="shipping-profile-create-form-type-control">
-                          <Input {...field} data-testid="shipping-profile-create-form-type-input" />
+                          <Input
+                            {...field}
+                            data-testid="shipping-profile-create-form-type-input"
+                          />
                         </Form.Control>
                         <Form.ErrorMessage data-testid="shipping-profile-create-form-type-error" />
                       </Form.Item>
-                    )
+                    );
                   }}
                 />
               </div>
@@ -114,16 +132,25 @@ export function CreateShippingProfileForm() {
         <RouteFocusModal.Footer data-testid="shipping-profile-create-form-footer">
           <div className="flex items-center justify-end gap-x-2">
             <RouteFocusModal.Close asChild>
-              <Button size="small" variant="secondary" data-testid="shipping-profile-create-form-cancel-button">
-                {t("actions.cancel")}
+              <Button
+                size="small"
+                variant="secondary"
+                data-testid="shipping-profile-create-form-cancel-button"
+              >
+                {t('actions.cancel')}
               </Button>
             </RouteFocusModal.Close>
-            <Button type="submit" size="small" isLoading={isPending} data-testid="shipping-profile-create-form-save-button">
-              {t("actions.save")}
+            <Button
+              type="submit"
+              size="small"
+              isLoading={isPending}
+              data-testid="shipping-profile-create-form-save-button"
+            >
+              {t('actions.save')}
             </Button>
           </div>
         </RouteFocusModal.Footer>
       </KeyboundForm>
     </RouteFocusModal.Form>
-  )
+  );
 }
