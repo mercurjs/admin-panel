@@ -1324,6 +1324,24 @@
       "displayId": "Display ID",
       "refundableAmount": "Montant remboursable",
       "returnableQuantity": "Quantité retournable"
+    },
+    "edit": {
+      "email": {
+        "title": "Modifier l'email",
+        "requestSuccess": "Email de la commande mis à jour vers {{email}}."
+      },
+      "shippingAddress": {
+        "title": "Modifier l'adresse de livraison",
+        "requestSuccess": "Adresse de livraison de la commande mise à jour.",
+        "validation": {
+          "addressRequired": "Veuillez entrer une adresse",
+          "countryRequired": "Veuillez sélectionner un pays"
+        }
+      },
+      "billingAddress": {
+        "title": "Modifier l'adresse de facturation",
+        "requestSuccess": "Adresse de facturation de la commande mise à jour."
+      }
     }
   },
   "draftOrders": {
@@ -2453,7 +2471,10 @@
         "placeholder": "mauvaise_taille",
         "tooltip": "La valeur doit être un identifiant unique pour la raison de retour."
       },
-      "label": { "label": "Label", "placeholder": "Mauvaise taille" },
+      "label": {
+        "label": "Label",
+        "placeholder": "Mauvaise taille"
+      },
       "description": {
         "label": "Description",
         "placeholder": "Le client a reçu la mauvaise taille"

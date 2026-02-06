@@ -1123,7 +1123,11 @@
       },
       "shippingAddress": {
         "title": "ערוך כתובת משלוח",
-        "requestSuccess": "כתובת המשלוח של ההזמנה עודכנה."
+        "requestSuccess": "כתובת המשלוח של ההזמנה עודכנה.",
+        "validation": {
+          "addressRequired": "נא להזין כתובת",
+          "countryRequired": "נא לבחור מדינה"
+        }
       },
       "billingAddress": {
         "title": "ערוך כתובת חיוב",

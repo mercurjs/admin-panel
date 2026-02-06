@@ -1121,7 +1121,11 @@
       },
       "shippingAddress": {
         "title": "Keisti pristatymo adresą",
-        "requestSuccess": "Užsakymo pristatymo adresas pakeistas."
+        "requestSuccess": "Užsakymo pristatymo adresas pakeistas.",
+        "validation": {
+          "addressRequired": "Prašome įvesti adresą",
+          "countryRequired": "Prašome pasirinkti šalį"
+        }
       },
       "billingAddress": {
         "title": "Keisti adresą sąskaitai",

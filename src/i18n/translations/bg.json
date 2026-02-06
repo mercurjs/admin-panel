@@ -1098,7 +1098,11 @@
       },
       "shippingAddress": {
         "title": "Редактиране на адрес за доставка",
-        "requestSuccess": "Адресът за доставка е актуализиран."
+        "requestSuccess": "Адресът за доставка е актуализиран.",
+        "validation": {
+          "addressRequired": "Моля, въведете адрес",
+          "countryRequired": "Моля, изберете държава"
+        }
       },
       "billingAddress": {
         "title": "Редактиране на адрес за фактуриране",

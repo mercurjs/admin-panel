@@ -68,6 +68,7 @@ export const AddClaimOutboundItemsTable = ({
       state: rowSelection,
       updater,
     },
+    prefix: PREFIX,
   })
 
   return (

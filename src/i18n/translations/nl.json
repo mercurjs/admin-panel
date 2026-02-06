@@ -1119,7 +1119,11 @@
       },
       "shippingAddress": {
         "title": "Verzendadres bewerken",
-        "requestSuccess": "Verzendadres van bestelling bijgewerkt."
+        "requestSuccess": "Verzendadres van bestelling bijgewerkt.",
+        "validation": {
+          "addressRequired": "Voer een adres in",
+          "countryRequired": "Selecteer een land"
+        }
       },
       "billingAddress": {
         "title": "Factuuradres bewerken",

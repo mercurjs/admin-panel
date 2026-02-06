@@ -1166,7 +1166,11 @@
       },
       "shippingAddress": {
         "title": "Edit shipping address",
-        "requestSuccess": "Order shipping address updated."
+        "requestSuccess": "Shipping address was successfully updated.",
+        "validation": {
+          "addressRequired": "Please enter an address",
+          "countryRequired": "Please select a country"
+        }
       },
       "billingAddress": {
         "title": "Edit billing address",

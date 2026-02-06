@@ -1080,7 +1080,11 @@
       },
       "shippingAddress": {
         "title": "Изменить адрес доставки",
-        "requestSuccess": "Адрес доставки заказа обновлен."
+        "requestSuccess": "Адрес доставки заказа обновлен.",
+        "validation": {
+          "addressRequired": "Пожалуйста, введите адрес",
+          "countryRequired": "Пожалуйста, выберите страну"
+        }
       },
       "billingAddress": {
         "title": "Изменить платежный адрес",

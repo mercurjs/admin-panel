@@ -1123,7 +1123,11 @@
       },
       "shippingAddress": {
         "title": "Uredi adresu za dostavu",
-        "requestSuccess": "Adresa za dostavu narudžbe je ažurirana."
+        "requestSuccess": "Adresa za dostavu narudžbe je ažurirana.",
+        "validation": {
+          "addressRequired": "Molimo unesite adresu",
+          "countryRequired": "Molimo odaberite zemlju"
+        }
       },
       "billingAddress": {
         "title": "Uredi adresu za naplatu",

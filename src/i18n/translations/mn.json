@@ -1080,7 +1080,11 @@
       },
       "shippingAddress": {
         "title": "Хүргэлтийн хаягийг засах",
-        "requestSuccess": "Захиалгын хүргэлтийн хаяг шинэчлэгдсэн."
+        "requestSuccess": "Захиалгын хүргэлтийн хаяг шинэчлэгдсэн.",
+        "validation": {
+          "addressRequired": "Хаяг оруулна уу",
+          "countryRequired": "Улс сонгоно уу"
+        }
       },
       "billingAddress": {
         "title": "Төлбөрийн хаягийг засах",

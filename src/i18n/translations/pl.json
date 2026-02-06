@@ -1188,7 +1188,11 @@
       },
       "shippingAddress": {
         "title": "Edytuj adres dostawy",
-        "requestSuccess": "Adres dostawy zamówienia został zaktualizowany."
+        "requestSuccess": "Adres dostawy zamówienia został zaktualizowany.",
+        "validation": {
+          "addressRequired": "Proszę wprowadzić adres",
+          "countryRequired": "Proszę wybrać kraj"
+        }
       },
       "billingAddress": {
         "title": "Edytuj adres rozliczeniowy",

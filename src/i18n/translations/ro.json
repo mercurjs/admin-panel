@@ -1080,7 +1080,11 @@
       },
       "shippingAddress": {
         "title": "Editați adresa de livrare",
-        "requestSuccess": "Adresa de livrare a comenzii a fost actualizată."
+        "requestSuccess": "Adresa de livrare a comenzii a fost actualizată.",
+        "validation": {
+          "addressRequired": "Vă rugăm să introduceți o adresă",
+          "countryRequired": "Vă rugăm să selectați o țară"
+        }
       },
       "billingAddress": {
         "title": "Editați adresa de facturare",

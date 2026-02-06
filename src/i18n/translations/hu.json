@@ -1119,7 +1119,11 @@
       },
       "shippingAddress": {
         "title": "Szállítási cím szerkesztése",
-        "requestSuccess": "Szállítási cím frissítve."
+        "requestSuccess": "Szállítási cím frissítve.",
+        "validation": {
+          "addressRequired": "Kérjük, adjon meg egy címet",
+          "countryRequired": "Kérjük, válasszon országot"
+        }
       },
       "billingAddress": {
         "title": "Számlázási cím szerkesztése",

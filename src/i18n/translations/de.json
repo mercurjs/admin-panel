@@ -1322,6 +1322,24 @@
       "displayId": "Anzeige-ID",
       "refundableAmount": "Rückerstattungsbetrag",
       "returnableQuantity": "Rückgabemenge"
+    },
+    "edit": {
+      "email": {
+        "title": "E-Mail bearbeiten",
+        "requestSuccess": "Bestellungs-E-Mail aktualisiert auf {{email}}."
+      },
+      "shippingAddress": {
+        "title": "Lieferadresse bearbeiten",
+        "requestSuccess": "Lieferadresse der Bestellung aktualisiert.",
+        "validation": {
+          "addressRequired": "Bitte geben Sie eine Adresse ein",
+          "countryRequired": "Bitte wählen Sie ein Land aus"
+        }
+      },
+      "billingAddress": {
+        "title": "Rechnungsadresse bearbeiten",
+        "requestSuccess": "Rechnungsadresse der Bestellung aktualisiert."
+      }
     }
   },
   "draftOrders": {

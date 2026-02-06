@@ -1080,7 +1080,11 @@
       },
       "shippingAddress": {
         "title": "ویرایش آدرس ارسال",
-        "requestSuccess": "آدرس ارسال سفارش به‌روزرسانی شد."
+        "requestSuccess": "آدرس ارسال سفارش به‌روزرسانی شد.",
+        "validation": {
+          "addressRequired": "لطفا آدرس را وارد کنید",
+          "countryRequired": "لطفا کشور را انتخاب کنید"
+        }
       },
       "billingAddress": {
         "title": "ویرایش آدرس صورتحساب",

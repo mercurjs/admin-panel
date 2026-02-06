@@ -1414,7 +1414,11 @@
       },
       "shippingAddress": {
         "title": "Teslimat adresini düzenle",
-        "requestSuccess": "Sipariş teslimat adresi güncellendi."
+        "requestSuccess": "Sipariş teslimat adresi güncellendi.",
+        "validation": {
+          "addressRequired": "Lütfen bir adres girin",
+          "countryRequired": "Lütfen bir ülke seçin"
+        }
       },
       "billingAddress": {
         "title": "Fatura adresini düzenle",

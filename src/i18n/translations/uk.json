@@ -1030,7 +1030,11 @@
       },
       "shippingAddress": {
         "title": "Редагувати адресу доставки",
-        "requestSuccess": "Адреса доставки замовлення оновлена."
+        "requestSuccess": "Адреса доставки замовлення оновлена.",
+        "validation": {
+          "addressRequired": "Будь ласка, введіть адресу",
+          "countryRequired": "Будь ласка, виберіть країну"
+        }
       },
       "billingAddress": {
         "title": "Редагувати адресу для рахунку",

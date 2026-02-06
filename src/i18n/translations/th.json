@@ -1322,6 +1322,24 @@
       "displayId": "หมายเลขคำสั่งซื้อที่แสดง",
       "refundableAmount": "จำนวนเงินที่สามารถคืนได้",
       "returnableQuantity": "จำนวนสินค้าที่สามารถคืนได้"
+    },
+    "edit": {
+      "email": {
+        "title": "แก้ไขอีเมล",
+        "requestSuccess": "อีเมลคำสั่งซื้ออัปเดตเป็น {{email}} แล้ว"
+      },
+      "shippingAddress": {
+        "title": "แก้ไขที่อยู่จัดส่ง",
+        "requestSuccess": "ที่อยู่จัดส่งคำสั่งซื้ออัปเดตแล้ว",
+        "validation": {
+          "addressRequired": "กรุณากรอกที่อยู่",
+          "countryRequired": "กรุณาเลือกประเทศ"
+        }
+      },
+      "billingAddress": {
+        "title": "แก้ไขที่อยู่สำหรับเรียกเก็บเงิน",
+        "requestSuccess": "ที่อยู่สำหรับเรียกเก็บเงินคำสั่งซื้ออัปเดตแล้ว"
+      }
     }
   },
   "draftOrders": {

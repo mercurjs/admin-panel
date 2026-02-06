@@ -1335,6 +1335,24 @@
       "displayId": "ID di visualizzazione",
       "refundableAmount": "Importo rimborsabile",
       "returnableQuantity": "Quantità restituibile"
+    },
+    "edit": {
+      "email": {
+        "title": "Modifica email",
+        "requestSuccess": "Email ordine aggiornata a {{email}}."
+      },
+      "shippingAddress": {
+        "title": "Modifica indirizzo di spedizione",
+        "requestSuccess": "Indirizzo di spedizione ordine aggiornato.",
+        "validation": {
+          "addressRequired": "Inserisci un indirizzo",
+          "countryRequired": "Seleziona un paese"
+        }
+      },
+      "billingAddress": {
+        "title": "Modifica indirizzo di fatturazione",
+        "requestSuccess": "Indirizzo di fatturazione ordine aggiornato."
+      }
     }
   },
   "draftOrders": {

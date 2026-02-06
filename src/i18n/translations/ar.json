@@ -1098,7 +1098,11 @@
       },
       "shippingAddress": {
         "title": "تحرير عنوان الشحن",
-        "requestSuccess": "تم تحديث عنوان الشحن للطلب."
+        "requestSuccess": "تم تحديث عنوان الشحن للطلب.",
+        "validation": {
+          "addressRequired": "الرجاء إدخال العنوان",
+          "countryRequired": "الرجاء تحديد البلد"
+        }
       },
       "billingAddress": {
         "title": "تحرير عنوان الفواتير",

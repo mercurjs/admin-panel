@@ -1149,7 +1149,11 @@
       },
       "shippingAddress": {
         "title": "Chỉnh sửa địa chỉ giao hàng",
-        "requestSuccess": "Địa chỉ giao hàng của đơn hàng đã được cập nhật."
+        "requestSuccess": "Địa chỉ giao hàng của đơn hàng đã được cập nhật.",
+        "validation": {
+          "addressRequired": "Vui lòng nhập địa chỉ",
+          "countryRequired": "Vui lòng chọn quốc gia"
+        }
       },
       "billingAddress": {
         "title": "Chỉnh sửa địa chỉ thanh toán",
