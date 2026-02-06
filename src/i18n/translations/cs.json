@@ -1145,7 +1145,7 @@
     "edit": {
       "email": {
         "title": "Upravit e-mail",
-        "requestSuccess": "E-mail objednávky byl aktualizován na {{email}}."
+        "requestSuccess": "E-mail objednávky byl aktualizován."
       },
       "shippingAddress": {
         "title": "Upravit doručovací adresu",
