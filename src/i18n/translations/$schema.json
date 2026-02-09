@@ -4978,6 +4978,24 @@
             "search": {
               "type": "string"
             },
+            "available": {
+              "type": "string"
+            },
+            "inStock": {
+              "type": "string"
+            },
+            "disabledItemTooltip": {
+              "type": "string"
+            },
+            "disabledItemTooltipManagedByVendor": {
+              "type": "string"
+            },
+            "managedByVendorBadge": {
+              "type": "string"
+            },
+            "managedByVendorTooltip": {
+              "type": "string"
+            },
             "consistsOf": {
               "type": "string"
             },
@@ -5002,9 +5020,31 @@
               "properties": {
                 "quantityNotAllocated": {
                   "type": "string"
+                },
+                "allocationNotAvailable": {
+                  "type": "string"
+                },
+                "allocationNotAvailableDescription": {
+                  "type": "string"
+                },
+                "noLocation": {
+                  "type": "string"
+                },
+                "wrongQuantity": {
+                  "type": "string"
+                },
+                "wrongQuantity_other": {
+                  "type": "string"
                 }
               },
-              "required": ["quantityNotAllocated"],
+              "required": [
+                "quantityNotAllocated",
+                "allocationNotAvailable",
+                "allocationNotAvailableDescription",
+                "noLocation",
+                "wrongQuantity",
+                "wrongQuantity_other"
+              ],
               "additionalProperties": false
             }
           },
@@ -5015,6 +5055,12 @@
             "itemsToAllocate",
             "itemsToAllocateDesc",
             "search",
+            "available",
+            "inStock",
+            "disabledItemTooltip",
+            "disabledItemTooltipManagedByVendor",
+            "managedByVendorBadge",
+            "managedByVendorTooltip",
             "consistsOf",
             "requires",
             "toast",

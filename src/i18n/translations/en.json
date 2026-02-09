@@ -1319,19 +1319,30 @@
     },
     "allocateItems": {
       "action": "Allocate items",
-      "title": "Allocate order items",
-      "locationDescription": "Choose which location you want to allocate from.",
+      "title": "Allocate Items",
+      "locationDescription": "Choose which location you want to allocate items from.",
       "itemsToAllocate": "Items to allocate",
-      "itemsToAllocateDesc": "Select the number of items you wish to allocate",
+      "itemsToAllocateDesc": "Choose items and quantities to allocate",
       "search": "Search items",
+      "available": "Available",
+      "inStock": "In stock",
+      "disabledItemTooltip": "The location you have selected doesn't allow allocation of this item.",
+      "disabledItemTooltipManagedByVendor": "You can't allocate this item because its inventory is managed by the Vendor.",
+      "managedByVendorBadge": "Managed by Vendor",
+      "managedByVendorTooltip": "Allocation of this item is managed by the Vendor.",
       "consistsOf": "Consists of {{num}}x inventory items",
       "requires": "Requires {{num}} per variant",
       "toast": {
-        "created": "Items successfully allocated",
+        "created": "Allocation was successfully created.",
         "error": "Failed to allocate following items: {{items}}"
       },
       "error": {
-        "quantityNotAllocated": "There are unallocated items."
+        "quantityNotAllocated": "There are unallocated items.",
+        "allocationNotAvailable": "Allocation not available",
+        "allocationNotAvailableDescription": "Items have already been allocated or are managed by the Vendor.",
+        "noLocation": "Location is required",
+        "wrongQuantity": "Only one item is available for allocation",
+        "wrongQuantity_other": "Quantity should be a number between 1 and {{number}}"
       }
     },
     "shipment": {
