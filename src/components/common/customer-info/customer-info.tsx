@@ -22,7 +22,7 @@ const ID = ({ data }: { data: HttpTypes.AdminOrder }) => {
         className="focus:shadow-borders-focus rounded-[4px] outline-none transition-shadow"
         data-testid="order-customer-id-link"
       >
-        <div className="flex items-center gap-x-2 overflow-hidden" data-testid="order-customer-id-content">
+        <div className="flex items-center gap-x-2" data-testid="order-customer-id-content">
           <Avatar size="2xsmall" fallback={fallback} data-testid="order-customer-id-avatar" />
           <Text
             size="small"

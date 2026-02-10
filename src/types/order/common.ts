@@ -23,6 +23,8 @@ export interface Order {
   billing_address_id: string;
   items: { id: string }[];
   seller: SellerDTO;
+  payment_status?: string;
+  fulfillment_status?: string;
 }
 
 export interface OrderResponse {

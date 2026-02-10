@@ -497,6 +497,7 @@ const ItemBreakdown = ({
   order: AdminOrder
   reservations?: AdminReservation[]
 }) => {
+  const { t } = useTranslation()
   const { claims = [] } = useClaims({
     order_id: order.id,
     fields: "*additional_items",
@@ -519,6 +520,12 @@ const ItemBreakdown = ({
 
   return (
     <div data-testid="order-summary-items-breakdown">
+      {order.seller && (
+        <div className="txt-compact-small-plus px-6 py-2">
+          <span className="text-ui-fg-subtle">{t("fields.vendor")}: </span>
+          <span className="text-ui-fg-base">{order.seller.name}</span>
+        </div>
+      )}
       {order.items?.map((item) => {
         const reservation = reservationsMap.get(item.id)
 
