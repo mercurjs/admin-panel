@@ -1,3 +1,4 @@
+import { FetchError } from '@medusajs/js-sdk';
 import {
   CreatePromotionRuleDTO,
   PromotionDTO,
@@ -99,10 +100,10 @@ export const EditRulesWrapper = ({ promotion, rules, ruleType }: EditPromotionFo
 
         handleSuccess();
       } catch (error) {
-        const message = (error as Error).message.replace(
-          /(\w+_\w+)/g,
-          match => `"${match.replace(/_/g, ' ')}"`
-        );
+        const message =
+          error instanceof FetchError
+            ? error.message.replace(/(\w+_\w+)/g, match => `"${match.replace(/_/g, ' ')}"`)
+            : 'An error occurred';
         toast.error(message);
       }
     };
