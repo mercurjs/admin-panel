@@ -1,22 +1,28 @@
-import { clx } from "@medusajs/ui"
-import { memo } from "react"
-import { NoRecords, NoResultsProps } from "../../common/empty-table-content"
-import { TableSkeleton } from "../../common/skeleton"
-import { DataTableQuery, DataTableQueryProps } from "./data-table-query"
-import { DataTableRoot, DataTableRootProps } from "./data-table-root"
+import { memo, useCallback } from "react";
+
+import { clx } from "@medusajs/ui";
+
+import { NoRecords, NoResultsProps } from "../../common/empty-table-content";
+import { TableSkeleton } from "../../common/skeleton";
+import { DataTableQuery, DataTableQueryProps } from "./data-table-query";
+import { DataTableRoot, DataTableRootProps } from "./data-table-root";
 
 interface DataTableProps<TData>
   extends Omit<DataTableRootProps<TData>, "noResults">,
-    DataTableQueryProps<TData> {
-  isLoading?: boolean
-  pageSize: number
-  queryObject?: Record<string, any>
-  noRecords?: Pick<NoResultsProps, "title" | "message">
+    Omit<
+      DataTableQueryProps<TData>,
+      "enableExpandAll" | "isAllExpanded" | "onToggleExpandAll"
+    > {
+  isLoading?: boolean;
+  pageSize: number;
+  queryObject?: Record<string, any>;
+  noRecords?: Pick<NoResultsProps, "title" | "message">;
+  enableExpandAll?: boolean;
 }
 
 // Maybe we should use the memoized version of DataTableRoot
 // const MemoizedDataTableRoot = memo(DataTableRoot) as typeof DataTableRoot
-const MemoizedDataTableQuery = memo(DataTableQuery) as typeof DataTableQuery
+const MemoizedDataTableQuery = memo(DataTableQuery) as typeof DataTableQuery;
 
 /**
  * @deprecated Use the DataTable component from "/components/data-table" instead
@@ -38,7 +44,14 @@ export const _DataTable = <TData,>({
   noHeader = false,
   layout = "fit",
   noRecords: noRecordsProps = {},
+  enableExpandAll = false,
 }: DataTableProps<TData>) => {
+  const handleToggleExpandAll = useCallback(() => {
+    table.toggleAllRowsExpanded(!table.getIsAllRowsExpanded());
+  }, [table]);
+
+  const isAllExpanded = table.getIsAllRowsExpanded();
+
   if (isLoading) {
     return (
       <TableSkeleton
@@ -49,13 +62,13 @@ export const _DataTable = <TData,>({
         orderBy={!!orderBy?.length}
         pagination={!!pagination}
       />
-    )
+    );
   }
 
   const noQuery =
-    Object.values(queryObject).filter((v) => Boolean(v)).length === 0
-  const noResults = !isLoading && count === 0 && !noQuery
-  const noRecords = !isLoading && count === 0 && noQuery
+    Object.values(queryObject).filter((v) => Boolean(v)).length === 0;
+  const noResults = !isLoading && count === 0 && !noQuery;
+  const noRecords = !isLoading && count === 0 && noQuery;
 
   if (noRecords) {
     return (
@@ -65,7 +78,7 @@ export const _DataTable = <TData,>({
         })}
         {...noRecordsProps}
       />
-    )
+    );
   }
 
   return (
@@ -79,6 +92,9 @@ export const _DataTable = <TData,>({
         orderBy={orderBy}
         filters={filters}
         prefix={prefix}
+        enableExpandAll={enableExpandAll}
+        isAllExpanded={isAllExpanded}
+        onToggleExpandAll={handleToggleExpandAll}
       />
       <DataTableRoot
         table={table}
@@ -92,5 +108,5 @@ export const _DataTable = <TData,>({
         layout={layout}
       />
     </div>
-  )
-}
+  );
+};
