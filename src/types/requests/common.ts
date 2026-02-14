@@ -1,4 +1,19 @@
-import type { MemberDTO, SellerDTO } from "@custom-types/seller";
+import type { MemberDTO, SellerDTO } from '@custom-types/seller';
+
+import { RequestStatus } from './mutations';
+
+export type AdminRequestType =
+  | 'product'
+  | 'product_collection'
+  | 'product_category'
+  | 'product_tag'
+  | 'product_type'
+  | 'product_option'
+  | 'product_option_value'
+  | 'product_image'
+  | 'product_variant'
+  | 'product_variant_option'
+  | 'product_update';
 
 export type RequestDTO = {
   id: string;
@@ -7,7 +22,7 @@ export type RequestDTO = {
   submitter_id: string;
   reviewer_id: string;
   reviewer_note: string;
-  status: "pending" | "accepted" | "rejected";
+  status: RequestStatus;
   created_at: Date;
   updated_at: Date;
 };
@@ -15,12 +30,12 @@ export interface AdminRequest {
   id?: string;
   created_at?: string;
   updated_at?: string;
-  type?: string;
+  type?: AdminRequestType;
   data?: object;
   submitter_id?: string;
   reviewer_id?: string | null;
   reviewer_note?: string | null;
-  status?: string;
+  status?: RequestStatus;
   seller?: {
     id?: string;
     name?: string;
@@ -28,7 +43,7 @@ export interface AdminRequest {
 }
 
 export interface ReviewRemoveRequest {
-  type: "review_remove";
+  type: 'review_remove';
   data: {
     review_id?: string;
     reason?: string;
@@ -51,7 +66,7 @@ export interface AdminOrderReturnRequest {
   admin_reviewer_id?: string;
   admin_reviewer_note?: string;
   admin_reviewer_date?: string;
-  status?: "pending" | "refunded" | "withdrawn" | "escalated" | "canceled";
+  status?: 'pending' | 'refunded' | 'withdrawn' | 'escalated' | 'canceled';
   order?: {
     id?: string;
     customer?: {
@@ -70,7 +85,7 @@ export interface AdminOrderReturnRequest {
 
 export interface AdminReviewRequest {
   reviewer_note?: string;
-  status?: "accepted" | "rejected";
+  status?: 'accepted' | 'rejected';
 }
 
 export interface AdminUpdateOrderReturnRequest {

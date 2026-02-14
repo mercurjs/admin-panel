@@ -57,7 +57,8 @@
     "unsavedChangesDescription": "You have unsaved changes that will be lost if you exit this form.",
     "includesTaxTooltip": "Prices in this column are tax inclusive.",
     "excludesTaxTooltip": "Prices in this column are tax exclusive.",
-    "noMoreData": "No more data"
+    "noMoreData": "No more data",
+    "unknown": "Unknown"
   },
   "json": {
     "header": "JSON",
@@ -139,7 +140,9 @@
     "hide": "Hide",
     "export": "Export",
     "import": "Import",
-    "cannotUndo": "This action cannot be undone"
+    "cannotUndo": "This action cannot be undone",
+    "reject": "Reject",
+    "accept": "Accept"
   },
   "operators": {
     "in": "In"
@@ -3102,6 +3105,7 @@
     "customer": "Customer",
     "date": "Date",
     "order": "Order",
+    "vendor": "Vendor",
     "fulfillment": "Fulfillment",
     "provider": "Provider",
     "payment": "Payment",
@@ -3159,7 +3163,8 @@
     "startDate": "Start date",
     "endDate": "End date",
     "draft": "Draft",
-    "values": "Values"
+    "values": "Values",
+    "operation": "Operation"
   },
   "dateTime": {
     "years_one": "Year",
@@ -3210,11 +3215,46 @@
     "product": "Product",
     "review-remove": "Review Remove",
     "return": "Order Return",
+    "product-requests": "Product requests",
     "product-collection": "Product Collection",
     "product-category": "Product Category",
     "product-tag": "Product Tag",
     "product-type": "Product Type",
-    "product-update": "Product Update"
+    "product-update": "Product Update",
+    "product_operation": {
+      "creation": "Creation",
+      "update": "Update"
+    },
+    "status": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "draft": "Draft"
+    },
+    "products": {
+      "noRecordsTitle": "No product requests yet.",
+      "noRecordsMessage": "Once vendors submit requests, they'll appear here."
+    },
+    "resolve": {
+      "accept": {
+        "title": "Accept request",
+        "placeholder": "Specify changes you made, additional requests...",
+        "product": {
+          "description": "You are about to approve this product request. Once approved, the product will be updated on the storefront.",
+          "descriptionWithVisibility": "You are about to approve this product request. Once approved, the product will appear on the storefront. Only products with stock levels and prices set will be visible.",
+          "successMessage": "Product request was accepted."
+        }
+      },
+      "reject": {
+        "title": "Reject request",
+        "placeholder": "Explain why you reject the request or suggest changes.",
+        "product": {
+          "description": "You are about to reject this product request.",
+          "successMessage": "Product request was rejected."
+        }
+      },
+      "notesLabel": "Notes for vendor"
+    }
   },
   "sellers": {
     "domain": "Sellers",

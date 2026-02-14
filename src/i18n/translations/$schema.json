@@ -178,6 +178,9 @@
         },
         "noMoreData": {
           "type": "string"
+        },
+        "unknown": {
+          "type": "string"
         }
       },
       "required": [
@@ -237,7 +240,8 @@
         "unsavedChangesDescription",
         "includesTaxTooltip",
         "excludesTaxTooltip",
-        "noMoreData"
+        "noMoreData",
+        "unknown"
       ],
       "additionalProperties": false
     },
@@ -503,6 +507,12 @@
         },
         "cannotUndo": {
           "type": "string"
+        },
+        "reject": {
+          "type": "string"
+        },
+        "accept": {
+          "type": "string"
         }
       },
       "required": [
@@ -547,7 +557,9 @@
         "hide",
         "export",
         "import",
-        "cannotUndo"
+        "cannotUndo",
+        "reject",
+        "accept"
       ],
       "additionalProperties": false
     },
@@ -11454,6 +11466,9 @@
         "order": {
           "type": "string"
         },
+        "vendor": {
+          "type": "string"
+        },
         "fulfillment": {
           "type": "string"
         },
@@ -11627,6 +11642,9 @@
         },
         "values": {
           "type": "string"
+        },
+        "operation": {
+          "type": "string"
         }
       },
       "required": [
@@ -11735,6 +11753,7 @@
         "customer",
         "date",
         "order",
+        "vendor",
         "fulfillment",
         "provider",
         "payment",
@@ -11792,7 +11811,8 @@
         "startDate",
         "endDate",
         "draft",
-        "values"
+        "values",
+        "operation"
       ],
       "additionalProperties": false
     },
@@ -11971,6 +11991,9 @@
         "return": {
           "type": "string"
         },
+        "product-requests": {
+          "type": "string"
+        },
         "product-collection": {
           "type": "string"
         },
@@ -11985,6 +12008,120 @@
         },
         "product-update": {
           "type": "string"
+        },
+        "product_operation": {
+          "type": "object",
+          "properties": {
+            "creation": {
+              "type": "string"
+            },
+            "update": {
+              "type": "string"
+            }
+          },
+          "required": ["creation", "update"],
+          "additionalProperties": false
+        },
+        "status": {
+          "type": "object",
+          "properties": {
+            "pending": {
+              "type": "string"
+            },
+            "accepted": {
+              "type": "string"
+            },
+            "rejected": {
+              "type": "string"
+            },
+            "draft": {
+              "type": "string"
+            }
+          },
+          "required": ["pending", "accepted", "rejected", "draft"],
+          "additionalProperties": false
+        },
+        "products": {
+          "type": "object",
+          "properties": {
+            "noRecordsTitle": {
+              "type": "string"
+            },
+            "noRecordsMessage": {
+              "type": "string"
+            }
+          },
+          "required": ["noRecordsTitle", "noRecordsMessage"],
+          "additionalProperties": false
+        },
+        "resolve": {
+          "type": "object",
+          "properties": {
+            "accept": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "placeholder": {
+                  "type": "string"
+                },
+                "product": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "descriptionWithVisibility": {
+                      "type": "string"
+                    },
+                    "successMessage": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "description",
+                    "descriptionWithVisibility",
+                    "successMessage"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["title", "placeholder", "product"],
+              "additionalProperties": false
+            },
+            "reject": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "placeholder": {
+                  "type": "string"
+                },
+                "product": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "successMessage": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["description", "successMessage"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["title", "placeholder", "product"],
+              "additionalProperties": false
+            },
+            "notesLabel": {
+              "type": "string"
+            }
+          },
+          "required": ["accept", "reject", "notesLabel"],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -11993,11 +12130,16 @@
         "product",
         "review-remove",
         "return",
+        "product-requests",
         "product-collection",
         "product-category",
         "product-tag",
         "product-type",
-        "product-update"
+        "product-update",
+        "product_operation",
+        "status",
+        "products",
+        "resolve"
       ],
       "additionalProperties": false
     },
