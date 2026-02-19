@@ -3,8 +3,11 @@ import { Filter } from "../../../components/table/data-table"
 import { useProductTags } from "../../api"
 import { useProductTypes } from "../../api/product-types"
 import { useSalesChannels } from "../../api/sales-channels"
+import { useSellers } from "@hooks/api/sellers"
 
 const excludeableFields = [
+  'vendor',
+  'category',
   "sales_channel_id",
   "collections",
   "categories",
@@ -36,6 +39,10 @@ export const useProductTableFilters = (
     offset: 0,
   })
 
+  const { sellers } = useSellers({
+    limit: 1000,
+    offset: 0,
+  })
 
   const isSalesChannelExcluded = exclude?.includes("sales_channel_id")
 
@@ -170,6 +177,17 @@ export const useProductTableFilters = (
   //   ],
   // }
 
+  const vendorFilter: Filter = {
+    key: "vendor_id",
+    label: "Vendor",
+    type: "select",
+    multiple: true,
+    options: sellers?.map((s) => ({
+      label: s.name,
+      value: s.id,
+    })) || [],
+  }
+
   const statusFilter: Filter = {
     key: "status",
     label: t("fields.status"),
@@ -204,7 +222,7 @@ export const useProductTableFilters = (
     type: "date",
   }))
 
-  filters = [...filters, statusFilter, ...dateFilters]
+  filters = [vendorFilter, ...filters, statusFilter, ...dateFilters]
 
   return filters
 }

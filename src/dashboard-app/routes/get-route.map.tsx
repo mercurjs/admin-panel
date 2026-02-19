@@ -545,6 +545,11 @@ export function getRouteMap({
                   },
                   children: [
                     {
+                      path: "media",
+                      lazy: () =>
+                        import("../../routes/collections/collection-media"),
+                    },
+                    {
                       path: "edit",
                       lazy: () =>
                         import("../../routes/collections/collection-edit"),
