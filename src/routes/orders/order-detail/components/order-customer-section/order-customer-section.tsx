@@ -46,7 +46,8 @@ const Header = ({ order }: { order: HttpTypes.AdminOrder }) => {
               {
                 label: t('transferOwnership.label'),
                 to: `transfer`,
-                icon: <ArrowPath />
+                icon: <ArrowPath />,
+                disabled: order.status === 'canceled'
               }
             ]
           },
@@ -69,8 +70,7 @@ const Header = ({ order }: { order: HttpTypes.AdminOrder }) => {
               {
                 label: t('email.editLabel'),
                 to: `email`,
-                icon: <Envelope />,
-                disabled: order.status === 'canceled'
+                icon: <Envelope />
               }
             ]
           }

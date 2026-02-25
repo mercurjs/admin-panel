@@ -954,11 +954,14 @@
     },
     "transfer": {
       "title": "所有権の移転",
-      "requestSuccess": "注文移転リクエストが{{email}}に送信されました。",
+      "requestSuccess": "注文移転リクエストが{{customerDetails}}に送信されました。",
       "currentOwner": "現在の所有者",
       "newOwner": "新しい所有者",
       "currentOwnerDescription": "この注文に現在関連付けられている顧客。",
-      "newOwnerDescription": "この注文を移転する顧客。"
+      "newOwnerDescription": "この注文を移転する顧客。",
+      "errors": {
+        "orderChangeAlreadyExists": "アクティブな移転リクエストが存在するため、注文を移転できません。"
+      }
     },
     "payment": {
       "title": "支払い",

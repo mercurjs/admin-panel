@@ -949,11 +949,14 @@
     },
     "transfer": {
       "title": "Transfert de propriété",
-      "requestSuccess": "La demande de transfert de la commande à été envoyé à: {{email}}.",
+      "requestSuccess": "La demande de transfert de la commande a été envoyée à {{customerDetails}}.",
       "currentOwner": "Propriétaire actuel",
       "newOwner": "Nouveau propriétaire",
       "currentOwnerDescription": "Le client actuellement lié à cette commande.",
-      "newOwnerDescription": "Le client à qui transferer cette commande."
+      "newOwnerDescription": "Le client à qui transferer cette commande.",
+      "errors": {
+        "orderChangeAlreadyExists": "La commande ne peut pas être transférée car il existe une demande de transfert active."
+      }
     },
     "payment": {
       "title": "Paiements",

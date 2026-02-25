@@ -948,11 +948,14 @@
     },
     "transfer": {
       "title": "โอนกรรมสิทธิ์",
-      "requestSuccess": "คำขอโอนคำสั่งซื้อถูกส่งไปที่: {{email}}",
+      "requestSuccess": "คำขอโอนคำสั่งซื้อถูกส่งไปยัง {{customerDetails}}",
       "currentOwner": "เจ้าของปัจจุบัน",
       "newOwner": "เจ้าของใหม่",
       "currentOwnerDescription": "ลูกค้าปัจจุบันที่เกี่ยวข้องกับคำสั่งซื้อนี้",
-      "newOwnerDescription": "ลูกค้าคนใหม่ที่จะโอนคำสั่งซื้อนี้ให้"
+      "newOwnerDescription": "ลูกค้าคนใหม่ที่จะโอนคำสั่งซื้อนี้ให้",
+      "errors": {
+        "orderChangeAlreadyExists": "ไม่สามารถโอนคำสั่งซื้อได้เนื่องจากมีคำขอโอนที่กำลังใช้งานอยู่"
+      }
     },
     "payment": {
       "title": "การชำระเงิน",

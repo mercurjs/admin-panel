@@ -1004,11 +1004,14 @@
     },
     "transfer": {
       "title": "Передать владение",
-      "requestSuccess": "Запрос на передачу заказа: {{email}}.",
+      "requestSuccess": "Запрос на передачу заказа отправлен в {{customerDetails}}.",
       "currentOwner": "Текущий владелец",
       "newOwner": "Новый владелец",
       "currentOwnerDescription": "Клиент, в настоящее время связанный с этим заказом.",
-      "newOwnerDescription": "Клиент, которому вы хотите передать этот заказ."
+      "newOwnerDescription": "Клиент, которому вы хотите передать этот заказ.",
+      "errors": {
+        "orderChangeAlreadyExists": "Заказ не может быть передан, так как существует активный запрос на передачу."
+      }
     },
     "payment": {
       "title": "Платежи",

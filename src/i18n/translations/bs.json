@@ -1047,11 +1047,14 @@
     },
     "transfer": {
       "title": "Prenos vlasništva",
-      "requestSuccess": "Zahtjev za prenos narudžbe poslan na: {{email}}.",
+      "requestSuccess": "Zahtjev za prenos narudžbe poslan na {{customerDetails}}.",
       "currentOwner": "Trenutni vlasnik",
       "newOwner": "Novi vlasnik",
       "currentOwnerDescription": "Kupac trenutno povezan s ovom narudžbom.",
-      "newOwnerDescription": "Kupac na kojeg se prenosi ova narudžba."
+      "newOwnerDescription": "Kupac na kojeg se prenosi ova narudžba.",
+      "errors": {
+        "orderChangeAlreadyExists": "Narudžba se ne može prenijeti jer postoji aktivan zahtjev za prijenos."
+      }
     },
     "payment": {
       "title": "Uplate",

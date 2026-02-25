@@ -1088,11 +1088,14 @@
     },
     "transfer": {
       "title": "Transfer ownership",
-      "requestSuccess": "Order transfer request sent to: {{email}}.",
+      "requestSuccess": "Transfer request was sent to {{customerDetails}}.",
       "currentOwner": "Current owner",
       "newOwner": "New owner",
       "currentOwnerDescription": "The customer currently related to this order.",
-      "newOwnerDescription": "The customer to transfer this order to."
+      "newOwnerDescription": "The customer to transfer this order to.",
+      "errors": {
+        "orderChangeAlreadyExists": "Order can not be transferred because there is an active transfer request."
+      }
     },
     "payment": {
       "title": "Payments",
