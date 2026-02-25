@@ -1355,7 +1355,7 @@
       "cancelWarning": "You are about to cancel a fulfillment. This action cannot be undone.",
       "markAsDeliveredWarning": "You are about to mark fulfillment as delivered. This action cannot be undone.",
       "differentOptionSelected": "The selected shipping option is different from the one selected by the customer.",
-      "disabledItemTooltip": "The shipping option you have selected don’t allow fulfillment of this item",
+      "disabledItemTooltip": "The location or shipping option you have selected don’t allow fulfillment of this item.",
       "unfulfilledItems": "Unfulfilled Items",
       "statusLabel": "Fulfillment status",
       "statusTitle": "Fulfillment Status",
@@ -1374,10 +1374,12 @@
       "locationDescription": "Choose which location you want to fulfill items from.",
       "sendNotificationHint": "Notify customers about the created fulfillment.",
       "methodDescription": "Choose a different shipping method from the one customer selected",
+      "cantBeFulfilledByAdmin": "This item cannot be fulfilled by admin.",
       "error": {
         "wrongQuantity": "Only one item is available for fulfillment",
         "wrongQuantity_other": "Quantity should be a number between 1 and {{number}}",
         "noItems": "No items to fulfill.",
+        "noItemsDescription": "All items in this order have already been fulfilled or cannot be fulfilled from admin locations.",
         "noShippingOption": "Shipping option is required",
         "noLocation": "Location is required"
       },

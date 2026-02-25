@@ -5155,6 +5155,9 @@
             "methodDescription": {
               "type": "string"
             },
+            "cantBeFulfilledByAdmin": {
+              "type": "string"
+            },
             "error": {
               "type": "object",
               "properties": {
@@ -5165,6 +5168,9 @@
                   "type": "string"
                 },
                 "noItems": {
+                  "type": "string"
+                },
+                "noItemsDescription": {
                   "type": "string"
                 },
                 "noShippingOption": {
@@ -5178,6 +5184,7 @@
                 "wrongQuantity",
                 "wrongQuantity_other",
                 "noItems",
+                "noItemsDescription",
                 "noShippingOption",
                 "noLocation"
               ],
@@ -5296,6 +5303,7 @@
             "locationDescription",
             "sendNotificationHint",
             "methodDescription",
+            "cantBeFulfilledByAdmin",
             "error",
             "status",
             "toast",
