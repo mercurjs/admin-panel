@@ -1296,7 +1296,9 @@
     "shipment": {
       "title": "Teljesítés megjelölése szállítottként",
       "trackingNumber": "Nyomkövetési szám",
+      "trackingUrl": "Nyomkövetési URL",
       "addTracking": "Nyomkövetési szám hozzáadása",
+      "hideTracking": "Nyomkövetési szám elrejtése",
       "sendNotification": "Értesítés küldése",
       "sendNotificationHint": "Értesítse a vásárlót erről a szállításról.",
       "toastCreated": "Szállítás sikeresen létrehozva."

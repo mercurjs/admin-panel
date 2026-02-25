@@ -1366,7 +1366,9 @@
     "shipment": {
       "title": "Oznacz realizację jako wysłaną",
       "trackingNumber": "Numer do śledzenia przesyłki",
+      "trackingUrl": "URL do śledzenia przesyłki",
       "addTracking": "Dodaj numer do śledzenia przesyłki",
+      "hideTracking": "Ukryj numer do śledzenia przesyłki",
       "sendNotification": "Wyślij powiadomienie",
       "sendNotificationHint": "Powiadom klienta o tej wysyłce.",
       "toastCreated": "Wysyłka została pomyślnie utworzona."

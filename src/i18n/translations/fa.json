@@ -1257,7 +1257,9 @@
     "shipment": {
       "title": "علامت ‌گذاری به عنوان پردازش شده",
       "trackingNumber": "شماره رهگیری",
+      "trackingUrl": "URL رهگیری",
       "addTracking": "افزودن شماره رهگیری",
+      "hideTracking": "پنهان کردن شماره رهگیری",
       "sendNotification": "ارسال اطلاع‌رسانی",
       "sendNotificationHint": "به مشتری درباره این ارسال اطلاع دهید.",
       "toastCreated": "ارسال با موفقیت ایجاد شد."

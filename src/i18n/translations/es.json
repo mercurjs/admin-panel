@@ -1355,7 +1355,9 @@
     "shipment": {
       "title": "Marcar cumplimiento enviado",
       "trackingNumber": "Número de seguimiento",
+      "trackingUrl": "URL de seguimiento",
       "addTracking": "Agregar número de seguimiento",
+      "hideTracking": "Ocultar número de seguimiento",
       "sendNotification": "Enviar notificación",
       "sendNotificationHint": "Notificar al cliente sobre este envío.",
       "toastCreated": "Envío creado correctamente."

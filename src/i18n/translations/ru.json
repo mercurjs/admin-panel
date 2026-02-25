@@ -1257,7 +1257,9 @@
     "shipment": {
       "title": "Отметить фулфилмент как отправленный",
       "trackingNumber": "Номер отслеживания",
+      "trackingUrl": "URL отслеживания",
       "addTracking": "Добавить номер отслеживания",
+      "hideTracking": "Скрыть номер отслеживания",
       "sendNotification": "Отправить уведомление",
       "sendNotificationHint": "Уведомить клиента об этой отправке.",
       "toastCreated": "Отправка успешно создана."

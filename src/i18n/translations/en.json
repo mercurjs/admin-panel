@@ -1342,12 +1342,14 @@
       }
     },
     "shipment": {
-      "title": "Mark fulfillment shipped",
+      "title": "Mark Fulfillment as Shipped",
       "trackingNumber": "Tracking number",
+      "trackingUrl": "Tracking URL",
       "addTracking": "Add tracking number",
+      "hideTracking": "Hide tracking number",
       "sendNotification": "Send notification",
-      "sendNotificationHint": "Notify the customer about this shipment.",
-      "toastCreated": "Shipment created successfully."
+      "sendNotificationHint": "Notify the customer about shipment",
+      "toastCreated": "Shipment was successfully created."
     },
     "fulfillment": {
       "cancelWarning": "You are about to cancel a fulfillment. This action cannot be undone.",

@@ -1322,7 +1322,9 @@
     "shipment": {
       "title": "Označit plnění jako odeslané",
       "trackingNumber": "Sledovací číslo",
+      "trackingUrl": "Sledovací URL",
       "addTracking": "Přidat sledovací číslo",
+      "hideTracking": "Skrýt sledovací číslo",
       "sendNotification": "Odeslat oznámení",
       "sendNotificationHint": "Oznámit zákazníkovi o této zásilce.",
       "toastCreated": "Zásilka byla úspěšně vytvořena."

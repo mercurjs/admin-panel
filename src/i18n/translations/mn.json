@@ -1257,7 +1257,9 @@
     "shipment": {
       "title": "Биелэлтийг илгээгдсэн гэж тэмдэглэх",
       "trackingNumber": "Мөрдөх дугаар",
+      "trackingUrl": "Мөрдөх URL",
       "addTracking": "Мөрдөх дугаар нэмэх",
+      "hideTracking": "Мөрдөх дугаарыг нуух",
       "sendNotification": "Мэдэгдэл илгээх",
       "sendNotificationHint": "Энэ хүргэлтийн талаар үйлчлүүлэгчдэд мэдэгдэх.",
       "toastCreated": "Хүргэлт амжилттай үүсгэгдсэн."

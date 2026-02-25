@@ -1296,7 +1296,9 @@
     "shipment": {
       "title": "Verzending markeren als verzonden",
       "trackingNumber": "Trackingnummer",
+      "trackingUrl": "Tracking-URL",
       "addTracking": "Trackingnummer toevoegen",
+      "hideTracking": "Trackingnummer verbergen",
       "sendNotification": "Notificatie versturen",
       "sendNotificationHint": "Informeer de klant over deze verzending.",
       "toastCreated": "Verzending succesvol aangemaakt."

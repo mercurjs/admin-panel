@@ -1296,7 +1296,9 @@
     "shipment": {
       "title": "Tandai pengiriman terpenuhi",
       "trackingNumber": "Nomor pelacakan",
+      "trackingUrl": "URL pelacakan",
       "addTracking": "Tambah nomor pelacakan",
+      "hideTracking": "Sembunyikan nomor pelacakan",
       "sendNotification": "Kirim notifikasi",
       "sendNotificationHint": "Beritahu pelanggan tentang pengiriman ini.",
       "toastCreated": "Pengiriman berhasil dibuat."

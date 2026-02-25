@@ -1257,7 +1257,9 @@
     "shipment": {
       "title": "Marcați îndeplinirea expediate",
       "trackingNumber": "Număr de urmărire",
+      "trackingUrl": "URL de urmărire",
       "addTracking": "Adăugați numărul de urmărire",
+      "hideTracking": "Ascundeți numărul de urmărire",
       "sendNotification": "Trimite o notificare",
       "sendNotificationHint": "Notificați clientul despre această expediere.",
       "toastCreated": "Expedierea a fost creată cu succes."

@@ -1257,7 +1257,9 @@
     "shipment": {
       "title": "Исполнувањето на ознаката е испратено",
       "trackingNumber": "Број за следење",
+      "trackingUrl": "URL за следење",
       "addTracking": "Додадете број за следење",
+      "hideTracking": "Сокриј број за следење",
       "sendNotification": "Испрати известување",
       "sendNotificationHint": "Известете го клиентот за оваа пратка.",
       "toastCreated": "Пратката е успешно креирана."

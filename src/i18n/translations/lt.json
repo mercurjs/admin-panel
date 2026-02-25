@@ -1298,7 +1298,9 @@
     "shipment": {
       "title": "Žymėti vykdymą išsiųstu",
       "trackingNumber": "Sekimo numeris",
+      "trackingUrl": "Sekimo URL",
       "addTracking": "Pridėti sekimo numerį",
+      "hideTracking": "Slėpti sekimo numerį",
       "sendNotification": "Siųsti pranešimą",
       "sendNotificationHint": "Praneškite klientui apie šį siuntimą.",
       "toastCreated": "Siuntimas sėkmingai sukurtas."

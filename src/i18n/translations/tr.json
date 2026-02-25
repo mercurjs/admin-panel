@@ -1243,7 +1243,9 @@
     "shipment": {
       "title": "Gönderimi İşaretle",
       "trackingNumber": "Takip numarası",
+      "trackingUrl": "Takip URL'si",
       "addTracking": "Takip numarası ekle",
+      "hideTracking": "Takip numarasını gizle",
       "sendNotification": "Bildirim gönder",
       "sendNotificationHint": "Müşteriye bu gönderim hakkında bilgi ver.",
       "toastCreated": "Gönderim başarıyla oluşturuldu."

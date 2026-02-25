@@ -1193,7 +1193,9 @@
     "shipment": {
       "title": "Als Versand markieren",
       "trackingNumber": "Tracking-Nummer",
+      "trackingUrl": "Tracking-URL",
       "addTracking": "Tracking-Nummer hinzufügen",
+      "hideTracking": "Tracking-Nummer ausblenden",
       "sendNotification": "Benachrichtigung senden",
       "sendNotificationHint": "Benachrichtigen Sie den Kunden über diese Lieferung.",
       "toastCreated": "Sendung erfolgreich erstellt."

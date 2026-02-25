@@ -1193,7 +1193,9 @@
     "shipment": {
       "title": "ทำเครื่องหมายว่าการจัดส่งสำเร็จ",
       "trackingNumber": "หมายเลขติดตามพัสดุ",
+      "trackingUrl": "URL ติดตามพัสดุ",
       "addTracking": "เพิ่มหมายเลขติดตามพัสดุ",
+      "hideTracking": "ซ่อนหมายเลขติดตามพัสดุ",
       "sendNotification": "ส่งการแจ้งเตือน",
       "sendNotificationHint": "แจ้งให้ลูกค้าทราบเกี่ยวกับการจัดส่งนี้",
       "toastCreated": "สร้างการจัดส่งสำเร็จ"

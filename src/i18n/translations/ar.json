@@ -1275,7 +1275,9 @@
     "shipment": {
       "title": "تحديد الشحنة كمشحونة",
       "trackingNumber": "رقم التتبع",
+      "trackingUrl": "رابط التتبع",
       "addTracking": "إضافة رقم التتبع",
+      "hideTracking": "إخفاء رقم التتبع",
       "sendNotification": "إرسال إشعار",
       "sendNotificationHint": "إخطار العميل حول هذه الشحنة.",
       "toastCreated": "تم إنشاء الشحنة بنجاح."

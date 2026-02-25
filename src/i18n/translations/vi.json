@@ -1326,7 +1326,9 @@
     "shipment": {
       "title": "Đánh dấu giao hàng đã gửi",
       "trackingNumber": "Số theo dõi",
+      "trackingUrl": "URL theo dõi",
       "addTracking": "Thêm số theo dõi",
+      "hideTracking": "Ẩn số theo dõi",
       "sendNotification": "Gửi thông báo",
       "sendNotificationHint": "Thông báo cho khách hàng về lô hàng này.",
       "toastCreated": "Lô hàng đã được tạo thành công."

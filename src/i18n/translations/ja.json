@@ -1207,7 +1207,9 @@
     "shipment": {
       "title": "出荷済みとしてマーク",
       "trackingNumber": "追跡番号",
+      "trackingUrl": "追跡URL",
       "addTracking": "追跡番号を追加",
+      "hideTracking": "追跡番号を非表示",
       "sendNotification": "通知を送信",
       "sendNotificationHint": "この出荷について顧客に通知します。",
       "toastCreated": "出荷が正常に作成されました。"

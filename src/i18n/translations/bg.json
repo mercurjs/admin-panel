@@ -1275,7 +1275,9 @@
     "shipment": {
       "title": "Отбележи пратката като изпратена",
       "trackingNumber": "Номер за проследяване",
+      "trackingUrl": "URL за проследяване",
       "addTracking": "Добави номер за проследяване",
+      "hideTracking": "Скрий номер за проследяване",
       "sendNotification": "Изпрати уведомление",
       "sendNotificationHint": "Уведоми клиента за тази пратка.",
       "toastCreated": "Пратката беше успешно създадена."

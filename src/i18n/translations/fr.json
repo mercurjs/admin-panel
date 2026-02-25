@@ -1194,7 +1194,9 @@
     "shipment": {
       "title": "Marquer l'expédition comme expédiée",
       "trackingNumber": "Numéro de suivi",
+      "trackingUrl": "URL de suivi",
       "addTracking": "Ajouter un numéro de suivi",
+      "hideTracking": "Masquer le numéro de suivi",
       "sendNotification": "Envoyer une notification",
       "sendNotificationHint": "Notifier le client concernant cette expédition.",
       "toastCreated": "Expédition créée avec succès."

@@ -1301,7 +1301,9 @@
     "shipment": {
       "title": "발송 처리",
       "trackingNumber": "추적 번호",
+      "trackingUrl": "추적 URL",
       "addTracking": "추적 번호 추가",
+      "hideTracking": "추적 번호 숨기기",
       "sendNotification": "알림 전송",
       "sendNotificationHint": "이 배송에 대해 고객에게 알립니다.",
       "toastCreated": "배송이 성공적으로 생성되었습니다."

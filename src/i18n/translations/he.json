@@ -1300,7 +1300,9 @@
     "shipment": {
       "title": "סמן מימוש כשולח",
       "trackingNumber": "מספר מעקב",
+      "trackingUrl": "כתובת מעקב",
       "addTracking": "הוסף מספר מעקב",
+      "hideTracking": "הסתר מספר מעקב",
       "sendNotification": "שלח התראה",
       "sendNotificationHint": "הודע ללקוח על משלוח זה.",
       "toastCreated": "משלוח נוצר בהצלחה."

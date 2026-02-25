@@ -1193,7 +1193,9 @@
     "shipment": {
       "title": "Marcar atendimento como enviado",
       "trackingNumber": "Número de rastreamento",
+      "trackingUrl": "URL de rastreamento",
       "addTracking": "Adicionar número de rastreamento",
+      "hideTracking": "Ocultar número de rastreamento",
       "sendNotification": "Enviar notificação",
       "sendNotificationHint": "Notificar o cliente sobre este envio.",
       "toastCreated": "Envio criado com sucesso."

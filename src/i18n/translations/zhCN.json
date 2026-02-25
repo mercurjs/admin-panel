@@ -1300,7 +1300,9 @@
     "shipment": {
       "title": "标记履行已发货",
       "trackingNumber": "追踪号码",
+      "trackingUrl": "追踪网址",
       "addTracking": "添加追踪号码",
+      "hideTracking": "隐藏追踪号码",
       "sendNotification": "发送通知",
       "sendNotificationHint": "通知客户关于此发货。",
       "toastCreated": "发货创建成功。"

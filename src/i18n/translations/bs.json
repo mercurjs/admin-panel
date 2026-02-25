@@ -1300,7 +1300,9 @@
     "shipment": {
       "title": "Označi ispunjavanje kao poslano",
       "trackingNumber": "Broj za praćenje",
+      "trackingUrl": "URL za praćenje",
       "addTracking": "Dodaj broj za praćenje",
+      "hideTracking": "Sakrij broj za praćenje",
       "sendNotification": "Pošaljite obavijest",
       "sendNotificationHint": "Obavijestite kupca o ovoj pošiljci.",
       "toastCreated": "Pošiljka uspješno kreirana."

@@ -1205,7 +1205,9 @@
     "shipment": {
       "title": "Segna adempimento spedito",
       "trackingNumber": "Numero di tracciamento",
+      "trackingUrl": "URL di tracciamento",
       "addTracking": "Aggiungi numero di tracciamento",
+      "hideTracking": "Nascondi numero di tracciamento",
       "sendNotification": "Invia notifica",
       "sendNotificationHint": "Notifica il cliente riguardo a questa spedizione.",
       "toastCreated": "Spedizione creata con successo."
