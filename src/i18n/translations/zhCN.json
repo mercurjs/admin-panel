@@ -1122,7 +1122,7 @@
     "edit": {
       "email": {
         "title": "编辑邮箱",
-        "requestSuccess": "订单邮箱已更新为 {{email}}。"
+        "requestSuccess": "邮箱已成功更新。"
       },
       "shippingAddress": {
         "title": "编辑配送地址",
@@ -1134,7 +1134,11 @@
       },
       "billingAddress": {
         "title": "编辑账单地址",
-        "requestSuccess": "订单账单地址已更新。"
+        "requestSuccess": "订单账单地址已更新。",
+        "validation": {
+          "addressRequired": "请输入地址",
+          "countryRequired": "请选择国家"
+        }
       }
     },
     "returns": {

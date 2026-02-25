@@ -1020,6 +1020,20 @@
         "quantityLowerThanFulfillment": "Não é possível definir a quantidade como menor ou igual à quantidade cumprida"
       }
     },
+    "edit": {
+      "email": {
+        "title": "Editar e-mail",
+        "requestSuccess": "O e-mail foi atualizado com sucesso."
+      },
+      "shippingAddress": {
+        "title": "Editar endereço de entrega",
+        "requestSuccess": "O endereço de entrega do pedido foi atualizado."
+      },
+      "billingAddress": {
+        "title": "Editar endereço de cobrança",
+        "requestSuccess": "O endereço de cobrança do pedido foi atualizado."
+      }
+    },
     "returns": {
       "create": "Criar Devolução",
       "confirm": "Confirmar Devolução",

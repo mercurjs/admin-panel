@@ -1118,7 +1118,7 @@
     "edit": {
       "email": {
         "title": "E-mail bewerken",
-        "requestSuccess": "Bestellingse-mail bijgewerkt naar {{email}}."
+        "requestSuccess": "E-mail is succesvol bijgewerkt."
       },
       "shippingAddress": {
         "title": "Verzendadres bewerken",
@@ -1130,7 +1130,11 @@
       },
       "billingAddress": {
         "title": "Factuuradres bewerken",
-        "requestSuccess": "Factuuradres van bestelling bijgewerkt."
+        "requestSuccess": "Factuuradres van bestelling bijgewerkt.",
+        "validation": {
+          "addressRequired": "Voer een adres in",
+          "countryRequired": "Selecteer een land"
+        }
       }
     },
     "returns": {

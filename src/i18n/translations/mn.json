@@ -1079,7 +1079,7 @@
     "edit": {
       "email": {
         "title": "Имэйлийг засах",
-        "requestSuccess": "Захиалгын имэйл {{email}}-д шинэчлэгдсэн."
+        "requestSuccess": "Имэйл амжилттай шинэчлэгдлээ."
       },
       "shippingAddress": {
         "title": "Хүргэлтийн хаягийг засах",
@@ -1091,7 +1091,11 @@
       },
       "billingAddress": {
         "title": "Төлбөрийн хаягийг засах",
-        "requestSuccess": "Захиалгын төлбөрийн хаяг шинэчлэгдсэн."
+        "requestSuccess": "Захиалгын төлбөрийн хаяг шинэчлэгдсэн.",
+        "validation": {
+          "addressRequired": "Хаяг оруулна уу",
+          "countryRequired": "Улс сонгоно уу"
+        }
       }
     },
     "returns": {

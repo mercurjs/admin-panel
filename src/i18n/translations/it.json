@@ -1032,6 +1032,20 @@
         "quantityLowerThanFulfillment": "Non è possibile impostare la quantità a meno di quella già soddisfatta"
       }
     },
+    "edit": {
+      "email": {
+        "title": "Modifica email",
+        "requestSuccess": "L'email è stata aggiornata con successo."
+      },
+      "shippingAddress": {
+        "title": "Modifica indirizzo di spedizione",
+        "requestSuccess": "L'indirizzo di spedizione dell'ordine è stato aggiornato."
+      },
+      "billingAddress": {
+        "title": "Modifica indirizzo di fatturazione",
+        "requestSuccess": "L'indirizzo di fatturazione dell'ordine è stato aggiornato."
+      }
+    },
     "returns": {
       "create": "Crea Reso",
       "confirm": "Conferma Reso",

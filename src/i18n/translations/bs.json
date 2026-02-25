@@ -1122,7 +1122,7 @@
     "edit": {
       "email": {
         "title": "Uredi e-mail",
-        "requestSuccess": "E-mail narudžbe je ažuriran na {{email}}."
+        "requestSuccess": "E-mail je uspješno ažuriran."
       },
       "shippingAddress": {
         "title": "Uredi adresu za dostavu",
@@ -1134,7 +1134,11 @@
       },
       "billingAddress": {
         "title": "Uredi adresu za naplatu",
-        "requestSuccess": "Adresa za naplatu narudžbe je ažurirana."
+        "requestSuccess": "Adresa za naplatu narudžbe je ažurirana.",
+        "validation": {
+          "addressRequired": "Molimo unesite adresu",
+          "countryRequired": "Molimo odaberite zemlju"
+        }
       }
     },
     "returns": {

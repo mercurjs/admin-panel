@@ -1020,6 +1020,20 @@
         "quantityLowerThanFulfillment": "Die Menge kann nicht kleiner oder gleich der erfüllten Menge sein"
       }
     },
+    "edit": {
+      "email": {
+        "title": "E-Mail bearbeiten",
+        "requestSuccess": "E-Mail wurde erfolgreich aktualisiert."
+      },
+      "shippingAddress": {
+        "title": "Lieferadresse bearbeiten",
+        "requestSuccess": "Lieferadresse der Bestellung wurde aktualisiert."
+      },
+      "billingAddress": {
+        "title": "Rechnungsadresse bearbeiten",
+        "requestSuccess": "Rechnungsadresse der Bestellung wurde aktualisiert."
+      }
+    },
     "returns": {
       "create": "Retoure erstellen",
       "confirm": "Bestätigen Sie die Rückgabe",

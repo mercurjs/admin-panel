@@ -1097,7 +1097,7 @@
     "edit": {
       "email": {
         "title": "Επεξεργασία email",
-        "requestSuccess": "Το email παραγγελίας ενημερώθηκε σε {{email}}."
+        "requestSuccess": "Το email ενημερώθηκε επιτυχώς."
       },
       "shippingAddress": {
         "title": "Επεξεργασία διεύθυνσης αποστολής",
@@ -1109,7 +1109,11 @@
       },
       "billingAddress": {
         "title": "Επεξεργασία διεύθυνσης χρέωσης",
-        "requestSuccess": "Η διεύθυνση χρέωσης παραγγελίας ενημερώθηκε."
+        "requestSuccess": "Η διεύθυνση χρέωσης παραγγελίας ενημερώθηκε.",
+        "validation": {
+          "addressRequired": "Παρακαλώ εισάγετε μια διεύθυνση",
+          "countryRequired": "Παρακαλώ επιλέξτε μια χώρα"
+        }
       }
     },
     "returns": {

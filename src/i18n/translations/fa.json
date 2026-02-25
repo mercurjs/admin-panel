@@ -1079,7 +1079,7 @@
     "edit": {
       "email": {
         "title": "ویرایش ایمیل",
-        "requestSuccess": "ایمیل سفارش به {{email}} به‌روزرسانی شد."
+        "requestSuccess": "ایمیل با موفقیت به‌روزرسانی شد."
       },
       "shippingAddress": {
         "title": "ویرایش آدرس ارسال",
@@ -1091,7 +1091,11 @@
       },
       "billingAddress": {
         "title": "ویرایش آدرس صورتحساب",
-        "requestSuccess": "آدرس صورتحساب سفارش به‌روزرسانی شد."
+        "requestSuccess": "آدرس صورتحساب سفارش به‌روزرسانی شد.",
+        "validation": {
+          "addressRequired": "لطفا آدرس را وارد کنید",
+          "countryRequired": "لطفا کشور را انتخاب کنید"
+        }
       }
     },
     "returns": {

@@ -1148,7 +1148,7 @@
     "edit": {
       "email": {
         "title": "Chỉnh sửa email",
-        "requestSuccess": "Email đơn hàng đã được cập nhật thành {{email}}."
+        "requestSuccess": "Email đã được cập nhật thành công."
       },
       "shippingAddress": {
         "title": "Chỉnh sửa địa chỉ giao hàng",
@@ -1160,7 +1160,11 @@
       },
       "billingAddress": {
         "title": "Chỉnh sửa địa chỉ thanh toán",
-        "requestSuccess": "Địa chỉ thanh toán của đơn hàng đã được cập nhật."
+        "requestSuccess": "Địa chỉ thanh toán của đơn hàng đã được cập nhật.",
+        "validation": {
+          "addressRequired": "Vui lòng nhập địa chỉ",
+          "countryRequired": "Vui lòng chọn quốc gia"
+        }
       }
     },
     "returns": {

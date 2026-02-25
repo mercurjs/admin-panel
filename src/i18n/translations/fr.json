@@ -1021,6 +1021,20 @@
         "quantityLowerThanFulfillment": "Ne peut pas définir la quantité à être inférieure ou égale à la quantité livrée"
       }
     },
+    "edit": {
+      "email": {
+        "title": "Modifier l'adresse e-mail",
+        "requestSuccess": "L'e-mail a été mis à jour avec succès."
+      },
+      "shippingAddress": {
+        "title": "Modifier l'adresse de livraison",
+        "requestSuccess": "L'adresse de livraison de la commande a été mise à jour."
+      },
+      "billingAddress": {
+        "title": "Modifier l'adresse de facturation",
+        "requestSuccess": "L'adresse de facturation de la commande a été mise à jour."
+      }
+    },
     "returns": {
       "create": "Créer un retour",
       "confirm": "Confirmer le retour",

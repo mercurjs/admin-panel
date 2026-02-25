@@ -1122,19 +1122,19 @@
     "edit": {
       "email": {
         "title": "Edit email",
-        "requestSuccess": "Email pesanan diperbarui menjadi {{email}}."
+        "requestSuccess": "Email berhasil diperbarui."
       },
       "shippingAddress": {
         "title": "Edit alamat pengiriman",
-        "requestSuccess": "Alamat pengiriman pesanan diperbarui.",
+        "requestSuccess": "Alamat pengiriman pesanan diperbarui."
+      },
+      "billingAddress": {
+        "title": "Edit alamat penagihan",
+        "requestSuccess": "Alamat penagihan pesanan diperbarui.",
         "validation": {
           "addressRequired": "Silakan masukkan alamat",
           "countryRequired": "Silakan pilih negara"
         }
-      },
-      "billingAddress": {
-        "title": "Edit alamat penagihan",
-        "requestSuccess": "Alamat penagihan pesanan diperbarui."
       }
     },
     "returns": {

@@ -1,16 +1,15 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { CheckMini, EllipseMiniSolid, XMarkMini } from "@medusajs/icons";
-import { clx } from "@medusajs/ui";
+import { CheckMini, EllipseMiniSolid, XMarkMini } from '@medusajs/icons';
+import { clx } from '@medusajs/ui';
+import { Command } from 'cmdk';
+import { Popover as RadixPopover } from 'radix-ui';
+import { useTranslation } from 'react-i18next';
 
-import { Command } from "cmdk";
-import { Popover as RadixPopover } from "radix-ui";
-import { useTranslation } from "react-i18next";
-
-import { useSelectedParams } from "../hooks";
-import { useDataTableFilterContext } from "./context";
-import FilterChip from "./filter-chip";
-import { IFilter } from "./types";
+import { useSelectedParams } from '../hooks';
+import { useDataTableFilterContext } from './context';
+import FilterChip from './filter-chip';
+import { IFilter } from './types';
 
 interface SelectFilterProps extends IFilter {
   options: { label: string; value: unknown }[];
@@ -26,10 +25,10 @@ export const SelectFilter = ({
   multiple,
   searchable,
   options,
-  openOnMount,
+  openOnMount
 }: SelectFilterProps) => {
   const [open, setOpen] = useState(openOnMount);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [searchRef, setSearchRef] = useState<HTMLInputElement | null>(null);
 
   const { t } = useTranslation();
@@ -40,12 +39,10 @@ export const SelectFilter = ({
   const currentValue = selectedParams.get();
 
   const labelValues = currentValue
-    .map((v) => options.find((o) => o.value === v)?.label)
+    .map(v => options.find(o => o.value === v)?.label)
     .filter(Boolean) as string[];
 
-  const [previousValue, setPreviousValue] = useState<
-    string | string[] | undefined
-  >(labelValues);
+  const [previousValue, setPreviousValue] = useState<string | string[] | undefined>(labelValues);
 
   const handleRemove = () => {
     selectedParams.delete();
@@ -71,7 +68,7 @@ export const SelectFilter = ({
   };
 
   const handleClearSearch = () => {
-    setSearch("");
+    setSearch('');
 
     if (searchRef) {
       searchRef.focus();
@@ -111,7 +108,7 @@ export const SelectFilter = ({
         hadPreviousValue={!!normalizedPrev?.length}
         readonly={readonly}
         label={label}
-        value={normalizedValues?.join(", ")}
+        value={normalizedValues?.join(', ')}
         onRemove={handleRemove}
         data-testid={`data-table-select-filter-chip-${key}`}
       />
@@ -123,14 +120,13 @@ export const SelectFilter = ({
             sideOffset={8}
             collisionPadding={8}
             className={clx(
-              "z-[1] h-full max-h-[200px] w-[300px] overflow-hidden rounded-lg bg-ui-bg-base text-ui-fg-base shadow-elevation-flyout outline-none",
+              'z-[1] h-full max-h-[200px] w-[300px] overflow-hidden rounded-lg bg-ui-bg-base text-ui-fg-base shadow-elevation-flyout outline-none'
             )}
             data-testid={`data-table-select-filter-content-${key}`}
-            onInteractOutside={(e) => {
+            onInteractOutside={e => {
               if (e.target instanceof HTMLElement) {
                 if (
-                  e.target.attributes.getNamedItem("data-name")?.value ===
-                  "filters_menu_content"
+                  e.target.attributes.getNamedItem('data-name')?.value === 'filters_menu_content'
                 ) {
                   e.preventDefault();
                   e.stopPropagation();
@@ -161,10 +157,10 @@ export const SelectFilter = ({
                         disabled={!search}
                         onClick={handleClearSearch}
                         className={clx(
-                          "rounded-md text-ui-fg-muted outline-none transition-fg focus-visible:bg-ui-bg-base-pressed",
+                          'rounded-md text-ui-fg-muted outline-none transition-fg focus-visible:bg-ui-bg-base-pressed',
                           {
-                            invisible: !search,
-                          },
+                            invisible: !search
+                          }
                         )}
                         data-testid={`data-table-select-filter-clear-search-${key}`}
                       >
@@ -178,23 +174,19 @@ export const SelectFilter = ({
                 className="txt-compact-small flex items-center justify-center p-1"
                 data-testid={`data-table-select-filter-empty-${key}`}
               >
-                <span className="w-full px-2 py-1 text-center">
-                  {t("general.noResultsTitle")}
-                </span>
+                <span className="w-full px-2 py-1 text-center">{t('general.noResultsTitle')}</span>
               </Command.Empty>
               <Command.List
                 className="h-full max-h-[163px] min-h-[0] overflow-auto p-1 outline-none"
                 data-testid={`data-table-select-filter-list-${key}`}
               >
-                {options.map((option) => {
-                  const isSelected = selectedParams
-                    .get()
-                    .includes(String(option.value));
+                {options.map(option => {
+                  const isSelected = selectedParams.get().includes(String(option.value));
 
                   return (
                     <Command.Item
                       key={String(option.value)}
-                      className="txt-compact-small relative flex cursor-pointer select-none items-center gap-x-2 rounded-md bg-ui-bg-base px-2 py-1.5 text-ui-fg-base outline-none transition-colors hover:bg-ui-bg-base-hover focus-visible:bg-ui-bg-base-pressed aria-selected:bg-ui-bg-base-pressed data-[disabled]:pointer-events-none data-[disabled]:text-ui-fg-disabled"
+                      className="txt-compact-small relative flex cursor-pointer select-none items-center gap-x-2 rounded-md bg-ui-bg-base px-2 py-1.5 text-ui-fg-base outline-none transition-colors hover:bg-ui-bg-base-hover focus-visible:bg-ui-bg-base-pressed aria-selected:bg-ui-bg-base-pressed data-[disabled='true']:pointer-events-none data-[disabled='true']:text-ui-fg-disabled"
                       value={option.label}
                       onSelect={() => {
                         handleSelect(option.value);
@@ -202,12 +194,9 @@ export const SelectFilter = ({
                       data-testid={`data-table-select-filter-option-${key}-${String(option.value)}`}
                     >
                       <div
-                        className={clx(
-                          "flex h-5 w-5 items-center justify-center transition-fg",
-                          {
-                            "[&_svg]:invisible": !isSelected,
-                          },
-                        )}
+                        className={clx('flex h-5 w-5 items-center justify-center transition-fg', {
+                          '[&_svg]:invisible': !isSelected
+                        })}
                         data-testid={`data-table-select-filter-option-checkbox-${key}-${String(option.value)}`}
                       >
                         {multiple ? <CheckMini /> : <EllipseMiniSolid />}

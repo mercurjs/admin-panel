@@ -1079,7 +1079,7 @@
     "edit": {
       "email": {
         "title": "Изменить email",
-        "requestSuccess": "Email заказа изменен на {{email}}."
+        "requestSuccess": "Email был успешно обновлён."
       },
       "shippingAddress": {
         "title": "Изменить адрес доставки",
@@ -1091,7 +1091,11 @@
       },
       "billingAddress": {
         "title": "Изменить платежный адрес",
-        "requestSuccess": "Платежный адрес заказа обновлен."
+        "requestSuccess": "Платежный адрес заказа обновлен.",
+        "validation": {
+          "addressRequired": "Пожалуйста, введите адрес",
+          "countryRequired": "Пожалуйста, выберите страну"
+        }
       }
     },
     "returns": {

@@ -1029,7 +1029,7 @@
     "edit": {
       "email": {
         "title": "Редагувати email",
-        "requestSuccess": "Email замовлення оновлено на {{email}}."
+        "requestSuccess": "Email було успішно оновлено."
       },
       "shippingAddress": {
         "title": "Редагувати адресу доставки",
@@ -1041,7 +1041,11 @@
       },
       "billingAddress": {
         "title": "Редагувати адресу для рахунку",
-        "requestSuccess": "Адреса для рахунку замовлення оновлена."
+        "requestSuccess": "Адреса для рахунку замовлення оновлена.",
+        "validation": {
+          "addressRequired": "Будь ласка, введіть адресу",
+          "countryRequired": "Будь ласка, виберіть країну"
+        }
       }
     },
     "returns": {

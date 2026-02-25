@@ -1125,7 +1125,7 @@
       "markAsPaidPayment": "Payment of {{amount}} will be marked as paid.",
       "markAsPaidPaymentSuccess": "Payment of {{amount}} successfully marked as paid",
       "createRefund": "Create Refund",
-      "refundPaymentSuccess": "Refund of amount {{amount}} successful",
+      "refundPaymentSuccess": "Payment {{amount}} was successfully refunded.",
       "createRefundWrongQuantity": "Quantity should be a number between 1 and {{number}}",
       "refundAmount": "Refund {{ amount }}",
       "paymentLink": "Copy payment link for {{ amount }}",
@@ -1165,7 +1165,7 @@
     "edit": {
       "email": {
         "title": "Edit email",
-        "requestSuccess": "Order email updated to {{email}}."
+        "requestSuccess": "Email was successfully updated."
       },
       "shippingAddress": {
         "title": "Edit shipping address",
@@ -1177,7 +1177,11 @@
       },
       "billingAddress": {
         "title": "Edit billing address",
-        "requestSuccess": "Order billing address updated."
+        "requestSuccess": "Billing address was successfully updated.",
+        "validation": {
+          "addressRequired": "Please enter an address",
+          "countryRequired": "Please select a country"
+        }
       }
     },
     "returns": {

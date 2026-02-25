@@ -1118,7 +1118,7 @@
     "edit": {
       "email": {
         "title": "Email szerkesztése",
-        "requestSuccess": "Email frissítve: {{email}}."
+        "requestSuccess": "Az e-mail sikeresen frissítve lett."
       },
       "shippingAddress": {
         "title": "Szállítási cím szerkesztése",
@@ -1130,7 +1130,11 @@
       },
       "billingAddress": {
         "title": "Számlázási cím szerkesztése",
-        "requestSuccess": "Számlázási cím frissítve."
+        "requestSuccess": "Számlázási cím frissítve.",
+        "validation": {
+          "addressRequired": "Kérjük, adjon meg egy címet",
+          "countryRequired": "Kérjük, válasszon országot"
+        }
       }
     },
     "returns": {

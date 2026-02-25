@@ -1097,7 +1097,7 @@
     "edit": {
       "email": {
         "title": "تحرير البريد الإلكتروني",
-        "requestSuccess": "تم تحديث البريد الإلكتروني للطلب إلى {{email}}."
+        "requestSuccess": "تم تحديث البريد الإلكتروني بنجاح."
       },
       "shippingAddress": {
         "title": "تحرير عنوان الشحن",
@@ -1109,7 +1109,11 @@
       },
       "billingAddress": {
         "title": "تحرير عنوان الفواتير",
-        "requestSuccess": "تم تحديث عنوان الفواتير للطلب."
+        "requestSuccess": "تم تحديث عنوان الفواتير للطلب.",
+        "validation": {
+          "addressRequired": "الرجاء إدخال العنوان",
+          "countryRequired": "الرجاء تحديد البلد"
+        }
       }
     },
     "returns": {

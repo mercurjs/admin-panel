@@ -4427,9 +4427,22 @@
                 },
                 "requestSuccess": {
                   "type": "string"
+                },
+                "validation": {
+                  "type": "object",
+                  "properties": {
+                    "addressRequired": {
+                      "type": "string"
+                    },
+                    "countryRequired": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["addressRequired", "countryRequired"],
+                  "additionalProperties": false
                 }
               },
-              "required": ["title", "requestSuccess"],
+              "required": ["title", "requestSuccess", "validation"],
               "additionalProperties": false
             }
           },
