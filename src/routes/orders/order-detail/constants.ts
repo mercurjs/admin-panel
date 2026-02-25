@@ -31,6 +31,7 @@ const DEFAULT_PROPERTIES = [
 ];
 
 const DEFAULT_RELATIONS = [
+  "*seller",
   "*customer",
   "*items", // -> we get LineItem here with added `quantity` and `detail` which is actually an OrderItem (which is a parent object to LineItem in the DB)
   "*items.variant",

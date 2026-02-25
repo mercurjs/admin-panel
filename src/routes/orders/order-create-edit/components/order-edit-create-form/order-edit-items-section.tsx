@@ -1,20 +1,15 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type ChangeEvent } from 'react';
 
-import { MagnifyingGlass } from "@medusajs/icons";
-import { AdminOrder, AdminOrderPreview } from "@medusajs/types";
-import { Button, Heading, Input, Text, toast } from "@medusajs/ui";
+import { RouteFocusModal, StackedFocusModal, useStackedModal } from '@components/modals';
+import { useAddOrderEditItems } from '@hooks/api/order-edits';
+import { MagnifyingGlass } from '@medusajs/icons';
+import type { AdminOrder, AdminOrderPreview } from '@medusajs/types';
+import { Button, Heading, Input, Text, toast } from '@medusajs/ui';
+import { AddOrderEditItemsTable } from '@routes/orders/order-create-edit/components/add-order-edit-items-table';
+import debounce from 'lodash/debounce';
+import { useTranslation } from 'react-i18next';
 
-import debounce from "lodash/debounce";
-import { useTranslation } from "react-i18next";
-
-import {
-  RouteFocusModal,
-  StackedFocusModal,
-  useStackedModal,
-} from "../../../../../components/modals";
-import { useAddOrderEditItems } from "../../../../../hooks/api/order-edits";
-import { AddOrderEditItemsTable } from "../add-order-edit-items-table";
-import { OrderEditItem } from "./order-edit-item";
+import { OrderEditItem } from './order-edit-item';
 
 type ExchangeInboundSectionProps = {
   order: AdminOrder;
@@ -23,33 +18,30 @@ type ExchangeInboundSectionProps = {
 
 let addedVariants: string[] = [];
 
-export const OrderEditItemsSection = ({
-  order,
-  preview,
-}: ExchangeInboundSectionProps) => {
+export const OrderEditItemsSection = ({ order, preview }: ExchangeInboundSectionProps) => {
   const { t } = useTranslation();
 
   const { setIsOpen } = useStackedModal();
-  const [filterTerm, setFilterTerm] = useState("");
+  const [filterTerm, setFilterTerm] = useState('');
 
   const { mutateAsync: addItems, isPending } = useAddOrderEditItems(order.id);
 
   const onItemsSelected = async () => {
     await addItems(
       {
-        items: addedVariants.map((i) => ({
+        items: addedVariants.map(i => ({
           variant_id: i,
-          quantity: 1,
-        })),
+          quantity: 1
+        }))
       },
       {
-        onError: (e) => {
+        onError: e => {
           toast.error(e.message);
-        },
-      },
+        }
+      }
     );
 
-    setIsOpen("inbound-items", false);
+    setIsOpen('inbound-items', false);
   };
 
   const debouncedOnChange = useCallback(
@@ -58,7 +50,7 @@ export const OrderEditItemsSection = ({
 
       setFilterTerm(value);
     }, 500),
-    [setFilterTerm],
+    [setFilterTerm]
   );
 
   useEffect(() => {
@@ -68,23 +60,33 @@ export const OrderEditItemsSection = ({
   }, [debouncedOnChange]);
 
   const filteredItems = useMemo(() => {
-    const lowerFilterTerm = filterTerm.toLowerCase();
     return preview.items.filter(
-      (i) =>
+      i =>
         i.title.toLowerCase().includes(filterTerm) ||
-        i.product_title?.toLowerCase().includes(filterTerm),
+        i.product_title?.toLowerCase().includes(filterTerm)
     );
   }, [preview, filterTerm]);
 
   return (
     <div data-testid="order-edit-items-section">
-      <div className="mb-3 mt-8 flex items-center justify-between" data-testid="order-edit-items-section-header">
-        <Heading level="h2" data-testid="order-edit-items-section-heading">{t("fields.items")}</Heading>
+      <div
+        className="mb-3 mt-8 flex items-center justify-between"
+        data-testid="order-edit-items-section-header"
+      >
+        <Heading
+          level="h2"
+          data-testid="order-edit-items-section-heading"
+        >
+          {t('fields.items')}
+        </Heading>
 
-        <div className="flex gap-2" data-testid="order-edit-items-section-actions">
+        <div
+          className="flex gap-2"
+          data-testid="order-edit-items-section-actions"
+        >
           <Input
             onChange={debouncedOnChange}
-            placeholder={t("fields.search")}
+            placeholder={t('fields.search')}
             autoComplete="off"
             type="search"
             data-testid="order-edit-items-section-search-input"
@@ -92,8 +94,12 @@ export const OrderEditItemsSection = ({
 
           <StackedFocusModal id="inbound-items">
             <StackedFocusModal.Trigger asChild>
-              <Button variant="secondary" size="small" data-testid="order-edit-items-section-add-items-button">
-                {t("actions.addItems")}
+              <Button
+                variant="secondary"
+                size="small"
+                data-testid="order-edit-items-section-add-items-button"
+              >
+                {t('actions.addItems')}
               </Button>
             </StackedFocusModal.Trigger>
 
@@ -102,17 +108,26 @@ export const OrderEditItemsSection = ({
 
               <AddOrderEditItemsTable
                 currencyCode={order.currency_code}
-                onSelectionChange={(finalSelection) => {
+                onSelectionChange={finalSelection => {
                   addedVariants = finalSelection;
                 }}
+                sellerId={order.seller?.id}
               />
 
               <StackedFocusModal.Footer data-testid="order-edit-items-section-add-items-modal-footer">
-                <div className="flex w-full items-center justify-end gap-x-4" data-testid="order-edit-items-section-add-items-modal-footer-actions">
+                <div
+                  className="flex w-full items-center justify-end gap-x-4"
+                  data-testid="order-edit-items-section-add-items-modal-footer-actions"
+                >
                   <div className="flex items-center justify-end gap-x-2">
                     <RouteFocusModal.Close asChild>
-                      <Button type="button" variant="secondary" size="small" data-testid="order-edit-items-section-add-items-modal-cancel-button">
-                        {t("actions.cancel")}
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="small"
+                        data-testid="order-edit-items-section-add-items-modal-cancel-button"
+                      >
+                        {t('actions.cancel')}
                       </Button>
                     </RouteFocusModal.Close>
                     <Button
@@ -125,7 +140,7 @@ export const OrderEditItemsSection = ({
                       onClick={async () => await onItemsSelected()}
                       data-testid="order-edit-items-section-add-items-modal-save-button"
                     >
-                      {t("actions.save")}
+                      {t('actions.save')}
                     </Button>
                   </div>
                 </div>
@@ -135,7 +150,7 @@ export const OrderEditItemsSection = ({
         </div>
       </div>
 
-      {filteredItems.map((item) => (
+      {filteredItems.map(item => (
         <OrderEditItem
           key={item.id}
           item={item}
@@ -147,8 +162,12 @@ export const OrderEditItemsSection = ({
       {filterTerm && !filteredItems.length && (
         <div className="flex flex-col items-center justify-center gap-y-2 rounded-xl bg-ui-bg-subtle p-3 text-center shadow-elevation-card-rest">
           <MagnifyingGlass className="text-ui-fg-subtle" />
-          <Text size="small" leading="compact" weight="plus">
-            {t("general.noSearchResults")}
+          <Text
+            size="small"
+            leading="compact"
+            weight="plus"
+          >
+            {t('general.noSearchResults')}
           </Text>
         </div>
       )}

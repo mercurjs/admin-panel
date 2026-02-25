@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 
+import { _DataTable } from '@components/table/data-table';
+import { useCustomProductVariants } from '@hooks/api';
+import { useDataTable } from '@hooks/use-data-table';
 import type { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
-import { _DataTable } from '../../../../../components/table/data-table';
-import { useVariants } from '../../../../../hooks/api';
-import { useDataTable } from '../../../../../hooks/use-data-table';
 import { useOrderEditItemsTableColumns } from './use-order-edit-item-table-columns';
 import { useOrderEditItemTableFilters } from './use-order-edit-item-table-filters';
 import { useOrderEditItemTableQuery } from './use-order-edit-item-table-query';
@@ -17,11 +17,13 @@ const PREFIX = 'rit';
 type AddExchangeOutboundItemsTableProps = {
   onSelectionChange: (ids: string[]) => void;
   currencyCode: string;
+  sellerId?: string;
 };
 
 export const AddOrderEditItemsTable = ({
   onSelectionChange,
-  currencyCode
+  currencyCode,
+  sellerId
 }: AddExchangeOutboundItemsTableProps) => {
   const { t } = useTranslation();
   const [, setSearchParams] = useSearchParams();
@@ -54,10 +56,13 @@ export const AddOrderEditItemsTable = ({
     prefix: PREFIX
   });
 
-  const { variants = [], count } = useVariants({
+  const { variants, count } = useCustomProductVariants({
     ...searchParams,
     fields:
-      '*inventory_items.inventory.location_levels,+inventory_quantity,*product.categories,*product.collection'
+      '*inventory_items.inventory.location_levels,+inventory_quantity,*product.categories,*product.collection',
+    has_price: true,
+    has_inventory: true,
+    ...(sellerId ? { seller_id: sellerId } : {})
   });
 
   const columns = useOrderEditItemsTableColumns(currencyCode);
