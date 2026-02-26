@@ -4542,6 +4542,15 @@
             "activeChangeError": {
               "type": "string"
             },
+            "cantBeReceivedByAdmin": {
+              "type": "string"
+            },
+            "cantBeCanceledByAdmin": {
+              "type": "string"
+            },
+            "cantCreateReturnByAdmin": {
+              "type": "string"
+            },
             "cancel": {
               "type": "object",
               "properties": {
@@ -4714,6 +4723,9 @@
             "damagedItemReceived",
             "damagedItemsReturned",
             "activeChangeError",
+            "cantBeReceivedByAdmin",
+            "cantBeCanceledByAdmin",
+            "cantCreateReturnByAdmin",
             "cancel",
             "placeholders",
             "receive",

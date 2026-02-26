@@ -1,7 +1,29 @@
-import { ReactNode, useMemo, useState } from "react"
-import { useTranslation } from "react-i18next"
-import { Link } from "react-router-dom"
+import { useMemo, useState, type ReactNode } from 'react';
 
+import { ActionMenu } from '@components/common/action-menu';
+import DisplayId from '@components/common/display-id/display-id';
+import { Thumbnail } from '@components/common/thumbnail';
+import { useClaims } from '@hooks/api/claims';
+import { useExchanges } from '@hooks/api/exchanges';
+import { ordersQueryKeys, useOrderPreview } from '@hooks/api/orders';
+import { useMarkPaymentCollectionAsPaid } from '@hooks/api/payment-collections';
+import { useReservationItems } from '@hooks/api/reservations';
+import { returnsQueryKeys, useReturns } from '@hooks/api/returns';
+import { useDate } from '@hooks/use-date';
+import { sdk } from '@lib/client';
+import { getTotalCreditLines } from '@lib/credit-line';
+import { formatCurrency } from '@lib/format-currency';
+import {
+  getLocaleAmount,
+  getStylizedAmount,
+  isAmountLessThenRoundingError
+} from '@lib/money-amount-helpers';
+import { getReservationsLimitCount } from '@lib/orders';
+import { getTotalCaptured } from '@lib/payment';
+import { formatPercentage } from '@lib/percentage-helpers.ts';
+import { getLoyaltyPlugin } from '@lib/plugins';
+import { queryClient } from '@lib/query-client';
+import { getReturnableQuantity } from '@lib/rma';
 import {
   ArrowDownRightMini,
   ArrowLongRight,
@@ -10,9 +32,9 @@ import {
   DocumentText,
   ExclamationCircle,
   PencilSquare,
-  TriangleDownMini,
-} from "@medusajs/icons"
-import {
+  TriangleDownMini
+} from '@medusajs/icons';
+import type {
   AdminClaim,
   AdminExchange,
   AdminOrder,
@@ -21,8 +43,9 @@ import {
   AdminPaymentCollection,
   AdminPlugin,
   AdminRegion,
-  AdminReturn,
-} from "@medusajs/types"
+  AdminReservation,
+  AdminReturn
+} from '@medusajs/types';
 import {
   Badge,
   Button,
@@ -34,83 +57,104 @@ import {
   Text,
   toast,
   Tooltip,
-  usePrompt,
-} from "@medusajs/ui"
+  usePrompt
+} from '@medusajs/ui';
+import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-import type { AdminReservation } from "@medusajs/types"
-import { format } from "date-fns"
-import { ActionMenu } from "../../../../../components/common/action-menu"
-import DisplayId from "../../../../../components/common/display-id/display-id"
-import { Thumbnail } from "../../../../../components/common/thumbnail"
-import { useClaims } from "../../../../../hooks/api/claims"
-import { useExchanges } from "../../../../../hooks/api/exchanges"
-import { useOrderPreview } from "../../../../../hooks/api/orders"
-import { useMarkPaymentCollectionAsPaid } from "../../../../../hooks/api/payment-collections"
-import { useReservationItems } from "../../../../../hooks/api/reservations"
-import { useReturns } from "../../../../../hooks/api/returns"
-import { useDate } from "../../../../../hooks/use-date"
-import { getTotalCreditLines } from "../../../../../lib/credit-line"
-import { formatCurrency } from "../../../../../lib/format-currency"
-import { getReservationsLimitCount } from "../../../../../lib/orders"
-import {
-  getLocaleAmount,
-  getStylizedAmount,
-  isAmountLessThenRoundingError,
-} from "../../../../../lib/money-amount-helpers"
-import { getTotalCaptured } from "../../../../../lib/payment"
-import { getLoyaltyPlugin } from "../../../../../lib/plugins"
-import { getReturnableQuantity } from "../../../../../lib/rma"
-import { CopyPaymentLink } from "../copy-payment-link/copy-payment-link"
-import ReturnInfoPopover from "./return-info-popover"
-import ShippingInfoPopover from "./shipping-info-popover"
-import { formatPercentage } from "../../../../../lib/percentage-helpers.ts"
+import { useAdminManagedLocations } from '../../context/admin-managed-locations-context';
+import { CopyPaymentLink } from '../copy-payment-link/copy-payment-link';
+import ReturnInfoPopover from './return-info-popover';
+import ShippingInfoPopover from './shipping-info-popover';
 
 type OrderSummarySectionProps = {
-  order: AdminOrder
-  plugins: AdminPlugin[]
-}
+  order: AdminOrder;
+  plugins: AdminPlugin[];
+};
 
-export const OrderSummarySection = ({
-  order,
-  plugins,
-}: OrderSummarySectionProps) => {
-  const { t } = useTranslation()
-  const prompt = usePrompt()
+export const OrderSummarySection = ({ order, plugins }: OrderSummarySectionProps) => {
+  const { t } = useTranslation();
+  const prompt = usePrompt();
+  const { canAdminActOnLocation } = useAdminManagedLocations();
 
   const { reservations } = useReservationItems(
     {
-      line_item_id: order?.items?.map((i) => i.id),
-      limit: getReservationsLimitCount(order),
+      line_item_id: order?.items?.map(i => i.id),
+      limit: getReservationsLimitCount(order)
     },
     { enabled: Array.isArray(order?.items) }
-  )
+  );
 
-  const { order: orderPreview } = useOrderPreview(order.id!)
+  const { order: orderPreview } = useOrderPreview(order.id!);
 
   const { returns = [] } = useReturns({
-    status: "requested",
+    status: 'requested',
     order_id: order.id,
-    fields: "+received_at",
-  })
+    fields: '+received_at,+location_id'
+  });
 
-  const receivableReturns = useMemo(
-    () => returns.filter((r) => !r.canceled_at),
-    [returns]
-  )
+  const receivableReturns = useMemo(() => returns.filter(r => !r.canceled_at), [returns]);
 
-  const showReturns = !!receivableReturns.length
+  const showReturns = !!receivableReturns.length;
+
+  const canActOnFirstReturn =
+    receivableReturns.length === 1 && canAdminActOnLocation(receivableReturns[0].location_id);
+
+  const handleCancelReturn = async (returnId: string) => {
+    if (!returnId) {
+      return;
+    }
+
+    const res = await prompt({
+      title: t('orders.returns.cancel.title'),
+      description: t('orders.returns.cancel.description'),
+      confirmText: t('actions.confirm'),
+      cancelText: t('actions.cancel'),
+      variant: 'confirmation'
+    });
+
+    if (!res) {
+      return;
+    }
+
+    try {
+      await sdk.client.fetch(`/admin/returns/${returnId}/cancel`, {
+        method: 'POST'
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.details()
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.preview(order.id),
+        refetchType: 'all'
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: returnsQueryKeys.details()
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: returnsQueryKeys.lists()
+      });
+
+      toast.success(t('orders.returns.toast.canceledSuccessfully'));
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   /**
    * Show Allocation button only if there are unfulfilled items that don't have reservations
    */
   const showAllocateButton = useMemo(() => {
     if (!reservations) {
-      return false
+      return false;
     }
 
-    const reservationsMap = new Map(
-      reservations.map((r) => [r.line_item_id, r.id])
-    )
+    const reservationsMap = new Map(reservations.map(r => [r.line_item_id, r.id]));
 
     for (const item of order.items) {
       // Inventory is managed
@@ -119,52 +163,44 @@ export const OrderSummarySection = ({
         if (item.quantity - item.detail.fulfilled_quantity > 0) {
           // Reservation for this item doesn't exist
           if (!reservationsMap.has(item.id)) {
-            return true
+            return true;
           }
         }
       }
     }
 
-    return false
-  }, [order.items, reservations])
+    return false;
+  }, [order.items, reservations]);
 
-  const unpaidPaymentCollection = order.payment_collections.find(
-    (pc) => pc.status === "not_paid"
-  )
+  const unpaidPaymentCollection = order.payment_collections.find(pc => pc.status === 'not_paid');
 
   const { mutateAsync: markAsPaid } = useMarkPaymentCollectionAsPaid(
     order.id,
     unpaidPaymentCollection?.id!
-  )
+  );
 
-  const pendingDifference = order.summary?.pending_difference || 0
+  const pendingDifference = order.summary?.pending_difference || 0;
   const isAmountSignificant = !isAmountLessThenRoundingError(
     pendingDifference,
     order.currency_code
-  )
+  );
 
-  const showPayment =
-    unpaidPaymentCollection && pendingDifference > 0 && isAmountSignificant
-  const showRefund = pendingDifference < 0 && isAmountSignificant
+  const showPayment = unpaidPaymentCollection && pendingDifference > 0 && isAmountSignificant;
+  const showRefund = pendingDifference < 0 && isAmountSignificant;
 
-  const handleMarkAsPaid = async (
-    paymentCollection: AdminPaymentCollection
-  ) => {
+  const handleMarkAsPaid = async (paymentCollection: AdminPaymentCollection) => {
     const res = await prompt({
-      title: t("orders.payment.markAsPaid"),
-      description: t("orders.payment.markAsPaidPayment", {
-        amount: formatCurrency(
-          paymentCollection.amount as number,
-          order.currency_code
-        ),
+      title: t('orders.payment.markAsPaid'),
+      description: t('orders.payment.markAsPaidPayment', {
+        amount: formatCurrency(paymentCollection.amount as number, order.currency_code)
       }),
-      confirmText: t("actions.confirm"),
-      cancelText: t("actions.cancel"),
-      variant: "confirmation",
-    })
+      confirmText: t('actions.confirm'),
+      cancelText: t('actions.cancel'),
+      variant: 'confirmation'
+    });
 
     if (!res) {
-      return
+      return;
     }
 
     await markAsPaid(
@@ -172,82 +208,182 @@ export const OrderSummarySection = ({
       {
         onSuccess: () => {
           toast.success(
-            t("orders.payment.markAsPaidPaymentSuccess", {
-              amount: formatCurrency(
-                paymentCollection.amount as number,
-                order.currency_code
-              ),
+            t('orders.payment.markAsPaidPaymentSuccess', {
+              amount: formatCurrency(paymentCollection.amount as number, order.currency_code)
             })
-          )
+          );
         },
-        onError: (error) => {
-          toast.error(error.message)
-        },
+        onError: error => {
+          toast.error(error.message);
+        }
       }
-    )
-  }
+    );
+  };
 
   return (
-    <Container className="divide-y divide-dashed p-0" data-testid="order-summary-section">
-      <Header order={order} orderPreview={orderPreview} />
-      <ItemBreakdown order={order} reservations={reservations!} />
+    <Container
+      className="divide-y divide-dashed p-0"
+      data-testid="order-summary-section"
+    >
+      <Header
+        order={order}
+        orderPreview={orderPreview}
+      />
+      <ItemBreakdown
+        order={order}
+        reservations={reservations!}
+      />
       <CostBreakdown order={order} />
-      <DiscountAndTotalBreakdown order={order} plugins={plugins} />
+      <DiscountAndTotalBreakdown
+        order={order}
+        plugins={plugins}
+      />
       <Total order={order} />
 
       {(showAllocateButton || showReturns || showPayment || showRefund) && (
-        <div className="bg-ui-bg-subtle flex items-center justify-end gap-x-2 rounded-b-xl px-4 py-4" data-testid="order-summary-actions">
-          {showReturns &&
-            (receivableReturns.length === 1 ? (
-              <Button asChild variant="secondary" size="small" data-testid="order-summary-receive-return-button">
-                <Link
-                  to={`/orders/${order.id}/returns/${receivableReturns[0].id}/receive`}
-                >
-                  {t("orders.returns.receive.action")}
-                </Link>
-              </Button>
-            ) : (
-              <ActionMenu
-                groups={[
-                  {
-                    actions: receivableReturns.map((r) => {
-                      let id = r.id
-                      let returnType = "Return"
+        <div
+          className="flex items-center justify-end gap-x-2 rounded-b-xl bg-ui-bg-subtle px-4 py-4"
+          data-testid="order-summary-actions"
+        >
+          {showReturns && (
+            <>
+              {receivableReturns.length === 1 ? (
+                <>
+                  {canActOnFirstReturn ? (
+                    <Button
+                      asChild
+                      variant="secondary"
+                      size="small"
+                      data-testid="order-summary-receive-return-button"
+                    >
+                      <Link to={`/orders/${order.id}/returns/${receivableReturns[0].id}/receive`}>
+                        {t('orders.returns.receive.action')}
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Tooltip content={t('orders.returns.cantBeReceivedByAdmin')}>
+                      <span>
+                        <Button
+                          variant="secondary"
+                          size="small"
+                          disabled
+                          data-testid="order-summary-receive-return-button"
+                        >
+                          {t('orders.returns.receive.action')}
+                        </Button>
+                      </span>
+                    </Tooltip>
+                  )}
 
-                      if (r.exchange_id) {
-                        id = r.exchange_id
-                        returnType = "Exchange"
-                      }
+                  {canActOnFirstReturn ? (
+                    <Button
+                      variant="secondary"
+                      size="small"
+                      onClick={() => handleCancelReturn(receivableReturns[0].id)}
+                    >
+                      {t('actions.cancel')}
+                    </Button>
+                  ) : (
+                    <Tooltip content={t('orders.returns.cantBeCanceledByAdmin')}>
+                      <span>
+                        <Button
+                          variant="secondary"
+                          size="small"
+                          disabled
+                        >
+                          {t('actions.cancel')}
+                        </Button>
+                      </span>
+                    </Tooltip>
+                  )}
+                </>
+              ) : (
+                <>
+                  <ActionMenu
+                    groups={[
+                      {
+                        actions: receivableReturns.map(r => {
+                          let id = r.id;
+                          let returnType = 'Return';
 
-                      if (r.claim_id) {
-                        id = r.claim_id
-                        returnType = "Claim"
-                      }
+                          if (r.exchange_id) {
+                            id = r.exchange_id;
+                            returnType = 'Exchange';
+                          }
 
-                      return {
-                        label: t("orders.returns.receive.receiveItems", {
-                          id: `#${id.slice(-7)}`,
-                          returnType,
-                        }),
-                        icon: <ArrowLongRight />,
-                        to: `/orders/${order.id}/returns/${r.id}/receive`,
+                          if (r.claim_id) {
+                            id = r.claim_id;
+                            returnType = 'Claim';
+                          }
+
+                          return {
+                            label: t('orders.returns.receive.receiveItems', {
+                              id: `#${id.slice(-7)}`,
+                              returnType
+                            }),
+                            icon: <ArrowLongRight />,
+                            to: `/orders/${order.id}/returns/${r.id}/receive`,
+                            disabled: !canAdminActOnLocation(r.location_id)
+                          };
+                        })
                       }
-                    }),
-                  },
-                ]}
-                data-testid="order-summary-receive-returns-menu"
-              >
-                <Button variant="secondary" size="small">
-                  {t("orders.returns.receive.action")}
-                </Button>
-              </ActionMenu>
-            ))}
+                    ]}
+                    data-testid="order-summary-receive-returns-menu"
+                  >
+                    <Button
+                      variant="secondary"
+                      size="small"
+                    >
+                      {t('orders.returns.receive.action')}
+                    </Button>
+                  </ActionMenu>
+                  <ActionMenu
+                    groups={[
+                      {
+                        actions: receivableReturns.map(r => {
+                          let id = r.id;
+                          let returnType = 'Return';
+
+                          if (r.exchange_id) {
+                            id = r.exchange_id;
+                            returnType = 'Exchange';
+                          }
+
+                          if (r.claim_id) {
+                            id = r.claim_id;
+                            returnType = 'Claim';
+                          }
+
+                          return {
+                            label: `${returnType} #${id.slice(-7)}`,
+                            icon: <ArrowLongRight />,
+                            onClick: () => handleCancelReturn(r.id),
+                            disabled: !canAdminActOnLocation(r.location_id)
+                          };
+                        })
+                      }
+                    ]}
+                  >
+                    <Button
+                      variant="secondary"
+                      size="small"
+                    >
+                      {t('actions.cancel')}
+                    </Button>
+                  </ActionMenu>
+                </>
+              )}
+            </>
+          )}
 
           {showAllocateButton && (
-            <Button asChild variant="secondary" size="small" data-testid="order-summary-allocate-items-button">
-              <Link to="allocate-items">
-                {t("orders.allocateItems.action")}
-              </Link>
+            <Button
+              asChild
+              variant="secondary"
+              size="small"
+              data-testid="order-summary-allocate-items-button"
+            >
+              <Link to="allocate-items">{t('orders.allocateItems.action')}</Link>
             </Button>
           )}
 
@@ -265,18 +401,20 @@ export const OrderSummarySection = ({
               onClick={() => handleMarkAsPaid(unpaidPaymentCollection)}
               data-testid="order-summary-mark-as-paid-button"
             >
-              {t("orders.payment.markAsPaid")}
+              {t('orders.payment.markAsPaid')}
             </Button>
           )}
 
           {showRefund && (
-            <Button size="small" variant="secondary" asChild data-testid="order-summary-refund-button">
+            <Button
+              size="small"
+              variant="secondary"
+              asChild
+              data-testid="order-summary-refund-button"
+            >
               <Link to={`/orders/${order.id}/refund`}>
-                {t("orders.payment.refundAmount", {
-                  amount: getStylizedAmount(
-                    pendingDifference * -1,
-                    order?.currency_code
-                  ),
+                {t('orders.payment.refundAmount', {
+                  amount: getStylizedAmount(pendingDifference * -1, order?.currency_code)
                 })}
               </Link>
             </Button>
@@ -284,32 +422,46 @@ export const OrderSummarySection = ({
         </div>
       )}
     </Container>
-  )
-}
+  );
+};
 
 const Header = ({
   order,
-  orderPreview,
+  orderPreview
 }: {
-  order: AdminOrder
-  orderPreview?: AdminOrderPreview
+  order: AdminOrder;
+  orderPreview?: AdminOrderPreview;
 }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
+  const { canAdminActOnOrder } = useAdminManagedLocations();
 
   // is ture if there is no shipped items ATM
-  const shouldDisableReturn = order.items.every(
-    (i) => !(getReturnableQuantity(i) > 0)
-  )
+  const shouldDisableReturn = order.items.every(i => !(getReturnableQuantity(i) > 0));
 
-  const isOrderEditActive = orderPreview?.order_change?.change_type === "edit"
+  const isOrderEditActive = orderPreview?.order_change?.change_type === 'edit';
   // State where creation of order edit was interrupted i.e. order edit is drafted but not confirmed
   const isOrderEditPending =
-    orderPreview?.order_change?.change_type === "edit" &&
-    orderPreview?.order_change?.status === "pending"
+    orderPreview?.order_change?.change_type === 'edit' &&
+    orderPreview?.order_change?.status === 'pending';
+
+  const createReturnDisabled =
+    shouldDisableReturn ||
+    isOrderEditActive ||
+    !!orderPreview?.order_change?.exchange_id ||
+    !!orderPreview?.order_change?.claim_id ||
+    !canAdminActOnOrder;
 
   return (
-    <div className="flex items-center justify-between px-6 py-4" data-testid="order-summary-header">
-      <Heading level="h2" data-testid="order-summary-heading">{t("fields.summary")}</Heading>
+    <div
+      className="flex items-center justify-between px-6 py-4"
+      data-testid="order-summary-header"
+    >
+      <Heading
+        level="h2"
+        data-testid="order-summary-heading"
+      >
+        {t('fields.summary')}
+      </Heading>
       <ActionMenu
         groups={[
           {
@@ -317,38 +469,36 @@ const Header = ({
               {
                 label: t(
                   isOrderEditPending
-                    ? "orders.summary.editOrderContinue"
-                    : "orders.summary.editOrder"
+                    ? 'orders.summary.editOrderContinue'
+                    : 'orders.summary.editOrder'
                 ),
                 to: `/orders/${order.id}/edits`,
                 icon: <PencilSquare />,
                 disabled:
-                  order.status === "canceled" ||
+                  order.status === 'canceled' ||
                   (orderPreview?.order_change &&
-                    orderPreview?.order_change?.change_type !== "edit") ||
-                  (orderPreview?.order_change?.change_type === "edit" &&
-                    orderPreview?.order_change?.status === "requested"),
-              },
-            ],
+                    orderPreview?.order_change?.change_type !== 'edit') ||
+                  (orderPreview?.order_change?.change_type === 'edit' &&
+                    orderPreview?.order_change?.status === 'requested')
+              }
+            ]
           },
           {
             actions: [
               {
-                label: t("orders.returns.create"),
+                label: t('orders.returns.create'),
                 to: `/orders/${order.id}/returns`,
                 icon: <ArrowUturnLeft />,
-                disabled:
-                  shouldDisableReturn ||
-                  isOrderEditActive ||
-                  !!orderPreview?.order_change?.exchange_id ||
-                  !!orderPreview?.order_change?.claim_id,
+                disabled: createReturnDisabled,
+                disabledTooltip: !canAdminActOnOrder
+                  ? t('orders.returns.cantCreateReturnByAdmin')
+                  : undefined
               },
               {
                 label:
-                  orderPreview?.order_change?.id &&
-                  orderPreview?.order_change?.exchange_id
-                    ? t("orders.exchanges.manage")
-                    : t("orders.exchanges.create"),
+                  orderPreview?.order_change?.id && orderPreview?.order_change?.exchange_id
+                    ? t('orders.exchanges.manage')
+                    : t('orders.exchanges.create'),
                 to: `/orders/${order.id}/exchanges`,
                 icon: <ArrowPath />,
                 disabled:
@@ -356,14 +506,13 @@ const Header = ({
                   isOrderEditActive ||
                   (!!orderPreview?.order_change?.return_id &&
                     !orderPreview?.order_change?.exchange_id) ||
-                  !!orderPreview?.order_change?.claim_id,
+                  !!orderPreview?.order_change?.claim_id
               },
               {
                 label:
-                  orderPreview?.order_change?.id &&
-                  orderPreview?.order_change?.claim_id
-                    ? t("orders.claims.manage")
-                    : t("orders.claims.create"),
+                  orderPreview?.order_change?.id && orderPreview?.order_change?.claim_id
+                    ? t('orders.claims.manage')
+                    : t('orders.claims.create'),
                 to: `/orders/${order.id}/claims`,
                 icon: <ExclamationCircle />,
                 disabled:
@@ -371,16 +520,16 @@ const Header = ({
                   isOrderEditActive ||
                   (!!orderPreview?.order_change?.return_id &&
                     !orderPreview?.order_change?.claim_id) ||
-                  !!orderPreview?.order_change?.exchange_id,
-              },
-            ],
-          },
+                  !!orderPreview?.order_change?.exchange_id
+              }
+            ]
+          }
         ]}
         data-testid="order-summary-action-menu"
       />
     </div>
-  )
-}
+  );
+};
 
 const Item = ({
   item,
@@ -388,58 +537,84 @@ const Item = ({
   reservation,
   returns,
   claims,
-  exchanges,
+  exchanges
 }: {
-  item: AdminOrderLineItem
-  currencyCode: string
-  reservation?: AdminReservation
-  returns: AdminReturn[]
-  claims: AdminClaim[]
-  exchanges: AdminExchange[]
+  item: AdminOrderLineItem;
+  currencyCode: string;
+  reservation?: AdminReservation;
+  returns: AdminReturn[];
+  claims: AdminClaim[];
+  exchanges: AdminExchange[];
 }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const isInventoryManaged = item.variant?.manage_inventory
+  const isInventoryManaged = item.variant?.manage_inventory;
   const hasInventoryKit =
     isInventoryManaged &&
     ((item.variant?.inventory_items?.length || 0) > 1 ||
-      item.variant?.inventory_items?.some((i) => i.required_quantity > 1))
-  const hasUnfulfilledItems = item.quantity - item.detail.fulfilled_quantity > 0
+      item.variant?.inventory_items?.some(i => i.required_quantity > 1));
+  const hasUnfulfilledItems = item.quantity - item.detail.fulfilled_quantity > 0;
 
   return (
     <>
       <div
         key={item.id}
-        className="text-ui-fg-subtle grid grid-cols-2 items-center gap-x-4 px-6 py-4"
+        className="grid grid-cols-2 items-center gap-x-4 px-6 py-4 text-ui-fg-subtle"
         data-testid={`order-summary-item-${item.id}`}
       >
-        <div className="flex items-start gap-x-4" data-testid={`order-summary-item-${item.id}-info`}>
+        <div
+          className="flex items-start gap-x-4"
+          data-testid={`order-summary-item-${item.id}-info`}
+        >
           <Thumbnail src={item.thumbnail} />
           <div>
-            <Text size="small" leading="compact" className="text-ui-fg-base" data-testid={`order-summary-item-${item.id}-title`}>
+            <Text
+              size="small"
+              leading="compact"
+              className="text-ui-fg-base"
+              data-testid={`order-summary-item-${item.id}-title`}
+            >
               {item.title}
             </Text>
 
             {item.variant_sku && (
-              <div className="flex items-center gap-x-1" data-testid={`order-summary-item-${item.id}-sku`}>
+              <div
+                className="flex items-center gap-x-1"
+                data-testid={`order-summary-item-${item.id}-sku`}
+              >
                 <Text size="small">{item.variant_sku}</Text>
-                <Copy content={item.variant_sku} className="text-ui-fg-muted" />
+                <Copy
+                  content={item.variant_sku}
+                  className="text-ui-fg-muted"
+                />
               </div>
             )}
-            <Text size="small" data-testid={`order-summary-item-${item.id}-options`}>
-              {item.variant?.options?.map((o) => o.value).join(" · ")}
+            <Text
+              size="small"
+              data-testid={`order-summary-item-${item.id}-options`}
+            >
+              {item.variant?.options?.map(o => o.value).join(' · ')}
             </Text>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 items-center gap-x-4" data-testid={`order-summary-item-${item.id}-pricing`}>
+        <div
+          className="grid grid-cols-3 items-center gap-x-4"
+          data-testid={`order-summary-item-${item.id}-pricing`}
+        >
           <div className="flex items-center justify-end gap-x-4">
-            <Text size="small" data-testid={`order-summary-item-${item.id}-unit-price`}>
+            <Text
+              size="small"
+              data-testid={`order-summary-item-${item.id}-unit-price`}
+            >
               {getLocaleAmount(item.unit_price, currencyCode)}
             </Text>
           </div>
 
-          <div className="flex items-center gap-x-2" data-testid={`order-summary-item-${item.id}-quantity`}>
+          <div
+            className="flex items-center gap-x-2"
+            data-testid={`order-summary-item-${item.id}-quantity`}
+          >
             <div className="w-fit min-w-[27px]">
               <Text size="small">
                 <span className="tabular-nums">{item.quantity}</span>x
@@ -449,20 +624,24 @@ const Item = ({
             <div className="overflow-visible">
               {isInventoryManaged && hasUnfulfilledItems && (
                 <StatusBadge
-                  color={reservation ? "green" : "orange"}
+                  color={reservation ? 'green' : 'orange'}
                   className="text-nowrap"
                   data-testid={`order-summary-item-${item.id}-reservation-badge`}
                 >
                   {reservation
-                    ? t("orders.reservations.allocatedLabel")
-                    : t("orders.reservations.notAllocatedLabel")}
+                    ? t('orders.reservations.allocatedLabel')
+                    : t('orders.reservations.notAllocatedLabel')}
                 </StatusBadge>
               )}
             </div>
           </div>
 
           <div className="flex items-center justify-end">
-            <Text size="small" className="pt-[1px]" data-testid={`order-summary-item-${item.id}-subtotal`}>
+            <Text
+              size="small"
+              className="pt-[1px]"
+              data-testid={`order-summary-item-${item.id}-subtotal`}
+            >
               {getLocaleAmount(item.subtotal || 0, currencyCode)}
             </Text>
           </div>
@@ -471,15 +650,23 @@ const Item = ({
 
       {hasInventoryKit && <InventoryKitBreakdown item={item} />}
 
-      {returns.map((r) => (
-        <ReturnBreakdown key={r.id} orderReturn={r} itemId={item.id} />
+      {returns.map(r => (
+        <ReturnBreakdown
+          key={r.id}
+          orderReturn={r}
+          itemId={item.id}
+        />
       ))}
 
-      {claims.map((claim) => (
-        <ClaimBreakdown key={claim.id} claim={claim} itemId={item.id} />
+      {claims.map(claim => (
+        <ClaimBreakdown
+          key={claim.id}
+          claim={claim}
+          itemId={item.id}
+        />
       ))}
 
-      {exchanges.map((exchange) => (
+      {exchanges.map(exchange => (
         <ExchangeBreakdown
           key={exchange.id}
           exchange={exchange}
@@ -487,40 +674,40 @@ const Item = ({
         />
       ))}
     </>
-  )
-}
+  );
+};
 
 const ItemBreakdown = ({
   order,
-  reservations,
+  reservations
 }: {
-  order: AdminOrder
-  reservations?: AdminReservation[]
+  order: AdminOrder;
+  reservations?: AdminReservation[];
 }) => {
   const { claims = [] } = useClaims({
     order_id: order.id,
-    fields: "*additional_items",
-  })
+    fields: '*additional_items'
+  });
 
   const { exchanges = [] } = useExchanges({
     order_id: order.id,
-    fields: "*additional_items",
-  })
+    fields: '*additional_items'
+  });
 
   const { returns = [] } = useReturns({
     order_id: order.id,
-    fields: "*items,*items.reason",
-  })
+    fields: '*items,*items.reason'
+  });
 
   const reservationsMap = useMemo(
-    () => new Map((reservations || []).map((r) => [r.line_item_id, r])),
+    () => new Map((reservations || []).map(r => [r.line_item_id, r])),
     [reservations]
-  )
+  );
 
   return (
     <div data-testid="order-summary-items-breakdown">
-      {order.items?.map((item) => {
-        const reservation = reservationsMap.get(item.id)
+      {order.items?.map(item => {
+        const reservation = reservationsMap.get(item.id);
 
         return (
           <Item
@@ -532,95 +719,103 @@ const ItemBreakdown = ({
             exchanges={exchanges}
             claims={claims}
           />
-        )
+        );
       })}
     </div>
-  )
-}
+  );
+};
 
 const Cost = ({
   label,
   value,
   secondaryValue,
-  tooltip,
+  tooltip
 }: {
-  label: ReactNode
-  value: string | number
-  secondaryValue?: string
-  tooltip?: ReactNode
+  label: ReactNode;
+  value: string | number;
+  secondaryValue?: string;
+  tooltip?: ReactNode;
 }) => (
   <div className="grid grid-cols-3 items-center">
-    <Text size="small" leading="compact">
+    <Text
+      size="small"
+      leading="compact"
+    >
       {label} {tooltip}
     </Text>
     <div className="text-right">
-      <Text size="small" leading="compact">
+      <Text
+        size="small"
+        leading="compact"
+      >
         {secondaryValue}
       </Text>
     </div>
     <div className="text-right">
-      <Text size="small" leading="compact">
+      <Text
+        size="small"
+        leading="compact"
+      >
         {value}
       </Text>
     </div>
   </div>
-)
+);
 
-const CostBreakdown = ({
-  order,
-}: {
-  order: AdminOrder & { region?: AdminRegion | null }
-}) => {
-  const { t } = useTranslation()
-  const [isTaxOpen, setIsTaxOpen] = useState(false)
-  const [isShippingOpen, setIsShippingOpen] = useState(false)
+const CostBreakdown = ({ order }: { order: AdminOrder & { region?: AdminRegion | null } }) => {
+  const { t } = useTranslation();
+  const [isTaxOpen, setIsTaxOpen] = useState(false);
+  const [isShippingOpen, setIsShippingOpen] = useState(false);
 
   const taxCodes = useMemo(() => {
-    const taxCodeMap: { [key: string]: { total: number; rate: number } } = {}
+    const taxCodeMap: { [key: string]: { total: number; rate: number } } = {};
 
-    order.items.forEach((item) => {
-      item.tax_lines?.forEach((line) => {
-        const currTotal = line.subtotal || 0
-        const prevTotal = taxCodeMap[line.code]?.total || 0
+    order.items.forEach(item => {
+      item.tax_lines?.forEach(line => {
+        const currTotal = line.subtotal || 0;
+        const prevTotal = taxCodeMap[line.code]?.total || 0;
         taxCodeMap[line.code] = {
           total: prevTotal + currTotal,
-          rate: line.rate,
-        }
-      })
-    })
+          rate: line.rate
+        };
+      });
+    });
 
-    order.shipping_methods.forEach((sm) => {
-      sm.tax_lines?.forEach((line) => {
-        const currTotal = line.subtotal || 0
-        const prevTotal = taxCodeMap[line.code]?.total || 0
+    order.shipping_methods.forEach(sm => {
+      sm.tax_lines?.forEach(line => {
+        const currTotal = line.subtotal || 0;
+        const prevTotal = taxCodeMap[line.code]?.total || 0;
         taxCodeMap[line.code] = {
           total: prevTotal + currTotal,
-          rate: line.rate,
-        }
-      })
-    })
+          rate: line.rate
+        };
+      });
+    });
 
-    return taxCodeMap
-  }, [order])
+    return taxCodeMap;
+  }, [order]);
 
-  const hasTaxes = !!Object.keys(taxCodes).length
+  const hasTaxes = !!Object.keys(taxCodes).length;
 
   return (
-    <div className="text-ui-fg-subtle flex flex-col gap-y-2 px-6 py-4" data-testid="order-summary-cost-breakdown">
+    <div
+      className="flex flex-col gap-y-2 px-6 py-4 text-ui-fg-subtle"
+      data-testid="order-summary-cost-breakdown"
+    >
       <Cost
-        label={t("orders.summary.itemSubtotal")}
+        label={t('orders.summary.itemSubtotal')}
         value={getLocaleAmount(order.item_subtotal, order.currency_code)}
       />
       <Cost
         label={
           <div
-            onClick={() => setIsShippingOpen((o) => !o)}
+            onClick={() => setIsShippingOpen(o => !o)}
             className="flex cursor-pointer items-center gap-1"
           >
-            <span>{t("orders.summary.shippingSubtotal")}</span>
+            <span>{t('orders.summary.shippingSubtotal')}</span>
             <TriangleDownMini
               style={{
-                transform: `rotate(${isShippingOpen ? 0 : -90}deg)`,
+                transform: `rotate(${isShippingOpen ? 0 : -90}deg)`
               }}
             />
           </div>
@@ -631,9 +826,7 @@ const CostBreakdown = ({
       {isShippingOpen && (
         <div className="flex flex-col gap-1 pl-5">
           {(order.shipping_methods || [])
-            .sort((m1, m2) =>
-              (m1.created_at as string).localeCompare(m2.created_at as string)
-            )
+            .sort((m1, m2) => (m1.created_at as string).localeCompare(m2.created_at as string))
             .map((sm, i) => {
               return (
                 <div
@@ -643,9 +836,11 @@ const CostBreakdown = ({
                   <div>
                     <span className="txt-small">
                       {sm.name}
-                      {sm.detail.return_id &&
-                        ` (${t("fields.returnShipping")})`}{" "}
-                      <ShippingInfoPopover key={i} shippingMethod={sm} />
+                      {sm.detail.return_id && ` (${t('fields.returnShipping')})`}{' '}
+                      <ShippingInfoPopover
+                        key={i}
+                        shippingMethod={sm}
+                      />
                     </span>
                   </div>
                   <div className="relative flex-1">
@@ -655,7 +850,7 @@ const CostBreakdown = ({
                     {getLocaleAmount(sm.subtotal, order.currency_code)}
                   </span>
                 </div>
-              )
+              );
             })}
         </div>
       )}
@@ -663,25 +858,26 @@ const CostBreakdown = ({
       <>
         <div className="flex justify-between">
           <div
-            onClick={() => hasTaxes && setIsTaxOpen((o) => !o)}
-            className={clx("flex items-center gap-1", {
-              "cursor-pointer": hasTaxes,
+            onClick={() => hasTaxes && setIsTaxOpen(o => !o)}
+            className={clx('flex items-center gap-1', {
+              'cursor-pointer': hasTaxes
             })}
           >
-            <span className="txt-small select-none">
-              {t("orders.summary.taxTotal")}
-            </span>
+            <span className="txt-small select-none">{t('orders.summary.taxTotal')}</span>
             {hasTaxes && (
               <TriangleDownMini
                 style={{
-                  transform: `rotate(${isTaxOpen ? 0 : -90}deg)`,
+                  transform: `rotate(${isTaxOpen ? 0 : -90}deg)`
                 }}
               />
             )}
           </div>
 
           <div className="text-right">
-            <Text size="small" leading="compact">
+            <Text
+              size="small"
+              leading="compact"
+            >
               {getLocaleAmount(order.original_tax_total, order.currency_code)}
             </Text>
           </div>
@@ -696,9 +892,7 @@ const CostBreakdown = ({
                 >
                   <div className="flex gap-1">
                     <span className="txt-small">{code}</span>
-                    <span className="txt-small">
-                      ({formatPercentage(rate)})
-                    </span>
+                    <span className="txt-small">({formatPercentage(rate)})</span>
                   </div>
                   <div className="relative flex-1">
                     <div className="bottom-[calc(50% - 2px)] absolute h-[1px] w-full border-b border-dashed" />
@@ -707,17 +901,21 @@ const CostBreakdown = ({
                     {getLocaleAmount(total, order.currency_code)}
                   </span>
                 </div>
-              )
+              );
             })}
           </div>
         )}
       </>
-      <div className="text-ui-fg-base flex items-center justify-between">
-        <Text className="text-ui-fg-subtle" size="small" leading="compact">
-          {t("fields.total")}
+      <div className="flex items-center justify-between text-ui-fg-base">
+        <Text
+          className="text-ui-fg-subtle"
+          size="small"
+          leading="compact"
+        >
+          {t('fields.total')}
         </Text>
         <Text
-          className="text-ui-fg-subtle text-bold"
+          className="text-bold text-ui-fg-subtle"
           size="small"
           leading="compact"
         >
@@ -725,77 +923,79 @@ const CostBreakdown = ({
         </Text>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const DiscountAndTotalBreakdown = ({
   order,
-  plugins,
+  plugins
 }: {
-  order: AdminOrder & { region?: AdminRegion | null }
-  plugins: AdminPlugin[]
+  order: AdminOrder & { region?: AdminRegion | null };
+  plugins: AdminPlugin[];
 }) => {
-  const { t } = useTranslation()
-  const [isDiscountOpen, setIsDiscountOpen] = useState(false)
-  const [isCreditLinesOpen, setIsCreditLinesOpen] = useState(false)
+  const { t } = useTranslation();
+  const [isDiscountOpen, setIsDiscountOpen] = useState(false);
+  const [isCreditLinesOpen, setIsCreditLinesOpen] = useState(false);
 
-  const creditLines = order.credit_lines ?? []
-  const loyaltyPlugin = getLoyaltyPlugin(plugins)
+  const creditLines = order.credit_lines ?? [];
+  const loyaltyPlugin = getLoyaltyPlugin(plugins);
 
   const discounts = useMemo(() => {
     const discounts: {
-      type: "item" | "shipping"
-      total: number
-      codes: string[]
-    }[] = []
+      type: 'item' | 'shipping';
+      total: number;
+      codes: string[];
+    }[] = [];
     if (order.item_discount_total) {
       discounts.push({
-        type: "item",
+        type: 'item',
         total: order.item_discount_total,
         codes: Array.from(
           new Set(
-            order.items
-              .flatMap((item) => item.adjustments || [])
-              .map((adjustment) => adjustment.code!)
+            order.items.flatMap(item => item.adjustments || []).map(adjustment => adjustment.code!)
           )
-        ).sort(),
-      })
+        ).sort()
+      });
     }
     if (order.shipping_discount_total) {
       discounts.push({
-        type: "shipping",
+        type: 'shipping',
         total: order.shipping_discount_total,
         codes: Array.from(
           new Set(
             order.shipping_methods
-              .flatMap((shippingMethod) => shippingMethod.adjustments || [])
-              .map((adjustment) => adjustment.code!)
+              .flatMap(shippingMethod => shippingMethod.adjustments || [])
+              .map(adjustment => adjustment.code!)
           )
-        ).sort(),
-      })
+        ).sort()
+      });
     }
-    return discounts
-  }, [order])
 
-  const hasDiscount = discounts.length > 0
-  const hasCreditLines = creditLines.length > 0
+    return discounts;
+  }, [order]);
+
+  const hasDiscount = discounts.length > 0;
+  const hasCreditLines = creditLines.length > 0;
 
   return (
-    <div className="text-ui-fg-subtle flex flex-col gap-y-2 px-6 py-4" data-testid="order-summary-discount-breakdown">
+    <div
+      className="flex flex-col gap-y-2 px-6 py-4 text-ui-fg-subtle"
+      data-testid="order-summary-discount-breakdown"
+    >
       <Cost
         label={
           <div
-            onClick={() => hasDiscount && setIsDiscountOpen((o) => !o)}
-            className={clx("flex items-center gap-1", {
-              "cursor-pointer": hasDiscount,
+            onClick={() => hasDiscount && setIsDiscountOpen(o => !o)}
+            className={clx('flex items-center gap-1', {
+              'cursor-pointer': hasDiscount
             })}
             data-testid="order-summary-discount-toggle"
           >
-            <span>{t("orders.summary.discountTotal")}</span>
+            <span>{t('orders.summary.discountTotal')}</span>
             {hasDiscount && (
               <TriangleDownMini
                 style={{
-                  transform: `rotate(${isDiscountOpen ? 0 : -90}deg)`,
+                  transform: `rotate(${isDiscountOpen ? 0 : -90}deg)`
                 }}
               />
             )}
@@ -813,7 +1013,7 @@ const DiscountAndTotalBreakdown = ({
               >
                 <div className="flex gap-1">
                   <span className="txt-small">{t(`fields.${type}`)}</span>
-                  <span className="txt-small">({codes.join(", ")})</span>
+                  <span className="txt-small">({codes.join(', ')})</span>
                 </div>
                 <div className="relative flex-1">
                   <div className="bottom-[calc(50% - 2px)] absolute h-[1px] w-full border-b border-dashed" />
@@ -822,7 +1022,7 @@ const DiscountAndTotalBreakdown = ({
                   {getLocaleAmount(total, order.currency_code)}
                 </span>
               </div>
-            )
+            );
           })}
         </div>
       )}
@@ -832,34 +1032,31 @@ const DiscountAndTotalBreakdown = ({
           <Cost
             label={
               <div
-                onClick={() => setIsCreditLinesOpen((o) => !o)}
+                onClick={() => setIsCreditLinesOpen(o => !o)}
                 className="flex cursor-pointer items-center gap-1"
               >
                 <span>
                   {loyaltyPlugin
-                    ? t("orders.giftCardsStoreCreditLines")
-                    : t("orders.creditLines.title")}
+                    ? t('orders.giftCardsStoreCreditLines')
+                    : t('orders.creditLines.title')}
                 </span>
                 <TriangleDownMini
                   style={{
-                    transform: `rotate(${isCreditLinesOpen ? 0 : -90}deg)`,
+                    transform: `rotate(${isCreditLinesOpen ? 0 : -90}deg)`
                   }}
                 />
               </div>
             }
-            value={getLocaleAmount(
-              order.credit_line_total,
-              order.currency_code
-            )}
+            value={getLocaleAmount(order.credit_line_total, order.currency_code)}
           />
           {isCreditLinesOpen && (
             <div className="flex flex-col gap-1 pl-5">
-              {creditLines.map((creditLine) => {
+              {creditLines.map(creditLine => {
                 const prettyReference = creditLine.reference
-                  ?.split("_")
-                  .join(" ")
-                  .split("-")
-                  .join(" ")
+                  ?.split('_')
+                  .join(' ')
+                  .split('-')
+                  .join(' ');
 
                 return (
                   <div
@@ -871,37 +1068,27 @@ const DiscountAndTotalBreakdown = ({
                         size="small"
                         leading="compact"
                         weight="plus"
-                        className="txt-small text-ui-fg-subtle font-medium"
+                        className="txt-small font-medium text-ui-fg-subtle"
                       >
                         <DisplayId id={creditLine.id} />
                       </Text>
-                      <span className="txt-small text-ui-fg-subtle mx-1">
-                        -
-                      </span>
+                      <span className="txt-small mx-1 text-ui-fg-subtle">-</span>
                       <Tooltip
-                        content={format(
-                          new Date(creditLine.created_at),
-                          "dd MMM, yyyy, HH:mm:ss"
-                        )}
+                        content={format(new Date(creditLine.created_at), 'dd MMM, yyyy, HH:mm:ss')}
                       >
                         <Text
                           size="small"
                           leading="compact"
                           className="txt-small text-ui-fg-subtle"
                         >
-                          {format(
-                            new Date(creditLine.created_at),
-                            "dd MMM, yyyy"
-                          )}
+                          {format(new Date(creditLine.created_at), 'dd MMM, yyyy')}
                         </Text>
                       </Tooltip>
-                      <span className="txt-small text-ui-fg-subtle mx-1">
-                        -
-                      </span>
+                      <span className="txt-small mx-1 text-ui-fg-subtle">-</span>
                       <Text
                         size="small"
                         leading="compact"
-                        className="txt-small text-ui-fg-subtle capitalize"
+                        className="txt-small capitalize text-ui-fg-subtle"
                       >
                         ({prettyReference})
                       </Text>
@@ -910,25 +1097,26 @@ const DiscountAndTotalBreakdown = ({
                       <div className="bottom-[calc(50% - 2px)] absolute h-[1px] w-full border-b border-dashed" />
                     </div>
                     <span className="txt-small text-ui-fg-muted">
-                      {getLocaleAmount(
-                        creditLine.amount as number,
-                        order.currency_code
-                      )}
+                      {getLocaleAmount(creditLine.amount as number, order.currency_code)}
                     </span>
                   </div>
-                )
+                );
               })}
             </div>
           )}
         </>
       )}
 
-      <div className="text-ui-fg-base flex items-center justify-between">
-        <Text className="text-ui-fg-subtle" size="small" leading="compact">
-          {t("orders.summary.totalAfterDiscount")}
+      <div className="flex items-center justify-between text-ui-fg-base">
+        <Text
+          className="text-ui-fg-subtle"
+          size="small"
+          leading="compact"
+        >
+          {t('orders.summary.totalAfterDiscount')}
         </Text>
         <Text
-          className="text-ui-fg-subtle text-bold"
+          className="text-bold text-ui-fg-subtle"
           size="small"
           leading="compact"
         >
@@ -936,95 +1124,90 @@ const DiscountAndTotalBreakdown = ({
         </Text>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const InventoryKitBreakdown = ({ item }: { item: AdminOrderLineItem }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
-  const inventory = item.variant?.inventory_items || []
+  const inventory = item.variant?.inventory_items || [];
 
   return (
     <>
       <div
-        onClick={() => setIsOpen((o) => !o)}
+        onClick={() => setIsOpen(o => !o)}
         className="flex cursor-pointer items-center gap-2 border-t border-dashed px-6 py-4"
       >
         <TriangleDownMini
           style={{
-            transform: `rotate(${isOpen ? 0 : -90}deg)`,
+            transform: `rotate(${isOpen ? 0 : -90}deg)`
           }}
         />
-        <span className="text-ui-fg-muted txt-small select-none">
-          {t("orders.summary.inventoryKit", { count: inventory.length })}
+        <span className="txt-small select-none text-ui-fg-muted">
+          {t('orders.summary.inventoryKit', { count: inventory.length })}
         </span>
       </div>
       {isOpen && (
         <div className="flex flex-col gap-1 px-6 pb-4">
-          {inventory.map((i) => {
+          {inventory.map(i => {
             return (
               <div
                 key={i.inventory.id}
                 className="flex items-center justify-between gap-x-2"
               >
                 <div>
-                  <span className="txt-small text-ui-fg-subtle font-medium">
+                  <span className="txt-small font-medium text-ui-fg-subtle">
                     {i.inventory.title}
 
                     {i.inventory.sku && (
-                      <span className="text-ui-fg-subtle font-normal">
-                        {" "}
-                        ⋅ {i.inventory.sku}
-                      </span>
+                      <span className="font-normal text-ui-fg-subtle"> ⋅ {i.inventory.sku}</span>
                     )}
                   </span>
                 </div>
                 <div className="relative flex-1">
                   <div className="bottom-[calc(50% - 2px)] absolute h-[1px] w-full border-b border-dashed" />
                 </div>
-                <span className="txt-small text-ui-fg-muted">
-                  {i.required_quantity}x
-                </span>
+                <span className="txt-small text-ui-fg-muted">{i.required_quantity}x</span>
               </div>
-            )
+            );
           })}
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
 const ReturnBreakdownWithDamages = ({
   orderReturn,
-  itemId,
+  itemId
 }: {
-  orderReturn: AdminReturn
-  itemId: string
+  orderReturn: AdminReturn;
+  itemId: string;
 }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const item = orderReturn?.items?.find((ri) => ri.item_id === itemId)
-  const damagedQuantity = item?.damaged_quantity || 0
+  const item = orderReturn?.items?.find(ri => ri.item_id === itemId);
+  const damagedQuantity = item?.damaged_quantity || 0;
 
   return (
     item && (
       <div
         key={orderReturn.id}
-        className="txt-compact-small-plus text-ui-fg-subtle bg-ui-bg-subtle flex flex-row justify-between gap-y-2 border-t-2 border-dotted px-6 py-4"
+        className="txt-compact-small-plus flex flex-row justify-between gap-y-2 border-t-2 border-dotted bg-ui-bg-subtle px-6 py-4 text-ui-fg-subtle"
       >
         <div className="flex items-center gap-2">
           <ArrowDownRightMini className="text-ui-fg-muted" />
           <Text size="small">
             {t(`orders.returns.damagedItemsReturned`, {
-              quantity: damagedQuantity,
+              quantity: damagedQuantity
             })}
           </Text>
 
           {item?.note && (
             <Tooltip content={item.note}>
-              <DocumentText className="text-ui-tag-neutral-icon ml-1 inline" />
+              <DocumentText className="ml-1 inline text-ui-tag-neutral-icon" />
             </Tooltip>
           )}
 
@@ -1039,7 +1222,11 @@ const ReturnBreakdownWithDamages = ({
           )}
         </div>
 
-        <Text size="small" leading="compact" className="text-ui-fg-muted">
+        <Text
+          size="small"
+          leading="compact"
+          className="text-ui-fg-muted"
+        >
           {t(`orders.returns.damagedItemReceived`)}
 
           <span className="ml-2">
@@ -1048,30 +1235,20 @@ const ReturnBreakdownWithDamages = ({
         </Text>
       </div>
     )
-  )
-}
+  );
+};
 
-const ReturnBreakdown = ({
-  orderReturn,
-  itemId,
-}: {
-  orderReturn: AdminReturn
-  itemId: string
-}) => {
-  const { t } = useTranslation()
-  const { getRelativeDate } = useDate()
+const ReturnBreakdown = ({ orderReturn, itemId }: { orderReturn: AdminReturn; itemId: string }) => {
+  const { t } = useTranslation();
+  const { getRelativeDate } = useDate();
 
-  if (
-    !["requested", "received", "partially_received"].includes(
-      orderReturn.status || ""
-    )
-  ) {
-    return null
+  if (!['requested', 'received', 'partially_received'].includes(orderReturn.status || '')) {
+    return null;
   }
 
-  const isRequested = orderReturn.status === "requested"
-  const item = orderReturn?.items?.find((ri) => ri.item_id === itemId)
-  const damagedQuantity = item?.damaged_quantity || 0
+  const isRequested = orderReturn.status === 'requested';
+  const item = orderReturn?.items?.find(ri => ri.item_id === itemId);
+  const damagedQuantity = item?.damaged_quantity || 0;
 
   return (
     item && (
@@ -1084,32 +1261,29 @@ const ReturnBreakdown = ({
         )}
         <div
           key={item.id}
-          className="txt-compact-small-plus text-ui-fg-subtle bg-ui-bg-subtle flex flex-row justify-between gap-y-2 border-t-2 border-dotted px-6 py-4"
+          className="txt-compact-small-plus flex flex-row justify-between gap-y-2 border-t-2 border-dotted bg-ui-bg-subtle px-6 py-4 text-ui-fg-subtle"
         >
-          <div className="flex items-center gap-2">
-            <ArrowDownRightMini className="text-ui-fg-muted" />
-            <Text size="small">
-              {t(
-                `orders.returns.${
-                  isRequested ? "returnRequestedInfo" : "returnReceivedInfo"
-                }`,
-                {
-                  requestedItemsCount:
-                    item?.[isRequested ? "quantity" : "received_quantity"],
-                }
-              )}
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <ArrowDownRightMini className="shrink-0 text-ui-fg-muted" />
+            <Text
+              size="small"
+              className="min-w-0 truncate"
+            >
+              {t(`orders.returns.${isRequested ? 'returnRequestedInfo' : 'returnReceivedInfo'}`, {
+                requestedItemsCount: item?.[isRequested ? 'quantity' : 'received_quantity']
+              })}
             </Text>
 
             {item?.note && (
               <Tooltip content={item.note}>
-                <DocumentText className="text-ui-tag-neutral-icon ml-1 inline" />
+                <DocumentText className="ml-1 inline shrink-0 text-ui-tag-neutral-icon" />
               </Tooltip>
             )}
 
             {item?.reason && (
               <Badge
                 size="2xsmall"
-                className="cursor-default select-none capitalize"
+                className="shrink-0 cursor-default select-none capitalize"
                 rounded="full"
               >
                 {item?.reason?.label}
@@ -1118,7 +1292,11 @@ const ReturnBreakdown = ({
           </div>
 
           {orderReturn && isRequested && (
-            <Text size="small" leading="compact" className="text-ui-fg-muted">
+            <Text
+              size="small"
+              leading="compact"
+              className="text-ui-fg-muted"
+            >
               {getRelativeDate(orderReturn.created_at)}
               <span className="ml-2">
                 <ReturnInfoPopover orderReturn={orderReturn} />
@@ -1127,7 +1305,11 @@ const ReturnBreakdown = ({
           )}
 
           {orderReturn && !isRequested && (
-            <Text size="small" leading="compact" className="text-ui-fg-muted">
+            <Text
+              size="small"
+              leading="compact"
+              className="text-ui-fg-muted"
+            >
               {t(`orders.returns.itemReceived`)}
 
               <span className="ml-2">
@@ -1138,98 +1320,98 @@ const ReturnBreakdown = ({
         </div>
       </>
     )
-  )
-}
+  );
+};
 
-const ClaimBreakdown = ({
-  claim,
-  itemId,
-}: {
-  claim: AdminClaim
-  itemId: string
-}) => {
-  const { t } = useTranslation()
-  const { getRelativeDate } = useDate()
-  const items = claim.additional_items.filter(
-    (item) => item.item?.id === itemId
-  )
+const ClaimBreakdown = ({ claim, itemId }: { claim: AdminClaim; itemId: string }) => {
+  const { t } = useTranslation();
+  const { getRelativeDate } = useDate();
+  const items = claim.additional_items.filter(item => item.item?.id === itemId);
 
   return (
     !!items.length && (
       <div
         key={claim.id}
-        className="txt-compact-small-plus text-ui-fg-subtle bg-ui-bg-subtle flex flex-row justify-between gap-y-2 border-b-2 border-t-2 border-dotted px-6 py-4"
+        className="txt-compact-small-plus flex flex-row justify-between gap-y-2 border-b-2 border-t-2 border-dotted bg-ui-bg-subtle px-6 py-4 text-ui-fg-subtle"
       >
         <div className="flex items-center gap-2">
           <ArrowDownRightMini className="text-ui-fg-muted" />
 
           <Text size="small">
             {t(`orders.claims.outboundItemAdded`, {
-              itemsCount: items.reduce(
-                (acc, item) => (acc = acc + item.quantity),
-                0
-              ),
+              itemsCount: items.reduce((acc, item) => (acc = acc + item.quantity), 0)
             })}
           </Text>
         </div>
 
-        <Text size="small" leading="compact" className="text-ui-fg-muted">
+        <Text
+          size="small"
+          leading="compact"
+          className="text-ui-fg-muted"
+        >
           {getRelativeDate(claim.created_at)}
         </Text>
       </div>
     )
-  )
-}
+  );
+};
 
-const ExchangeBreakdown = ({
-  exchange,
-  itemId,
-}: {
-  exchange: AdminExchange
-  itemId: string
-}) => {
-  const { t } = useTranslation()
-  const { getRelativeDate } = useDate()
-  const items = exchange.additional_items.filter(
-    (item) => item?.item?.id === itemId
-  )
+const ExchangeBreakdown = ({ exchange, itemId }: { exchange: AdminExchange; itemId: string }) => {
+  const { t } = useTranslation();
+  const { getRelativeDate } = useDate();
+  const items = exchange.additional_items.filter(item => item?.item?.id === itemId);
 
   return (
     !!items.length && (
       <div
         key={exchange.id}
-        className="txt-compact-small-plus text-ui-fg-subtle bg-ui-bg-subtle flex flex-row justify-between gap-y-2 border-b-2 border-t-2 border-dotted px-6 py-4"
+        className="txt-compact-small-plus flex flex-row justify-between gap-y-2 border-b-2 border-t-2 border-dotted bg-ui-bg-subtle px-6 py-4 text-ui-fg-subtle"
       >
         <div className="flex items-center gap-2">
           <ArrowDownRightMini className="text-ui-fg-muted" />
           <Text size="small">
             {t(`orders.exchanges.outboundItemAdded`, {
-              itemsCount: items.reduce(
-                (acc, item) => (acc = acc + item.quantity),
-                0
-              ),
+              itemsCount: items.reduce((acc, item) => (acc = acc + item.quantity), 0)
             })}
           </Text>
         </div>
 
-        <Text size="small" leading="compact" className="text-ui-fg-muted">
+        <Text
+          size="small"
+          leading="compact"
+          className="text-ui-fg-muted"
+        >
           {getRelativeDate(exchange.created_at)}
         </Text>
       </div>
     )
-  )
-}
+  );
+};
 
 const Total = ({ order }: { order: AdminOrder }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
-    <div className=" flex flex-col gap-y-2 px-6 py-4" data-testid="order-summary-total">
-      <div className="text-ui-fg-base flex items-center justify-between" data-testid="order-summary-paid-total">
-        <Text className="text-ui-fg-subtle" size="small" leading="compact">
-          {t("fields.paidTotal")}
+    <div
+      className="flex flex-col gap-y-2 px-6 py-4"
+      data-testid="order-summary-total"
+    >
+      <div
+        className="flex items-center justify-between text-ui-fg-base"
+        data-testid="order-summary-paid-total"
+      >
+        <Text
+          className="text-ui-fg-subtle"
+          size="small"
+          leading="compact"
+        >
+          {t('fields.paidTotal')}
         </Text>
-        <Text className="text-ui-fg-subtle" size="small" leading="compact">
+        <Text
+          className="text-ui-fg-subtle"
+          size="small"
+          leading="compact"
+        >
           {getStylizedAmount(
             getTotalCaptured(order.payment_collections || []),
             order.currency_code
@@ -1238,39 +1420,44 @@ const Total = ({ order }: { order: AdminOrder }) => {
       </div>
 
       {getTotalCreditLines(order.credit_lines ?? []) > 0 && (
-        <div className="text-ui-fg-base flex items-center justify-between">
-          <Text className="text-ui-fg-subtle" size="small" leading="compact">
-            {t("fields.creditTotal")}
+        <div className="flex items-center justify-between text-ui-fg-base">
+          <Text
+            className="text-ui-fg-subtle"
+            size="small"
+            leading="compact"
+          >
+            {t('fields.creditTotal')}
           </Text>
 
-          <Text className="text-ui-fg-subtle" size="small" leading="compact">
-            {getStylizedAmount(
-              getTotalCreditLines(order.credit_lines ?? []),
-              order.currency_code
-            )}
+          <Text
+            className="text-ui-fg-subtle"
+            size="small"
+            leading="compact"
+          >
+            {getStylizedAmount(getTotalCreditLines(order.credit_lines ?? []), order.currency_code)}
           </Text>
         </div>
       )}
 
-      <div className="text-ui-fg-base flex items-center justify-between" data-testid="order-summary-outstanding-amount">
+      <div
+        className="flex items-center justify-between text-ui-fg-base"
+        data-testid="order-summary-outstanding-amount"
+      >
         <Text
-          className="text-ui-fg-subtle text-semibold"
+          className="text-semibold text-ui-fg-subtle"
           size="small"
           leading="compact"
         >
-          {t("orders.returns.outstandingAmount")}
+          {t('orders.returns.outstandingAmount')}
         </Text>
         <Text
-          className="text-ui-fg-subtle text-bold" // ici
+          className="text-bold text-ui-fg-subtle" // ici
           size="small"
           leading="compact"
         >
-          {getStylizedAmount(
-            order.summary.pending_difference || 0,
-            order.currency_code
-          )}
+          {getStylizedAmount(order.summary.pending_difference || 0, order.currency_code)}
         </Text>
       </div>
     </div>
-  )
-}
+  );
+};
