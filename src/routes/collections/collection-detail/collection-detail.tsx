@@ -5,8 +5,11 @@ import { SingleColumnPage } from "../../../components/layout/pages"
 import { useCollection } from "../../../hooks/api/collections"
 import { useExtension } from "../../../providers/extension-provider"
 import { CollectionGeneralSection } from "./components/collection-general-section"
+import { CollectionMediaSection } from "./components/collection-media-section/collection-media-section"
 import { CollectionProductSection } from "./components/collection-product-section"
 import { collectionLoader } from "./loader"
+import type { CollectionDetail as CollectionDetailType } from "./types"
+import type { HttpTypes } from "@medusajs/types"
 
 export const CollectionDetail = () => {
   const initialData = useLoaderData() as Awaited<
@@ -39,6 +42,13 @@ export const CollectionDetail = () => {
       data={collection}
     >
       <CollectionGeneralSection collection={collection} />
+      <CollectionMediaSection
+        collection={
+          collection as HttpTypes.AdminCollection & {
+            collection_detail?: CollectionDetailType
+          }
+        }
+      />
       <CollectionProductSection collection={collection} />
     </SingleColumnPage>
   )

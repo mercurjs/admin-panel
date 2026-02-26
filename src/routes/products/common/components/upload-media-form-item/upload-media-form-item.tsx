@@ -37,12 +37,14 @@ export const UploadMediaFormItem = ({
   form,
   append,
   showHint = true,
+  multiple = true,
 }: {
   form:
     | UseFormReturn<ProductCreateSchemaType>
     | UseFormReturn<EditProductMediaSchemaType>
   append: (value: Media) => void
-  showHint?: boolean
+  showHint?: boolean,
+  multiple?: boolean
 }) => {
   const { t } = useTranslation()
 
@@ -104,6 +106,7 @@ export const UploadMediaFormItem = ({
                   hasError={!!form.formState.errors.media}
                   formats={SUPPORTED_FORMATS}
                   onUploaded={onUploaded}
+                  multiple={multiple}
                 />
               </Form.Control>
               <Form.ErrorMessage />
