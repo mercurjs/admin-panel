@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import type {
   AdminOrderLineItem,
@@ -12,6 +12,9 @@ import { _DataTable } from '@/components/table/data-table';
 import { useDataTable } from '@/hooks/use-data-table';
 import { getStylizedAmount } from '@/lib/money-amount-helpers';
 import { getReturnableQuantity } from '@/lib/rma';
+import { useSelectableRowSelection } from '@/routes/orders/hooks/use-selectable-row-selection';
+import { useAdminManagedLocations } from '@/routes/orders/order-detail/context/admin-managed-locations-context';
+
 import { useClaimItemTableColumns } from './use-claim-item-table-columns';
 import { useClaimItemTableFilters } from './use-claim-item-table-filters';
 import { useClaimItemTableQuery } from './use-claim-item-table-query';
@@ -33,13 +36,30 @@ export const AddClaimItemsTable = ({
   currencyCode
 }: AddReturnItemsTableProps) => {
   const { t } = useTranslation();
+  const { canAdminActOnItem } = useAdminManagedLocations();
 
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>(
-    selectedItems.reduce((acc, id) => {
-      acc[id] = true;
+  const isRowSelectable = useMemo(() => {
+    return (item: AdminOrderLineItem) => {
+      if (getReturnableQuantity(item) <= 0) return false;
 
-      return acc;
-    }, {} as RowSelectionState)
+      return canAdminActOnItem(item);
+    };
+  }, [canAdminActOnItem]);
+
+  const getRowDisabledReason = useMemo(() => {
+    return (item: AdminOrderLineItem) => {
+      if (getReturnableQuantity(item) <= 0) return null;
+      if (!canAdminActOnItem(item)) return t('orders.claims.cantCreateClaimByAdmin');
+
+      return null;
+    };
+  }, [canAdminActOnItem, t]);
+
+  const [rowSelection, setRowSelection] = useSelectableRowSelection(
+    selectedItems,
+    items,
+    isRowSelectable,
+    canAdminActOnItem
   );
 
   const updater: OnChangeFn<RowSelectionState> = fn => {
@@ -104,7 +124,7 @@ export const AddClaimItemsTable = ({
     return results.slice(offset, offset + limit);
   }, [items, currencyCode, searchParams]);
 
-  const columns = useClaimItemTableColumns(currencyCode);
+  const columns = useClaimItemTableColumns(currencyCode, getRowDisabledReason);
   const filters = useClaimItemTableFilters();
 
   const { table } = useDataTable({
@@ -114,9 +134,7 @@ export const AddClaimItemsTable = ({
     enablePagination: true,
     getRowId: row => row.id,
     pageSize: PAGE_SIZE,
-    enableRowSelection: row => {
-      return getReturnableQuantity(row.original) > 0;
-    },
+    enableRowSelection: row => isRowSelectable(row.original),
     rowSelection: {
       state: rowSelection,
       updater

@@ -1,18 +1,18 @@
 import { useMemo } from 'react';
 
-import { Checkbox } from '@medusajs/ui';
+import { Checkbox, Tooltip } from '@medusajs/ui';
 import { createColumnHelper } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 
-import {
-  ProductCell,
-  ProductHeader
-} from '@/components/table/table-cells/product/product-cell';
+import { ProductCell, ProductHeader } from '@/components/table/table-cells/product/product-cell';
 import { getStylizedAmount } from '@/lib/money-amount-helpers';
 
 const columnHelper = createColumnHelper<any>();
 
-export const useClaimItemTableColumns = (currencyCode: string) => {
+export const useClaimItemTableColumns = (
+  currencyCode: string,
+  getRowDisabledReason?: (item: unknown) => string | null
+) => {
   const { t } = useTranslation();
 
   return useMemo(
@@ -33,8 +33,8 @@ export const useClaimItemTableColumns = (currencyCode: string) => {
         },
         cell: ({ row }) => {
           const isSelectable = row.getCanSelect();
-
-          return (
+          const disabledReason = getRowDisabledReason?.(row.original) ?? null;
+          const checkbox = (
             <Checkbox
               disabled={!isSelectable}
               checked={row.getIsSelected()}
@@ -44,6 +44,16 @@ export const useClaimItemTableColumns = (currencyCode: string) => {
               }}
             />
           );
+
+          if (!isSelectable && disabledReason) {
+            return (
+              <Tooltip content={disabledReason}>
+                <span className="inline-flex cursor-not-allowed">{checkbox}</span>
+              </Tooltip>
+            );
+          }
+
+          return checkbox;
         }
       }),
       columnHelper.display({
@@ -104,6 +114,6 @@ export const useClaimItemTableColumns = (currencyCode: string) => {
         }
       })
     ],
-    [t, currencyCode]
+    [t, currencyCode, getRowDisabledReason]
   );
 };

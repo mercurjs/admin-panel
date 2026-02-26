@@ -1285,6 +1285,7 @@
         "chooseLocation": "Please choose a location"
       },
       "refundAmount": "Estimated difference",
+      "cantCreateClaimByAdmin": "This claim cannot be created by admin because order products are only available at vendor locations.",
       "activeChangeError": "There is an active order change on this order. Please finish or discard the previous change.",
       "actions": {
         "cancelClaim": {
