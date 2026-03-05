@@ -506,7 +506,11 @@ const Header = ({
                   isOrderEditActive ||
                   (!!orderPreview?.order_change?.return_id &&
                     !orderPreview?.order_change?.exchange_id) ||
-                  !!orderPreview?.order_change?.claim_id
+                  !!orderPreview?.order_change?.claim_id ||
+                  !canAdminActOnOrder,
+                disabledTooltip: !canAdminActOnOrder
+                  ? t('orders.exchanges.cantCreateExchangeByAdmin')
+                  : undefined
               },
               {
                 label:
@@ -1218,7 +1222,7 @@ const ReturnBreakdownWithDamages = ({
           {item?.reason && (
             <Badge
               size="2xsmall"
-              className="cursor-default select-none capitalize border border-tag-neutral-border"
+              className="border-tag-neutral-border cursor-default select-none border capitalize"
               rounded="full"
             >
               {item?.reason?.label}
@@ -1287,7 +1291,7 @@ const ReturnBreakdown = ({ orderReturn, itemId }: { orderReturn: AdminReturn; it
             {item?.reason && (
               <Badge
                 size="2xsmall"
-                className="shrink-0 cursor-default select-none capitalize border border-tag-neutral-border"
+                className="border-tag-neutral-border shrink-0 cursor-default select-none border capitalize"
                 rounded="full"
               >
                 {item?.reason?.label}
