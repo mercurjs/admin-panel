@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { _DataTable } from '@components/table/data-table';
 import { useDataTable } from '@hooks/use-data-table';
@@ -10,6 +10,7 @@ import type {
   NumericalComparisonOperator
 } from '@medusajs/types';
 import { Badge } from '@medusajs/ui';
+import { useSelectableRowSelection } from '@routes/orders/hooks/use-selectable-row-selection';
 import { useAdminManagedLocations } from '@routes/orders/order-detail/context/admin-managed-locations-context';
 import type { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
@@ -54,27 +55,12 @@ export const AddReturnItemsTable = ({
     };
   }, [canAdminActOnItem, t]);
 
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>(() => {
-    const initial: RowSelectionState = {};
-    selectedItems.forEach(id => {
-      const item = items.find(i => i.id === id);
-      if (!item || !isRowSelectable(item)) return;
-      initial[id] = true;
-    });
-
-    return initial;
-  });
-
-  useEffect(() => {
-    const next: RowSelectionState = {};
-    selectedItems.forEach(id => {
-      const item = items.find(i => i.id === id);
-      if (!item || getReturnableQuantity(item) <= 0) return;
-      if (!canAdminActOnItem(item)) return;
-      next[id] = true;
-    });
-    setRowSelection(next);
-  }, [selectedItems, items, canAdminActOnItem]);
+  const [rowSelection, setRowSelection] = useSelectableRowSelection(
+    selectedItems,
+    items,
+    isRowSelectable,
+    canAdminActOnItem
+  );
 
   const updater: OnChangeFn<RowSelectionState> = fn => {
     const newState: RowSelectionState = typeof fn === 'function' ? fn(rowSelection) : fn;

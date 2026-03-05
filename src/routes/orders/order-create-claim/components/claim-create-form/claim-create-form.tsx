@@ -1,11 +1,15 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { PencilSquare } from "@medusajs/icons"
-import {
+import { useEffect, useMemo, useState } from 'react';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { PencilSquare } from '@medusajs/icons';
+import type {
   AdminClaim,
   AdminOrder,
   AdminOrderPreview,
-  InventoryLevelDTO,
-} from "@medusajs/types"
+  AdminReturn,
+  HttpTypes,
+  InventoryLevelDTO
+} from '@medusajs/types';
 import {
   Alert,
   Button,
@@ -15,30 +19,22 @@ import {
   Switch,
   Text,
   toast,
-  usePrompt,
-} from "@medusajs/ui"
-import { useEffect, useMemo, useState } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
-import { useTranslation } from "react-i18next"
+  usePrompt
+} from '@medusajs/ui';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
+import { useAdminManagedLocations } from '@/routes/orders/order-detail/context/admin-managed-locations-context';
+
+import { Form } from '../../../../../components/common/form';
+import { Combobox } from '../../../../../components/inputs/combobox';
 import {
   RouteFocusModal,
   StackedFocusModal,
   useRouteModal,
-  useStackedModal,
-} from "../../../../../components/modals"
-
-import { Form } from "../../../../../components/common/form"
-import { Combobox } from "../../../../../components/inputs/combobox"
-import { useShippingOptions } from "../../../../../hooks/api/shipping-options"
-import { useStockLocations } from "../../../../../hooks/api/stock-locations"
-import { getStylizedAmount } from "../../../../../lib/money-amount-helpers"
-import { AddClaimItemsTable } from "../add-claim-items-table"
-import { ClaimInboundItem } from "./claim-inbound-item.tsx"
-import { ClaimCreateSchema, CreateClaimSchemaType } from "./schema"
-
-import { AdminReturn, HttpTypes } from "@medusajs/types"
-import { KeyboundForm } from "../../../../../components/utilities/keybound-form/keybound-form.tsx"
+  useStackedModal
+} from '../../../../../components/modals';
+import { KeyboundForm } from '../../../../../components/utilities/keybound-form/keybound-form.tsx';
 import {
   useAddClaimInboundItems,
   useAddClaimInboundShipping,
@@ -48,105 +44,105 @@ import {
   useRemoveClaimInboundItem,
   useUpdateClaimInboundItem,
   useUpdateClaimInboundShipping,
-  useUpdateClaimOutboundShipping,
-} from "../../../../../hooks/api/claims"
-import { useUpdateReturn } from "../../../../../hooks/api/returns"
-import { sdk } from "../../../../../lib/client"
-import { currencies } from "../../../../../lib/data/currencies"
-import { ReturnShippingPlaceholder } from "../../../common/placeholders"
-import { ClaimOutboundSection } from "./claim-outbound-section"
-import { ItemPlaceholder } from "./item-placeholder"
+  useUpdateClaimOutboundShipping
+} from '../../../../../hooks/api/claims';
+import { useUpdateReturn } from '../../../../../hooks/api/returns';
+import { useShippingOptions } from '../../../../../hooks/api/shipping-options';
+import { useStockLocations } from '../../../../../hooks/api/stock-locations';
+import { sdk } from '../../../../../lib/client';
+import { currencies } from '../../../../../lib/data/currencies';
+import { getStylizedAmount } from '../../../../../lib/money-amount-helpers';
+import { ReturnShippingPlaceholder } from '../../../common/placeholders';
+import { AddClaimItemsTable } from '../add-claim-items-table';
+import { ClaimInboundItem } from './claim-inbound-item.tsx';
+import { ClaimOutboundSection } from './claim-outbound-section';
+import { ItemPlaceholder } from './item-placeholder';
+import { ClaimCreateSchema, type CreateClaimSchemaType } from './schema';
 
 type ReturnCreateFormProps = {
-  order: AdminOrder
-  claim: AdminClaim
-  preview: AdminOrderPreview
-  orderReturn?: AdminReturn
-}
+  order: AdminOrder;
+  claim: AdminClaim;
+  preview: AdminOrderPreview;
+  orderReturn?: AdminReturn;
+};
 
-let itemsToAdd: string[] = []
-let itemsToRemove: string[] = []
-let IS_CANCELING = false
+let itemsToAdd: string[] = [];
+let itemsToRemove: string[] = [];
+let IS_CANCELING = false;
 
-export const ClaimCreateForm = ({
-  order,
-  preview,
-  claim,
-  orderReturn,
-}: ReturnCreateFormProps) => {
-  const { t } = useTranslation()
-  const { handleSuccess } = useRouteModal()
+export const ClaimCreateForm = ({ order, preview, claim, orderReturn }: ReturnCreateFormProps) => {
+  const { t } = useTranslation();
+  const { handleSuccess } = useRouteModal();
+  const { canAdminActOnItem } = useAdminManagedLocations();
 
   /**
    * STATE
    */
-  const { setIsOpen } = useStackedModal()
-  const [isShippingInboundPriceEdit, setIsShippingInboundPriceEdit] =
-    useState(false)
-  const [isShippingOutboundPriceEdit, setIsShippingOutboundPriceEdit] =
-    useState(false)
+  const { setIsOpen } = useStackedModal();
+  const [isShippingInboundPriceEdit, setIsShippingInboundPriceEdit] = useState(false);
+  const [isShippingOutboundPriceEdit, setIsShippingOutboundPriceEdit] = useState(false);
 
-  const [customInboundShippingAmount, setCustomInboundShippingAmount] =
-    useState<{ value: string; float: number | null }>({
-      value: "0",
-      float: 0,
-    })
+  const [customInboundShippingAmount, setCustomInboundShippingAmount] = useState<{
+    value: string;
+    float: number | null;
+  }>({
+    value: '0',
+    float: 0
+  });
 
-  const [customOutboundShippingAmount, setCustomOutboundShippingAmount] =
-    useState<{ value: string; float: number | null }>({
-      value: "0",
-      float: 0,
-    })
+  const [customOutboundShippingAmount, setCustomOutboundShippingAmount] = useState<{
+    value: string;
+    float: number | null;
+  }>({
+    value: '0',
+    float: 0
+  });
 
-  const [inventoryMap, setInventoryMap] = useState<
-    Record<string, InventoryLevelDTO[]>
-  >({})
+  const [inventoryMap, setInventoryMap] = useState<Record<string, InventoryLevelDTO[]>>({});
 
   /**
    * MUTATIONS
    */
   // TODO: implement confirm claim request
-  const { mutateAsync: confirmClaimRequest, isPending: isConfirming } =
-    useClaimConfirmRequest(claim.id, order.id)
+  const { mutateAsync: confirmClaimRequest, isPending: isConfirming } = useClaimConfirmRequest(
+    claim.id,
+    order.id
+  );
 
-  const { mutateAsync: cancelClaimRequest, isPending: isCanceling } =
-    useCancelClaimRequest(claim.id, order.id)
+  const { mutateAsync: cancelClaimRequest, isPending: isCanceling } = useCancelClaimRequest(
+    claim.id,
+    order.id
+  );
 
   // TODO: implement update claim request
 
   const { mutateAsync: updateReturn, isPending: isUpdating } = useUpdateReturn(
     preview?.order_change?.return_id!,
     order.id
-  )
+  );
 
-  const {
-    mutateAsync: addInboundShipping,
-    isPending: isAddingInboundShipping,
-  } = useAddClaimInboundShipping(claim.id, order.id)
+  const { mutateAsync: addInboundShipping, isPending: isAddingInboundShipping } =
+    useAddClaimInboundShipping(claim.id, order.id);
 
-  const {
-    mutateAsync: updateInboundShipping,
-    isPending: isUpdatingInboundShipping,
-  } = useUpdateClaimInboundShipping(claim.id, order.id)
+  const { mutateAsync: updateInboundShipping, isPending: isUpdatingInboundShipping } =
+    useUpdateClaimInboundShipping(claim.id, order.id);
 
-  const {
-    mutateAsync: updateOutboundShipping,
-    isPending: isUpdatingOutboundShipping,
-  } = useUpdateClaimOutboundShipping(claim.id, order.id)
+  const { mutateAsync: updateOutboundShipping, isPending: isUpdatingOutboundShipping } =
+    useUpdateClaimOutboundShipping(claim.id, order.id);
 
-  const {
-    mutateAsync: deleteInboundShipping,
-    isPending: isDeletingInboundShipping,
-  } = useDeleteClaimInboundShipping(claim.id, order.id)
+  const { mutateAsync: deleteInboundShipping, isPending: isDeletingInboundShipping } =
+    useDeleteClaimInboundShipping(claim.id, order.id);
 
-  const { mutateAsync: addInboundItem, isPending: isAddingInboundItem } =
-    useAddClaimInboundItems(claim.id, order.id)
+  const { mutateAsync: addInboundItem, isPending: isAddingInboundItem } = useAddClaimInboundItems(
+    claim.id,
+    order.id
+  );
 
   const { mutateAsync: updateInboundItem, isPending: isUpdatingInboundItem } =
-    useUpdateClaimInboundItem(claim.id, order.id)
+    useUpdateClaimInboundItem(claim.id, order.id);
 
   const { mutateAsync: removeInboundItem, isPending: isRemovingInboundItem } =
-    useRemoveClaimInboundItem(claim.id, order.id)
+    useRemoveClaimInboundItem(claim.id, order.id);
 
   const isRequestLoading =
     isConfirming ||
@@ -158,114 +154,94 @@ export const ClaimCreateForm = ({
     isAddingInboundItem ||
     isRemovingInboundItem ||
     isUpdatingInboundItem ||
-    isUpdating
+    isUpdating;
 
   /**
    * Only consider items that belong to this claim.
    */
   const previewItems = useMemo(
-    () =>
-      preview?.items?.filter(
-        (i) => !!i.actions?.find((a) => a.claim_id === claim.id)
-      ),
+    () => preview?.items?.filter(i => !!i.actions?.find(a => a.claim_id === claim.id)),
     [preview.items]
-  )
+  );
 
   const inboundPreviewItems = previewItems.filter(
-    (item) => !!item.actions?.find((a) => a.action === "RETURN_ITEM")
-  )
+    item => !!item.actions?.find(a => a.action === 'RETURN_ITEM')
+  );
 
   const outboundPreviewItems = previewItems.filter(
-    (item) => !!item.actions?.find((a) => a.action === "ITEM_ADD")
-  )
+    item => !!item.actions?.find(a => a.action === 'ITEM_ADD')
+  );
 
-  const itemsMap = useMemo(
-    () => new Map(order?.items?.map((i) => [i.id, i])),
-    [order.items]
-  )
+  const itemsMap = useMemo(() => new Map(order?.items?.map(i => [i.id, i])), [order.items]);
 
   /**
    * FORM
    */
   const form = useForm<CreateClaimSchemaType>({
     defaultValues: () => {
-      const inboundShippingMethod = preview.shipping_methods.find((s) => {
-        return !!s.actions?.find(
-          (a) => a.action === "SHIPPING_ADD" && !!a.return_id
-        )
-      })
+      const inboundShippingMethod = preview.shipping_methods.find(s => {
+        return !!s.actions?.find(a => a.action === 'SHIPPING_ADD' && !!a.return_id);
+      });
 
-      const outboundShippingMethod = preview.shipping_methods.find((s) => {
-        return !!s.actions?.find(
-          (a) => a.action === "SHIPPING_ADD" && !a.return_id
-        )
-      })
+      const outboundShippingMethod = preview.shipping_methods.find(s => {
+        return !!s.actions?.find(a => a.action === 'SHIPPING_ADD' && !a.return_id);
+      });
 
       return Promise.resolve({
-        inbound_items: inboundPreviewItems.map((i) => {
-          const inboundAction = i.actions?.find(
-            (a) => a.action === "RETURN_ITEM"
-          )
+        inbound_items: inboundPreviewItems.map(i => {
+          const inboundAction = i.actions?.find(a => a.action === 'RETURN_ITEM');
 
           return {
             item_id: i.id,
             variant_id: i.variant_id,
             quantity: i.detail.return_requested_quantity,
             note: inboundAction?.internal_note,
-            reason_id: inboundAction?.details?.reason_id as string | undefined,
-          }
+            reason_id: inboundAction?.details?.reason_id as string | undefined
+          };
         }),
-        outbound_items: outboundPreviewItems.map((i) => ({
+        outbound_items: outboundPreviewItems.map(i => ({
           item_id: i.id,
           variant_id: i.variant_id,
-          quantity: i.detail.quantity,
+          quantity: i.detail.quantity
         })),
-        inbound_option_id: inboundShippingMethod
-          ? inboundShippingMethod.shipping_option_id
-          : "",
-        outbound_option_id: outboundShippingMethod
-          ? outboundShippingMethod.shipping_option_id
-          : "",
+        inbound_option_id: inboundShippingMethod ? inboundShippingMethod.shipping_option_id : '',
+        outbound_option_id: outboundShippingMethod ? outboundShippingMethod.shipping_option_id : '',
         location_id: orderReturn?.location_id,
-        send_notification: false,
-      })
+        send_notification: false
+      });
     },
-    resolver: zodResolver(ClaimCreateSchema),
-  })
+    resolver: zodResolver(ClaimCreateSchema)
+  });
 
-  const locationId = form.watch("location_id")
+  const locationId = form.watch('location_id');
 
   /**
    * HOOKS
    */
-  const { stock_locations = [] } = useStockLocations({ limit: 999 })
+  const { stock_locations = [] } = useStockLocations({ limit: 999 });
   const { shipping_options = [] } = useShippingOptions(
     {
       limit: 999,
-      fields: "*prices,+service_zone.fulfillment_set.location.id",
-      stock_location_id: locationId,
+      fields: '*prices,+service_zone.fulfillment_set.location.id',
+      stock_location_id: locationId
     },
     {
-      enabled: !!locationId,
+      enabled: !!locationId
     }
-  )
+  );
 
   const inboundShippingOptions = shipping_options.filter(
-    (shippingOption) =>
-      !!shippingOption.rules.find(
-        (r) => r.attribute === "is_return" && r.value === "true"
-      )
-  )
+    shippingOption =>
+      !!shippingOption.rules.find(r => r.attribute === 'is_return' && r.value === 'true')
+  );
 
-  const inboundShipping = preview.shipping_methods.find((s) => {
-    return !!s.actions?.find(
-      (a) => a.action === "SHIPPING_ADD" && !!a.return_id
-    )
-  })
+  const inboundShipping = preview.shipping_methods.find(s => {
+    return !!s.actions?.find(a => a.action === 'SHIPPING_ADD' && !!a.return_id);
+  });
 
-  const outboundShipping = preview.shipping_methods.find((s) => {
-    return !!s.actions?.find((a) => a.action === "SHIPPING_ADD" && !a.return_id)
-  })
+  const outboundShipping = preview.shipping_methods.find(s => {
+    return !!s.actions?.find(a => a.action === 'SHIPPING_ADD' && !a.return_id);
+  });
 
   useEffect(() => {
     if (inboundShipping) {
@@ -273,10 +249,10 @@ export const ClaimCreateForm = ({
         value: inboundShipping.total.toFixed(
           currencies[order.currency_code.toUpperCase()].decimal_digits
         ),
-        float: inboundShipping.total,
-      })
+        float: inboundShipping.total
+      });
     }
-  }, [inboundShipping])
+  }, [inboundShipping]);
 
   useEffect(() => {
     if (outboundShipping) {
@@ -284,268 +260,259 @@ export const ClaimCreateForm = ({
         value: outboundShipping.total.toFixed(
           currencies[order.currency_code.toUpperCase()].decimal_digits
         ),
-        float: outboundShipping.total,
-      })
+        float: outboundShipping.total
+      });
     }
-  }, [outboundShipping])
+  }, [outboundShipping]);
 
   const {
     fields: inboundItems,
     append,
     remove,
-    update,
+    update
   } = useFieldArray({
-    name: "inbound_items",
-    control: form.control,
-  })
+    name: 'inbound_items',
+    control: form.control
+  });
 
   const previewItemsMap = useMemo(
-    () => new Map(previewItems.map((i) => [i.id, i])),
+    () => new Map(previewItems.map(i => [i.id, i])),
     [previewItems, inboundItems]
-  )
+  );
 
   useEffect(() => {
-    const existingItemsMap: Record<string, boolean> = {}
+    const existingItemsMap: Record<string, boolean> = {};
 
-    inboundPreviewItems.forEach((i) => {
-      const ind = inboundItems.findIndex((field) => field.item_id === i.id)
+    inboundPreviewItems.forEach(i => {
+      const ind = inboundItems.findIndex(field => field.item_id === i.id);
 
-      existingItemsMap[i.id] = true
+      existingItemsMap[i.id] = true;
 
       if (ind > -1) {
         if (inboundItems[ind].quantity !== i.detail.return_requested_quantity) {
-          const returnItemAction = i.actions?.find(
-            (a) => a.action === "RETURN_ITEM"
-          )
+          const returnItemAction = i.actions?.find(a => a.action === 'RETURN_ITEM');
 
           update(ind, {
             ...inboundItems[ind],
             quantity: i.detail.return_requested_quantity,
             note: returnItemAction?.internal_note,
-            reason_id: returnItemAction?.details?.reason_id as string,
-          })
+            reason_id: returnItemAction?.details?.reason_id as string
+          });
         }
       } else {
         append(
           { item_id: i.id, quantity: i.detail.return_requested_quantity },
           { shouldFocus: false }
-        )
+        );
       }
-    })
+    });
 
     inboundItems.forEach((i, ind) => {
       if (!(i.item_id in existingItemsMap)) {
-        remove(ind)
+        remove(ind);
       }
-    })
-  }, [previewItems])
+    });
+  }, [previewItems]);
 
   useEffect(() => {
     const inboundShipping = preview.shipping_methods.find(
-      (s) =>
-        !!s.actions?.find((a) => a.action === "SHIPPING_ADD" && !!a.return_id)
-    )
+      s => !!s.actions?.find(a => a.action === 'SHIPPING_ADD' && !!a.return_id)
+    );
 
     if (inboundShipping) {
-      form.setValue("inbound_option_id", inboundShipping.shipping_option_id)
+      form.setValue('inbound_option_id', inboundShipping.shipping_option_id);
     } else {
-      form.setValue("inbound_option_id", null)
+      form.setValue('inbound_option_id', null);
     }
 
     const outboundShipping = preview.shipping_methods.find(
-      (s) =>
-        !!s.actions?.find((a) => a.action === "SHIPPING_ADD" && !a.return_id)
-    )
+      s => !!s.actions?.find(a => a.action === 'SHIPPING_ADD' && !a.return_id)
+    );
 
     if (outboundShipping) {
-      form.setValue("outbound_option_id", outboundShipping.shipping_option_id)
+      form.setValue('outbound_option_id', outboundShipping.shipping_option_id);
     } else {
-      form.setValue("outbound_option_id", null)
+      form.setValue('outbound_option_id', null);
     }
-  }, [preview.shipping_methods])
+  }, [preview.shipping_methods]);
 
   useEffect(() => {
-    form.setValue("location_id", orderReturn?.location_id)
-  }, [orderReturn])
+    form.setValue('location_id', orderReturn?.location_id);
+  }, [orderReturn]);
 
-  const showInboundItemsPlaceholder = !inboundPreviewItems.length
-  const showOutboundItemsPlaceholder = !outboundPreviewItems.length
+  const showInboundItemsPlaceholder = !inboundPreviewItems.length;
+  const showOutboundItemsPlaceholder = !outboundPreviewItems.length;
 
-  const inboundShippingOptionId = form.watch("inbound_option_id")
-  const outboundShippingOptionId = form.watch("outbound_option_id")
+  const inboundShippingOptionId = form.watch('inbound_option_id');
+  const outboundShippingOptionId = form.watch('outbound_option_id');
 
-  const prompt = usePrompt()
+  const prompt = usePrompt();
 
-  const handleSubmit = form.handleSubmit(async (data) => {
+  const handleSubmit = form.handleSubmit(async data => {
     const res = await prompt({
-      title: t("general.areYouSure"),
-      description: t("orders.claims.confirmText"),
-      confirmText: t("actions.continue"),
-      cancelText: t("actions.cancel"),
-      variant: "confirmation",
-    })
+      title: t('general.areYouSure'),
+      description: t('orders.claims.confirmText'),
+      confirmText: t('actions.continue'),
+      cancelText: t('actions.cancel'),
+      variant: 'confirmation'
+    });
 
     if (!res) {
-      return
+      return;
     }
 
     await confirmClaimRequest(
       { no_notification: !data.send_notification },
       {
         onSuccess: () => {
-          toast.success(t("orders.claims.toast.confirmedSuccessfully"))
+          toast.success(t('orders.claims.toast.confirmedSuccessfully'));
 
-          handleSuccess()
+          handleSuccess();
         },
-        onError: (error) => {
-          toast.error(error.message)
-        },
+        onError: error => {
+          toast.error(error.message);
+        }
       }
-    )
-  })
+    );
+  });
 
   const onItemsSelected = async () => {
-    itemsToAdd.length &&
+    const toAdd = itemsToAdd.filter(id => {
+      const item = itemsMap.get(id);
+
+      return item && canAdminActOnItem(item);
+    });
+    toAdd.length &&
       (await addInboundItem(
         {
-          items: itemsToAdd.map((id) => ({
+          items: toAdd.map(id => ({
             id,
-            quantity: 1,
-          })),
+            quantity: 1
+          }))
         },
         {
-          onError: (error) => {
-            toast.error(error.message)
-          },
+          onError: error => {
+            toast.error(error.message);
+          }
         }
-      ))
+      ));
 
     for (const itemToRemove of itemsToRemove) {
       const actionId = previewItems
-        .find((i) => i.id === itemToRemove)
-        ?.actions?.find((a) => a.action === "RETURN_ITEM")?.id
+        .find(i => i.id === itemToRemove)
+        ?.actions?.find(a => a.action === 'RETURN_ITEM')?.id;
 
       if (actionId) {
         await removeInboundItem(actionId, {
-          onError: (error) => {
-            toast.error(error.message)
-          },
-        })
+          onError: error => {
+            toast.error(error.message);
+          }
+        });
       }
     }
 
-    setIsOpen("inbound-items", false)
-  }
+    setIsOpen('inbound-items', false);
+  };
 
   const onLocationChange = async (selectedLocationId?: string | null) => {
-    await updateReturn({ location_id: selectedLocationId })
-  }
+    await updateReturn({ location_id: selectedLocationId });
+  };
 
-  const onShippingOptionChange = async (
-    selectedOptionId: string | undefined
-  ) => {
-    const inboundShippingMethods = preview.shipping_methods.filter((s) => {
-      const action = s.actions?.find(
-        (a) => a.action === "SHIPPING_ADD" && !!a.return_id
-      )
+  const onShippingOptionChange = async (selectedOptionId: string | undefined) => {
+    const inboundShippingMethods = preview.shipping_methods.filter(s => {
+      const action = s.actions?.find(a => a.action === 'SHIPPING_ADD' && !!a.return_id);
 
-      return action && !!action?.return_id
-    })
+      return action && !!action?.return_id;
+    });
 
-    const promises = inboundShippingMethods
-      .filter(Boolean)
-      .map((inboundShippingMethod) => {
-        const action = inboundShippingMethod.actions?.find(
-          (a) => a.action === "SHIPPING_ADD" && !!a.return_id
-        )
+    const promises = inboundShippingMethods.filter(Boolean).map(inboundShippingMethod => {
+      const action = inboundShippingMethod.actions?.find(
+        a => a.action === 'SHIPPING_ADD' && !!a.return_id
+      );
 
-        if (action) {
-          return deleteInboundShipping(action.id)
-        }
-      })
+      if (action) {
+        return deleteInboundShipping(action.id);
+      }
+    });
 
-    await Promise.all(promises)
+    await Promise.all(promises);
 
     if (selectedOptionId) {
       await addInboundShipping(
         { shipping_option_id: selectedOptionId },
         {
-          onError: (error) => {
-            toast.error(error.message)
-          },
+          onError: error => {
+            toast.error(error.message);
+          }
         }
-      )
+      );
     }
-  }
+  };
 
   useEffect(() => {
     if (isShippingInboundPriceEdit) {
-      document.getElementById("js-shipping-inbound-input")?.focus()
+      document.getElementById('js-shipping-inbound-input')?.focus();
     }
-  }, [isShippingInboundPriceEdit])
+  }, [isShippingInboundPriceEdit]);
 
   useEffect(() => {
     if (isShippingOutboundPriceEdit) {
-      document.getElementById("js-shipping-outbound-input")?.focus()
+      document.getElementById('js-shipping-outbound-input')?.focus();
     }
-  }, [isShippingOutboundPriceEdit])
+  }, [isShippingOutboundPriceEdit]);
 
   const showLevelsWarning = useMemo(() => {
     if (!locationId) {
-      return false
+      return false;
     }
 
     const allItemsHaveLocation = inboundItems
-      .map((_i) => {
-        const item = itemsMap.get(_i.item_id)
+      .map(_i => {
+        const item = itemsMap.get(_i.item_id);
         if (!item?.variant_id || !item?.variant) {
-          return true
+          return true;
         }
 
         if (!item.variant?.manage_inventory) {
-          return true
+          return true;
         }
 
-        return inventoryMap[item.variant_id]?.find(
-          (l) => l.location_id === locationId
-        )
+        return inventoryMap[item.variant_id]?.find(l => l.location_id === locationId);
       })
-      .every(Boolean)
+      .every(Boolean);
 
-    return !allItemsHaveLocation
-  }, [inboundItems, inventoryMap, locationId])
+    return !allItemsHaveLocation;
+  }, [inboundItems, inventoryMap, locationId]);
 
   useEffect(() => {
     const getInventoryMap = async () => {
-      const ret: Record<string, InventoryLevelDTO[]> = {}
+      const ret: Record<string, InventoryLevelDTO[]> = {};
 
       if (!inboundItems.length) {
-        return ret
+        return ret;
       }
 
-      const variantIds = inboundItems
-        .map((item) => item?.variant_id)
-        .filter(Boolean)
+      const variantIds = inboundItems.map(item => item?.variant_id).filter(Boolean);
 
       const variants = (
         await sdk.admin.productVariant.list({
           id: variantIds,
-          fields: "*inventory.location_levels",
+          fields: '*inventory.location_levels'
         })
-      ).variants
+      ).variants;
 
-      variants.forEach((variant) => {
+      variants.forEach(variant => {
         // TODO: fix this for inventory kits
-        ret[variant.id] = variant.inventory?.[0]?.location_levels || []
-      })
+        ret[variant.id] = variant.inventory?.[0]?.location_levels || [];
+      });
 
-      return ret
-    }
+      return ret;
+    };
 
-    getInventoryMap().then((map) => {
-      setInventoryMap(map)
-    })
-  }, [inboundItems])
+    getInventoryMap().then(map => {
+      setInventoryMap(map);
+    });
+  }, [inboundItems]);
 
   useEffect(() => {
     /**
@@ -555,69 +522,84 @@ export const ClaimCreateForm = ({
       if (IS_CANCELING) {
         cancelClaimRequest(undefined, {
           onSuccess: () => {
-            toast.success(t("orders.claims.actions.cancelClaim.successToast"))
+            toast.success(t('orders.claims.actions.cancelClaim.successToast'));
           },
-          onError: (error) => {
-            toast.error(error.message)
-          },
-        })
+          onError: error => {
+            toast.error(error.message);
+          }
+        });
 
         // TODO: add this on ESC press
-        IS_CANCELING = false
+        IS_CANCELING = false;
       }
-    }
-  }, [])
+    };
+  }, []);
 
   const inboundShippingTotal = useMemo(() => {
     const method = preview.shipping_methods.find(
-      (sm) =>
-        !!sm.actions?.find((a) => a.action === "SHIPPING_ADD" && !!a.return_id)
-    )
+      sm => !!sm.actions?.find(a => a.action === 'SHIPPING_ADD' && !!a.return_id)
+    );
 
-    return (method?.total as number) || 0
-  }, [preview.shipping_methods])
+    return (method?.total as number) || 0;
+  }, [preview.shipping_methods]);
 
   const outboundShippingTotal = useMemo(() => {
     const method = preview.shipping_methods.find(
-      (sm) =>
-        !!sm.actions?.find((a) => a.action === "SHIPPING_ADD" && !a.return_id)
-    )
+      sm => !!sm.actions?.find(a => a.action === 'SHIPPING_ADD' && !a.return_id)
+    );
 
-    return (method?.total as number) || 0
-  }, [preview.shipping_methods])
+    return (method?.total as number) || 0;
+  }, [preview.shipping_methods]);
 
   return (
-    <RouteFocusModal.Form form={form} data-testid="order-create-claim-form">
-      <KeyboundForm onSubmit={handleSubmit} className="flex h-full flex-col">
+    <RouteFocusModal.Form
+      form={form}
+      data-testid="order-create-claim-form"
+    >
+      <KeyboundForm
+        onSubmit={handleSubmit}
+        className="flex h-full flex-col"
+      >
         <RouteFocusModal.Header data-testid="order-create-claim-header" />
-        <RouteFocusModal.Body className="flex size-full justify-center overflow-y-auto" data-testid="order-create-claim-body">
+        <RouteFocusModal.Body
+          className="flex size-full justify-center overflow-y-auto"
+          data-testid="order-create-claim-body"
+        >
           <div className="mt-16 w-[720px] max-w-[100%] px-4 md:p-0">
-            <Heading level="h1" data-testid="order-create-claim-heading">{t("orders.claims.create")}</Heading>
+            <Heading
+              level="h1"
+              data-testid="order-create-claim-heading"
+            >
+              {t('orders.claims.create')}
+            </Heading>
             <div className="mt-8 flex items-center justify-between">
-              <Heading level="h2">{t("orders.returns.inbound")}</Heading>
+              <Heading level="h2">{t('orders.returns.inbound')}</Heading>
 
               <StackedFocusModal id="inbound-items">
                 <StackedFocusModal.Trigger asChild>
-                  <a className="focus-visible:shadow-borders-focus transition-fg txt-compact-small-plus cursor-pointer text-blue-500 outline-none hover:text-blue-400">
-                    {t("actions.addItems")}
-                  </a>
+                  <Button
+                    variant="secondary"
+                    size="small"
+                  >
+                    {t('actions.addItems')}
+                  </Button>
                 </StackedFocusModal.Trigger>
                 <StackedFocusModal.Content>
                   <StackedFocusModal.Header />
 
                   <AddClaimItemsTable
                     items={order.items!}
-                    selectedItems={inboundItems.map((i) => i.item_id)}
+                    selectedItems={inboundItems.map(i => i.item_id)}
                     currencyCode={order.currency_code}
-                    onSelectionChange={(finalSelection) => {
-                      const alreadySelected = inboundItems.map((i) => i.item_id)
+                    onSelectionChange={finalSelection => {
+                      const alreadySelected = inboundItems.map(i => i.item_id);
 
                       itemsToAdd = finalSelection.filter(
-                        (selection) => !alreadySelected.includes(selection)
-                      )
+                        selection => !alreadySelected.includes(selection)
+                      );
                       itemsToRemove = alreadySelected.filter(
-                        (selection) => !finalSelection.includes(selection)
-                      )
+                        selection => !finalSelection.includes(selection)
+                      );
                     }}
                   />
 
@@ -630,7 +612,7 @@ export const ClaimCreateForm = ({
                             variant="secondary"
                             size="small"
                           >
-                            {t("actions.cancel")}
+                            {t('actions.cancel')}
                           </Button>
                         </RouteFocusModal.Close>
 
@@ -642,7 +624,7 @@ export const ClaimCreateForm = ({
                           role="button"
                           onClick={async () => await onItemsSelected()}
                         >
-                          {t("actions.save")}
+                          {t('actions.save')}
                         </Button>
                       </div>
                     </div>
@@ -650,7 +632,23 @@ export const ClaimCreateForm = ({
                 </StackedFocusModal.Content>
               </StackedFocusModal>
             </div>
-            {showInboundItemsPlaceholder && <ItemPlaceholder />}
+            {showInboundItemsPlaceholder && (
+              <>
+                <ItemPlaceholder
+                  type="inbound"
+                  hasError={!!form.formState.errors.inbound_items}
+                />
+                <Form.Field
+                  control={form.control}
+                  name="inbound_items"
+                  render={() => (
+                    <Form.Item className="mt-4">
+                      <Form.ErrorMessage />
+                    </Form.Item>
+                  )}
+                />
+              </>
+            )}
             {inboundItems.map(
               (item, index) =>
                 previewItemsMap.get(item.item_id) &&
@@ -663,41 +661,38 @@ export const ClaimCreateForm = ({
                     form={form}
                     onRemove={() => {
                       const actionId = previewItems
-                        .find((i) => i.id === item.item_id)
-                        ?.actions?.find((a) => a.action === "RETURN_ITEM")?.id
+                        .find(i => i.id === item.item_id)
+                        ?.actions?.find(a => a.action === 'RETURN_ITEM')?.id;
 
                       if (actionId) {
                         removeInboundItem(actionId, {
-                          onError: (error) => {
-                            toast.error(error.message)
-                          },
-                        })
+                          onError: error => {
+                            toast.error(error.message);
+                          }
+                        });
                       }
                     }}
                     onUpdate={(payload: HttpTypes.AdminUpdateReturnItems) => {
                       const action = previewItems
-                        .find((i) => i.id === item.item_id)
-                        ?.actions?.find((a) => a.action === "RETURN_ITEM")
+                        .find(i => i.id === item.item_id)
+                        ?.actions?.find(a => a.action === 'RETURN_ITEM');
 
                       if (action) {
                         updateInboundItem(
                           { ...payload, actionId: action.id },
                           {
-                            onError: (error) => {
-                              if (
-                                action.details?.quantity &&
-                                payload.quantity
-                              ) {
+                            onError: error => {
+                              if (action.details?.quantity && payload.quantity) {
                                 form.setValue(
                                   `inbound_items.${index}.quantity`,
                                   action.details?.quantity as number
-                                )
+                                );
                               }
 
-                              toast.error(error.message)
-                            },
+                              toast.error(error.message);
+                            }
                           }
-                        )
+                        );
                       }
                     }}
                     index={index}
@@ -709,10 +704,8 @@ export const ClaimCreateForm = ({
                 {/* LOCATION*/}
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                   <div>
-                    <Form.Label>{t("orders.returns.location")}</Form.Label>
-                    <Form.Hint className="!mt-1">
-                      {t("orders.returns.locationHint")}
-                    </Form.Hint>
+                    <Form.Label>{t('orders.returns.location')}</Form.Label>
+                    <Form.Hint className="!mt-1">{t('orders.returns.locationHint')}</Form.Hint>
                   </div>
 
                   <Form.Field
@@ -725,20 +718,19 @@ export const ClaimCreateForm = ({
                             <Combobox
                               {...field}
                               value={value ?? undefined}
-                              onChange={(v) => {
-                                onChange(v)
-                                onLocationChange(v)
+                              onChange={v => {
+                                onChange(v);
+                                onLocationChange(v);
                               }}
-                              options={(stock_locations ?? []).map(
-                                (stockLocation) => ({
-                                  label: stockLocation.name,
-                                  value: stockLocation.id,
-                                })
-                              )}
+                              options={(stock_locations ?? []).map(stockLocation => ({
+                                label: stockLocation.name,
+                                value: stockLocation.id
+                              }))}
                             />
                           </Form.Control>
+                          <Form.ErrorMessage />
                         </Form.Item>
-                      )
+                      );
                     }}
                   />
                 </div>
@@ -747,18 +739,18 @@ export const ClaimCreateForm = ({
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                   <div>
                     <Form.Label>
-                      {t("orders.returns.inboundShipping")}
+                      {t('orders.returns.inboundShipping')}
                       <Text
                         size="small"
                         leading="compact"
-                        className="text-ui-fg-muted ml-1 inline"
+                        className="ml-1 inline text-ui-fg-muted"
                       >
-                        ({t("fields.optional")})
+                        ({t('fields.optional')})
                       </Text>
                     </Form.Label>
 
                     <Form.Hint className="!mt-1">
-                      {t("orders.returns.inboundShippingHint")}
+                      {t('orders.returns.inboundShippingHint')}
                     </Form.Hint>
                   </div>
 
@@ -772,35 +764,37 @@ export const ClaimCreateForm = ({
                             <Combobox
                               allowClear
                               value={value ?? undefined}
-                              onChange={(val) => {
-                                onChange(val)
-                                onShippingOptionChange(val)
+                              onChange={val => {
+                                onChange(val);
+                                onShippingOptionChange(val);
                               }}
                               {...field}
-                              options={inboundShippingOptions.map((so) => ({
+                              options={inboundShippingOptions.map(so => ({
                                 label: so.name,
-                                value: so.id,
+                                value: so.id
                               }))}
                               disabled={!locationId}
-                              noResultsPlaceholder={
-                                <ReturnShippingPlaceholder />
-                              }
+                              noResultsPlaceholder={<ReturnShippingPlaceholder />}
                             />
                           </Form.Control>
                         </Form.Item>
-                      )
+                      );
                     }}
                   />
                 </div>
               </div>
             )}
             {showLevelsWarning && (
-              <Alert variant="warning" dismissible className="mt-4 p-5">
-                <div className="text-ui-fg-subtle txt-small pb-2 font-medium leading-[20px]">
-                  {t("orders.returns.noInventoryLevel")}
+              <Alert
+                variant="warning"
+                dismissible
+                className="mt-4 p-5"
+              >
+                <div className="txt-small pb-2 font-medium leading-[20px] text-ui-fg-subtle">
+                  {t('orders.returns.noInventoryLevel')}
                 </div>
-                <Text className="text-ui-fg-subtle txt-small leading-normal">
-                  {t("orders.returns.noInventoryLevelDesc")}
+                <Text className="txt-small leading-normal text-ui-fg-subtle">
+                  {t('orders.returns.noInventoryLevelDesc')}
                 </Text>
               </Alert>
             )}
@@ -813,41 +807,40 @@ export const ClaimCreateForm = ({
             />
 
             {/* TOTALS SECTION*/}
-            <div className="mt-8 border-y border-dotted py-4" data-testid="order-create-claim-totals">
-              <div className="mb-2 flex items-center justify-between" data-testid="order-create-claim-inbound-total">
+            <div
+              className="mt-8 border-y py-4"
+              data-testid="order-create-claim-totals"
+            >
+              <div
+                className="mb-2 flex items-center justify-between"
+                data-testid="order-create-claim-inbound-total"
+              >
                 <span className="txt-small text-ui-fg-subtle">
-                  {t("orders.returns.inboundTotal")}
+                  {t('orders.returns.inboundTotal')}
                 </span>
 
                 <span className="txt-small text-ui-fg-subtle">
                   {getStylizedAmount(
                     inboundPreviewItems.reduce((acc, item) => {
-                      const action = item.actions?.find(
-                        (act) => act.action === "RETURN_ITEM"
-                      )
-                      acc = acc + (action?.amount || 0)
-
-                      return acc
+                      return acc + item.total;
                     }, 0) * -1,
                     order.currency_code
                   )}
                 </span>
               </div>
 
-              <div className="mb-2 flex items-center justify-between" data-testid="order-create-claim-outbound-total">
+              <div
+                className="mb-2 flex items-center justify-between"
+                data-testid="order-create-claim-outbound-total"
+              >
                 <span className="txt-small text-ui-fg-subtle">
-                  {t("orders.claims.outboundTotal")}
+                  {t('orders.claims.outboundTotal')}
                 </span>
 
                 <span className="txt-small text-ui-fg-subtle">
                   {getStylizedAmount(
                     outboundPreviewItems.reduce((acc, item) => {
-                      const action = item.actions?.find(
-                        (act) => act.action === "ITEM_ADD"
-                      )
-                      acc = acc + (action?.amount || 0)
-
-                      return acc
+                      return acc + item.total;
                     }, 0),
                     order.currency_code
                   )}
@@ -856,20 +849,18 @@ export const ClaimCreateForm = ({
 
               <div className="mb-2 flex items-center justify-between">
                 <span className="txt-small text-ui-fg-subtle">
-                  {t("orders.returns.inboundShipping")}
+                  {t('orders.returns.inboundShipping')}
                 </span>
 
-                <span className="txt-small text-ui-fg-subtle flex items-center">
+                <span className="txt-small flex items-center text-ui-fg-subtle">
                   {!isShippingInboundPriceEdit && (
                     <IconButton
                       onClick={() => setIsShippingInboundPriceEdit(true)}
                       variant="transparent"
-                      className="text-ui-fg-muted"
-                      disabled={
-                        showInboundItemsPlaceholder || !inboundShippingOptionId
-                      }
+                      className="flex h-5 items-center justify-center text-ui-fg-muted"
+                      disabled={showInboundItemsPlaceholder || !inboundShippingOptionId}
                     >
-                      <PencilSquare />
+                      <PencilSquare className="h-4 w-4" />
                     </IconButton>
                   )}
 
@@ -877,48 +868,42 @@ export const ClaimCreateForm = ({
                     <CurrencyInput
                       id="js-shipping-inbound-input"
                       onBlur={() => {
-                        let actionId
+                        let actionId;
 
-                        preview.shipping_methods.forEach((s) => {
+                        preview.shipping_methods.forEach(s => {
                           if (s.actions) {
                             for (const a of s.actions) {
-                              if (
-                                a.action === "SHIPPING_ADD" &&
-                                !!a.return_id
-                              ) {
-                                actionId = a.id
+                              if (a.action === 'SHIPPING_ADD' && !!a.return_id) {
+                                actionId = a.id;
                               }
                             }
                           }
-                        })
+                        });
 
-                        const customPrice = customInboundShippingAmount.float
+                        const customPrice = customInboundShippingAmount.float;
 
                         if (actionId) {
                           updateInboundShipping(
                             {
                               actionId,
-                              custom_amount: customPrice,
+                              custom_amount: customPrice
                             },
                             {
-                              onError: (error) => {
-                                toast.error(error.message)
-                              },
+                              onError: error => {
+                                toast.error(error.message);
+                              }
                             }
-                          )
+                          );
                         }
-                        setIsShippingInboundPriceEdit(false)
+                        setIsShippingInboundPriceEdit(false);
                       }}
-                      symbol={
-                        currencies[order.currency_code.toUpperCase()]
-                          .symbol_native
-                      }
+                      symbol={currencies[order.currency_code.toUpperCase()].symbol_native}
                       code={order.currency_code}
                       onValueChange={(_value, _name, values) => {
                         setCustomInboundShippingAmount({
-                          value: values?.value ?? "",
-                          float: values?.float ?? null,
-                        })
+                          value: values?.value ?? '',
+                          float: values?.float ?? null
+                        });
                       }}
                       value={customInboundShippingAmount.value}
                       disabled={showInboundItemsPlaceholder}
@@ -931,21 +916,18 @@ export const ClaimCreateForm = ({
 
               <div className="flex items-center justify-between">
                 <span className="txt-small text-ui-fg-subtle">
-                  {t("orders.claims.outboundShipping")}
+                  {t('orders.claims.outboundShipping')}
                 </span>
 
-                <span className="txt-small text-ui-fg-subtle flex items-center">
+                <span className="txt-small flex items-center text-ui-fg-subtle">
                   {!isShippingOutboundPriceEdit && (
                     <IconButton
                       onClick={() => setIsShippingOutboundPriceEdit(true)}
                       variant="transparent"
-                      className="text-ui-fg-muted"
-                      disabled={
-                        showOutboundItemsPlaceholder ||
-                        !outboundShippingOptionId
-                      }
+                      className="flex h-5 items-center justify-center text-ui-fg-muted"
+                      disabled={showOutboundItemsPlaceholder || !outboundShippingOptionId}
                     >
-                      <PencilSquare />
+                      <PencilSquare className="h-4 w-4" />
                     </IconButton>
                   )}
 
@@ -953,72 +935,67 @@ export const ClaimCreateForm = ({
                     <CurrencyInput
                       id="js-shipping-outbound-input"
                       onBlur={() => {
-                        let actionId
+                        let actionId;
 
-                        preview.shipping_methods.forEach((s) => {
+                        preview.shipping_methods.forEach(s => {
                           if (s.actions) {
                             for (const a of s.actions) {
-                              if (a.action === "SHIPPING_ADD" && !a.return_id) {
-                                actionId = a.id
+                              if (a.action === 'SHIPPING_ADD' && !a.return_id) {
+                                actionId = a.id;
                               }
                             }
                           }
-                        })
+                        });
 
-                        const customPrice = customOutboundShippingAmount.float
+                        const customPrice = customOutboundShippingAmount.float;
 
                         if (actionId) {
                           updateOutboundShipping(
                             {
                               actionId,
-                              custom_amount: customPrice,
+                              custom_amount: customPrice
                             },
                             {
-                              onError: (error) => {
-                                toast.error(error.message)
-                              },
+                              onError: error => {
+                                toast.error(error.message);
+                              }
                             }
-                          )
+                          );
                         }
-                        setIsShippingOutboundPriceEdit(false)
+                        setIsShippingOutboundPriceEdit(false);
                       }}
-                      symbol={
-                        currencies[order.currency_code.toUpperCase()]
-                          .symbol_native
-                      }
+                      symbol={currencies[order.currency_code.toUpperCase()].symbol_native}
                       code={order.currency_code}
                       onValueChange={(_value, _name, values) => {
                         setCustomOutboundShippingAmount({
-                          value: values?.value ?? "",
-                          float: values?.float ?? null,
-                        })
+                          value: values?.value ?? '',
+                          float: values?.float ?? null
+                        });
                       }}
                       value={customOutboundShippingAmount.value}
                       disabled={showOutboundItemsPlaceholder}
                     />
                   ) : (
-                    getStylizedAmount(
-                      outboundShippingTotal,
-                      order.currency_code
-                    )
+                    getStylizedAmount(outboundShippingTotal, order.currency_code)
                   )}
                 </span>
               </div>
 
-              <div className="mt-4 flex items-center justify-between border-t border-dotted pt-4" data-testid="order-create-claim-refund-amount">
+              <div
+                className="mt-4 flex items-center justify-between"
+                data-testid="order-create-claim-refund-amount"
+              >
+                <span className="txt-small font-medium">{t('orders.claims.refundAmount')}</span>
                 <span className="txt-small font-medium">
-                  {t("orders.claims.refundAmount")}
-                </span>
-                <span className="txt-small font-medium">
-                  {getStylizedAmount(
-                    preview.summary.pending_difference,
-                    order.currency_code
-                  )}
+                  {getStylizedAmount(preview.summary.pending_difference, order.currency_code)}
                 </span>
               </div>
             </div>
             {/* SEND NOTIFICATION*/}
-            <div className="bg-ui-bg-field mt-8 rounded-lg border py-2 pl-2 pr-4" data-testid="order-create-claim-notification">
+            <div
+              className="mt-8 rounded-lg border bg-ui-bg-field py-2 pl-2 pr-4"
+              data-testid="order-create-claim-notification"
+            >
               <Form.Field
                 control={form.control}
                 name="send_notification"
@@ -1026,7 +1003,10 @@ export const ClaimCreateForm = ({
                   return (
                     <Form.Item data-testid="order-create-claim-notification-item">
                       <div className="flex items-center">
-                        <Form.Control className="mr-4 self-start" data-testid="order-create-claim-notification-control">
+                        <Form.Control
+                          className="mr-4 self-start"
+                          data-testid="order-create-claim-notification-control"
+                        >
                           <Switch
                             dir="ltr"
                             className="mt-[2px] rtl:rotate-180"
@@ -1038,16 +1018,19 @@ export const ClaimCreateForm = ({
                         </Form.Control>
                         <div className="block">
                           <Form.Label data-testid="order-create-claim-notification-label">
-                            {t("orders.returns.sendNotification")}
+                            {t('orders.returns.sendNotification')}
                           </Form.Label>
-                          <Form.Hint className="!mt-1" data-testid="order-create-claim-notification-hint">
-                            {t("orders.returns.sendNotificationHint")}
+                          <Form.Hint
+                            className="!mt-1"
+                            data-testid="order-create-claim-notification-hint"
+                          >
+                            {t('orders.returns.sendNotificationHint')}
                           </Form.Hint>
                         </div>
                       </div>
                       <Form.ErrorMessage data-testid="order-create-claim-notification-error" />
                     </Form.Item>
-                  )
+                  );
                 }}
               />
             </div>
@@ -1066,7 +1049,7 @@ export const ClaimCreateForm = ({
                   size="small"
                   data-testid="order-create-claim-cancel-button"
                 >
-                  {t("orders.claims.cancel.title")}
+                  {t('orders.claims.cancel.title')}
                 </Button>
               </RouteFocusModal.Close>
               <Button
@@ -1077,12 +1060,12 @@ export const ClaimCreateForm = ({
                 isLoading={isRequestLoading}
                 data-testid="order-create-claim-confirm-button"
               >
-                {t("orders.claims.confirm")}
+                {t('orders.claims.confirm')}
               </Button>
             </div>
           </div>
         </RouteFocusModal.Footer>
       </KeyboundForm>
     </RouteFocusModal.Form>
-  )
-}
+  );
+};

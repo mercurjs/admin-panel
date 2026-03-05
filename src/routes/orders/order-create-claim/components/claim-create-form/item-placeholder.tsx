@@ -1,11 +1,37 @@
-export const ItemPlaceholder = () => {
+import { Tag } from '@medusajs/icons';
+import { clx } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
+
+import { NoRecords } from '@components/common/empty-table-content';
+
+type ItemPlaceholderProps = {
+  type?: 'inbound' | 'outbound';
+  hasError?: boolean;
+};
+
+export const ItemPlaceholder = ({ type = 'outbound', hasError = false }: ItemPlaceholderProps) => {
+  const { t } = useTranslation();
+
   return (
     <div
-      style={{
-        background:
-          "repeating-linear-gradient(-45deg, rgb(212, 212, 216, 0.15), rgb(212, 212, 216,.15) 10px, transparent 10px, transparent 20px)",
-      }}
-      className="bg-ui-bg-field mt-4 block h-[56px] w-full rounded-lg border border-dashed"
-    />
-  )
-}
+      className={clx(
+        'mt-4 rounded-lg border bg-ui-bg-base',
+        {
+          'border-ui-border-error': hasError,
+          'border-ui-border-base': !hasError,
+        }
+      )}
+    >
+      <NoRecords
+        icon={<Tag className="text-ui-fg-muted" />}
+        title={t('orders.claims.noAddedItems')}
+        message={
+          type === 'inbound'
+            ? t('orders.claims.noAddedItemsHintInbound')
+            : t('orders.claims.noAddedItemsHintOutbound')
+        }
+        className="py-12"
+      />
+    </div>
+  );
+};

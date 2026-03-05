@@ -584,6 +584,9 @@
       "collection": {
         "label": "Collection"
       },
+      "category": {
+        "label": "Category"
+      },
       "categories": {
         "label": "Categories"
       },
@@ -1201,7 +1204,9 @@
       "note": "Note",
       "noInventoryLevel": "No inventory level",
       "noInventoryLevelDesc": "The selected location does not have an inventory level for the selected items. The return can be requested but can’t be received until an inventory level is created for the selected location.",
-      "noteHint": "Add an internal note for the return.",
+      "noteHintClaim": "Add an internal note for the claim.",
+      "noteHintReturn": "Add an internal note for the return.",
+      "noteHint": "Add an internal note for the exchange.",
       "location": "Location",
       "locationHint": "Choose which location you want to return the items to.",
       "pleaseChooseLocation": "Please choose a location",
@@ -1264,7 +1269,7 @@
     },
     "claims": {
       "create": "Create Claim",
-      "confirm": "Confirm Claim",
+      "confirm": "Confirm",
       "confirmText": "You are about to confirm a Claim. This action cannot be undone.",
       "manage": "Manage Claim",
       "outbound": "Outbound",
@@ -1272,7 +1277,15 @@
       "outboundTotal": "Outbound total",
       "outboundShipping": "Outbound shipping",
       "outboundShippingHint": "Choose which method you want to use.",
+      "noAddedItems": "No added items",
+      "noAddedItemsHintInbound": "Add at least one item from the order to create the claim.",
+      "noAddedItemsHintOutbound": "You can optionally add items you want to send as replacements",
+      "validation": {
+        "addAtLeastOneItem": "Please add at least one item from the order",
+        "chooseLocation": "Please choose a location"
+      },
       "refundAmount": "Estimated difference",
+      "cantCreateClaimByAdmin": "This claim cannot be created by admin because order products are only available at vendor locations.",
       "activeChangeError": "There is an active order change on this order. Please finish or discard the previous change.",
       "actions": {
         "cancelClaim": {
@@ -1280,7 +1293,7 @@
         }
       },
       "cancel": {
-        "title": "Cancel Claim",
+        "title": "Cancel",
         "description": "Are you sure you want to cancel the claim?"
       },
       "tooltips": {

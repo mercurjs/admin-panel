@@ -3,7 +3,7 @@ import { useState } from "react"
 
 import { useTranslation } from "react-i18next"
 import { _DataTable } from "../../../../../components/table/data-table"
-import { useVariants } from "../../../../../hooks/api"
+import { useCustomProductVariants } from "../../../../../hooks/api"
 import { useDataTable } from "../../../../../hooks/use-data-table"
 import { useClaimOutboundItemTableColumns } from "./use-claim-outbound-item-table-columns"
 import { useClaimOutboundItemTableFilters } from "./use-claim-outbound-item-table-filters"
@@ -16,12 +16,14 @@ type AddClaimOutboundItemsTableProps = {
   onSelectionChange: (ids: string[]) => void
   selectedItems: string[]
   currencyCode: string
+  sellerId?: string
 }
 
 export const AddClaimOutboundItemsTable = ({
   onSelectionChange,
   selectedItems,
   currencyCode,
+  sellerId,
 }: AddClaimOutboundItemsTableProps) => {
   const { t } = useTranslation()
 
@@ -45,9 +47,14 @@ export const AddClaimOutboundItemsTable = ({
     prefix: PREFIX,
   })
 
-  const { variants = [], count } = useVariants({
+  const { variants = [], count } = useCustomProductVariants({
     ...searchParams,
-    fields: "*inventory_items.inventory.location_levels,+inventory_quantity",
+    fields:
+      "*inventory_items.inventory.location_levels,+inventory_quantity,*product.categories,*product.collection",
+    has_price: true,
+    has_inventory: true,
+    has_stock_location: true,
+    ...(sellerId ? { seller_id: sellerId } : {}),
   })
 
   const columns = useClaimOutboundItemTableColumns(currencyCode)

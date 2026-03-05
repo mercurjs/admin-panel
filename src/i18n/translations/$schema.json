@@ -4503,6 +4503,12 @@
             "noteHint": {
               "type": "string"
             },
+            "noteHintClaim": {
+              "type": "string"
+            },
+            "noteHintReturn": {
+              "type": "string"
+            },
             "location": {
               "type": "string"
             },
@@ -4770,6 +4776,9 @@
             "activeChangeError": {
               "type": "string"
             },
+            "cantCreateClaimByAdmin": {
+              "type": "string"
+            },
             "actions": {
               "type": "object",
               "properties": {
@@ -4849,6 +4858,7 @@
             "outboundShippingHint",
             "refundAmount",
             "activeChangeError",
+            "cantCreateClaimByAdmin",
             "actions",
             "cancel",
             "tooltips",

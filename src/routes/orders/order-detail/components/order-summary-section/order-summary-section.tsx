@@ -520,7 +520,11 @@ const Header = ({
                   isOrderEditActive ||
                   (!!orderPreview?.order_change?.return_id &&
                     !orderPreview?.order_change?.claim_id) ||
-                  !!orderPreview?.order_change?.exchange_id
+                  !!orderPreview?.order_change?.exchange_id ||
+                  !canAdminActOnOrder,
+                disabledTooltip: !canAdminActOnOrder
+                  ? t('orders.claims.cantCreateClaimByAdmin')
+                  : undefined
               }
             ]
           }
