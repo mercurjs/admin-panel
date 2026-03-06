@@ -1319,6 +1319,17 @@
       "outboundShipping": "Outbound shipping",
       "outboundShippingHint": "Choose which method you want to use.",
       "refundAmount": "Estimated difference",
+      "noAddedItems": "No records yet",
+      "noAddedItemsHintInbound": "Add at least one item from the order to create the exchange",
+      "noAddedItemsHintOutbound": "Add at least one item you want to send in the exchange",
+      "sendNotificationHint": "Notify customer about exchange.",
+      "cantCreateExchangeByAdmin": "This exchange cannot be created by admin because order products are only available at vendor locations.",
+      "validation": {
+        "addAtLeastOneInboundItem": "Please add at least one item from the order",
+        "addAtLeastOneOutboundItem": "Please add at least one item to send in the exchange",
+        "chooseLocation": "Please choose a location",
+        "chooseOutboundShipping": "Please choose an outbound shipping"
+      },
       "activeChangeError": "There is an active order change on this order. Please finish or discard the previous change.",
       "actions": {
         "cancelExchange": {
