@@ -50,6 +50,7 @@ const defaultValues = {
   campaign_choice: 'none' as const,
   is_automatic: 'false',
   code: '',
+  market_id: '',
   type: 'standard' as PromotionTypeValues,
   status: 'draft' as PromotionStatusValues,
   rules: [],
@@ -99,10 +100,12 @@ export const CreatePromotionForm = () => {
         is_automatic,
         is_tax_inclusive,
         template_id: _templateId,
+        market_id,
         application_method,
         rules,
         ...promotionData
       } = data;
+      const normalizedMarketId = market_id?.trim() ? market_id.trim() : null;
       const {
         target_rules: targetRulesData = [],
         buy_rules: buyRulesData = [],
@@ -150,6 +153,9 @@ export const CreatePromotionForm = () => {
       createPromotion(
         {
           ...promotionData,
+          additional_data: {
+            gp_market_id: normalizedMarketId
+          },
           rules: buildRulesData(rules),
           application_method: {
             ...applicationMethodData,
@@ -597,7 +603,7 @@ export const CreatePromotionForm = () => {
                     }}
                   />
 
-                  <div className="flex gap-y-4">
+                  <div className="flex gap-x-4 gap-y-4">
                     <Form.Field
                       control={form.control}
                       name="code"
@@ -632,6 +638,41 @@ export const CreatePromotionForm = () => {
                               />
                             </Text>
                             <Form.ErrorMessage data-testid="promotion-create-form-code-error" />
+                          </Form.Item>
+                        );
+                      }}
+                    />
+
+                    <Form.Field
+                      control={form.control}
+                      name="market_id"
+                      render={({ field }) => {
+                        return (
+                          <Form.Item
+                            className="basis-1/2"
+                            data-testid="promotion-create-form-market-id-item"
+                          >
+                            <Form.Label data-testid="promotion-create-form-market-id-label">
+                              Market ID (optional)
+                            </Form.Label>
+
+                            <Form.Control data-testid="promotion-create-form-market-id-control">
+                              <Input
+                                {...field}
+                                placeholder="bonbeauty"
+                                data-testid="promotion-create-form-market-id-input"
+                              />
+                            </Form.Control>
+
+                            <Text
+                              size="small"
+                              leading="compact"
+                              className="text-ui-fg-subtle"
+                              data-testid="promotion-create-form-market-id-description"
+                            >
+                              Leave empty to keep the promotion global across markets.
+                            </Text>
+                            <Form.ErrorMessage data-testid="promotion-create-form-market-id-error" />
                           </Form.Item>
                         );
                       }}

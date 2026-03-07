@@ -25,11 +25,20 @@ type EditPromotionFormProps = {
   promotion: AdminPromotion
 }
 
+type PromotionWithMetadata = AdminPromotion & {
+  metadata?: {
+    gp?: {
+      market_id?: string | null
+    } | null
+  } | null
+}
+
 type AllocationMode = "each" | "across" | "once"
 
 const EditPromotionSchema = zod.object({
   is_automatic: zod.string().toLowerCase(),
   code: zod.string().min(1),
+  market_id: zod.string().optional(),
   is_tax_inclusive: zod.boolean().optional(),
   status: zod.enum(["active", "inactive", "draft"]),
   value_type: zod.enum(["fixed", "percentage"]),
@@ -57,6 +66,9 @@ export const EditPromotionDetailsForm = ({
 }: EditPromotionFormProps) => {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
+  const promotionWithMetadata = promotion as PromotionWithMetadata
+  const currentMarketId =
+    promotionWithMetadata.metadata?.gp?.market_id?.trim() || ""
   const allocationRaw = promotion.application_method?.allocation as
     | string
     | undefined
@@ -72,6 +84,7 @@ export const EditPromotionDetailsForm = ({
       is_automatic: promotion.is_automatic!.toString(),
       is_tax_inclusive: promotion.is_tax_inclusive,
       code: promotion.code,
+      market_id: currentMarketId,
       status: promotion.status,
       value: promotion.application_method!.value,
       allocation: allocationDefault,
@@ -99,6 +112,7 @@ export const EditPromotionDetailsForm = ({
   const handleSubmit = form.handleSubmit(async (data) => {
     const value =
       typeof data.value === "number" ? data.value : parseFloat(data.value)
+    const normalizedMarketId = data.market_id?.trim() ? data.market_id.trim() : null
 
     if (isNaN(value) || value < 0) {
       form.setError("value", { message: t("promotions.form.value.invalid") })
@@ -110,6 +124,9 @@ return
       {
         is_automatic: data.is_automatic === "true",
         code: data.code,
+        additional_data: {
+          gp_market_id: normalizedMarketId,
+        },
         status: data.status,
         is_tax_inclusive: data.is_tax_inclusive,
         application_method: {
@@ -281,6 +298,36 @@ return (
                   components={[<br key="break" />]}
                 />
               </Text>
+
+              <Form.Field
+                control={form.control}
+                name="market_id"
+                render={({ field }) => {
+                  return (
+                    <Form.Item data-testid="promotion-edit-details-form-market-id-item">
+                      <Form.Label data-testid="promotion-edit-details-form-market-id-label">
+                        Market ID (optional)
+                      </Form.Label>
+                      <Form.Control data-testid="promotion-edit-details-form-market-id-control">
+                        <Input
+                          {...field}
+                          placeholder="bonbeauty"
+                          data-testid="promotion-edit-details-form-market-id-input"
+                        />
+                      </Form.Control>
+                      <Text
+                        size="small"
+                        leading="compact"
+                        className="text-ui-fg-subtle"
+                        data-testid="promotion-edit-details-form-market-id-description"
+                      >
+                        Leave empty to make the promotion global.
+                      </Text>
+                      <Form.ErrorMessage data-testid="promotion-edit-details-form-market-id-error" />
+                    </Form.Item>
+                  )
+                }}
+              />
             </div>
 
             {promotion.application_method?.target_type !==

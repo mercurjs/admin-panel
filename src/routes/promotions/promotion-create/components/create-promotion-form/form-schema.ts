@@ -24,6 +24,7 @@ export const CreatePromotionSchema = z
     campaign_choice: z.enum(["none", "existing", "new"]).optional(),
     is_automatic: z.string().toLowerCase(),
     code: z.string().min(1),
+    market_id: z.string().optional(),
     type: z.enum(["buyget", "standard"]),
     status: z.enum(["draft", "active", "inactive"]),
     rules: RuleSchema,

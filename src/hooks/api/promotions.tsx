@@ -13,6 +13,13 @@ import { queryKeysFactory } from "../../lib/query-key-factory"
 import { campaignsQueryKeys } from "./campaigns"
 
 const PROMOTIONS_QUERY_KEY = "promotions" as const
+
+export type AdminCreatePromotionPayload =
+  HttpTypes.AdminCreatePromotion & HttpTypes.AdditionalData
+
+export type AdminUpdatePromotionPayload =
+  HttpTypes.AdminUpdatePromotion & HttpTypes.AdditionalData
+
 export const promotionsQueryKeys = {
   ...queryKeysFactory(PROMOTIONS_QUERY_KEY),
   // TODO: handle invalidations properly
@@ -189,7 +196,7 @@ export const useCreatePromotion = (
   options?: UseMutationOptions<
     HttpTypes.AdminPromotionResponse,
     FetchError,
-    HttpTypes.AdminCreatePromotion
+    AdminCreatePromotionPayload
   >
 ) => {
   return useMutation({
@@ -208,7 +215,7 @@ export const useUpdatePromotion = (
   options?: UseMutationOptions<
     HttpTypes.AdminPromotionResponse,
     FetchError,
-    HttpTypes.AdminUpdatePromotion
+    AdminUpdatePromotionPayload
   >
 ) => {
   return useMutation({
