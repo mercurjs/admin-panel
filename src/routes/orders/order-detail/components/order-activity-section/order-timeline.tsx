@@ -1,54 +1,54 @@
-import { Button, Text, Tooltip, clx, toast, usePrompt } from "@medusajs/ui"
-import { Collapsible as RadixCollapsible } from "radix-ui"
+import { useMemo, useState, type PropsWithChildren, type ReactNode } from 'react';
 
-import { PropsWithChildren, ReactNode, useMemo, useState } from "react"
-
+import { By } from '@components/common/user-link';
 import {
+  useCancelOrderTransfer,
+  useCustomer,
+  useOrderChanges,
+  useOrderLineItems
+} from '@hooks/api';
+import { useCancelClaim, useClaims } from '@hooks/api/claims';
+import { useCancelExchange, useExchanges } from '@hooks/api/exchanges';
+import { useCancelReturn, useReturns } from '@hooks/api/returns';
+import { useDate } from '@hooks/use-date';
+import { getFormattedAddress } from '@lib/addresses';
+import { getStylizedAmount } from '@lib/money-amount-helpers';
+import { getPaymentsFromOrder } from '@lib/orders';
+import type {
   AdminClaim,
   AdminExchange,
   AdminFulfillment,
   AdminOrder,
   AdminOrderChange,
-  AdminReturn,
-} from "@medusajs/types"
-import { useTranslation } from "react-i18next"
+  AdminOrderLineItem,
+  AdminReturn
+} from '@medusajs/types';
+import { Button, clx, Text, toast, Tooltip, usePrompt } from '@medusajs/ui';
+import { useAdminManagedLocations } from '@routes/orders/order-detail/context/admin-managed-locations-context';
+import { Collapsible as RadixCollapsible } from 'radix-ui';
+import { useTranslation } from 'react-i18next';
 
-import { AdminOrderLineItem } from "@medusajs/types"
-import { By } from "../../../../../components/common/user-link"
-import {
-  useCancelOrderTransfer,
-  useCustomer,
-  useOrderChanges,
-  useOrderLineItems,
-} from "../../../../../hooks/api"
-import { useCancelClaim, useClaims } from "../../../../../hooks/api/claims"
-import {
-  useCancelExchange,
-  useExchanges,
-} from "../../../../../hooks/api/exchanges"
-import { useCancelReturn, useReturns } from "../../../../../hooks/api/returns"
-import { useDate } from "../../../../../hooks/use-date"
-import { getFormattedAddress } from "../../../../../lib/addresses"
-import { getStylizedAmount } from "../../../../../lib/money-amount-helpers"
-import { getPaymentsFromOrder } from "../../../../../lib/orders"
-import ActivityItems from "./activity-items"
-import ChangeDetailsTooltip from "./change-details-tooltip"
+import ActivityItems from './activity-items';
+import ChangeDetailsTooltip from './change-details-tooltip';
 
 type OrderTimelineProps = {
-  order: AdminOrder
-}
+  order: AdminOrder;
+};
 
 /**
  * Order Changes that are not related to RMA flows
  */
-const NON_RMA_CHANGE_TYPES = ["transfer", "update_order"]
+const NON_RMA_CHANGE_TYPES = ['transfer', 'update_order'];
 
 export const OrderTimeline = ({ order }: OrderTimelineProps) => {
-  const items = useActivityItems(order)
+  const items = useActivityItems(order);
 
   if (items.length <= 3) {
     return (
-      <div className="flex flex-col gap-y-0.5" data-testid="order-timeline">
+      <div
+        className="flex flex-col gap-y-0.5"
+        data-testid="order-timeline"
+      >
         {items.map((item, index) => {
           return (
             <OrderActivityItem
@@ -62,18 +62,21 @@ export const OrderTimeline = ({ order }: OrderTimelineProps) => {
             >
               {item.children}
             </OrderActivityItem>
-          )
+          );
         })}
       </div>
-    )
+    );
   }
 
-  const lastItems = items.slice(0, 2)
-  const collapsibleItems = items.slice(2, items.length - 1)
-  const firstItem = items[items.length - 1]
+  const lastItems = items.slice(0, 2);
+  const collapsibleItems = items.slice(2, items.length - 1);
+  const firstItem = items[items.length - 1];
 
   return (
-    <div className="flex flex-col gap-y-0.5" data-testid="order-timeline">
+    <div
+      className="flex flex-col gap-y-0.5"
+      data-testid="order-timeline"
+    >
       {lastItems.map((item, index) => {
         return (
           <OrderActivityItem
@@ -86,7 +89,7 @@ export const OrderTimeline = ({ order }: OrderTimelineProps) => {
           >
             {item.children}
           </OrderActivityItem>
-        )
+        );
       })}
       <OrderActivityCollapsible activities={collapsibleItems} />
       <OrderActivityItem
@@ -100,85 +103,73 @@ export const OrderTimeline = ({ order }: OrderTimelineProps) => {
         {firstItem.children}
       </OrderActivityItem>
     </div>
-  )
-}
+  );
+};
 
 type Activity = {
-  title: string
-  timestamp: string | Date
-  children?: ReactNode
-  itemsToSend?: (
-    | AdminClaim["additional_items"]
-    | AdminExchange["additional_items"]
-  )[]
-  itemsToReturn?: AdminReturn["items"]
-  itemsMap?: Map<string, AdminOrderLineItem>
-}
+  title: string;
+  timestamp: string | Date;
+  children?: ReactNode;
+  itemsToSend?: (AdminClaim['additional_items'] | AdminExchange['additional_items'])[];
+  itemsToReturn?: AdminReturn['items'];
+  itemsMap?: Map<string, AdminOrderLineItem>;
+};
 
 const useActivityItems = (order: AdminOrder): Activity[] => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const { order_changes: orderChanges = [] } = useOrderChanges(order.id, {
-    change_type: [
-      "edit",
-      "claim",
-      "exchange",
-      "return",
-      "transfer",
-      "update_order",
-    ],
-  })
+    change_type: ['edit', 'claim', 'exchange', 'return', 'transfer', 'update_order']
+  });
 
-  const rmaChanges = orderChanges.filter(
-    (oc) => !NON_RMA_CHANGE_TYPES.includes(oc.change_type)
-  )
+  const rmaChanges = orderChanges.filter(oc => !NON_RMA_CHANGE_TYPES.includes(oc.change_type));
 
-  const missingLineItemIds = getMissingLineItemIds(order, rmaChanges)
+  const missingLineItemIds = getMissingLineItemIds(order, rmaChanges);
   const { order_items: removedLineItems = [] } = useOrderLineItems(
     order.id,
 
     {
-      fields: "+quantity",
-      item_id: missingLineItemIds,
+      fields: '+quantity',
+      item_id: missingLineItemIds
     },
     {
-      enabled: !!rmaChanges.length,
+      enabled: !!rmaChanges.length
     }
-  )
+  );
 
   const itemsMap = useMemo(() => {
-    const _itemsMap = new Map(order?.items?.map((i) => [i.id, i]))
+    const _itemsMap = new Map(order?.items?.map(i => [i.id, i]));
 
     for (const id of missingLineItemIds) {
-      const i = removedLineItems.find((i) => i.item.id === id)
+      const i = removedLineItems.find(i => i.item.id === id);
 
       if (i) {
-        _itemsMap.set(id, { ...i.item, quantity: i.quantity }) // copy quantity from OrderItem to OrderLineItem
+        _itemsMap.set(id, { ...i.item, quantity: i.quantity }); // copy quantity from OrderItem to OrderLineItem
       }
     }
 
-    return _itemsMap
-  }, [order.items, removedLineItems, missingLineItemIds])
+    return _itemsMap;
+  }, [order.items, removedLineItems, missingLineItemIds]);
 
   const { returns = [] } = useReturns({
     order_id: order.id,
-    fields: "+received_at,*items",
-  })
+    fields: '+received_at,*items,+location_id'
+  });
 
   const { claims = [] } = useClaims({
     order_id: order.id,
-    fields: "*additional_items",
-  })
+    fields: '*additional_items'
+  });
 
   const { exchanges = [] } = useExchanges({
     order_id: order.id,
-    fields: "*additional_items",
-  })
+    fields: '*additional_items'
+  });
 
-  const payments = getPaymentsFromOrder(order)
+  const payments = getPaymentsFromOrder(order);
 
-  const notes = []
-  const isLoading = false
+  const notes = [];
+  const isLoading = false;
   // const { notes, isLoading, isError, error } = useNotes(
   //   {
   //     resource_id: order.id,
@@ -196,169 +187,197 @@ const useActivityItems = (order: AdminOrder): Activity[] => {
 
   return useMemo(() => {
     if (isLoading) {
-      return []
+      return [];
     }
 
-    const items: Activity[] = []
+    const items: Activity[] = [];
 
     for (const payment of payments) {
-      const amount = payment.amount as number
+      const amount = payment.amount as number;
 
       items.push({
-        title: t("orders.activity.events.payment.awaiting"),
+        title: t('orders.activity.events.payment.awaiting'),
         timestamp: payment.created_at!,
         children: (
-          <Text size="small" className="text-ui-fg-subtle">
+          <Text
+            size="small"
+            className="text-ui-fg-subtle"
+          >
             {getStylizedAmount(amount, payment.currency_code)}
           </Text>
-        ),
-      })
+        )
+      });
 
       if (payment.canceled_at) {
         items.push({
-          title: t("orders.activity.events.payment.canceled"),
+          title: t('orders.activity.events.payment.canceled'),
           timestamp: payment.canceled_at,
           children: (
-            <Text size="small" className="text-ui-fg-subtle">
+            <Text
+              size="small"
+              className="text-ui-fg-subtle"
+            >
               {getStylizedAmount(amount, payment.currency_code)}
             </Text>
-          ),
-        })
+          )
+        });
       }
 
       if (payment.captured_at) {
         items.push({
-          title: t("orders.activity.events.payment.captured"),
+          title: t('orders.activity.events.payment.captured'),
           timestamp: payment.captured_at,
           children: (
-            <Text size="small" className="text-ui-fg-subtle">
+            <Text
+              size="small"
+              className="text-ui-fg-subtle"
+            >
               {getStylizedAmount(amount, payment.currency_code)}
             </Text>
-          ),
-        })
+          )
+        });
       }
 
       for (const refund of payment.refunds || []) {
         items.push({
-          title: t("orders.activity.events.payment.refunded"),
+          title: t('orders.activity.events.payment.refunded'),
           timestamp: refund.created_at,
           children: (
-            <Text size="small" className="text-ui-fg-subtle">
-              {getStylizedAmount(
-                refund.amount as number,
-                payment.currency_code
-              )}
+            <Text
+              size="small"
+              className="text-ui-fg-subtle"
+            >
+              {getStylizedAmount(refund.amount as number, payment.currency_code)}
             </Text>
-          ),
-        })
+          )
+        });
       }
     }
 
     for (const fulfillment of order.fulfillments || []) {
       items.push({
-        title: t("orders.activity.events.fulfillment.created"),
+        title: t('orders.activity.events.fulfillment.created'),
         timestamp: fulfillment.created_at,
-        children: <FulfillmentCreatedBody fulfillment={fulfillment} />,
-      })
+        children: <FulfillmentCreatedBody fulfillment={fulfillment} />
+      });
 
       if (fulfillment.delivered_at) {
         items.push({
-          title: t("orders.activity.events.fulfillment.delivered"),
+          title: t('orders.activity.events.fulfillment.delivered'),
           timestamp: fulfillment.delivered_at,
-          children: <FulfillmentCreatedBody fulfillment={fulfillment} />,
-        })
+          children: <FulfillmentCreatedBody fulfillment={fulfillment} />
+        });
       }
 
       if (fulfillment.shipped_at) {
         items.push({
-          title: t("orders.activity.events.fulfillment.shipped"),
+          title: t('orders.activity.events.fulfillment.shipped'),
           timestamp: fulfillment.shipped_at,
           children: (
-            <FulfillmentCreatedBody fulfillment={fulfillment} isShipment />
-          ),
-        })
+            <FulfillmentCreatedBody
+              fulfillment={fulfillment}
+              isShipment
+            />
+          )
+        });
       }
 
       if (fulfillment.canceled_at) {
         items.push({
-          title: t("orders.activity.events.fulfillment.canceled"),
-          timestamp: fulfillment.canceled_at,
-        })
+          title: t('orders.activity.events.fulfillment.canceled'),
+          timestamp: fulfillment.canceled_at
+        });
       }
     }
 
-    const returnMap = new Map<string, AdminReturn>()
+    const returnMap = new Map<string, AdminReturn>();
 
     for (const ret of returns) {
-      returnMap.set(ret.id, ret)
+      returnMap.set(ret.id, ret);
 
       if (ret.claim_id || ret.exchange_id) {
-        continue
+        continue;
       }
 
       // Always display created action
       items.push({
-        title: t("orders.activity.events.return.created", {
-          returnId: ret.id.slice(-7),
+        title: t('orders.activity.events.return.created', {
+          returnId: ret.id.slice(-7)
         }),
         timestamp: ret.created_at,
         itemsToReturn: ret?.items,
         itemsMap,
-        children: <ReturnBody orderReturn={ret} isCreated={!ret.canceled_at} />,
-      })
+        children: (
+          <ReturnBody
+            orderReturn={ret}
+            isCreated={!ret.canceled_at}
+          />
+        )
+      });
 
       if (ret.canceled_at) {
         items.push({
-          title: t("orders.activity.events.return.canceled", {
-            returnId: ret.id.slice(-7),
+          title: t('orders.activity.events.return.canceled', {
+            returnId: ret.id.slice(-7)
           }),
-          timestamp: ret.canceled_at,
-        })
+          timestamp: ret.canceled_at
+        });
       }
 
-      if (ret.status === "received" || ret.status === "partially_received") {
+      if (ret.status === 'received' || ret.status === 'partially_received') {
         items.push({
-          title: t("orders.activity.events.return.received", {
-            returnId: ret.id.slice(-7),
+          title: t('orders.activity.events.return.received', {
+            returnId: ret.id.slice(-7)
           }),
           timestamp: ret.received_at,
           itemsToReturn: ret?.items,
           itemsMap,
-          children: <ReturnBody orderReturn={ret} isReceived />,
-        })
+          children: (
+            <ReturnBody
+              orderReturn={ret}
+              isCreated={false}
+              isReceived
+            />
+          )
+        });
       }
     }
 
     for (const claim of claims) {
-      const claimReturn = returnMap.get(claim.return_id!)
+      const claimReturn = returnMap.get(claim.return_id!);
 
       items.push({
         title: t(
           claim.canceled_at
-            ? "orders.activity.events.claim.canceled"
-            : "orders.activity.events.claim.created",
+            ? 'orders.activity.events.claim.canceled'
+            : 'orders.activity.events.claim.created',
           {
-            claimId: claim.id.slice(-7),
+            claimId: claim.id.slice(-7)
           }
         ),
         timestamp: claim.canceled_at || claim.created_at,
         itemsToSend: claim.additional_items,
         itemsToReturn: claimReturn?.items,
         itemsMap,
-        children: <ClaimBody claim={claim} claimReturn={claimReturn} />,
-      })
+        children: (
+          <ClaimBody
+            claim={claim}
+            claimReturn={claimReturn}
+          />
+        )
+      });
     }
 
     for (const exchange of exchanges) {
-      const exchangeReturn = returnMap.get(exchange.return_id!)
+      const exchangeReturn = returnMap.get(exchange.return_id!);
 
       items.push({
         title: t(
           exchange.canceled_at
-            ? "orders.activity.events.exchange.canceled"
-            : "orders.activity.events.exchange.created",
+            ? 'orders.activity.events.exchange.canceled'
+            : 'orders.activity.events.exchange.created',
           {
-            exchangeId: exchange.id.slice(-7),
+            exchangeId: exchange.id.slice(-7)
           }
         ),
         timestamp: exchange.canceled_at || exchange.created_at,
@@ -366,118 +385,117 @@ const useActivityItems = (order: AdminOrder): Activity[] => {
         itemsToReturn: exchangeReturn?.items,
         itemsMap,
         children: (
-          <ExchangeBody exchange={exchange} exchangeReturn={exchangeReturn} />
-        ),
-      })
+          <ExchangeBody
+            exchange={exchange}
+            exchangeReturn={exchangeReturn}
+          />
+        )
+      });
     }
 
-    for (const edit of orderChanges.filter((oc) => oc.change_type === "edit")) {
-      const isConfirmed = edit.status === "confirmed"
-      const isPending = edit.status === "pending"
+    for (const edit of orderChanges.filter(oc => oc.change_type === 'edit')) {
+      const isConfirmed = edit.status === 'confirmed';
+      const isPending = edit.status === 'pending';
 
       if (isPending) {
-        continue
+        continue;
       }
 
       items.push({
         title: t(`orders.activity.events.edit.${edit.status}`, {
-          editId: edit.id.slice(-7),
+          editId: edit.id.slice(-7)
         }),
         timestamp:
-          edit.status === "requested"
+          edit.status === 'requested'
             ? edit.requested_at
-            : edit.status === "confirmed"
+            : edit.status === 'confirmed'
               ? edit.confirmed_at
-              : edit.status === "declined"
+              : edit.status === 'declined'
                 ? edit.declined_at
-                : edit.status === "canceled"
+                : edit.status === 'canceled'
                   ? edit.canceled_at
                   : edit.created_at,
-        children: isConfirmed ? <OrderEditBody edit={edit} /> : null,
-      })
+        children: isConfirmed ? <OrderEditBody edit={edit} /> : null
+      });
     }
 
-    for (const transfer of orderChanges.filter(
-      (oc) => oc.change_type === "transfer"
-    )) {
+    for (const transfer of orderChanges.filter(oc => oc.change_type === 'transfer')) {
       if (transfer.requested_at) {
         items.push({
           title: t(`orders.activity.events.transfer.requested`, {
-            transferId: transfer.id.slice(-7),
+            transferId: transfer.id.slice(-7)
           }),
           timestamp: transfer.requested_at,
-          children: <TransferOrderRequestBody transfer={transfer} />,
-        })
+          children: <TransferOrderRequestBody transfer={transfer} />
+        });
       }
 
       if (transfer.confirmed_at) {
         items.push({
           title: t(`orders.activity.events.transfer.confirmed`, {
-            transferId: transfer.id.slice(-7),
+            transferId: transfer.id.slice(-7)
           }),
-          timestamp: transfer.confirmed_at,
-        })
+          timestamp: transfer.confirmed_at
+        });
       }
       if (transfer.declined_at) {
         items.push({
           title: t(`orders.activity.events.transfer.declined`, {
-            transferId: transfer.id.slice(-7),
+            transferId: transfer.id.slice(-7)
           }),
-          timestamp: transfer.declined_at,
-        })
+          timestamp: transfer.declined_at
+        });
       }
     }
 
-    for (const update of orderChanges.filter(
-      (oc) => oc.change_type === "update_order"
-    )) {
-      const updateType = update.actions[0]?.details?.type
+    for (const update of orderChanges.filter(oc => oc.change_type === 'update_order')) {
+      const updateType = update.actions[0]?.details?.type;
 
-      if (updateType === "shipping_address") {
+      if (updateType === 'shipping_address') {
         items.push({
           title: (
             <ChangeDetailsTooltip
               title={t(`orders.activity.events.update_order.shipping_address`)}
               previous={getFormattedAddress({
-                address: update.actions[0].details.old,
-              }).join(", ")}
+                address: update.actions[0].details.old
+              }).join(', ')}
               next={getFormattedAddress({
-                address: update.actions[0].details.new,
-              }).join(", ")}
+                address: update.actions[0].details.new
+              }).join(', ')}
             />
           ),
           timestamp: update.created_at,
           children: (
-            <div className="text-ui-fg-subtle mt-2 flex gap-x-2 text-sm">
-              {t("fields.by")} <By id={update.created_by} />
+            <div className="mt-2 flex gap-x-2 text-sm text-ui-fg-subtle">
+              {t('fields.by')} <By id={update.created_by} />
             </div>
-          ),
-        })
+          )
+        });
       }
 
-      if (updateType === "billing_address") {
+      if (updateType === 'billing_address') {
         items.push({
           title: (
             <ChangeDetailsTooltip
               title={t(`orders.activity.events.update_order.billing_address`)}
               previous={getFormattedAddress({
-                address: update.actions[0].details.old,
-              }).join(", ")}
+                address: update.actions[0].details.old
+              }).join(', ')}
               next={getFormattedAddress({
-                address: update.actions[0].details.new,
-              }).join(", ")}
+                address: update.actions[0].details.new
+              }).join(', ')}
             />
           ),
           timestamp: update.created_at,
           children: (
-            <div className="text-ui-fg-subtle mt-2 flex gap-x-2 text-sm">
-              {t("fields.by")} <By id={update.created_by} />
+            <div className="mt-2 flex gap-x-2 text-sm text-ui-fg-subtle">
+              {t('fields.by')} <By id={update.created_by} />
             </div>
-          ),
-        })
+          )
+        });
       }
 
-      if (updateType === "email") {
+      if (updateType === 'email') {
         items.push({
           title: (
             <ChangeDetailsTooltip
@@ -488,11 +506,11 @@ const useActivityItems = (order: AdminOrder): Activity[] => {
           ),
           timestamp: update.created_at,
           children: (
-            <div className="text-ui-fg-subtle mt-2 flex gap-x-2 text-sm">
-              {t("fields.by")} <By id={update.created_by} />
+            <div className="mt-2 flex gap-x-2 text-sm text-ui-fg-subtle">
+              {t('fields.by')} <By id={update.created_by} />
             </div>
-          ),
-        })
+          )
+        });
       }
     }
 
@@ -506,48 +524,40 @@ const useActivityItems = (order: AdminOrder): Activity[] => {
 
     if (order.canceled_at) {
       items.push({
-        title: t("orders.activity.events.canceled.title"),
-        timestamp: order.canceled_at,
-      })
+        title: t('orders.activity.events.canceled.title'),
+        timestamp: order.canceled_at
+      });
     }
 
     const sortedActivities = items.sort((a, b) => {
-      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    })
+      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+    });
 
     const createdAt = {
-      title: t("orders.activity.events.placed.title"),
+      title: t('orders.activity.events.placed.title'),
       timestamp: order.created_at,
       children: (
-        <Text size="small" className="text-ui-fg-subtle">
+        <Text
+          size="small"
+          className="text-ui-fg-subtle"
+        >
           {getStylizedAmount(order.total, order.currency_code)}
         </Text>
-      ),
-    }
+      )
+    };
 
-    return [...sortedActivities, createdAt]
-  }, [
-    order,
-    payments,
-    returns,
-    exchanges,
-    orderChanges,
-    notes,
-    isLoading,
-    itemsMap,
-  ])
-}
+    return [...sortedActivities, createdAt];
+  }, [order, payments, returns, exchanges, orderChanges, notes, isLoading, itemsMap]);
+};
 
 type OrderActivityItemProps = PropsWithChildren<{
-  title: string
-  timestamp: string | Date
-  isFirst?: boolean
-  itemsToSend?:
-    | AdminClaim["additional_items"]
-    | AdminExchange["additional_items"]
-  itemsToReturn?: AdminReturn["items"]
-  itemsMap?: Map<string, AdminOrderLineItem>
-}>
+  title: string;
+  timestamp: string | Date;
+  isFirst?: boolean;
+  itemsToSend?: AdminClaim['additional_items'] | AdminExchange['additional_items'];
+  itemsToReturn?: AdminReturn['items'];
+  itemsMap?: Map<string, AdminOrderLineItem>;
+}>;
 
 const OrderActivityItem = ({
   title,
@@ -556,23 +566,29 @@ const OrderActivityItem = ({
   children,
   itemsToSend,
   itemsToReturn,
-  itemsMap,
+  itemsMap
 }: OrderActivityItemProps) => {
-  const { getFullDate, getRelativeDate } = useDate()
+  const { getFullDate, getRelativeDate } = useDate();
 
   return (
-    <div className="grid grid-cols-[20px_1fr] items-start gap-2" data-testid="order-activity-item">
-      <div className="flex size-full flex-col items-center gap-y-0.5" data-testid="order-activity-item-indicator">
+    <div
+      className="grid grid-cols-[20px_1fr] items-start gap-2"
+      data-testid="order-activity-item"
+    >
+      <div
+        className="flex size-full flex-col items-center gap-y-0.5"
+        data-testid="order-activity-item-indicator"
+      >
         <div className="flex size-5 items-center justify-center">
-          <div className="bg-ui-bg-base shadow-borders-base flex size-2.5 items-center justify-center rounded-full">
-            <div className="bg-ui-tag-neutral-icon size-1.5 rounded-full" />
+          <div className="flex size-2.5 items-center justify-center rounded-full bg-ui-bg-base shadow-borders-base">
+            <div className="size-1.5 rounded-full bg-ui-tag-neutral-icon" />
           </div>
         </div>
-        {!isFirst && <div className="bg-ui-border-base w-px flex-1" />}
+        {!isFirst && <div className="w-px flex-1 bg-ui-border-base" />}
       </div>
       <div
         className={clx({
-          "pb-4": !isFirst,
+          'pb-4': !isFirst
         })}
         data-testid="order-activity-item-content"
       >
@@ -586,18 +602,21 @@ const OrderActivityItem = ({
               itemsMap={itemsMap}
             />
           ) : (
-            <Text size="small" leading="compact" weight="plus" data-testid="order-activity-item-title">
+            <Text
+              size="small"
+              leading="compact"
+              weight="plus"
+              data-testid="order-activity-item-title"
+            >
               {title}
             </Text>
           )}
           {timestamp && (
-            <Tooltip
-              content={getFullDate({ date: timestamp, includeTime: true })}
-            >
+            <Tooltip content={getFullDate({ date: timestamp, includeTime: true })}>
               <Text
                 size="small"
                 leading="compact"
-                className="text-ui-fg-subtle text-right"
+                className="text-right text-ui-fg-subtle"
                 data-testid="order-activity-item-timestamp"
               >
                 {getRelativeDate(timestamp)}
@@ -608,28 +627,27 @@ const OrderActivityItem = ({
         <div>{children}</div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-const OrderActivityCollapsible = ({
-  activities,
-}: {
-  activities: Activity[]
-}) => {
-  const [open, setOpen] = useState(false)
+const OrderActivityCollapsible = ({ activities }: { activities: Activity[] }) => {
+  const [open, setOpen] = useState(false);
 
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   if (!activities.length) {
-    return null
+    return null;
   }
 
   return (
-    <RadixCollapsible.Root open={open} onOpenChange={setOpen}>
+    <RadixCollapsible.Root
+      open={open}
+      onOpenChange={setOpen}
+    >
       {!open && (
         <div className="grid grid-cols-[20px_1fr] items-start gap-2">
           <div className="flex size-full flex-col items-center">
-            <div className="border-ui-border-strong w-px flex-1 bg-[linear-gradient(var(--border-strong)_33%,rgba(255,255,255,0)_0%)] bg-[length:1px_3px] bg-right bg-repeat-y" />
+            <div className="w-px flex-1 border-ui-border-strong bg-[linear-gradient(var(--border-strong)_33%,rgba(255,255,255,0)_0%)] bg-[length:1px_3px] bg-right bg-repeat-y" />
           </div>
           <div className="pb-4">
             <RadixCollapsible.Trigger className="text-left">
@@ -639,8 +657,8 @@ const OrderActivityCollapsible = ({
                 weight="plus"
                 className="text-ui-fg-muted"
               >
-                {t("orders.activity.showMoreActivities", {
-                  count: activities.length,
+                {t('orders.activity.showMoreActivities', {
+                  count: activities.length
                 })}
               </Text>
             </RadixCollapsible.Trigger>
@@ -661,13 +679,13 @@ const OrderActivityCollapsible = ({
               >
                 {item.children}
               </OrderActivityItem>
-            )
+            );
           })}
         </div>
       </RadixCollapsible.Content>
     </RadixCollapsible.Root>
-  )
-}
+  );
+};
 
 /**
  * TODO: Add once notes are supported.
@@ -731,145 +749,161 @@ const OrderActivityCollapsible = ({
 //   )
 // }
 
-const FulfillmentCreatedBody = ({
-  fulfillment,
-}: {
-  fulfillment: AdminFulfillment
-}) => {
-  const { t } = useTranslation()
+const FulfillmentCreatedBody = ({ fulfillment }: { fulfillment: AdminFulfillment }) => {
+  const { t } = useTranslation();
 
   const numberOfItems = fulfillment.items.reduce((acc, item) => {
-    return acc + item.quantity
-  }, 0)
+    return acc + item.quantity;
+  }, 0);
 
   return (
     <div>
-      <Text size="small" className="text-ui-fg-subtle">
-        {t("orders.activity.events.fulfillment.items", {
-          count: numberOfItems,
+      <Text
+        size="small"
+        className="text-ui-fg-subtle"
+      >
+        {t('orders.activity.events.fulfillment.items', {
+          count: numberOfItems
         })}
       </Text>
     </div>
-  )
-}
+  );
+};
 
 const ReturnBody = ({
   orderReturn,
   isCreated,
-  isReceived,
+  isReceived
 }: {
-  orderReturn: AdminReturn
-  isCreated: boolean
-  isReceived?: boolean
+  orderReturn: AdminReturn;
+  isCreated: boolean;
+  isReceived?: boolean;
 }) => {
-  const prompt = usePrompt()
-  const { t } = useTranslation()
+  const prompt = usePrompt();
+  const { t } = useTranslation();
+  const { canAdminActOnLocation } = useAdminManagedLocations();
+  const canAct = canAdminActOnLocation(orderReturn.location_id);
 
   const { mutateAsync: cancelReturnRequest } = useCancelReturn(
     orderReturn.id,
     orderReturn.order_id
-  )
+  );
 
   const onCancel = async () => {
     const res = await prompt({
-      title: t("orders.returns.cancel.title"),
-      description: t("orders.returns.cancel.description"),
-      confirmText: t("actions.confirm"),
-      cancelText: t("actions.cancel"),
-    })
+      title: t('orders.returns.cancel.title'),
+      description: t('orders.returns.cancel.description'),
+      confirmText: t('actions.confirm'),
+      cancelText: t('actions.cancel')
+    });
 
     if (!res) {
-      return
+      return;
     }
 
-    await cancelReturnRequest().catch((error) => {
-      toast.error(error.message)
-    })
-  }
+    await cancelReturnRequest().catch(error => {
+      toast.error(error.message);
+    });
+  };
 
   const numberOfItems = orderReturn.items.reduce((acc, item) => {
-    return acc + (isReceived ? item.received_quantity : item.quantity) // TODO: revisit when we add dismissed quantity on ReturnItem
-  }, 0)
+    return acc + (isReceived ? item.received_quantity : item.quantity); // TODO: revisit when we add dismissed quantity on ReturnItem
+  }, 0);
 
   return (
     <div className="flex items-start gap-1">
-      <Text size="small" className="text-ui-fg-subtle">
-        {t("orders.activity.events.return.items", {
-          count: numberOfItems,
+      <Text
+        size="small"
+        className="text-ui-fg-subtle"
+      >
+        {t('orders.activity.events.return.items', {
+          count: numberOfItems
         })}
       </Text>
       {isCreated && (
         <>
           <div className="mt-[2px] flex items-center leading-none">⋅</div>
-          <Button
-            onClick={onCancel}
-            className="text-ui-fg-subtle h-auto px-0 leading-none hover:bg-transparent"
-            variant="transparent"
-            size="small"
-          >
-            {t("actions.cancel")}
-          </Button>
+          {canAct ? (
+            <Button
+              onClick={onCancel}
+              className="h-auto px-0 leading-none text-ui-fg-subtle hover:bg-transparent"
+              variant="transparent"
+              size="small"
+            >
+              {t('actions.cancel')}
+            </Button>
+          ) : (
+            <Tooltip content={t('orders.returns.cantBeCanceledByAdmin')}>
+              <span>
+                <Button
+                  disabled
+                  className="h-auto px-0 leading-none text-ui-fg-subtle"
+                  variant="transparent"
+                  size="small"
+                >
+                  {t('actions.cancel')}
+                </Button>
+              </span>
+            </Tooltip>
+          )}
         </>
       )}
     </div>
-  )
-}
+  );
+};
 
-const ClaimBody = ({
-  claim,
-  claimReturn,
-}: {
-  claim: AdminClaim
-  claimReturn?: AdminReturn
-}) => {
-  const prompt = usePrompt()
-  const { t } = useTranslation()
+const ClaimBody = ({ claim, claimReturn }: { claim: AdminClaim; claimReturn?: AdminReturn }) => {
+  const prompt = usePrompt();
+  const { t } = useTranslation();
 
-  const isCanceled = !!claim.created_at
+  const isCanceled = !!claim.created_at;
 
-  const { mutateAsync: cancelClaim } = useCancelClaim(claim.id, claim.order_id)
+  const { mutateAsync: cancelClaim } = useCancelClaim(claim.id, claim.order_id);
 
   const onCancel = async () => {
     const res = await prompt({
-      title: t("orders.claims.cancel.title"),
-      description: t("orders.claims.cancel.description"),
-      confirmText: t("actions.confirm"),
-      cancelText: t("actions.cancel"),
-    })
+      title: t('orders.claims.cancel.title'),
+      description: t('orders.claims.cancel.description'),
+      confirmText: t('actions.confirm'),
+      cancelText: t('actions.cancel')
+    });
 
     if (!res) {
-      return
+      return;
     }
 
-    await cancelClaim().catch((error) => {
-      toast.error(error.message)
-    })
-  }
+    await cancelClaim().catch(error => {
+      toast.error(error.message);
+    });
+  };
 
   const outboundItems = (claim.additional_items || []).reduce(
     (acc, item) => (acc + item.quantity) as number,
     0
-  )
+  );
 
-  const inboundItems = (claimReturn?.items || []).reduce(
-    (acc, item) => acc + item.quantity,
-    0
-  )
+  const inboundItems = (claimReturn?.items || []).reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <div>
       {outboundItems > 0 && (
-        <Text size="small" className="text-ui-fg-subtle">
-          {t("orders.activity.events.claim.itemsInbound", {
-            count: outboundItems,
+        <Text
+          size="small"
+          className="text-ui-fg-subtle"
+        >
+          {t('orders.activity.events.claim.itemsInbound', {
+            count: outboundItems
           })}
         </Text>
       )}
 
       {inboundItems > 0 && (
-        <Text size="small" className="text-ui-fg-subtle">
-          {t("orders.activity.events.claim.itemsOutbound", {
-            count: inboundItems,
+        <Text
+          size="small"
+          className="text-ui-fg-subtle"
+        >
+          {t('orders.activity.events.claim.itemsOutbound', {
+            count: inboundItems
           })}
         </Text>
       )}
@@ -877,75 +911,75 @@ const ClaimBody = ({
       {!isCanceled && (
         <Button
           onClick={onCancel}
-          className="text-ui-fg-subtle h-auto px-0 leading-none hover:bg-transparent"
+          className="h-auto px-0 leading-none text-ui-fg-subtle hover:bg-transparent"
           variant="transparent"
           size="small"
         >
-          {t("actions.cancel")}
+          {t('actions.cancel')}
         </Button>
       )}
     </div>
-  )
-}
+  );
+};
 
 const ExchangeBody = ({
   exchange,
-  exchangeReturn,
+  exchangeReturn
 }: {
-  exchange: AdminExchange
-  exchangeReturn?: AdminReturn
+  exchange: AdminExchange;
+  exchangeReturn?: AdminReturn;
 }) => {
-  const prompt = usePrompt()
-  const { t } = useTranslation()
+  const prompt = usePrompt();
+  const { t } = useTranslation();
 
-  const isCanceled = !!exchange.canceled_at
+  const isCanceled = !!exchange.canceled_at;
 
-  const { mutateAsync: cancelExchange } = useCancelExchange(
-    exchange.id,
-    exchange.order_id
-  )
+  const { mutateAsync: cancelExchange } = useCancelExchange(exchange.id, exchange.order_id);
 
   const onCancel = async () => {
     const res = await prompt({
-      title: t("orders.exchanges.cancel.title"),
-      description: t("orders.exchanges.cancel.description"),
-      confirmText: t("actions.confirm"),
-      cancelText: t("actions.cancel"),
-    })
+      title: t('orders.exchanges.cancel.title'),
+      description: t('orders.exchanges.cancel.description'),
+      confirmText: t('actions.confirm'),
+      cancelText: t('actions.cancel')
+    });
 
     if (!res) {
-      return
+      return;
     }
 
-    await cancelExchange().catch((error) => {
-      toast.error(error.message)
-    })
-  }
+    await cancelExchange().catch(error => {
+      toast.error(error.message);
+    });
+  };
 
   const outboundItems = (exchange.additional_items || []).reduce(
     (acc, item) => (acc + item.quantity) as number,
     0
-  )
+  );
 
-  const inboundItems = (exchangeReturn?.items || []).reduce(
-    (acc, item) => acc + item.quantity,
-    0
-  )
+  const inboundItems = (exchangeReturn?.items || []).reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <div>
       {outboundItems > 0 && (
-        <Text size="small" className="text-ui-fg-subtle">
-          {t("orders.activity.events.exchange.itemsInbound", {
-            count: outboundItems,
+        <Text
+          size="small"
+          className="text-ui-fg-subtle"
+        >
+          {t('orders.activity.events.exchange.itemsInbound', {
+            count: outboundItems
           })}
         </Text>
       )}
 
       {inboundItems > 0 && (
-        <Text size="small" className="text-ui-fg-subtle">
-          {t("orders.activity.events.exchange.itemsOutbound", {
-            count: inboundItems,
+        <Text
+          size="small"
+          className="text-ui-fg-subtle"
+        >
+          {t('orders.activity.events.exchange.itemsOutbound', {
+            count: inboundItems
           })}
         </Text>
       )}
@@ -953,75 +987,72 @@ const ExchangeBody = ({
       {!isCanceled && (
         <Button
           onClick={onCancel}
-          className="text-ui-fg-subtle h-auto px-0 leading-none hover:bg-transparent"
+          className="h-auto px-0 leading-none text-ui-fg-subtle hover:bg-transparent"
           variant="transparent"
           size="small"
         >
-          {t("actions.cancel")}
+          {t('actions.cancel')}
         </Button>
       )}
     </div>
-  )
-}
+  );
+};
 
 const OrderEditBody = ({ edit }: { edit: AdminOrderChange }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const [itemsAdded, itemsRemoved] = useMemo(
-    () => countItemsChange(edit.actions),
-    [edit]
-  )
+  const [itemsAdded, itemsRemoved] = useMemo(() => countItemsChange(edit.actions), [edit]);
 
   return (
     <div>
       {itemsAdded > 0 && (
-        <Text size="small" className="text-ui-fg-subtle">
-          {t("labels.added")}: {itemsAdded}
+        <Text
+          size="small"
+          className="text-ui-fg-subtle"
+        >
+          {t('labels.added')}: {itemsAdded}
         </Text>
       )}
 
       {itemsRemoved > 0 && (
-        <Text size="small" className="text-ui-fg-subtle">
-          {t("labels.removed")}: {itemsRemoved}
+        <Text
+          size="small"
+          className="text-ui-fg-subtle"
+        >
+          {t('labels.removed')}: {itemsRemoved}
         </Text>
       )}
     </div>
-  )
-}
+  );
+};
 
-const TransferOrderRequestBody = ({
-  transfer,
-}: {
-  transfer: AdminOrderChange
-}) => {
-  const prompt = usePrompt()
-  const { t } = useTranslation()
+const TransferOrderRequestBody = ({ transfer }: { transfer: AdminOrderChange }) => {
+  const prompt = usePrompt();
+  const { t } = useTranslation();
 
-  const action = transfer.actions[0]
-  const { customer } = useCustomer(action.reference_id)
+  const action = transfer.actions[0];
+  const { customer } = useCustomer(action.reference_id);
 
-  const isCompleted = !!transfer.confirmed_at
+  const isCompleted = !!transfer.confirmed_at;
 
-  const { mutateAsync: cancelTransfer } = useCancelOrderTransfer(
-    transfer.order_id
-  )
+  const { mutateAsync: cancelTransfer } = useCancelOrderTransfer(transfer.order_id);
 
   const handleDelete = async () => {
     const res = await prompt({
-      title: t("general.areYouSure"),
-      description: t("actions.cannotUndo"),
-      confirmText: t("actions.delete"),
-      cancelText: t("actions.cancel"),
-    })
+      title: t('general.areYouSure'),
+      description: t('actions.cannotUndo'),
+      confirmText: t('actions.delete'),
+      cancelText: t('actions.cancel')
+    });
 
     if (!res) {
-      return
+      return;
     }
 
-    await cancelTransfer().catch((error) => {
-      toast.error(error.message)
-    })
-  }
+    await cancelTransfer().catch(error => {
+      toast.error(error.message);
+    });
+  };
 
   /**
    * TODO: change original_email to customer info when action details is changed
@@ -1029,53 +1060,57 @@ const TransferOrderRequestBody = ({
 
   return (
     <div>
-      <Text size="small" className="text-ui-fg-subtle">
-        {t("orders.activity.from")}: {action.details?.original_email}
+      <Text
+        size="small"
+        className="text-ui-fg-subtle"
+      >
+        {t('orders.activity.from')}: {action.details?.original_email}
       </Text>
 
-      <Text size="small" className="text-ui-fg-subtle">
-        {t("orders.activity.to")}:{" "}
-        {customer?.first_name
-          ? `${customer?.first_name} ${customer?.last_name}`
-          : customer?.email}
+      <Text
+        size="small"
+        className="text-ui-fg-subtle"
+      >
+        {t('orders.activity.to')}:{' '}
+        {customer?.first_name ? `${customer?.first_name} ${customer?.last_name}` : customer?.email}
       </Text>
       {!isCompleted && (
         <Button
           onClick={handleDelete}
-          className="text-ui-fg-subtle h-auto px-0 leading-none hover:bg-transparent"
+          className="h-auto px-0 leading-none text-ui-fg-subtle hover:bg-transparent"
           variant="transparent"
           size="small"
         >
-          {t("actions.cancel")}
+          {t('actions.cancel')}
         </Button>
       )}
     </div>
-  )
-}
+  );
+};
 
 /**
  * Returns count of added and removed item quantity
  */
-function countItemsChange(actions: AdminOrderChange["actions"]) {
-  let added = 0
-  let removed = 0
+function countItemsChange(actions: AdminOrderChange['actions']) {
+  let added = 0;
+  let removed = 0;
 
-  actions.forEach((action) => {
-    if (action.action === "ITEM_ADD") {
-      added += action.details!.quantity as number
+  actions.forEach(action => {
+    if (action.action === 'ITEM_ADD') {
+      added += action.details!.quantity as number;
     }
-    if (action.action === "ITEM_UPDATE") {
-      const quantityDiff = action.details!.quantity_diff as number
+    if (action.action === 'ITEM_UPDATE') {
+      const quantityDiff = action.details!.quantity_diff as number;
 
       if (quantityDiff > 0) {
-        added += quantityDiff
+        added += quantityDiff;
       } else {
-        removed += Math.abs(quantityDiff)
+        removed += Math.abs(quantityDiff);
       }
     }
-  })
+  });
 
-  return [added, removed]
+  return [added, removed];
 }
 
 /**
@@ -1083,26 +1118,26 @@ function countItemsChange(actions: AdminOrderChange["actions"]) {
  */
 function getMissingLineItemIds(order: AdminOrder, changes: AdminOrderChange[]) {
   if (!changes?.length) {
-    return []
+    return [];
   }
 
-  const retIds = new Set<string>()
-  const existingItemsMap = new Map(order.items.map((item) => [item.id, true]))
+  const retIds = new Set<string>();
+  const existingItemsMap = new Map(order.items.map(item => [item.id, true]));
 
-  changes.forEach((change) => {
-    change.actions.forEach((action) => {
+  changes.forEach(change => {
+    change.actions.forEach(action => {
       if (!action.details?.reference_id) {
-        return
+        return;
       }
 
       if (
-        (action.details.reference_id as string).startsWith("ordli_") &&
+        (action.details.reference_id as string).startsWith('ordli_') &&
         !existingItemsMap.has(action.details.reference_id as string)
       ) {
-        retIds.add(action.details.reference_id as string)
+        retIds.add(action.details.reference_id as string);
       }
-    })
-  })
+    });
+  });
 
-  return Array.from(retIds)
+  return Array.from(retIds);
 }

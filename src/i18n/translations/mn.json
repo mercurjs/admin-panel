@@ -1004,11 +1004,14 @@
     },
     "transfer": {
       "title": "Өмчлөл шилжүүлэх",
-      "requestSuccess": "Захиалгын шилжүүлэх хүсэлт: {{email}}-д илгээгдсэн.",
+      "requestSuccess": "Захиалгын шилжүүлэх хүсэлт {{customerDetails}}-д илгээгдсэн.",
       "currentOwner": "Одоогийн эзэмшигч",
       "newOwner": "Шинэ эзэмшигч",
       "currentOwnerDescription": "Энэ захиалга холбоотой одоогийн үйлчлүүлэгч.",
-      "newOwnerDescription": "Энэ захиалгыг шилжүүлэх үйлчлүүлэгч."
+      "newOwnerDescription": "Энэ захиалгыг шилжүүлэх үйлчлүүлэгч.",
+      "errors": {
+        "orderChangeAlreadyExists": "Идэвхтэй шилжүүлэх хүсэлт байгаа тул захиалгыг шилжүүлж болохгүй."
+      }
     },
     "payment": {
       "title": "Төлбөрүүд",
@@ -1076,7 +1079,7 @@
     "edit": {
       "email": {
         "title": "Имэйлийг засах",
-        "requestSuccess": "Захиалгын имэйл {{email}}-д шинэчлэгдсэн."
+        "requestSuccess": "Имэйл амжилттай шинэчлэгдлээ."
       },
       "shippingAddress": {
         "title": "Хүргэлтийн хаягийг засах",
@@ -1088,7 +1091,11 @@
       },
       "billingAddress": {
         "title": "Төлбөрийн хаягийг засах",
-        "requestSuccess": "Захиалгын төлбөрийн хаяг шинэчлэгдсэн."
+        "requestSuccess": "Захиалгын төлбөрийн хаяг шинэчлэгдсэн.",
+        "validation": {
+          "addressRequired": "Хаяг оруулна уу",
+          "countryRequired": "Улс сонгоно уу"
+        }
       }
     },
     "returns": {
@@ -1250,7 +1257,9 @@
     "shipment": {
       "title": "Биелэлтийг илгээгдсэн гэж тэмдэглэх",
       "trackingNumber": "Мөрдөх дугаар",
+      "trackingUrl": "Мөрдөх URL",
       "addTracking": "Мөрдөх дугаар нэмэх",
+      "hideTracking": "Мөрдөх дугаарыг нуух",
       "sendNotification": "Мэдэгдэл илгээх",
       "sendNotificationHint": "Энэ хүргэлтийн талаар үйлчлүүлэгчдэд мэдэгдэх.",
       "toastCreated": "Хүргэлт амжилттай үүсгэгдсэн."

@@ -1004,11 +1004,14 @@
     },
     "transfer": {
       "title": "Передать владение",
-      "requestSuccess": "Запрос на передачу заказа: {{email}}.",
+      "requestSuccess": "Запрос на передачу заказа отправлен в {{customerDetails}}.",
       "currentOwner": "Текущий владелец",
       "newOwner": "Новый владелец",
       "currentOwnerDescription": "Клиент, в настоящее время связанный с этим заказом.",
-      "newOwnerDescription": "Клиент, которому вы хотите передать этот заказ."
+      "newOwnerDescription": "Клиент, которому вы хотите передать этот заказ.",
+      "errors": {
+        "orderChangeAlreadyExists": "Заказ не может быть передан, так как существует активный запрос на передачу."
+      }
     },
     "payment": {
       "title": "Платежи",
@@ -1076,7 +1079,7 @@
     "edit": {
       "email": {
         "title": "Изменить email",
-        "requestSuccess": "Email заказа изменен на {{email}}."
+        "requestSuccess": "Email был успешно обновлён."
       },
       "shippingAddress": {
         "title": "Изменить адрес доставки",
@@ -1088,7 +1091,11 @@
       },
       "billingAddress": {
         "title": "Изменить платежный адрес",
-        "requestSuccess": "Платежный адрес заказа обновлен."
+        "requestSuccess": "Платежный адрес заказа обновлен.",
+        "validation": {
+          "addressRequired": "Пожалуйста, введите адрес",
+          "countryRequired": "Пожалуйста, выберите страну"
+        }
       }
     },
     "returns": {
@@ -1250,7 +1257,9 @@
     "shipment": {
       "title": "Отметить фулфилмент как отправленный",
       "trackingNumber": "Номер отслеживания",
+      "trackingUrl": "URL отслеживания",
       "addTracking": "Добавить номер отслеживания",
+      "hideTracking": "Скрыть номер отслеживания",
       "sendNotification": "Отправить уведомление",
       "sendNotificationHint": "Уведомить клиента об этой отправке.",
       "toastCreated": "Отправка успешно создана."

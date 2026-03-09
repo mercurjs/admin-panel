@@ -949,11 +949,14 @@
     },
     "transfer": {
       "title": "Transfert de propriété",
-      "requestSuccess": "La demande de transfert de la commande à été envoyé à: {{email}}.",
+      "requestSuccess": "La demande de transfert de la commande a été envoyée à {{customerDetails}}.",
       "currentOwner": "Propriétaire actuel",
       "newOwner": "Nouveau propriétaire",
       "currentOwnerDescription": "Le client actuellement lié à cette commande.",
-      "newOwnerDescription": "Le client à qui transferer cette commande."
+      "newOwnerDescription": "Le client à qui transferer cette commande.",
+      "errors": {
+        "orderChangeAlreadyExists": "La commande ne peut pas être transférée car il existe une demande de transfert active."
+      }
     },
     "payment": {
       "title": "Paiements",
@@ -1016,6 +1019,20 @@
       },
       "validation": {
         "quantityLowerThanFulfillment": "Ne peut pas définir la quantité à être inférieure ou égale à la quantité livrée"
+      }
+    },
+    "edit": {
+      "email": {
+        "title": "Modifier l'adresse e-mail",
+        "requestSuccess": "L'e-mail a été mis à jour avec succès."
+      },
+      "shippingAddress": {
+        "title": "Modifier l'adresse de livraison",
+        "requestSuccess": "L'adresse de livraison de la commande a été mise à jour."
+      },
+      "billingAddress": {
+        "title": "Modifier l'adresse de facturation",
+        "requestSuccess": "L'adresse de facturation de la commande a été mise à jour."
       }
     },
     "returns": {
@@ -1177,7 +1194,9 @@
     "shipment": {
       "title": "Marquer l'expédition comme expédiée",
       "trackingNumber": "Numéro de suivi",
+      "trackingUrl": "URL de suivi",
       "addTracking": "Ajouter un numéro de suivi",
+      "hideTracking": "Masquer le numéro de suivi",
       "sendNotification": "Envoyer une notification",
       "sendNotificationHint": "Notifier le client concernant cette expédition.",
       "toastCreated": "Expédition créée avec succès."

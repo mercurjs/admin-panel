@@ -1012,11 +1012,14 @@
     },
     "transfer": {
       "title": "Mülkiyeti Devret",
-      "requestSuccess": "Sipariş devri talebi şu kişiye gönderildi: {{email}}.",
+      "requestSuccess": "Sipariş devri talebi {{customerDetails}} adresine gönderildi.",
       "currentOwner": "Mevcut Sahip",
       "newOwner": "Yeni Sahip",
       "currentOwnerDescription": "Bu siparişle şu anda ilişkili olan müşteri.",
-      "newOwnerDescription": "Bu siparişin devredileceği müşteri."
+      "newOwnerDescription": "Bu siparişin devredileceği müşteri.",
+      "errors": {
+        "orderChangeAlreadyExists": "Aktif bir transfer talebi olduğu için sipariş transfer edilemez."
+      }
     },
     "payment": {
       "title": "Ödemeler",
@@ -1240,7 +1243,9 @@
     "shipment": {
       "title": "Gönderimi İşaretle",
       "trackingNumber": "Takip numarası",
+      "trackingUrl": "Takip URL'si",
       "addTracking": "Takip numarası ekle",
+      "hideTracking": "Takip numarasını gizle",
       "sendNotification": "Bildirim gönder",
       "sendNotificationHint": "Müşteriye bu gönderim hakkında bilgi ver.",
       "toastCreated": "Gönderim başarıyla oluşturuldu."
@@ -1410,7 +1415,7 @@
     "edit": {
       "email": {
         "title": "E-postayı düzenle",
-        "requestSuccess": "Sipariş e-postası {{email}} olarak güncellendi."
+        "requestSuccess": "E-posta başarıyla güncellendi."
       },
       "shippingAddress": {
         "title": "Teslimat adresini düzenle",
@@ -1422,7 +1427,11 @@
       },
       "billingAddress": {
         "title": "Fatura adresini düzenle",
-        "requestSuccess": "Sipariş fatura adresi güncellendi."
+        "requestSuccess": "Sipariş fatura adresi güncellendi.",
+        "validation": {
+          "addressRequired": "Lütfen bir adres girin",
+          "countryRequired": "Lütfen bir ülke seçin"
+        }
       }
     }
   },

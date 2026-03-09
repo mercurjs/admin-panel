@@ -948,11 +948,14 @@
     },
     "transfer": {
       "title": "Transferir propriedade",
-      "requestSuccess": "Solicitação de transferência do pedido enviada para: {{email}}.",
+      "requestSuccess": "Solicitação de transferência do pedido enviada para {{customerDetails}}.",
       "currentOwner": "Proprietário atual",
       "newOwner": "Novo proprietário",
       "currentOwnerDescription": "O cliente atualmente relacionado a este pedido.",
-      "newOwnerDescription": "O cliente para o qual este pedido será transferido."
+      "newOwnerDescription": "O cliente para o qual este pedido será transferido.",
+      "errors": {
+        "orderChangeAlreadyExists": "O pedido não pode ser transferido porque existe uma solicitação de transferência ativa."
+      }
     },
     "payment": {
       "title": "Pagamentos",
@@ -1015,6 +1018,20 @@
       },
       "validation": {
         "quantityLowerThanFulfillment": "Não é possível definir a quantidade como menor ou igual à quantidade cumprida"
+      }
+    },
+    "edit": {
+      "email": {
+        "title": "Editar e-mail",
+        "requestSuccess": "O e-mail foi atualizado com sucesso."
+      },
+      "shippingAddress": {
+        "title": "Editar endereço de entrega",
+        "requestSuccess": "O endereço de entrega do pedido foi atualizado."
+      },
+      "billingAddress": {
+        "title": "Editar endereço de cobrança",
+        "requestSuccess": "O endereço de cobrança do pedido foi atualizado."
       }
     },
     "returns": {
@@ -1176,7 +1193,9 @@
     "shipment": {
       "title": "Marcar atendimento como enviado",
       "trackingNumber": "Número de rastreamento",
+      "trackingUrl": "URL de rastreamento",
       "addTracking": "Adicionar número de rastreamento",
+      "hideTracking": "Ocultar número de rastreamento",
       "sendNotification": "Enviar notificação",
       "sendNotificationHint": "Notificar o cliente sobre este envio.",
       "toastCreated": "Envio criado com sucesso."

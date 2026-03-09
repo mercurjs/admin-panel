@@ -61,16 +61,16 @@ function ReturnInfoPopover({ orderReturn }: ReturnInfoPopoverProps) {
             {returnType}: #{returnTypeId.slice(-7)}
           </Badge>
 
-          <Text size="xsmall">
-            <span className="text-ui-fg-subtle">
+          <Text size="xsmall" className="text-ui-fg-subtle">
+            <span className="text-ui-fg-base txt-xsmall font-medium">
               {t(`orders.returns.returnRequested`)}
             </span>
             {" · "}
             {getFullDate({ date: orderReturn.requested_at, includeTime: true })}
           </Text>
 
-          <Text size="xsmall">
-            <span className="text-ui-fg-subtle">
+          <Text size="xsmall" className="text-ui-fg-subtle">
+            <span className="text-ui-fg-base font-medium">
               {t(`orders.returns.itemReceived`)}
             </span>
             {" · "}

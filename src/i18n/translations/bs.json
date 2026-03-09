@@ -1047,11 +1047,14 @@
     },
     "transfer": {
       "title": "Prenos vlasništva",
-      "requestSuccess": "Zahtjev za prenos narudžbe poslan na: {{email}}.",
+      "requestSuccess": "Zahtjev za prenos narudžbe poslan na {{customerDetails}}.",
       "currentOwner": "Trenutni vlasnik",
       "newOwner": "Novi vlasnik",
       "currentOwnerDescription": "Kupac trenutno povezan s ovom narudžbom.",
-      "newOwnerDescription": "Kupac na kojeg se prenosi ova narudžba."
+      "newOwnerDescription": "Kupac na kojeg se prenosi ova narudžba.",
+      "errors": {
+        "orderChangeAlreadyExists": "Narudžba se ne može prenijeti jer postoji aktivan zahtjev za prijenos."
+      }
     },
     "payment": {
       "title": "Uplate",
@@ -1119,7 +1122,7 @@
     "edit": {
       "email": {
         "title": "Uredi e-mail",
-        "requestSuccess": "E-mail narudžbe je ažuriran na {{email}}."
+        "requestSuccess": "E-mail je uspješno ažuriran."
       },
       "shippingAddress": {
         "title": "Uredi adresu za dostavu",
@@ -1131,7 +1134,11 @@
       },
       "billingAddress": {
         "title": "Uredi adresu za naplatu",
-        "requestSuccess": "Adresa za naplatu narudžbe je ažurirana."
+        "requestSuccess": "Adresa za naplatu narudžbe je ažurirana.",
+        "validation": {
+          "addressRequired": "Molimo unesite adresu",
+          "countryRequired": "Molimo odaberite zemlju"
+        }
       }
     },
     "returns": {
@@ -1293,7 +1300,9 @@
     "shipment": {
       "title": "Označi ispunjavanje kao poslano",
       "trackingNumber": "Broj za praćenje",
+      "trackingUrl": "URL za praćenje",
       "addTracking": "Dodaj broj za praćenje",
+      "hideTracking": "Sakrij broj za praćenje",
       "sendNotification": "Pošaljite obavijest",
       "sendNotificationHint": "Obavijestite kupca o ovoj pošiljci.",
       "toastCreated": "Pošiljka uspješno kreirana."

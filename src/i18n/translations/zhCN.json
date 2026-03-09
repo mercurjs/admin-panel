@@ -1047,11 +1047,14 @@
     },
     "transfer": {
       "title": "转移所有权",
-      "requestSuccess": "订单转移请求已发送至：{{email}}。",
+      "requestSuccess": "转移请求已发送至 {{customerDetails}}。",
       "currentOwner": "当前所有者",
       "newOwner": "新所有者",
       "currentOwnerDescription": "当前与此订单关联的客户。",
-      "newOwnerDescription": "要将此订单转移给的客户。"
+      "newOwnerDescription": "要将此订单转移给的客户。",
+      "errors": {
+        "orderChangeAlreadyExists": "无法转移订单，因为存在活动的转移请求。"
+      }
     },
     "payment": {
       "title": "支付",
@@ -1119,7 +1122,7 @@
     "edit": {
       "email": {
         "title": "编辑邮箱",
-        "requestSuccess": "订单邮箱已更新为 {{email}}。"
+        "requestSuccess": "邮箱已成功更新。"
       },
       "shippingAddress": {
         "title": "编辑配送地址",
@@ -1131,7 +1134,11 @@
       },
       "billingAddress": {
         "title": "编辑账单地址",
-        "requestSuccess": "订单账单地址已更新。"
+        "requestSuccess": "订单账单地址已更新。",
+        "validation": {
+          "addressRequired": "请输入地址",
+          "countryRequired": "请选择国家"
+        }
       }
     },
     "returns": {
@@ -1293,7 +1300,9 @@
     "shipment": {
       "title": "标记履行已发货",
       "trackingNumber": "追踪号码",
+      "trackingUrl": "追踪网址",
       "addTracking": "添加追踪号码",
+      "hideTracking": "隐藏追踪号码",
       "sendNotification": "发送通知",
       "sendNotificationHint": "通知客户关于此发货。",
       "toastCreated": "发货创建成功。"

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { HttpTypes } from '@medusajs/types';
-import { Button, CurrencyInput, Label, Select, Textarea, toast } from '@medusajs/ui';
+import { Button, CurrencyInput, Heading, Label, Select, Textarea, toast } from '@medusajs/ui';
 import { formatValue } from 'react-currency-input-field';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -116,7 +116,7 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
           className="flex-1 overflow-auto"
           data-testid="order-create-refund-body"
         >
-          <div className="flex flex-col gap-y-4">
+          <div className="flex flex-col gap-y-6">
             {!hasPaymentIdInSearchParams && (
               <Select
                 dir={direction}
@@ -127,7 +127,7 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
                 data-testid="order-create-refund-payment-select"
               >
                 <Label
-                  className="txt-compact-small mb-[-6px] font-sans font-medium"
+                  className="txt-compact-small -mb-4 font-sans font-medium"
                   data-testid="order-create-refund-payment-label"
                 >
                   {t('orders.payment.selectPaymentToRefund')}
@@ -163,14 +163,13 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
               </Select>
             )}
             {hasPaymentIdInSearchParams && (
-              <div
-                className="flex items-center"
+              <Heading
+                level="h2"
                 data-testid="order-create-refund-payment-display"
               >
-                <span>{getLocaleAmount(payment!.amount as number, payment!.currency_code)}</span>
-                <span> - </span>
-                <span>(#{payment!.id.substring(23)})</span>
-              </div>
+                {getLocaleAmount(payment!.amount as number, payment!.currency_code)} - (#
+                {payment!.id.substring(23)})
+              </Heading>
             )}
 
             <Form.Field
@@ -223,7 +222,10 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
               render={({ field }) => {
                 return (
                   <Form.Item data-testid="order-create-refund-reason-item">
-                    <Form.Label data-testid="order-create-refund-reason-label">
+                    <Form.Label
+                      data-testid="order-create-refund-reason-label"
+                      optional
+                    >
                       {t('fields.refundReason')}
                     </Form.Label>
 
@@ -264,7 +266,10 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
               render={({ field }) => {
                 return (
                   <Form.Item data-testid="order-create-refund-note-item">
-                    <Form.Label data-testid="order-create-refund-note-label">
+                    <Form.Label
+                      data-testid="order-create-refund-note-label"
+                      optional
+                    >
                       {t('fields.note')}
                     </Form.Label>
 
@@ -300,10 +305,7 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
               type="submit"
               variant="primary"
               size="small"
-              disabled={
-                !!Object.keys(form.formState.errors || {}).length ||
-                (!hasPaymentIdInSearchParams && !paymentId)
-              }
+              disabled={!!Object.keys(form.formState.errors || {}).length}
               data-testid="order-create-refund-save-button"
             >
               {t('actions.save')}

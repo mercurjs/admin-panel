@@ -1076,7 +1076,7 @@
     "edit": {
       "email": {
         "title": "Editar correo electrónico",
-        "requestSuccess": "Correo del pedido actualizado a {{email}}."
+        "requestSuccess": "El correo electrónico se actualizó correctamente."
       },
       "shippingAddress": {
         "title": "Editar dirección de envío",
@@ -1088,7 +1088,11 @@
       },
       "billingAddress": {
         "title": "Editar dirección de facturación",
-        "requestSuccess": "Dirección de facturación del pedido actualizada."
+        "requestSuccess": "Dirección de facturación del pedido actualizada.",
+        "validation": {
+          "addressRequired": "Por favor, introduzca una dirección",
+          "countryRequired": "Por favor, seleccione un país"
+        }
       }
     },
     "domain": "Pedidos",
@@ -1118,11 +1122,14 @@
     },
     "transfer": {
       "title": "Transferir propiedad",
-      "requestSuccess": "Solicitud de transferencia de pedido enviada a: {{email}}.",
+      "requestSuccess": "Solicitud de transferencia de pedido enviada a {{customerDetails}}.",
       "currentOwner": "Propietario actual",
       "newOwner": "Nuevo propietario",
       "currentOwnerDescription": "El cliente actualmente relacionado con este pedido.",
-      "newOwnerDescription": "El cliente a quien se transferirá este pedido."
+      "newOwnerDescription": "El cliente a quien se transferirá este pedido.",
+      "errors": {
+        "orderChangeAlreadyExists": "El pedido no puede ser transferido porque existe una solicitud de transferencia activa."
+      }
     },
     "payment": {
       "title": "Pagos",
@@ -1348,7 +1355,9 @@
     "shipment": {
       "title": "Marcar cumplimiento enviado",
       "trackingNumber": "Número de seguimiento",
+      "trackingUrl": "URL de seguimiento",
       "addTracking": "Agregar número de seguimiento",
+      "hideTracking": "Ocultar número de seguimiento",
       "sendNotification": "Enviar notificación",
       "sendNotificationHint": "Notificar al cliente sobre este envío.",
       "toastCreated": "Envío creado correctamente."

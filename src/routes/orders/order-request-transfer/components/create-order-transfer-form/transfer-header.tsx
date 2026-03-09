@@ -1,9 +1,10 @@
 export function TransferHeader() {
   return (
     <svg
-      width="200"
-      height="128"
+      width="280"
+      height="180"
       viewBox="0 0 200 128"
+      preserveAspectRatio="xMidYMid"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -14,7 +15,7 @@ export function TransferHeader() {
         height="65.5"
         rx="6.75"
         transform="matrix(0.865865 0.500278 -0.871576 0.490261 149.756 60.938)"
-        className="stroke-ui-fg-subtle fill-ui-bg-base"
+        className="fill-ui-bg-base stroke-ui-fg-subtle"
         strokeWidth="1.5"
       />
       <rect
@@ -24,7 +25,7 @@ export function TransferHeader() {
         height="65.5"
         rx="6.75"
         transform="matrix(0.865865 0.500278 -0.871576 0.490261 149.756 57.9383)"
-        className="stroke-ui-fg-subtle fill-ui-bg-base"
+        className="fill-ui-bg-base stroke-ui-fg-subtle"
         strokeWidth="1.5"
       />
       <g clipPath="url(#clip0_20787_38934)">
@@ -106,7 +107,7 @@ export function TransferHeader() {
         height="65.5"
         rx="6.75"
         transform="matrix(0.865865 0.500278 -0.871576 0.490261 77.0232 18.9148)"
-        className="stroke-ui-fg-subtle fill-ui-fg-muted"
+        className="fill-ui-fg-muted stroke-ui-fg-subtle"
         strokeWidth="1.5"
       />
       <rect
@@ -116,7 +117,7 @@ export function TransferHeader() {
         height="65.5"
         rx="6.75"
         transform="matrix(0.865865 0.500278 -0.871576 0.490261 77.0232 15.9148)"
-        className="stroke-ui-fg-subtle fill-ui-bg-base"
+        className="fill-ui-bg-base stroke-ui-fg-subtle"
         strokeWidth="1.5"
       />
       <rect
@@ -295,5 +296,5 @@ export function TransferHeader() {
         </clipPath>
       </defs>
     </svg>
-  )
+  );
 }

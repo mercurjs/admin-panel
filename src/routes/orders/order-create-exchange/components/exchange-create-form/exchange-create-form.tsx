@@ -1,233 +1,213 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { PencilSquare } from "@medusajs/icons"
-import { AdminExchange, AdminOrder, AdminOrderPreview } from "@medusajs/types"
-import {
-  Button,
-  CurrencyInput,
-  Heading,
-  IconButton,
-  Switch,
-  toast,
-  usePrompt,
-} from "@medusajs/ui"
-import { useEffect, useMemo, useState } from "react"
-import { useForm } from "react-hook-form"
-import { useTranslation } from "react-i18next"
+import { useEffect, useMemo, useState } from 'react';
 
-import {
-  RouteFocusModal,
-  useRouteModal,
-} from "../../../../../components/modals"
+import { zodResolver } from '@hookform/resolvers/zod';
+import { PencilSquare } from '@medusajs/icons';
+import type { AdminExchange, AdminOrder, AdminOrderPreview, AdminReturn } from '@medusajs/types';
+import { Button, CurrencyInput, Heading, IconButton, Switch, toast, usePrompt } from '@medusajs/ui';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
-import { Form } from "../../../../../components/common/form"
-import { getStylizedAmount } from "../../../../../lib/money-amount-helpers"
-import { CreateExchangeSchemaType, ExchangeCreateSchema } from "./schema"
-
-import { AdminReturn } from "@medusajs/types"
-import { KeyboundForm } from "../../../../../components/utilities/keybound-form/keybound-form.tsx"
+import { Form } from '../../../../../components/common/form';
+import { RouteFocusModal, useRouteModal } from '../../../../../components/modals';
+import { KeyboundForm } from '../../../../../components/utilities/keybound-form/keybound-form.tsx';
 import {
   useCancelExchangeRequest,
   useExchangeConfirmRequest,
   useUpdateExchangeInboundShipping,
-  useUpdateExchangeOutboundShipping,
-} from "../../../../../hooks/api/exchanges"
-import { currencies } from "../../../../../lib/data/currencies"
-import { ExchangeInboundSection } from "./exchange-inbound-section.tsx"
-import { ExchangeOutboundSection } from "./exchange-outbound-section"
+  useUpdateExchangeOutboundShipping
+} from '../../../../../hooks/api/exchanges';
+import { currencies } from '../../../../../lib/data/currencies';
+import { getStylizedAmount } from '../../../../../lib/money-amount-helpers';
+import { ExchangeInboundSection } from './exchange-inbound-section.tsx';
+import { ExchangeOutboundSection } from './exchange-outbound-section';
+import { ExchangeCreateSchema, type CreateExchangeSchemaType } from './schema';
 
 type ReturnCreateFormProps = {
-  order: AdminOrder
-  exchange: AdminExchange
-  preview: AdminOrderPreview
-  orderReturn?: AdminReturn
-}
+  order: AdminOrder;
+  exchange: AdminExchange;
+  preview: AdminOrderPreview;
+  orderReturn?: AdminReturn;
+};
 
-let IS_CANCELING = false
+let IS_CANCELING = false;
 
 export const ExchangeCreateForm = ({
   order,
   preview,
   exchange,
-  orderReturn,
+  orderReturn
 }: ReturnCreateFormProps) => {
-  const { t } = useTranslation()
-  const { handleSuccess } = useRouteModal()
+  const { t } = useTranslation();
+  const { handleSuccess } = useRouteModal();
 
   /**
    * STATE
    */
-  const [isInboundShippingPriceEdit, setIsInboundShippingPriceEdit] =
-    useState(false)
-  const [isOutboundShippingPriceEdit, setIsOutboundShippingPriceEdit] =
-    useState(false)
+  const [isInboundShippingPriceEdit, setIsInboundShippingPriceEdit] = useState(false);
+  const [isOutboundShippingPriceEdit, setIsOutboundShippingPriceEdit] = useState(false);
 
-  const [customInboundShippingAmount, setCustomInboundShippingAmount] =
-    useState<{ value: string; float: number | null }>({
-      value: "0",
-      float: 0,
-    })
+  const [customInboundShippingAmount, setCustomInboundShippingAmount] = useState<{
+    value: string;
+    float: number | null;
+  }>({
+    value: '0',
+    float: 0
+  });
 
-  const [customOutboundShippingAmount, setCustomOutboundShippingAmount] =
-    useState<{ value: string; float: number | null }>({
-      value: "0",
-      float: 0,
-    })
+  const [customOutboundShippingAmount, setCustomOutboundShippingAmount] = useState<{
+    value: string;
+    float: number | null;
+  }>({
+    value: '0',
+    float: 0
+  });
 
   /**
    * MUTATIONS
    */
   const { mutateAsync: confirmExchangeRequest, isPending: isConfirming } =
-    useExchangeConfirmRequest(exchange.id, order.id)
+    useExchangeConfirmRequest(exchange.id, order.id);
 
-  const { mutateAsync: cancelExchangeRequest, isPending: isCanceling } =
-    useCancelExchangeRequest(exchange.id, order.id)
+  const { mutateAsync: cancelExchangeRequest, isPending: isCanceling } = useCancelExchangeRequest(
+    exchange.id,
+    order.id
+  );
 
-  const {
-    mutateAsync: updateInboundShipping,
-    isPending: isUpdatingOutboundShipping,
-  } = useUpdateExchangeInboundShipping(exchange.id, order.id)
+  const { mutateAsync: updateInboundShipping, isPending: isUpdatingOutboundShipping } =
+    useUpdateExchangeInboundShipping(exchange.id, order.id);
 
-  const {
-    mutateAsync: updateOutboundShipping,
-    isPending: isUpdatingInboundShipping,
-  } = useUpdateExchangeOutboundShipping(exchange.id, order.id)
+  const { mutateAsync: updateOutboundShipping, isPending: isUpdatingInboundShipping } =
+    useUpdateExchangeOutboundShipping(exchange.id, order.id);
 
   const isRequestLoading =
-    isConfirming ||
-    isCanceling ||
-    isUpdatingInboundShipping ||
-    isUpdatingOutboundShipping
+    isConfirming || isCanceling || isUpdatingInboundShipping || isUpdatingOutboundShipping;
 
   /**
    * Only consider items that belong to this exchange.
    */
   const previewItems = useMemo(
-    () =>
-      preview?.items?.filter(
-        (i) => !!i.actions?.find((a) => a.exchange_id === exchange.id)
-      ),
+    () => preview?.items?.filter(i => !!i.actions?.find(a => a.exchange_id === exchange.id)),
     [preview.items]
-  )
+  );
 
   const inboundPreviewItems = previewItems.filter(
-    (item) => !!item.actions?.find((a) => a.action === "RETURN_ITEM")
-  )
+    item => !!item.actions?.find(a => a.action === 'RETURN_ITEM')
+  );
 
   const outboundPreviewItems = previewItems.filter(
-    (item) => !!item.actions?.find((a) => a.action === "ITEM_ADD")
-  )
+    item => !!item.actions?.find(a => a.action === 'ITEM_ADD')
+  );
 
   /**
    * FORM
    */
   const form = useForm<CreateExchangeSchemaType>({
     defaultValues: () => {
-      const inboundShippingMethod = preview.shipping_methods.find((s) => {
-        return !!s.actions?.find(
-          (a) => a.action === "SHIPPING_ADD" && !!a.return_id
-        )
-      })
+      const inboundShippingMethod = preview.shipping_methods.find(s => {
+        return !!s.actions?.find(a => a.action === 'SHIPPING_ADD' && !!a.return_id);
+      });
 
-      const outboundShippingMethod = preview.shipping_methods.find((s) => {
-        return !!s.actions?.find(
-          (a) => a.action === "SHIPPING_ADD" && !a.return_id
-        )
-      })
+      const outboundShippingMethod = preview.shipping_methods.find(s => {
+        return !!s.actions?.find(a => a.action === 'SHIPPING_ADD' && !a.return_id);
+      });
 
       return Promise.resolve({
-        inbound_items: inboundPreviewItems.map((i) => {
-          const inboundAction = i.actions?.find(
-            (a) => a.action === "RETURN_ITEM"
-          )
+        inbound_items: inboundPreviewItems.map(i => {
+          const inboundAction = i.actions?.find(a => a.action === 'RETURN_ITEM');
 
           return {
             item_id: i.id,
             variant_id: i.variant_id,
             quantity: i.detail.return_requested_quantity,
             note: inboundAction?.internal_note,
-            reason_id: inboundAction?.details?.reason_id as string | undefined,
-          }
+            reason_id: inboundAction?.details?.reason_id as string | undefined
+          };
         }),
-        outbound_items: outboundPreviewItems.map((i) => ({
+        outbound_items: outboundPreviewItems.map(i => ({
           item_id: i.id,
           variant_id: i.variant_id,
-          quantity: i.detail.quantity,
+          quantity: i.detail.quantity
         })),
-        inbound_option_id: inboundShippingMethod
-          ? inboundShippingMethod.shipping_option_id
-          : "",
-        outbound_option_id: outboundShippingMethod
-          ? outboundShippingMethod.shipping_option_id
-          : "",
+        inbound_option_id: inboundShippingMethod ? inboundShippingMethod.shipping_option_id : '',
+        outbound_option_id: outboundShippingMethod ? outboundShippingMethod.shipping_option_id : '',
         location_id: orderReturn?.location_id,
-        send_notification: false,
-      })
+        send_notification: false
+      });
     },
-    resolver: zodResolver(ExchangeCreateSchema),
-  })
+    resolver: zodResolver(ExchangeCreateSchema)
+  });
 
-  const inboundShipping = preview.shipping_methods.find((s) => {
-    return !!s.actions?.find(
-      (a) => a.action === "SHIPPING_ADD" && !!a.return_id
-    )
-  })
+  const inboundShipping = preview.shipping_methods.find(s => {
+    return !!s.actions?.find(a => a.action === 'SHIPPING_ADD' && !!a.return_id);
+  });
 
-  const outboundShipping = preview.shipping_methods.find((s) => {
-    return !!s.actions?.find((a) => a.action === "SHIPPING_ADD" && !a.return_id)
-  })
+  const outboundShipping = preview.shipping_methods.find(s => {
+    return !!s.actions?.find(a => a.action === 'SHIPPING_ADD' && !a.return_id);
+  });
 
   useEffect(() => {
     if (inboundShipping) {
-      setCustomInboundShippingAmount(inboundShipping.total)
+      const decimalDigits = currencies[order.currency_code.toUpperCase()]?.decimal_digits ?? 2;
+      setCustomInboundShippingAmount({
+        value: (inboundShipping.total as number).toFixed(decimalDigits),
+        float: inboundShipping.total as number
+      });
     }
-  }, [inboundShipping])
+  }, [inboundShipping]);
 
   useEffect(() => {
     if (outboundShipping) {
-      setCustomOutboundShippingAmount(outboundShipping.total)
+      const decimalDigits = currencies[order.currency_code.toUpperCase()]?.decimal_digits ?? 2;
+      setCustomOutboundShippingAmount({
+        value: (outboundShipping.total as number).toFixed(decimalDigits),
+        float: outboundShipping.total as number
+      });
     }
-  }, [outboundShipping])
+  }, [outboundShipping]);
 
-  const inboundShippingOptionId = form.watch("inbound_option_id")
-  const outboundShippingOptionId = form.watch("outbound_option_id")
+  const inboundShippingOptionId = form.watch('inbound_option_id');
+  const outboundShippingOptionId = form.watch('outbound_option_id');
 
-  const prompt = usePrompt()
+  const prompt = usePrompt();
 
-  const handleSubmit = form.handleSubmit(async (data) => {
-    try {
-      const res = await prompt({
-        title: t("general.areYouSure"),
-        description: t("orders.exchanges.confirmText"),
-        confirmText: t("actions.continue"),
-        cancelText: t("actions.cancel"),
-        variant: "confirmation",
-      })
+  const handleSubmit = form.handleSubmit(async data => {
+    const res = await prompt({
+      title: t('general.areYouSure'),
+      description: t('orders.exchanges.confirmText'),
+      confirmText: t('actions.continue'),
+      cancelText: t('actions.cancel'),
+      variant: 'confirmation'
+    });
 
-      if (!res) {
-        return
+    if (!res) {
+      return;
+    }
+
+    await confirmExchangeRequest(
+      { no_notification: !data.send_notification },
+      {
+        onSuccess: () => {
+          toast.success(t('orders.exchanges.toast.confirmedSuccessfully'));
+          handleSuccess();
+        },
+        onError: error => {
+          toast.error(error.message);
+        }
       }
-
-      await confirmExchangeRequest({ no_notification: !data.send_notification })
-
-      handleSuccess()
-    } catch (e) {
-      toast.error(t("general.error"), {
-        description: e.message,
-      })
-    }
-  })
+    );
+  });
 
   useEffect(() => {
     if (isInboundShippingPriceEdit) {
-      document.getElementById("js-inbound-shipping-input")?.focus()
+      document.getElementById('js-inbound-shipping-input')?.focus();
     }
-  }, [isInboundShippingPriceEdit])
+  }, [isInboundShippingPriceEdit]);
 
   useEffect(() => {
     if (isOutboundShippingPriceEdit) {
-      document.getElementById("js-outbound-shipping-input")?.focus()
+      document.getElementById('js-outbound-shipping-input')?.focus();
     }
-  }, [isOutboundShippingPriceEdit])
+  }, [isOutboundShippingPriceEdit]);
 
   useEffect(() => {
     /**
@@ -237,46 +217,60 @@ export const ExchangeCreateForm = ({
       if (IS_CANCELING) {
         cancelExchangeRequest(undefined, {
           onSuccess: () => {
-            toast.success(
-              t("orders.exchanges.actions.cancelExchange.successToast")
-            )
+            toast.success(t('orders.exchanges.actions.cancelExchange.successToast'));
           },
-          onError: (error) => {
-            toast.error(error.message)
-          },
-        })
+          onError: error => {
+            toast.error(error.message);
+          }
+        });
 
-        IS_CANCELING = false
+        IS_CANCELING = false;
       }
-    }
-  }, [])
+    };
+  }, []);
 
   const inboundShippingTotal = useMemo(() => {
     const method = preview.shipping_methods.find(
-      (sm) =>
-        !!sm.actions?.find((a) => a.action === "SHIPPING_ADD" && !!a.return_id)
-    )
+      sm => !!sm.actions?.find(a => a.action === 'SHIPPING_ADD' && !!a.return_id)
+    );
 
-    return (method?.total as number) || 0
-  }, [preview.shipping_methods])
+    return (method?.total as number) || 0;
+  }, [preview.shipping_methods]);
 
   const outboundShippingTotal = useMemo(() => {
     const method = preview.shipping_methods.find(
-      (sm) =>
-        !!sm.actions?.find((a) => a.action === "SHIPPING_ADD" && !a.return_id)
-    )
+      sm => !!sm.actions?.find(a => a.action === 'SHIPPING_ADD' && !a.return_id)
+    );
 
-    return (method?.total as number) || 0
-  }, [preview.shipping_methods])
+    return (method?.total as number) || 0;
+  }, [preview.shipping_methods]);
 
   return (
-    <RouteFocusModal.Form form={form} data-testid="order-create-exchange-form">
-      <KeyboundForm onSubmit={handleSubmit} className="flex h-full flex-col" data-testid="order-create-exchange-form">
+    <RouteFocusModal.Form
+      form={form}
+      data-testid="order-create-exchange-form"
+    >
+      <KeyboundForm
+        onSubmit={handleSubmit}
+        className="flex h-full flex-col"
+        data-testid="order-create-exchange-form"
+      >
         <RouteFocusModal.Header data-testid="order-create-exchange-header" />
 
-        <RouteFocusModal.Body className="flex size-full justify-center overflow-y-auto" data-testid="order-create-exchange-body">
-          <div className="mt-16 w-[720px] max-w-[100%] px-4 md:p-0" data-testid="order-create-exchange-form-content">
-            <Heading level="h1" data-testid="order-create-exchange-heading">{t("orders.exchanges.create")}</Heading>
+        <RouteFocusModal.Body
+          className="flex size-full justify-center overflow-y-auto"
+          data-testid="order-create-exchange-body"
+        >
+          <div
+            className="mt-16 w-[720px] max-w-[100%] px-4 md:p-0"
+            data-testid="order-create-exchange-form-content"
+          >
+            <Heading
+              level="h2"
+              data-testid="order-create-exchange-heading"
+            >
+              {t('orders.exchanges.create')}
+            </Heading>
 
             <ExchangeInboundSection
               form={form}
@@ -294,41 +288,58 @@ export const ExchangeCreateForm = ({
             />
 
             {/* TOTALS SECTION*/}
-            <div className="mt-8 border-y border-dotted py-4" data-testid="order-create-exchange-totals">
-              <div className="mb-2 flex items-center justify-between" data-testid="order-create-exchange-inbound-total">
-                <span className="txt-small text-ui-fg-subtle" data-testid="order-create-exchange-form-inbound-total-label">
-                  {t("orders.returns.inboundTotal")}
+            <div
+              className="mt-8 border-y py-8"
+              data-testid="order-create-exchange-totals"
+            >
+              <div
+                className="mb-2 flex items-center justify-between"
+                data-testid="order-create-exchange-inbound-total"
+              >
+                <span
+                  className="txt-small text-ui-fg-subtle"
+                  data-testid="order-create-exchange-form-inbound-total-label"
+                >
+                  {t('orders.returns.inboundTotal')}
                 </span>
 
-                <span className="txt-small text-ui-fg-subtle" data-testid="order-create-exchange-form-inbound-total-value">
+                <span
+                  className="txt-small text-ui-fg-subtle"
+                  data-testid="order-create-exchange-form-inbound-total-value"
+                >
                   {getStylizedAmount(
                     inboundPreviewItems.reduce((acc, item) => {
-                      const action = item.actions?.find(
-                        (act) => act.action === "RETURN_ITEM"
-                      )
-                      acc = acc + (action?.amount || 0)
+                      const action = item.actions?.find(act => act.action === 'RETURN_ITEM');
+                      acc = acc + (action?.amount || 0);
 
-                      return acc
+                      return acc;
                     }, 0) * -1,
                     order.currency_code
                   )}
                 </span>
               </div>
 
-              <div className="mb-2 flex items-center justify-between" data-testid="order-create-exchange-outbound-total">
-                <span className="txt-small text-ui-fg-subtle" data-testid="order-create-exchange-form-outbound-total-label">
-                  {t("orders.exchanges.outboundTotal")}
+              <div
+                className="mb-2 flex items-center justify-between"
+                data-testid="order-create-exchange-outbound-total"
+              >
+                <span
+                  className="txt-small text-ui-fg-subtle"
+                  data-testid="order-create-exchange-form-outbound-total-label"
+                >
+                  {t('orders.exchanges.outboundTotal')}
                 </span>
 
-                <span className="txt-small text-ui-fg-subtle" data-testid="order-create-exchange-form-outbound-total-value">
+                <span
+                  className="txt-small text-ui-fg-subtle"
+                  data-testid="order-create-exchange-form-outbound-total-value"
+                >
                   {getStylizedAmount(
                     outboundPreviewItems.reduce((acc, item) => {
-                      const action = item.actions?.find(
-                        (act) => act.action === "ITEM_ADD"
-                      )
-                      acc = acc + (action?.amount || 0)
+                      const action = item.actions?.find(act => act.action === 'ITEM_ADD');
+                      acc = acc + (action?.amount || 0);
 
-                      return acc
+                      return acc;
                     }, 0),
                     order.currency_code
                   )}
@@ -337,20 +348,18 @@ export const ExchangeCreateForm = ({
 
               <div className="mb-2 flex items-center justify-between">
                 <span className="txt-small text-ui-fg-subtle">
-                  {t("orders.returns.inboundShipping")}
+                  {t('orders.returns.inboundShipping')}
                 </span>
 
-                <span className="txt-small text-ui-fg-subtle flex items-center">
+                <span className="txt-small flex items-center text-ui-fg-subtle">
                   {!isInboundShippingPriceEdit && (
                     <IconButton
                       onClick={() => setIsInboundShippingPriceEdit(true)}
                       variant="transparent"
-                      className="text-ui-fg-muted"
-                      disabled={
-                        !inboundPreviewItems?.length || !inboundShippingOptionId
-                      }
+                      className="flex h-5 items-center justify-center text-ui-fg-muted"
+                      disabled={!inboundPreviewItems?.length || !inboundShippingOptionId}
                     >
-                      <PencilSquare />
+                      <PencilSquare className="h-4 w-4" />
                     </IconButton>
                   )}
 
@@ -358,47 +367,41 @@ export const ExchangeCreateForm = ({
                     <CurrencyInput
                       id="js-inbound-shipping-input"
                       onBlur={() => {
-                        let actionId
+                        let actionId;
 
-                        preview.shipping_methods.forEach((s) => {
+                        preview.shipping_methods.forEach(s => {
                           if (s.actions) {
                             for (const a of s.actions) {
-                              if (
-                                a.action === "SHIPPING_ADD" &&
-                                !!a.return_id
-                              ) {
-                                actionId = a.id
+                              if (a.action === 'SHIPPING_ADD' && !!a.return_id) {
+                                actionId = a.id;
                               }
                             }
                           }
-                        })
+                        });
 
-                        const customPrice = customInboundShippingAmount.float
+                        const customPrice = customInboundShippingAmount.float;
 
                         if (actionId) {
                           updateInboundShipping(
                             {
                               actionId,
-                              custom_amount: customPrice,
+                              custom_amount: customPrice
                             },
                             {
-                              onError: (error) => {
-                                toast.error(error.message)
-                              },
+                              onError: error => {
+                                toast.error(error.message);
+                              }
                             }
-                          )
+                          );
                         }
-                        setIsInboundShippingPriceEdit(false)
+                        setIsInboundShippingPriceEdit(false);
                       }}
-                      symbol={
-                        currencies[order.currency_code.toUpperCase()]
-                          .symbol_native
-                      }
+                      symbol={currencies[order.currency_code.toUpperCase()].symbol_native}
                       code={order.currency_code}
                       onValueChange={(_value, _name, values) =>
                         setCustomInboundShippingAmount({
-                          value: values?.value ?? "",
-                          float: values?.float ?? null,
+                          value: values?.value ?? '',
+                          float: values?.float ?? null
                         })
                       }
                       value={customInboundShippingAmount.value}
@@ -412,21 +415,18 @@ export const ExchangeCreateForm = ({
 
               <div className="flex items-center justify-between">
                 <span className="txt-small text-ui-fg-subtle">
-                  {t("orders.exchanges.outboundShipping")}
+                  {t('orders.exchanges.outboundShipping')}
                 </span>
 
-                <span className="txt-small text-ui-fg-subtle flex items-center">
+                <span className="txt-small flex items-center text-ui-fg-subtle">
                   {!isOutboundShippingPriceEdit && (
                     <IconButton
                       onClick={() => setIsOutboundShippingPriceEdit(true)}
                       variant="transparent"
-                      className="text-ui-fg-muted"
-                      disabled={
-                        !outboundPreviewItems?.length ||
-                        !outboundShippingOptionId
-                      }
+                      className="flex h-5 items-center justify-center text-ui-fg-muted"
+                      disabled={!outboundPreviewItems?.length || !outboundShippingOptionId}
                     >
-                      <PencilSquare />
+                      <PencilSquare className="h-4 w-4" />
                     </IconButton>
                   )}
 
@@ -434,80 +434,89 @@ export const ExchangeCreateForm = ({
                     <CurrencyInput
                       id="js-outbound-shipping-input"
                       onBlur={() => {
-                        let actionId
+                        let actionId;
 
-                        preview.shipping_methods.forEach((s) => {
+                        preview.shipping_methods.forEach(s => {
                           if (s.actions) {
                             for (const a of s.actions) {
-                              if (a.action === "SHIPPING_ADD" && !a.return_id) {
-                                actionId = a.id
+                              if (a.action === 'SHIPPING_ADD' && !a.return_id) {
+                                actionId = a.id;
                               }
                             }
                           }
-                        })
+                        });
 
-                        const customPrice = customOutboundShippingAmount.float
+                        const customPrice = customOutboundShippingAmount.float;
 
                         if (actionId) {
                           updateOutboundShipping(
                             {
                               actionId,
-                              custom_amount: customPrice,
+                              custom_amount: customPrice
                             },
                             {
-                              onError: (error) => {
-                                toast.error(error.message)
-                              },
+                              onError: error => {
+                                toast.error(error.message);
+                              }
                             }
-                          )
+                          );
                         }
-                        setIsOutboundShippingPriceEdit(false)
+                        setIsOutboundShippingPriceEdit(false);
                       }}
-                      symbol={
-                        currencies[order.currency_code.toUpperCase()]
-                          .symbol_native
-                      }
+                      symbol={currencies[order.currency_code.toUpperCase()].symbol_native}
                       code={order.currency_code}
                       onValueChange={(_value, _name, values) =>
                         setCustomOutboundShippingAmount({
-                          value: values?.value ?? "",
-                          float: values?.float ?? null,
+                          value: values?.value ?? '',
+                          float: values?.float ?? null
                         })
                       }
                       value={customOutboundShippingAmount.value}
                       disabled={!outboundPreviewItems?.length}
                     />
                   ) : (
-                    getStylizedAmount(
-                      outboundShippingTotal,
-                      order.currency_code
-                    )
+                    getStylizedAmount(outboundShippingTotal, order.currency_code)
                   )}
                 </span>
               </div>
 
-              <div className="mt-4 flex items-center justify-between border-t border-dotted pt-4" data-testid="order-create-exchange-refund-amount">
-                <span className="txt-small font-medium" data-testid="order-create-exchange-form-refund-amount-label">
-                  {t("orders.exchanges.refundAmount")}
+              <div
+                className="mt-4 flex items-center justify-between"
+                data-testid="order-create-exchange-refund-amount"
+              >
+                <span
+                  className="txt-small font-medium"
+                  data-testid="order-create-exchange-form-refund-amount-label"
+                >
+                  {t('orders.exchanges.refundAmount')}
                 </span>
-                <span className="txt-small font-medium" data-testid="order-create-exchange-form-refund-amount-value">
-                  {getStylizedAmount(
-                    preview.summary.pending_difference,
-                    order.currency_code
-                  )}
+                <span
+                  className="txt-small font-medium"
+                  data-testid="order-create-exchange-form-refund-amount-value"
+                >
+                  {getStylizedAmount(preview.summary.pending_difference, order.currency_code)}
                 </span>
               </div>
             </div>
             {/* SEND NOTIFICATION*/}
-            <div className="bg-ui-bg-field mt-8 rounded-lg border py-2 pl-2 pr-4" data-testid="order-create-exchange-notification">
+            <div
+              className="mt-8 rounded-lg border bg-ui-bg-field py-2 pl-2 pr-4"
+              data-testid="order-create-exchange-notification"
+            >
               <Form.Field
                 control={form.control}
                 name="send_notification"
                 render={({ field: { onChange, value, ...field } }) => {
                   return (
                     <Form.Item data-testid="order-create-exchange-notification-item">
-                      <div className="flex items-center" data-testid="order-create-exchange-form-notification-control">
-                        <Form.Control className="mr-4 self-start" data-testid="order-create-exchange-notification-control">
+                      <div
+                        className="flex items-center"
+                        data-testid="order-create-exchange-form-notification-control"
+                      >
+                        <Form.Control
+                          className="mr-4 self-start"
+                          data-testid="order-create-exchange-notification-control"
+                        >
                           <Switch
                             dir="ltr"
                             className="mt-[2px] rtl:rotate-180"
@@ -519,16 +528,19 @@ export const ExchangeCreateForm = ({
                         </Form.Control>
                         <div className="block">
                           <Form.Label data-testid="order-create-exchange-notification-label">
-                            {t("orders.returns.sendNotification")}
+                            {t('orders.returns.sendNotification')}
                           </Form.Label>
-                          <Form.Hint className="!mt-1" data-testid="order-create-exchange-notification-hint">
-                            {t("orders.returns.sendNotificationHint")}
+                          <Form.Hint
+                            className="!mt-1"
+                            data-testid="order-create-exchange-notification-hint"
+                          >
+                            {t('orders.exchanges.sendNotificationHint')}
                           </Form.Hint>
                         </div>
                       </div>
                       <Form.ErrorMessage data-testid="order-create-exchange-notification-error" />
                     </Form.Item>
-                  )
+                  );
                 }}
               />
             </div>
@@ -537,7 +549,10 @@ export const ExchangeCreateForm = ({
           </div>
         </RouteFocusModal.Body>
         <RouteFocusModal.Footer data-testid="order-create-exchange-footer">
-          <div className="flex w-full items-center justify-end gap-x-4" data-testid="order-create-exchange-form-footer-actions">
+          <div
+            className="flex w-full items-center justify-end gap-x-4"
+            data-testid="order-create-exchange-form-footer-actions"
+          >
             <div className="flex items-center justify-end gap-x-2">
               <RouteFocusModal.Close asChild>
                 <Button
@@ -547,7 +562,7 @@ export const ExchangeCreateForm = ({
                   size="small"
                   data-testid="order-create-exchange-cancel-button"
                 >
-                  {t("orders.exchanges.cancel.title")}
+                  {t('actions.cancel')}
                 </Button>
               </RouteFocusModal.Close>
 
@@ -559,12 +574,12 @@ export const ExchangeCreateForm = ({
                 isLoading={isRequestLoading}
                 data-testid="order-create-exchange-confirm-button"
               >
-                {t("orders.exchanges.confirm")}
+                {t('actions.confirm')}
               </Button>
             </div>
           </div>
         </RouteFocusModal.Footer>
       </KeyboundForm>
     </RouteFocusModal.Form>
-  )
-}
+  );
+};

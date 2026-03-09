@@ -1,6 +1,6 @@
 import { DescendingSorting } from "@medusajs/icons"
 import { DropdownMenu, IconButton } from "@medusajs/ui"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useSearchParams } from "react-router-dom"
 
@@ -57,6 +57,10 @@ export const DataTableOrderBy = <TData,>({
   const param = prefix ? `${prefix}_order` : "order"
   const { t } = useTranslation()
   const direction = useDocumentDirection()
+  useEffect(() => {
+    const newState = initState(searchParams, prefix)
+    setState(newState)
+  }, [searchParams, prefix])
 
   const handleDirChange = (dir: string) => {
     setState((prev) => ({

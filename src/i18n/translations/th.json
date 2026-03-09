@@ -948,11 +948,14 @@
     },
     "transfer": {
       "title": "โอนกรรมสิทธิ์",
-      "requestSuccess": "คำขอโอนคำสั่งซื้อถูกส่งไปที่: {{email}}",
+      "requestSuccess": "คำขอโอนคำสั่งซื้อถูกส่งไปยัง {{customerDetails}}",
       "currentOwner": "เจ้าของปัจจุบัน",
       "newOwner": "เจ้าของใหม่",
       "currentOwnerDescription": "ลูกค้าปัจจุบันที่เกี่ยวข้องกับคำสั่งซื้อนี้",
-      "newOwnerDescription": "ลูกค้าคนใหม่ที่จะโอนคำสั่งซื้อนี้ให้"
+      "newOwnerDescription": "ลูกค้าคนใหม่ที่จะโอนคำสั่งซื้อนี้ให้",
+      "errors": {
+        "orderChangeAlreadyExists": "ไม่สามารถโอนคำสั่งซื้อได้เนื่องจากมีคำขอโอนที่กำลังใช้งานอยู่"
+      }
     },
     "payment": {
       "title": "การชำระเงิน",
@@ -1015,6 +1018,20 @@
       },
       "validation": {
         "quantityLowerThanFulfillment": "ไม่สามารถตั้งค่าจำนวนให้น้อยกว่าหรือเท่ากับจำนวนที่จัดส่งแล้วได้"
+      }
+    },
+    "edit": {
+      "email": {
+        "title": "แก้ไขอีเมล",
+        "requestSuccess": "อีเมลได้รับการอัปเดตสำเร็จแล้ว"
+      },
+      "shippingAddress": {
+        "title": "แก้ไขที่อยู่จัดส่ง",
+        "requestSuccess": "ที่อยู่จัดส่งของคำสั่งซื้อได้รับการอัปเดตแล้ว"
+      },
+      "billingAddress": {
+        "title": "แก้ไขที่อยู่สำหรับเรียกเก็บเงิน",
+        "requestSuccess": "ที่อยู่สำหรับเรียกเก็บเงินของคำสั่งซื้อได้รับการอัปเดตแล้ว"
       }
     },
     "returns": {
@@ -1176,7 +1193,9 @@
     "shipment": {
       "title": "ทำเครื่องหมายว่าการจัดส่งสำเร็จ",
       "trackingNumber": "หมายเลขติดตามพัสดุ",
+      "trackingUrl": "URL ติดตามพัสดุ",
       "addTracking": "เพิ่มหมายเลขติดตามพัสดุ",
+      "hideTracking": "ซ่อนหมายเลขติดตามพัสดุ",
       "sendNotification": "ส่งการแจ้งเตือน",
       "sendNotificationHint": "แจ้งให้ลูกค้าทราบเกี่ยวกับการจัดส่งนี้",
       "toastCreated": "สร้างการจัดส่งสำเร็จ"

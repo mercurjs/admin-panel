@@ -1,5 +1,29 @@
-import { ReactNode, useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 
+import { ActionMenu } from '@components/common/action-menu';
+import DisplayId from '@components/common/display-id/display-id';
+import { Thumbnail } from '@components/common/thumbnail';
+import { useClaims } from '@hooks/api/claims';
+import { useExchanges } from '@hooks/api/exchanges';
+import { ordersQueryKeys, useOrderPreview } from '@hooks/api/orders';
+import { useMarkPaymentCollectionAsPaid } from '@hooks/api/payment-collections';
+import { useReservationItems } from '@hooks/api/reservations';
+import { returnsQueryKeys, useReturns } from '@hooks/api/returns';
+import { useDate } from '@hooks/use-date';
+import { sdk } from '@lib/client';
+import { getTotalCreditLines } from '@lib/credit-line';
+import { formatCurrency } from '@lib/format-currency';
+import {
+  getLocaleAmount,
+  getStylizedAmount,
+  isAmountLessThenRoundingError
+} from '@lib/money-amount-helpers';
+import { getReservationsLimitCount } from '@lib/orders';
+import { getTotalCaptured } from '@lib/payment';
+import { formatPercentage } from '@lib/percentage-helpers.ts';
+import { getLoyaltyPlugin } from '@lib/plugins';
+import { queryClient } from '@lib/query-client';
+import { getReturnableQuantity } from '@lib/rma';
 import {
   ArrowDownRightMini,
   ArrowLongRight,
@@ -10,7 +34,7 @@ import {
   PencilSquare,
   TriangleDownMini
 } from '@medusajs/icons';
-import {
+import type {
   AdminClaim,
   AdminExchange,
   AdminOrder,
@@ -19,8 +43,8 @@ import {
   AdminPaymentCollection,
   AdminPlugin,
   AdminRegion,
-  AdminReturn,
-  type AdminReservation
+  AdminReservation,
+  AdminReturn
 } from '@medusajs/types';
 import {
   Badge,
@@ -39,41 +63,20 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { ActionMenu } from '../../../../../components/common/action-menu';
-import DisplayId from '../../../../../components/common/display-id/display-id';
-import { Thumbnail } from '../../../../../components/common/thumbnail';
-import { useClaims } from '../../../../../hooks/api/claims';
-import { useExchanges } from '../../../../../hooks/api/exchanges';
-import { useOrderPreview } from '../../../../../hooks/api/orders';
-import { useMarkPaymentCollectionAsPaid } from '../../../../../hooks/api/payment-collections';
-import { useReservationItems } from '../../../../../hooks/api/reservations';
-import { useReturns } from '../../../../../hooks/api/returns';
-import { useDate } from '../../../../../hooks/use-date';
-import { getTotalCreditLines } from '../../../../../lib/credit-line';
-import { formatCurrency } from '../../../../../lib/format-currency';
-import {
-  getLocaleAmount,
-  getStylizedAmount,
-  isAmountLessThenRoundingError
-} from '../../../../../lib/money-amount-helpers';
-import { getReservationsLimitCount } from '../../../../../lib/orders';
-import { getTotalCaptured } from '../../../../../lib/payment';
-import { formatPercentage } from '../../../../../lib/percentage-helpers.ts';
-import { getLoyaltyPlugin } from '../../../../../lib/plugins';
-import { getReturnableQuantity } from '../../../../../lib/rma';
-import { ExtendedAdminOrder, ManagedBy } from '../../../../../types/order/common';
+import { useAdminManagedLocations } from '../../context/admin-managed-locations-context';
 import { CopyPaymentLink } from '../copy-payment-link/copy-payment-link';
 import ReturnInfoPopover from './return-info-popover';
 import ShippingInfoPopover from './shipping-info-popover';
 
 type OrderSummarySectionProps = {
-  order: ExtendedAdminOrder;
+  order: AdminOrder;
   plugins: AdminPlugin[];
 };
 
 export const OrderSummarySection = ({ order, plugins }: OrderSummarySectionProps) => {
   const { t } = useTranslation();
   const prompt = usePrompt();
+  const { canAdminActOnLocation } = useAdminManagedLocations();
 
   const { reservations } = useReservationItems(
     {
@@ -88,12 +91,60 @@ export const OrderSummarySection = ({ order, plugins }: OrderSummarySectionProps
   const { returns = [] } = useReturns({
     status: 'requested',
     order_id: order.id,
-    fields: '+received_at'
+    fields: '+received_at,+location_id'
   });
 
   const receivableReturns = useMemo(() => returns.filter(r => !r.canceled_at), [returns]);
 
   const showReturns = !!receivableReturns.length;
+
+  const canActOnFirstReturn =
+    receivableReturns.length === 1 && canAdminActOnLocation(receivableReturns[0].location_id);
+
+  const handleCancelReturn = async (returnId: string) => {
+    if (!returnId) {
+      return;
+    }
+
+    const res = await prompt({
+      title: t('orders.returns.cancel.title'),
+      description: t('orders.returns.cancel.description'),
+      confirmText: t('actions.confirm'),
+      cancelText: t('actions.cancel'),
+      variant: 'confirmation'
+    });
+
+    if (!res) {
+      return;
+    }
+
+    try {
+      await sdk.client.fetch(`/admin/returns/${returnId}/cancel`, {
+        method: 'POST'
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.details()
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.preview(order.id),
+        refetchType: 'all'
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: returnsQueryKeys.details()
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: returnsQueryKeys.lists()
+      });
+
+      toast.success(t('orders.returns.toast.canceledSuccessfully'));
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   /**
    * Show Allocation button only if there are unfulfilled items that don't have reservations
@@ -111,11 +162,7 @@ export const OrderSummarySection = ({ order, plugins }: OrderSummarySectionProps
         // There are items that are unfulfilled
         if (item.quantity - item.detail.fulfilled_quantity > 0) {
           // Reservation for this item doesn't exist
-          if (
-            !reservationsMap.has(item.id) &&
-            (item.variant?.managed_by === ManagedBy.ADMIN ||
-              item.variant?.managed_by === ManagedBy.BOTH)
-          ) {
+          if (!reservationsMap.has(item.id)) {
             return true;
           }
         }
@@ -198,57 +245,136 @@ export const OrderSummarySection = ({ order, plugins }: OrderSummarySectionProps
           className="flex items-center justify-end gap-x-2 rounded-b-xl bg-ui-bg-subtle px-4 py-4"
           data-testid="order-summary-actions"
         >
-          {showReturns &&
-            (receivableReturns.length === 1 ? (
-              <Button
-                asChild
-                variant="secondary"
-                size="small"
-                data-testid="order-summary-receive-return-button"
-              >
-                <Link to={`/orders/${order.id}/returns/${receivableReturns[0].id}/receive`}>
-                  {t('orders.returns.receive.action')}
-                </Link>
-              </Button>
-            ) : (
-              <ActionMenu
-                groups={[
-                  {
-                    actions: receivableReturns.map(r => {
-                      let id = r.id;
-                      let returnType = 'Return';
+          {showReturns && (
+            <>
+              {receivableReturns.length === 1 ? (
+                <>
+                  {canActOnFirstReturn ? (
+                    <Button
+                      asChild
+                      variant="secondary"
+                      size="small"
+                      data-testid="order-summary-receive-return-button"
+                    >
+                      <Link to={`/orders/${order.id}/returns/${receivableReturns[0].id}/receive`}>
+                        {t('orders.returns.receive.action')}
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Tooltip content={t('orders.returns.cantBeReceivedByAdmin')}>
+                      <span>
+                        <Button
+                          variant="secondary"
+                          size="small"
+                          disabled
+                          data-testid="order-summary-receive-return-button"
+                        >
+                          {t('orders.returns.receive.action')}
+                        </Button>
+                      </span>
+                    </Tooltip>
+                  )}
 
-                      if (r.exchange_id) {
-                        id = r.exchange_id;
-                        returnType = 'Exchange';
+                  {canActOnFirstReturn ? (
+                    <Button
+                      variant="secondary"
+                      size="small"
+                      onClick={() => handleCancelReturn(receivableReturns[0].id)}
+                    >
+                      {t('actions.cancel')}
+                    </Button>
+                  ) : (
+                    <Tooltip content={t('orders.returns.cantBeCanceledByAdmin')}>
+                      <span>
+                        <Button
+                          variant="secondary"
+                          size="small"
+                          disabled
+                        >
+                          {t('actions.cancel')}
+                        </Button>
+                      </span>
+                    </Tooltip>
+                  )}
+                </>
+              ) : (
+                <>
+                  <ActionMenu
+                    groups={[
+                      {
+                        actions: receivableReturns.map(r => {
+                          let id = r.id;
+                          let returnType = 'Return';
+
+                          if (r.exchange_id) {
+                            id = r.exchange_id;
+                            returnType = 'Exchange';
+                          }
+
+                          if (r.claim_id) {
+                            id = r.claim_id;
+                            returnType = 'Claim';
+                          }
+
+                          return {
+                            label: t('orders.returns.receive.receiveItems', {
+                              id: `#${id.slice(-7)}`,
+                              returnType
+                            }),
+                            icon: <ArrowLongRight />,
+                            to: `/orders/${order.id}/returns/${r.id}/receive`,
+                            disabled: !canAdminActOnLocation(r.location_id)
+                          };
+                        })
                       }
+                    ]}
+                    data-testid="order-summary-receive-returns-menu"
+                  >
+                    <Button
+                      variant="secondary"
+                      size="small"
+                    >
+                      {t('orders.returns.receive.action')}
+                    </Button>
+                  </ActionMenu>
+                  <ActionMenu
+                    groups={[
+                      {
+                        actions: receivableReturns.map(r => {
+                          let id = r.id;
+                          let returnType = 'Return';
 
-                      if (r.claim_id) {
-                        id = r.claim_id;
-                        returnType = 'Claim';
+                          if (r.exchange_id) {
+                            id = r.exchange_id;
+                            returnType = 'Exchange';
+                          }
+
+                          if (r.claim_id) {
+                            id = r.claim_id;
+                            returnType = 'Claim';
+                          }
+
+                          return {
+                            label: `${returnType} #${id.slice(-7)}`,
+                            icon: <ArrowLongRight />,
+                            onClick: () => handleCancelReturn(r.id),
+                            disabled: !canAdminActOnLocation(r.location_id)
+                          };
+                        })
                       }
-
-                      return {
-                        label: t('orders.returns.receive.receiveItems', {
-                          id: `#${id.slice(-7)}`,
-                          returnType
-                        }),
-                        icon: <ArrowLongRight />,
-                        to: `/orders/${order.id}/returns/${r.id}/receive`
-                      };
-                    })
-                  }
-                ]}
-                data-testid="order-summary-receive-returns-menu"
-              >
-                <Button
-                  variant="secondary"
-                  size="small"
-                >
-                  {t('orders.returns.receive.action')}
-                </Button>
-              </ActionMenu>
-            ))}
+                    ]}
+                  >
+                    <Button
+                      variant="secondary"
+                      size="small"
+                    >
+                      {t('actions.cancel')}
+                    </Button>
+                  </ActionMenu>
+                </>
+              )}
+            </>
+          )}
 
           {showAllocateButton && (
             <Button
@@ -307,6 +433,7 @@ const Header = ({
   orderPreview?: AdminOrderPreview;
 }) => {
   const { t } = useTranslation();
+  const { canAdminActOnOrder } = useAdminManagedLocations();
 
   // is ture if there is no shipped items ATM
   const shouldDisableReturn = order.items.every(i => !(getReturnableQuantity(i) > 0));
@@ -316,6 +443,13 @@ const Header = ({
   const isOrderEditPending =
     orderPreview?.order_change?.change_type === 'edit' &&
     orderPreview?.order_change?.status === 'pending';
+
+  const createReturnDisabled =
+    shouldDisableReturn ||
+    isOrderEditActive ||
+    !!orderPreview?.order_change?.exchange_id ||
+    !!orderPreview?.order_change?.claim_id ||
+    !canAdminActOnOrder;
 
   return (
     <div
@@ -355,11 +489,10 @@ const Header = ({
                 label: t('orders.returns.create'),
                 to: `/orders/${order.id}/returns`,
                 icon: <ArrowUturnLeft />,
-                disabled:
-                  shouldDisableReturn ||
-                  isOrderEditActive ||
-                  !!orderPreview?.order_change?.exchange_id ||
-                  !!orderPreview?.order_change?.claim_id
+                disabled: createReturnDisabled,
+                disabledTooltip: !canAdminActOnOrder
+                  ? t('orders.returns.cantCreateReturnByAdmin')
+                  : undefined
               },
               {
                 label:
@@ -373,7 +506,11 @@ const Header = ({
                   isOrderEditActive ||
                   (!!orderPreview?.order_change?.return_id &&
                     !orderPreview?.order_change?.exchange_id) ||
-                  !!orderPreview?.order_change?.claim_id
+                  !!orderPreview?.order_change?.claim_id ||
+                  !canAdminActOnOrder,
+                disabledTooltip: !canAdminActOnOrder
+                  ? t('orders.exchanges.cantCreateExchangeByAdmin')
+                  : undefined
               },
               {
                 label:
@@ -387,7 +524,11 @@ const Header = ({
                   isOrderEditActive ||
                   (!!orderPreview?.order_change?.return_id &&
                     !orderPreview?.order_change?.claim_id) ||
-                  !!orderPreview?.order_change?.exchange_id
+                  !!orderPreview?.order_change?.exchange_id ||
+                  !canAdminActOnOrder,
+                disabledTooltip: !canAdminActOnOrder
+                  ? t('orders.claims.cantCreateClaimByAdmin')
+                  : undefined
               }
             ]
           }
@@ -837,6 +978,7 @@ const DiscountAndTotalBreakdown = ({
         ).sort()
       });
     }
+
     return discounts;
   }, [order]);
 
@@ -1073,14 +1215,14 @@ const ReturnBreakdownWithDamages = ({
 
           {item?.note && (
             <Tooltip content={item.note}>
-              <DocumentText className="ml-1 inline text-ui-tag-neutral-icon" />
+              <DocumentText className="ml-1 inline text-ui-fg-muted" />
             </Tooltip>
           )}
 
           {item?.reason && (
             <Badge
               size="2xsmall"
-              className="cursor-default select-none capitalize"
+              className="border-tag-neutral-border cursor-default select-none border capitalize"
               rounded="full"
             >
               {item?.reason?.label}
@@ -1129,9 +1271,12 @@ const ReturnBreakdown = ({ orderReturn, itemId }: { orderReturn: AdminReturn; it
           key={item.id}
           className="txt-compact-small-plus flex flex-row justify-between gap-y-2 border-t-2 border-dotted bg-ui-bg-subtle px-6 py-4 text-ui-fg-subtle"
         >
-          <div className="flex items-center gap-2">
-            <ArrowDownRightMini className="text-ui-fg-muted" />
-            <Text size="small">
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <ArrowDownRightMini className="shrink-0 text-ui-fg-muted" />
+            <Text
+              size="small"
+              className="min-w-0 truncate"
+            >
               {t(`orders.returns.${isRequested ? 'returnRequestedInfo' : 'returnReceivedInfo'}`, {
                 requestedItemsCount: item?.[isRequested ? 'quantity' : 'received_quantity']
               })}
@@ -1139,14 +1284,14 @@ const ReturnBreakdown = ({ orderReturn, itemId }: { orderReturn: AdminReturn; it
 
             {item?.note && (
               <Tooltip content={item.note}>
-                <DocumentText className="ml-1 inline text-ui-tag-neutral-icon" />
+                <DocumentText className="ml-1 inline shrink-0 text-ui-fg-muted" />
               </Tooltip>
             )}
 
             {item?.reason && (
               <Badge
                 size="2xsmall"
-                className="cursor-default select-none capitalize"
+                className="border-tag-neutral-border shrink-0 cursor-default select-none border capitalize"
                 rounded="full"
               >
                 {item?.reason?.label}

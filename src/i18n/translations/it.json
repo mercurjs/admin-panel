@@ -960,11 +960,14 @@
     },
     "transfer": {
       "title": "Trasferisci proprietà",
-      "requestSuccess": "Richiesta di trasferimento ordine inviata a: {{email}}.",
+      "requestSuccess": "Richiesta di trasferimento ordine inviata a {{customerDetails}}.",
       "currentOwner": "Proprietario attuale",
       "newOwner": "Nuovo proprietario",
       "currentOwnerDescription": "Il cliente attualmente associato a questo ordine.",
-      "newOwnerDescription": "Il cliente a cui trasferire questo ordine."
+      "newOwnerDescription": "Il cliente a cui trasferire questo ordine.",
+      "errors": {
+        "orderChangeAlreadyExists": "L'ordine non può essere trasferito perché esiste una richiesta di trasferimento attiva."
+      }
     },
     "payment": {
       "title": "Pagamenti",
@@ -1027,6 +1030,20 @@
       },
       "validation": {
         "quantityLowerThanFulfillment": "Non è possibile impostare la quantità a meno di quella già soddisfatta"
+      }
+    },
+    "edit": {
+      "email": {
+        "title": "Modifica email",
+        "requestSuccess": "L'email è stata aggiornata con successo."
+      },
+      "shippingAddress": {
+        "title": "Modifica indirizzo di spedizione",
+        "requestSuccess": "L'indirizzo di spedizione dell'ordine è stato aggiornato."
+      },
+      "billingAddress": {
+        "title": "Modifica indirizzo di fatturazione",
+        "requestSuccess": "L'indirizzo di fatturazione dell'ordine è stato aggiornato."
       }
     },
     "returns": {
@@ -1188,7 +1205,9 @@
     "shipment": {
       "title": "Segna adempimento spedito",
       "trackingNumber": "Numero di tracciamento",
+      "trackingUrl": "URL di tracciamento",
       "addTracking": "Aggiungi numero di tracciamento",
+      "hideTracking": "Nascondi numero di tracciamento",
       "sendNotification": "Invia notifica",
       "sendNotificationHint": "Notifica il cliente riguardo a questa spedizione.",
       "toastCreated": "Spedizione creata con successo."

@@ -1,54 +1,73 @@
-import { XCircle } from "@medusajs/icons"
-import { AdminOrderLineItem, HttpTypes } from "@medusajs/types"
-import { Input, Text } from "@medusajs/ui"
-import { UseFormReturn } from "react-hook-form"
-import { useTranslation } from "react-i18next"
+import { XCircle } from '@medusajs/icons';
+import type { AdminOrderLineItem, HttpTypes } from '@medusajs/types';
+import { Input, Text } from '@medusajs/ui';
+import type { UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
-import { ActionMenu } from "../../../../../components/common/action-menu"
-import { Form } from "../../../../../components/common/form"
-import { Thumbnail } from "../../../../../components/common/thumbnail"
-import { MoneyAmountCell } from "../../../../../components/table/table-cells/common/money-amount-cell"
-import { CreateClaimSchemaType } from "./schema"
+import { ActionMenu } from '@/components/common/action-menu';
+import { Form } from '@/components/common/form';
+import { Thumbnail } from '@/components/common/thumbnail';
+import { MoneyAmountCell } from '@/components/table/table-cells/common/money-amount-cell';
+import type { CreateClaimSchemaType } from './schema';
 
 type ClaimOutboundItemProps = {
-  previewItem: AdminOrderLineItem
-  currencyCode: string
-  index: number
+  previewItem: AdminOrderLineItem;
+  item?: AdminOrderLineItem;
+  currencyCode: string;
+  index: number;
+  locationId?: string;
 
-  onRemove: () => void
+  onRemove: () => void;
   // TODO: create a payload type for outbound updates
-  onUpdate: (payload: HttpTypes.AdminUpdateReturnItems) => void
+  onUpdate: (payload: HttpTypes.AdminUpdateReturnItems) => void;
 
-  form: UseFormReturn<CreateClaimSchemaType>
-}
+  form: UseFormReturn<CreateClaimSchemaType>;
+};
 
 function ClaimOutboundItem({
   previewItem,
+  item,
   currencyCode,
   form,
   onRemove,
   onUpdate,
   index,
+  locationId
 }: ClaimOutboundItemProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
+
+  const variant = item?.variant;
+  const inventoryItems = variant?.inventory_items;
+  const firstInventoryItem = inventoryItems?.[0];
+  const inventory = firstInventoryItem?.inventory;
+  const locationLevels = inventory?.location_levels;
+
+  const foundLevel = locationLevels?.find(level => level.location_id === locationId);
+
+  const availableQuantity = foundLevel?.available_quantity;
 
   return (
-    <div className="bg-ui-bg-subtle shadow-elevation-card-rest my-2 rounded-xl ">
+    <div className="my-2 rounded-xl bg-ui-bg-subtle shadow-elevation-card-rest">
       <div className="flex flex-col items-center gap-x-2 gap-y-2 border-b p-3 text-sm md:flex-row">
         <div className="flex flex-1 items-center gap-x-3">
           <Thumbnail src={previewItem.thumbnail} />
 
           <div className="flex flex-col">
             <div>
-              <Text className="txt-small" as="span" weight="plus">
-                {previewItem.title}{" "}
+              <Text
+                className="txt-small"
+                as="span"
+                weight="plus"
+              >
+                {previewItem.title}{' '}
               </Text>
 
-              {previewItem.variant_sku && (
-                <span>({previewItem.variant_sku})</span>
-              )}
+              {previewItem.variant_sku && <span>({previewItem.variant_sku})</span>}
             </div>
-            <Text as="div" className="text-ui-fg-subtle txt-small">
+            <Text
+              as="div"
+              className="txt-small text-ui-fg-subtle"
+            >
               {previewItem.subtitle}
             </Text>
           </div>
@@ -65,34 +84,36 @@ function ClaimOutboundItem({
                     <Form.Control>
                       <Input
                         {...field}
-                        className="bg-ui-bg-base txt-small w-[67px] rounded-lg"
+                        className="txt-small w-[67px] rounded-lg bg-ui-bg-base"
                         min={1}
                         // TODO: add max available inventory quantity if present
                         // max={previewItem.quantity}
                         type="number"
-                        onBlur={(e) => {
-                          const val = e.target.value
-                          const payload = val === "" ? null : Number(val)
+                        onBlur={e => {
+                          const val = e.target.value;
+                          const payload = val === '' ? null : Number(val);
 
-                          field.onChange(payload)
+                          field.onChange(payload);
 
                           if (payload) {
-                            onUpdate({ quantity: payload })
+                            onUpdate({ quantity: payload });
                           }
                         }}
                       />
                     </Form.Control>
                     <Form.ErrorMessage />
                   </Form.Item>
-                )
+                );
               }}
             />
-            <Text className="txt-small text-ui-fg-subtle">
-              {t("fields.qty")}
-            </Text>
+            {availableQuantity && (
+              <Text className="txt-small text-ui-fg-subtle">
+                / {availableQuantity} {t('fields.qty')}
+              </Text>
+            )}
           </div>
 
-          <div className="text-ui-fg-subtle txt-small mr-2 flex flex-shrink-0">
+          <div className="txt-small mr-2 flex flex-shrink-0 text-ui-fg-subtle">
             <MoneyAmountCell
               currencyCode={currencyCode}
               amount={previewItem.total}
@@ -104,18 +125,18 @@ function ClaimOutboundItem({
               {
                 actions: [
                   {
-                    label: t("actions.remove"),
+                    label: t('actions.remove'),
                     onClick: onRemove,
-                    icon: <XCircle />,
-                  },
-                ].filter(Boolean),
-              },
+                    icon: <XCircle />
+                  }
+                ].filter(Boolean)
+              }
             ]}
           />
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export { ClaimOutboundItem }
+export { ClaimOutboundItem };

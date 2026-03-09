@@ -1,11 +1,13 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { PencilSquare } from "@medusajs/icons"
-import {
+import { useEffect, useMemo, useState } from 'react';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { PencilSquare, Tag } from '@medusajs/icons';
+import type {
   AdminOrder,
   AdminOrderPreview,
   AdminReturn,
-  InventoryLevelDTO,
-} from "@medusajs/types"
+  InventoryLevelDTO
+} from '@medusajs/types';
 import {
   Alert,
   Button,
@@ -15,22 +17,22 @@ import {
   Switch,
   Text,
   toast,
-  usePrompt,
-} from "@medusajs/ui"
-import { useEffect, useMemo, useState } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
-import { useTranslation } from "react-i18next"
+  usePrompt
+} from '@medusajs/ui';
+import { useAdminManagedLocations } from '@routes/orders/order-detail/context/admin-managed-locations-context';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
+import { NoRecords } from '../../../../../components/common/empty-table-content';
+import { Form } from '../../../../../components/common/form';
+import { Combobox } from '../../../../../components/inputs/combobox';
 import {
   RouteFocusModal,
   StackedFocusModal,
   useRouteModal,
-  useStackedModal,
-} from "../../../../../components/modals"
-
-import { Form } from "../../../../../components/common/form"
-import { Combobox } from "../../../../../components/inputs/combobox"
-import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
+  useStackedModal
+} from '../../../../../components/modals';
+import { KeyboundForm } from '../../../../../components/utilities/keybound-form';
 import {
   useAddReturnItem,
   useAddReturnShipping,
@@ -40,115 +42,109 @@ import {
   useRemoveReturnItem,
   useUpdateReturn,
   useUpdateReturnItem,
-  useUpdateReturnShipping,
-} from "../../../../../hooks/api/returns"
-import { useShippingOptions } from "../../../../../hooks/api/shipping-options"
-import { useStockLocations } from "../../../../../hooks/api/stock-locations"
-import { sdk } from "../../../../../lib/client"
-import { currencies } from "../../../../../lib/data/currencies"
-import { getStylizedAmount } from "../../../../../lib/money-amount-helpers"
-import { ReturnShippingPlaceholder } from "../../../common/placeholders"
-import { AddReturnItemsTable } from "../add-return-items-table"
-import { ReturnItem } from "./return-item"
-import { ReturnCreateSchema, ReturnCreateSchemaType } from "./schema"
+  useUpdateReturnShipping
+} from '../../../../../hooks/api/returns';
+import { useShippingOptions } from '../../../../../hooks/api/shipping-options';
+import { useStockLocations } from '../../../../../hooks/api/stock-locations';
+import { sdk } from '../../../../../lib/client';
+import { currencies } from '../../../../../lib/data/currencies';
+import { getStylizedAmount } from '../../../../../lib/money-amount-helpers';
+import { ReturnShippingPlaceholder } from '../../../common/placeholders';
+import { AddReturnItemsTable } from '../add-return-items-table';
+import { ReturnItem } from './return-item';
+import { ReturnCreateSchema, type ReturnCreateSchemaType } from './schema';
 
 type ReturnCreateFormProps = {
-  order: AdminOrder
-  activeReturn: AdminReturn
-  preview: AdminOrderPreview
-}
+  order: AdminOrder;
+  activeReturn: AdminReturn;
+  preview: AdminOrderPreview;
+};
 
-let selectedItems: string[] = []
+let selectedItems: string[] = [];
 
-export const ReturnCreateForm = ({
-  order,
-  preview,
-  activeReturn,
-}: ReturnCreateFormProps) => {
-  const { t } = useTranslation()
-  const { handleSuccess } = useRouteModal()
+export const ReturnCreateForm = ({ order, preview, activeReturn }: ReturnCreateFormProps) => {
+  const { t } = useTranslation();
+  const { handleSuccess } = useRouteModal();
+  const { canAdminActOnItem } = useAdminManagedLocations();
 
-  const itemsMap = useMemo(
-    () => new Map((order.items || []).map((i) => [i.id, i])),
-    [order.items]
-  )
+  const itemsMap = useMemo(() => new Map((order.items || []).map(i => [i.id, i])), [order.items]);
 
   /**
    * Only consider items that belong to this return.
    */
   const previewItems = useMemo(
-    () =>
-      preview.items.filter(
-        (i) => !!i.actions?.find((a) => a.return_id === activeReturn.id)
-      ),
+    () => preview.items.filter(i => !!i.actions?.find(a => a.return_id === activeReturn.id)),
     [preview.items]
-  )
+  );
 
-  const previewItemsMap = useMemo(
-    () => new Map(previewItems.map((i) => [i.id, i])),
-    [previewItems]
-  )
+  const previewItemsMap = useMemo(() => new Map(previewItems.map(i => [i.id, i])), [previewItems]);
 
   /**
    * STATE
    */
-  const { setIsOpen } = useStackedModal()
-  const [isShippingPriceEdit, setIsShippingPriceEdit] = useState(false)
+  const { setIsOpen } = useStackedModal();
+  const [isShippingPriceEdit, setIsShippingPriceEdit] = useState(false);
   const [customShippingAmount, setCustomShippingAmount] = useState<{
-    value: string
-    float: number | null
+    value: string;
+    float: number | null;
   }>({
-    value: "0",
-    float: 0,
-  })
-  const [inventoryMap, setInventoryMap] = useState<
-    Record<string, InventoryLevelDTO[]>
-  >({})
+    value: '0',
+    float: 0
+  });
+  const [inventoryMap, setInventoryMap] = useState<Record<string, InventoryLevelDTO[]>>({});
 
   /**
    * HOOKS
    */
-  const { stock_locations = [] } = useStockLocations({ limit: 999 })
+  const { stock_locations = [] } = useStockLocations({ limit: 999 });
   const { shipping_options = [] } = useShippingOptions({
     limit: 999,
-    fields: "*prices,+service_zone.fulfillment_set.location.id",
+    fields: '*prices,+service_zone.fulfillment_set.location.id'
     /**
      * TODO: this should accept filter for location_id
      */
-  })
+  });
 
   /**
    * MUTATIONS
    */
-  const { mutateAsync: confirmReturnRequest, isPending: isConfirming } =
-    useConfirmReturnRequest(activeReturn.id, order.id)
+  const { mutateAsync: confirmReturnRequest, isPending: isConfirming } = useConfirmReturnRequest(
+    activeReturn.id,
+    order.id
+  );
 
-  const { mutateAsync: cancelReturnRequest, isPending: isCanceling } =
-    useCancelReturnRequest(activeReturn.id, order.id)
-  const { mutateAsync: updateReturnRequest, isPending: isUpdating } =
-    useUpdateReturn(activeReturn.id, order.id)
+  const { mutateAsync: cancelReturnRequest, isPending: isCanceling } = useCancelReturnRequest(
+    activeReturn.id,
+    order.id
+  );
+  const { mutateAsync: updateReturnRequest, isPending: isUpdating } = useUpdateReturn(
+    activeReturn.id,
+    order.id
+  );
 
   const { mutateAsync: addReturnShipping, isPending: isAddingReturnShipping } =
-    useAddReturnShipping(activeReturn.id, order.id)
+    useAddReturnShipping(activeReturn.id, order.id);
 
-  const {
-    mutateAsync: updateReturnShipping,
-    isPending: isUpdatingReturnShipping,
-  } = useUpdateReturnShipping(activeReturn.id, order.id)
+  const { mutateAsync: updateReturnShipping, isPending: isUpdatingReturnShipping } =
+    useUpdateReturnShipping(activeReturn.id, order.id);
 
-  const {
-    mutateAsync: deleteReturnShipping,
-    isPending: isDeletingReturnShipping,
-  } = useDeleteReturnShipping(activeReturn.id, order.id)
+  const { mutateAsync: deleteReturnShipping, isPending: isDeletingReturnShipping } =
+    useDeleteReturnShipping(activeReturn.id, order.id);
 
-  const { mutateAsync: addReturnItem, isPending: isAddingReturnItem } =
-    useAddReturnItem(activeReturn.id, order.id)
+  const { mutateAsync: addReturnItem, isPending: isAddingReturnItem } = useAddReturnItem(
+    activeReturn.id,
+    order.id
+  );
 
-  const { mutateAsync: removeReturnItem, isPending: isRemovingReturnItem } =
-    useRemoveReturnItem(activeReturn.id, order.id)
+  const { mutateAsync: removeReturnItem, isPending: isRemovingReturnItem } = useRemoveReturnItem(
+    activeReturn.id,
+    order.id
+  );
 
-  const { mutateAsync: updateReturnItem, isPending: isUpdatingReturnItem } =
-    useUpdateReturnItem(activeReturn.id, order.id)
+  const { mutateAsync: updateReturnItem, isPending: isUpdatingReturnItem } = useUpdateReturnItem(
+    activeReturn.id,
+    order.id
+  );
 
   const isRequestLoading =
     isConfirming ||
@@ -159,280 +155,308 @@ export const ReturnCreateForm = ({
     isAddingReturnItem ||
     isRemovingReturnItem ||
     isUpdatingReturnItem ||
-    isUpdating
+    isUpdating;
 
   /**
    * FORM
    */
 
+  const defaultValues = useMemo(() => {
+    const method = preview.shipping_methods.find(
+      s => !!s.actions?.find(a => a.action === 'SHIPPING_ADD')
+    );
+
+    return {
+      items: previewItems.map(i => ({
+        item_id: i.id,
+        quantity: i.detail.return_requested_quantity,
+        note: i.actions?.find(a => a.action === 'RETURN_ITEM')?.internal_note,
+        reason_id: i.actions?.find(a => a.action === 'RETURN_ITEM')?.details?.reason_id
+      })),
+      option_id: method ? method.shipping_option_id : '',
+      location_id: activeReturn?.location_id,
+      send_notification: false
+    };
+  }, [preview.shipping_methods, previewItems, activeReturn?.location_id]);
+
   const form = useForm<ReturnCreateSchemaType>({
     /**
      * TODO: reason selection once Return reason settings are added
      */
-    defaultValues: () => {
-      const method = preview.shipping_methods.find(
-        (s) => !!s.actions?.find((a) => a.action === "SHIPPING_ADD")
-      )
-
-      return Promise.resolve({
-        items: previewItems.map((i) => ({
-          item_id: i.id,
-          quantity: i.detail.return_requested_quantity,
-          note: i.actions?.find((a) => a.action === "RETURN_ITEM")
-            ?.internal_note,
-          reason_id: i.actions?.find((a) => a.action === "RETURN_ITEM")?.details
-            ?.reason_id,
-        })),
-        option_id: method ? method.shipping_option_id : "",
-        location_id: activeReturn?.location_id,
-        send_notification: false,
-      })
-    },
-    resolver: zodResolver(ReturnCreateSchema),
-  })
+    defaultValues,
+    resolver: zodResolver(ReturnCreateSchema)
+  });
 
   const {
     fields: items,
     append,
     remove,
-    update,
+    update
   } = useFieldArray({
-    name: "items",
-    control: form.control,
-  })
+    name: 'items',
+    control: form.control
+  });
 
   useEffect(() => {
-    const existingItemsMap: Record<string, boolean> = {}
+    const existingItemsMap: Record<string, boolean> = {};
 
-    previewItems.forEach((i) => {
-      const ind = items.findIndex((field) => field.item_id === i.id)
+    previewItems.forEach(i => {
+      const ind = items.findIndex(field => field.item_id === i.id);
 
       /**
        * THESE ITEMS ARE REMOVED FROM RETURN REQUEST
        */
       if (!i.detail.return_requested_quantity) {
-        return
+        return;
       }
 
-      existingItemsMap[i.id] = true
+      existingItemsMap[i.id] = true;
 
       if (ind > -1) {
         if (items[ind].quantity !== i.detail.return_requested_quantity) {
-          const returnItemAction = i.actions?.find(
-            (a) => a.action === "RETURN_ITEM"
-          )
+          const returnItemAction = i.actions?.find(a => a.action === 'RETURN_ITEM');
 
           update(ind, {
             ...items[ind],
             quantity: i.detail.return_requested_quantity,
             note: returnItemAction?.internal_note,
-            reason_id: returnItemAction?.details?.reason_id,
-          })
+            reason_id: returnItemAction?.details?.reason_id
+          });
         }
       } else {
-        append({ item_id: i.id, quantity: i.detail.return_requested_quantity })
+        append({ item_id: i.id, quantity: i.detail.return_requested_quantity });
       }
-    })
+    });
 
     items.forEach((i, ind) => {
       if (!(i.item_id in existingItemsMap)) {
-        remove(ind)
+        remove(ind);
       }
-    })
-  }, [previewItems])
+    });
+  }, [previewItems]);
 
   useEffect(() => {
     const method = preview.shipping_methods?.find(
-      (s) => !!s.actions?.find((a) => a.action === "SHIPPING_ADD")
-    )
+      s => !!s.actions?.find(a => a.action === 'SHIPPING_ADD')
+    );
 
     if (method) {
-      form.setValue("option_id", method.shipping_option_id!)
+      form.setValue('option_id', method.shipping_option_id!);
     } else {
-      form.setValue("option_id", "")
+      form.setValue('option_id', '');
     }
-  }, [preview.shipping_methods])
+  }, [preview.shipping_methods]);
 
-  const showPlaceholder = !items.length
-  const locationId = form.watch("location_id")
-  const shippingOptionId = form.watch("option_id")
-  const prompt = usePrompt()
+  const showPlaceholder = !items.length;
+  const locationId = form.watch('location_id');
+  const shippingOptionId = form.watch('option_id');
+  const prompt = usePrompt();
 
-  const handleSubmit = form.handleSubmit(async (data) => {
+  const handleSubmit = form.handleSubmit(async data => {
     try {
       const res = await prompt({
-        title: t("general.areYouSure"),
-        description: t("orders.returns.confirmText"),
-        confirmText: t("actions.continue"),
-        cancelText: t("actions.cancel"),
-        variant: "confirmation",
-      })
+        title: t('general.areYouSure'),
+        description: t('orders.returns.confirmText'),
+        confirmText: t('actions.continue'),
+        cancelText: t('actions.cancel'),
+        variant: 'confirmation'
+      });
 
       if (!res) {
-        return
+        return;
       }
 
-      await confirmReturnRequest({ no_notification: !data.send_notification })
+      await confirmReturnRequest({ no_notification: !data.send_notification });
 
-      handleSuccess()
+      handleSuccess();
     } catch (e) {
-      toast.error(t("general.error"), {
+      toast.error(t('general.error'), {
         description: e.message,
-        dismissLabel: t("actions.close"),
-      })
+        dismissLabel: t('actions.close')
+      });
     }
-  })
+  });
 
   const onItemsSelected = () => {
-    addReturnItem({
-      items: selectedItems.map((id) => ({
-        id,
-        quantity: 1,
-      })),
-    })
+    const toAdd = selectedItems.filter(id => {
+      const item = itemsMap.get(id);
 
-    setIsOpen("items", false)
-  }
+      return item && canAdminActOnItem(item);
+    });
+    if (!toAdd.length) return;
+    addReturnItem({
+      items: toAdd.map(id => ({
+        id,
+        quantity: 1
+      }))
+    });
+
+    setIsOpen('items', false);
+  };
 
   const onLocationChange = async (selectedLocationId: string) => {
-    await updateReturnRequest({ location_id: selectedLocationId })
-  }
+    await updateReturnRequest({ location_id: selectedLocationId });
+  };
 
-  const onShippingOptionChange = async (
-    selectedOptionId: string | undefined
-  ) => {
+  const onShippingOptionChange = async (selectedOptionId: string | undefined) => {
     const promises = preview.shipping_methods
-      .map((s) => s.actions?.find((a) => a.action === "SHIPPING_ADD")?.id)
+      .map(s => s.actions?.find(a => a.action === 'SHIPPING_ADD')?.id)
       .filter(Boolean)
-      .map(deleteReturnShipping)
+      .map(deleteReturnShipping);
 
-    await Promise.all(promises)
+    await Promise.all(promises);
 
     if (selectedOptionId) {
-      await addReturnShipping({ shipping_option_id: selectedOptionId })
+      await addReturnShipping({ shipping_option_id: selectedOptionId });
     }
-  }
+  };
 
   useEffect(() => {
     if (isShippingPriceEdit) {
-      document.getElementById("js-shipping-input").focus()
+      document.getElementById('js-shipping-input').focus();
     }
-  }, [isShippingPriceEdit])
+  }, [isShippingPriceEdit]);
 
   useEffect(() => {
-    form.setValue("location_id", activeReturn?.location_id || "")
-  }, [activeReturn])
+    form.setValue('location_id', activeReturn?.location_id || '');
+  }, [activeReturn]);
 
   const showLevelsWarning = useMemo(() => {
     if (!locationId) {
-      return false
+      return false;
     }
 
     const allItemsHaveLocation = items
-      .map((_i) => {
-        const item = itemsMap.get(_i.item_id)
+      .map(_i => {
+        const item = itemsMap.get(_i.item_id);
         if (!item?.variant_id) {
-          return true
+          return true;
         }
 
         if (!item.variant?.manage_inventory) {
-          return true
+          return true;
         }
 
-        return inventoryMap[item.variant_id]?.find(
-          (l) => l.location_id === locationId
-        )
+        return inventoryMap[item.variant_id]?.find(l => l.location_id === locationId);
       })
-      .every(Boolean)
+      .every(Boolean);
 
-    return !allItemsHaveLocation
-  }, [items, inventoryMap, locationId])
+    return !allItemsHaveLocation;
+  }, [items, inventoryMap, locationId]);
 
   useEffect(() => {
     const getInventoryMap = async () => {
-      const ret: Record<string, InventoryLevelDTO[]> = {}
+      const ret: Record<string, InventoryLevelDTO[]> = {};
 
       if (!items.length) {
-        return ret
+        return ret;
       }
 
       (
         await Promise.all(
-          items.map(async (_i) => {
-            const item = itemsMap.get(_i.item_id)
+          items.map(async _i => {
+            const item = itemsMap.get(_i.item_id);
 
             if (!item.variant_id) {
-              return undefined
+              return undefined;
             }
-            return await sdk.admin.product.retrieveVariant(
-              item.product_id,
-              item.variant_id,
-              { fields: "*inventory,*inventory.location_levels" }
-            )
+
+            return await sdk.admin.product.retrieveVariant(item.product_id, item.variant_id, {
+              fields: '*inventory,*inventory.location_levels'
+            });
           })
         )
       )
-        .filter((it) => it?.variant)
-        .forEach((item) => {
-          const { variant } = item
-          const levels = variant.inventory[0]?.location_levels
+        .filter(it => it?.variant)
+        .forEach(item => {
+          const { variant } = item;
+          const levels = variant.inventory[0]?.location_levels;
 
           if (!levels) {
-            return
+            return;
           }
 
-          ret[variant.id] = levels
-        })
+          ret[variant.id] = levels;
+        });
 
-      return ret
-    }
+      return ret;
+    };
 
-    getInventoryMap().then((map) => {
-      setInventoryMap(map)
-    })
-  }, [items])
+    getInventoryMap().then(map => {
+      setInventoryMap(map);
+    });
+  }, [items]);
 
-  const returnTotal = preview.return_requested_total
+  const returnTotal = preview.return_requested_total;
 
   const shippingTotal = useMemo(() => {
     const method = preview.shipping_methods.find(
-      (sm) => !!sm.actions?.find((a) => a.action === "SHIPPING_ADD")
-    )
+      sm => !!sm.actions?.find(a => a.action === 'SHIPPING_ADD')
+    );
 
-    return method?.total || 0
-  }, [preview.shipping_methods])
+    return method?.total || 0;
+  }, [preview.shipping_methods]);
 
   return (
     <RouteFocusModal.Form
       form={form}
-      onClose={(isSubmitSuccessful) => {
+      onClose={isSubmitSuccessful => {
+        if (isSubmitSuccessful === undefined) return;
+
         if (!isSubmitSuccessful) {
-          cancelReturnRequest()
+          cancelReturnRequest();
         }
       }}
       data-testid="order-create-return-form"
     >
-      <KeyboundForm onSubmit={handleSubmit} className="flex h-full flex-col">
+      <KeyboundForm
+        onSubmit={handleSubmit}
+        className="flex h-full flex-col"
+      >
         <RouteFocusModal.Header data-testid="order-create-return-header" />
-        <RouteFocusModal.Body className="flex size-full justify-center overflow-y-auto" data-testid="order-create-return-body">
+        <RouteFocusModal.Body
+          className="flex size-full justify-center overflow-y-auto"
+          data-testid="order-create-return-body"
+        >
           <div className="mt-16 w-[720px] max-w-[100%] px-4 md:p-0">
-            <Heading level="h1" data-testid="order-create-return-heading">{t("orders.returns.create")}</Heading>
-            <div className="mt-8 flex items-center justify-between" data-testid="order-create-return-inbound-header">
-              <Heading level="h2" data-testid="order-create-return-inbound-heading">{t("orders.returns.inbound")}</Heading>
-              <StackedFocusModal id="items" data-testid="order-create-return-add-items-modal">
+            <Heading
+              level="h1"
+              data-testid="order-create-return-heading"
+            >
+              {t('orders.returns.create')}
+            </Heading>
+            <div
+              className="mt-8 flex items-center justify-between"
+              data-testid="order-create-return-inbound-header"
+            >
+              <Heading
+                level="h2"
+                data-testid="order-create-return-inbound-heading"
+              >
+                {t('orders.returns.inbound')}
+              </Heading>
+              <StackedFocusModal
+                id="items"
+                data-testid="order-create-return-add-items-modal"
+              >
                 <StackedFocusModal.Trigger asChild>
-                  <a className="focus-visible:shadow-borders-focus transition-fg txt-compact-small-plus cursor-pointer text-blue-500 outline-none hover:text-blue-400" data-testid="order-create-return-add-items-button">
-                    {t("actions.addItems")}
-                  </a>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="small"
+                    data-testid="order-create-return-add-items-button"
+                  >
+                    {t('actions.addItems')}
+                  </Button>
                 </StackedFocusModal.Trigger>
                 <StackedFocusModal.Content>
                   <StackedFocusModal.Header />
 
                   <AddReturnItemsTable
                     items={order.items!}
-                    selectedItems={items.map((i) => i.item_id)}
+                    selectedItems={items.map(i => i.item_id)}
                     currencyCode={order.currency_code}
-                    onSelectionChange={(s) => (selectedItems = s)}
+                    onSelectionChange={s => (selectedItems = s)}
                   />
                   <StackedFocusModal.Footer>
                     <div className="flex w-full items-center justify-end gap-x-4">
@@ -443,7 +467,7 @@ export const ReturnCreateForm = ({
                             variant="secondary"
                             size="small"
                           >
-                            {t("actions.cancel")}
+                            {t('actions.cancel')}
                           </Button>
                         </RouteFocusModal.Close>
                         <Button
@@ -454,7 +478,7 @@ export const ReturnCreateForm = ({
                           role="button"
                           onClick={() => onItemsSelected()}
                         >
-                          {t("actions.save")}
+                          {t('actions.save')}
                         </Button>
                       </div>
                     </div>
@@ -463,16 +487,31 @@ export const ReturnCreateForm = ({
               </StackedFocusModal>
             </div>
             {showPlaceholder && (
-              <div
-                style={{
-                  background:
-                    "repeating-linear-gradient(-45deg, rgb(212, 212, 216, 0.15), rgb(212, 212, 216,.15) 10px, transparent 10px, transparent 20px)",
-                }}
-                className="bg-ui-bg-field mt-4 block h-[56px] w-full rounded-lg border border-dashed"
+              <Form.Field
+                control={form.control}
+                name="items"
+                render={({ fieldState }) => (
+                  <Form.Item>
+                    <div className="flex flex-col gap-y-4">
+                      <div
+                        className={`mt-4 rounded-lg border ${
+                          fieldState.error ? 'border-ui-border-error' : 'border-ui-border-base'
+                        }`}
+                      >
+                        <NoRecords
+                          icon={<Tag className="text-ui-fg-muted" />}
+                          title={t('orders.returns.noAddedItems')}
+                          message={t('orders.returns.addAtLeastOneItem')}
+                        />
+                      </div>
+                      <Form.ErrorMessage />
+                    </div>
+                  </Form.Item>
+                )}
               />
             )}
             {items
-              .filter((item) => !!previewItemsMap.get(item.item_id))
+              .filter(item => !!previewItemsMap.get(item.item_id))
               .map((item, index) => (
                 <ReturnItem
                   key={item.id}
@@ -482,34 +521,34 @@ export const ReturnCreateForm = ({
                   form={form}
                   onRemove={() => {
                     const actionId = previewItems
-                      .find((i) => i.id === item.item_id)
-                      ?.actions?.find((a) => a.action === "RETURN_ITEM")?.id
+                      .find(i => i.id === item.item_id)
+                      ?.actions?.find(a => a.action === 'RETURN_ITEM')?.id;
 
                     if (actionId) {
-                      removeReturnItem(actionId)
+                      removeReturnItem(actionId);
                     }
                   }}
-                  onUpdate={(payload) => {
+                  onUpdate={payload => {
                     const action = previewItems
-                      .find((i) => i.id === item.item_id)
-                      ?.actions?.find((a) => a.action === "RETURN_ITEM")
+                      .find(i => i.id === item.item_id)
+                      ?.actions?.find(a => a.action === 'RETURN_ITEM');
 
                     if (action) {
                       updateReturnItem(
                         { ...payload, actionId: action.id },
                         {
-                          onError: (error) => {
+                          onError: error => {
                             if (action.details?.quantity && payload.quantity) {
                               form.setValue(
                                 `items.${index}.quantity`,
                                 action.details?.quantity as number
-                              )
+                              );
                             }
 
-                            toast.error(error.message)
-                          },
+                            toast.error(error.message);
+                          }
                         }
-                      )
+                      );
                     }
                   }}
                   index={index}
@@ -518,11 +557,19 @@ export const ReturnCreateForm = ({
             {!showPlaceholder && (
               <div className="mt-8 flex flex-col gap-y-4">
                 {/* LOCATION*/}
-                <div className="grid grid-cols-1 gap-2 md:grid-cols-2" data-testid="order-create-return-location-section">
+                <div
+                  className="grid grid-cols-1 gap-2 md:grid-cols-2"
+                  data-testid="order-create-return-location-section"
+                >
                   <div>
-                    <Form.Label data-testid="order-create-return-location-label">{t("orders.returns.location")}</Form.Label>
-                    <Form.Hint className="!mt-1" data-testid="order-create-return-location-hint">
-                      {t("orders.returns.locationHint")}
+                    <Form.Label data-testid="order-create-return-location-label">
+                      {t('orders.returns.location')}
+                    </Form.Label>
+                    <Form.Hint
+                      className="!mt-1"
+                      data-testid="order-create-return-location-hint"
+                    >
+                      {t('orders.returns.locationHint')}
                     </Form.Hint>
                   </div>
 
@@ -535,42 +582,47 @@ export const ReturnCreateForm = ({
                           <Form.Control data-testid="order-create-return-location-control">
                             <Combobox
                               value={value}
-                              onChange={(v) => {
-                                onChange(v)
-                                onLocationChange(v)
+                              onChange={v => {
+                                onChange(v);
+                                onLocationChange(v);
                               }}
                               {...field}
-                              options={(stock_locations ?? []).map(
-                                (stockLocation) => ({
-                                  label: stockLocation.name,
-                                  value: stockLocation.id,
-                                })
-                              )}
+                              options={(stock_locations ?? []).map(stockLocation => ({
+                                label: stockLocation.name,
+                                value: stockLocation.id
+                              }))}
                               data-testid="order-create-return-location-combobox"
                             />
                           </Form.Control>
+                          <Form.ErrorMessage />
                         </Form.Item>
-                      )
+                      );
                     }}
                   />
                 </div>
 
                 {/* INBOUND SHIPPING*/}
-                <div className="grid grid-cols-1 gap-2 md:grid-cols-2" data-testid="order-create-return-shipping-section">
+                <div
+                  className="grid grid-cols-1 gap-2 md:grid-cols-2"
+                  data-testid="order-create-return-shipping-section"
+                >
                   <div>
                     <Form.Label data-testid="order-create-return-shipping-label">
-                      {t("orders.returns.inboundShipping")}
+                      {t('orders.returns.inboundShipping')}
                       <Text
                         size="small"
                         leading="compact"
-                        className="text-ui-fg-muted ml-1 inline"
+                        className="ml-1 inline text-ui-fg-muted"
                       >
-                        ({t("fields.optional")})
+                        ({t('fields.optional')})
                       </Text>
                     </Form.Label>
 
-                    <Form.Hint className="!mt-1" data-testid="order-create-return-shipping-hint">
-                      {t("orders.returns.inboundShippingHint")}
+                    <Form.Hint
+                      className="!mt-1"
+                      data-testid="order-create-return-shipping-hint"
+                    >
+                      {t('orders.returns.inboundShippingHint')}
                     </Form.Hint>
                   </div>
 
@@ -584,37 +636,32 @@ export const ReturnCreateForm = ({
                             <Combobox
                               allowClear
                               value={value}
-                              onChange={(v) => {
-                                onChange(v)
-                                onShippingOptionChange(v)
+                              onChange={v => {
+                                onChange(v);
+                                onShippingOptionChange(v);
                               }}
                               {...field}
                               options={(shipping_options ?? [])
                                 .filter(
-                                  (so) =>
+                                  so =>
                                     (locationId
-                                      ? so.service_zone.fulfillment_set!
-                                          .location.id === locationId
+                                      ? so.service_zone.fulfillment_set!.location.id === locationId
                                       : true) &&
                                     !!so.rules.find(
-                                      (r) =>
-                                        r.attribute === "is_return" &&
-                                        r.value === "true"
+                                      r => r.attribute === 'is_return' && r.value === 'true'
                                     )
                                 )
-                                .map((so) => ({
+                                .map(so => ({
                                   label: so.name,
-                                  value: so.id,
+                                  value: so.id
                                 }))}
                               disabled={!locationId}
-                              noResultsPlaceholder={
-                                <ReturnShippingPlaceholder />
-                              }
+                              noResultsPlaceholder={<ReturnShippingPlaceholder />}
                               data-testid="order-create-return-shipping-combobox"
                             />
                           </Form.Control>
                         </Form.Item>
-                      )
+                      );
                     }}
                   />
                 </div>
@@ -622,21 +669,31 @@ export const ReturnCreateForm = ({
             )}
 
             {showLevelsWarning && (
-              <Alert variant="warning" dismissible className="mt-4 p-5">
-                <div className="text-ui-fg-subtle txt-small pb-2 font-medium leading-[20px]">
-                  {t("orders.returns.noInventoryLevel")}
+              <Alert
+                variant="warning"
+                dismissible
+                className="mt-4 p-5"
+              >
+                <div className="txt-small pb-2 font-medium leading-[20px] text-ui-fg-subtle">
+                  {t('orders.returns.noInventoryLevel')}
                 </div>
-                <Text className="text-ui-fg-subtle txt-small leading-normal">
-                  {t("orders.returns.noInventoryLevelDesc")}
+                <Text className="txt-small leading-normal text-ui-fg-subtle">
+                  {t('orders.returns.noInventoryLevelDesc')}
                 </Text>
               </Alert>
             )}
 
             {/* TOTALS SECTION*/}
-            <div className="mt-8 border-y border-dotted py-4" data-testid="order-create-return-totals">
-              <div className="mb-2 flex items-center justify-between" data-testid="order-create-return-total-row">
+            <div
+              className="mt-8 border-y border-dotted py-4"
+              data-testid="order-create-return-totals"
+            >
+              <div
+                className="mb-2 flex items-center justify-between"
+                data-testid="order-create-return-total-row"
+              >
                 <span className="txt-small text-ui-fg-subtle">
-                  {t("orders.returns.returnTotal")}
+                  {t('orders.returns.returnTotal')}
                 </span>
                 <span className="txt-small text-ui-fg-subtle">
                   {getStylizedAmount(
@@ -646,11 +703,14 @@ export const ReturnCreateForm = ({
                 </span>
               </div>
 
-              <div className="flex items-center justify-between" data-testid="order-create-return-shipping-total-row">
+              <div
+                className="flex items-center justify-between"
+                data-testid="order-create-return-shipping-total-row"
+              >
                 <span className="txt-small text-ui-fg-subtle">
-                  {t("orders.returns.inboundShipping")}
+                  {t('orders.returns.inboundShipping')}
                 </span>
-                <span className="txt-small text-ui-fg-subtle flex items-center">
+                <span className="txt-small flex items-center text-ui-fg-subtle">
                   {!isShippingPriceEdit && (
                     <IconButton
                       onClick={() => setIsShippingPriceEdit(true)}
@@ -666,35 +726,32 @@ export const ReturnCreateForm = ({
                     <CurrencyInput
                       id="js-shipping-input"
                       onBlur={() => {
-                        let actionId
+                        let actionId;
 
-                        preview.shipping_methods.forEach((s) => {
+                        preview.shipping_methods.forEach(s => {
                           if (s.actions) {
                             for (const a of s.actions) {
-                              if (a.action === "SHIPPING_ADD") {
-                                actionId = a.id
+                              if (a.action === 'SHIPPING_ADD') {
+                                actionId = a.id;
                               }
                             }
                           }
-                        })
+                        });
 
                         if (actionId) {
                           updateReturnShipping({
                             actionId,
-                            custom_amount: customShippingAmount.float,
-                          })
+                            custom_amount: customShippingAmount.float
+                          });
                         }
-                        setIsShippingPriceEdit(false)
+                        setIsShippingPriceEdit(false);
                       }}
-                      symbol={
-                        currencies[order.currency_code.toUpperCase()]
-                          .symbol_native
-                      }
+                      symbol={currencies[order.currency_code.toUpperCase()].symbol_native}
                       code={order.currency_code}
                       onValueChange={(_value, _name, values) =>
                         setCustomShippingAmount({
-                          value: values?.value ?? "",
-                          float: values?.float ?? null,
+                          value: values?.value ?? '',
+                          float: values?.float ?? null
                         })
                       }
                       value={customShippingAmount.value}
@@ -707,21 +764,22 @@ export const ReturnCreateForm = ({
                 </span>
               </div>
 
-              <div className="mt-4 flex items-center justify-between border-t border-dotted pt-4" data-testid="order-create-return-difference-row">
+              <div
+                className="mt-4 flex items-center justify-between"
+                data-testid="order-create-return-difference-row"
+              >
+                <span className="txt-small font-medium">{t('orders.returns.estDifference')}</span>
                 <span className="txt-small font-medium">
-                  {t("orders.returns.estDifference")}
-                </span>
-                <span className="txt-small font-medium">
-                  {getStylizedAmount(
-                    preview.summary.pending_difference,
-                    order.currency_code
-                  )}
+                  {getStylizedAmount(preview.summary.pending_difference, order.currency_code)}
                 </span>
               </div>
             </div>
 
             {/* SEND NOTIFICATION*/}
-            <div className="bg-ui-bg-field mt-8 rounded-lg border py-2 pl-2 pr-4" data-testid="order-create-return-notification">
+            <div
+              className="mt-8 rounded-lg border bg-ui-bg-field py-2 pl-2 pr-4"
+              data-testid="order-create-return-notification"
+            >
               <Form.Field
                 control={form.control}
                 name="send_notification"
@@ -729,7 +787,10 @@ export const ReturnCreateForm = ({
                   return (
                     <Form.Item data-testid="order-create-return-notification-item">
                       <div className="flex items-center">
-                        <Form.Control className="mr-4 self-start" data-testid="order-create-return-notification-control">
+                        <Form.Control
+                          className="mr-4 self-start"
+                          data-testid="order-create-return-notification-control"
+                        >
                           <Switch
                             dir="ltr"
                             className="mt-[2px] rtl:rotate-180"
@@ -741,16 +802,19 @@ export const ReturnCreateForm = ({
                         </Form.Control>
                         <div className="block">
                           <Form.Label data-testid="order-create-return-notification-label">
-                            {t("orders.returns.sendNotification")}
+                            {t('orders.returns.sendNotification')}
                           </Form.Label>
-                          <Form.Hint className="!mt-1" data-testid="order-create-return-notification-hint">
-                            {t("orders.returns.sendNotificationHint")}
+                          <Form.Hint
+                            className="!mt-1"
+                            data-testid="order-create-return-notification-hint"
+                          >
+                            {t('orders.returns.sendNotificationHint')}
                           </Form.Hint>
                         </div>
                       </div>
                       <Form.ErrorMessage data-testid="order-create-return-notification-error" />
                     </Form.Item>
-                  )
+                  );
                 }}
               />
             </div>
@@ -762,8 +826,13 @@ export const ReturnCreateForm = ({
           <div className="flex w-full items-center justify-end gap-x-4">
             <div className="flex items-center justify-end gap-x-2">
               <RouteFocusModal.Close asChild>
-                <Button type="button" variant="secondary" size="small" data-testid="order-create-return-cancel-button">
-                  {t("orders.returns.cancel.title")}
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="small"
+                  data-testid="order-create-return-cancel-button"
+                >
+                  {t('orders.returns.cancel.title')}
                 </Button>
               </RouteFocusModal.Close>
               <Button
@@ -774,12 +843,12 @@ export const ReturnCreateForm = ({
                 isLoading={isRequestLoading}
                 data-testid="order-create-return-confirm-button"
               >
-                {t("orders.returns.confirm")}
+                {t('orders.returns.confirm')}
               </Button>
             </div>
           </div>
         </RouteFocusModal.Footer>
       </KeyboundForm>
     </RouteFocusModal.Form>
-  )
-}
+  );
+};

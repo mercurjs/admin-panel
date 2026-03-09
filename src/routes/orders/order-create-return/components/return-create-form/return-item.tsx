@@ -94,7 +94,7 @@ function ReturnItem({
               }}
             />
             <Text className="txt-small text-ui-fg-subtle">
-              {t("fields.qty")}
+              / {item.quantity} {t("fields.qty")}
             </Text>
           </div>
 
@@ -192,7 +192,7 @@ function ReturnItem({
             <div>
               <Form.Label>{t("orders.returns.note")}</Form.Label>
               <Form.Hint className="!mt-1">
-                {t("orders.returns.noteHint")}
+                {t("orders.returns.noteHintReturn")}
               </Form.Hint>
             </div>
 

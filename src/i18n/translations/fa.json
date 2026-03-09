@@ -1004,11 +1004,14 @@
     },
     "transfer": {
       "title": "انتقال مالکیت",
-      "requestSuccess": "درخواست انتقال سفارش به {{email}} ارسال شد.",
+      "requestSuccess": "درخواست انتقال سفارش به {{customerDetails}} ارسال شد.",
       "currentOwner": "مالک فعلی",
       "newOwner": "مالک جدید",
       "currentOwnerDescription": "مشتری که در حال حاضر به این سفارش مرتبط است.",
-      "newOwnerDescription": "مشتری که سفارش به او منتقل می‌شود."
+      "newOwnerDescription": "مشتری که سفارش به او منتقل می‌شود.",
+      "errors": {
+        "orderChangeAlreadyExists": "سفارش قابل انتقال نیست زیرا درخواست انتقال فعالی وجود دارد."
+      }
     },
     "payment": {
       "title": "پرداخت‌ها",
@@ -1076,7 +1079,7 @@
     "edit": {
       "email": {
         "title": "ویرایش ایمیل",
-        "requestSuccess": "ایمیل سفارش به {{email}} به‌روزرسانی شد."
+        "requestSuccess": "ایمیل با موفقیت به‌روزرسانی شد."
       },
       "shippingAddress": {
         "title": "ویرایش آدرس ارسال",
@@ -1088,7 +1091,11 @@
       },
       "billingAddress": {
         "title": "ویرایش آدرس صورتحساب",
-        "requestSuccess": "آدرس صورتحساب سفارش به‌روزرسانی شد."
+        "requestSuccess": "آدرس صورتحساب سفارش به‌روزرسانی شد.",
+        "validation": {
+          "addressRequired": "لطفا آدرس را وارد کنید",
+          "countryRequired": "لطفا کشور را انتخاب کنید"
+        }
       }
     },
     "returns": {
@@ -1250,7 +1257,9 @@
     "shipment": {
       "title": "علامت ‌گذاری به عنوان پردازش شده",
       "trackingNumber": "شماره رهگیری",
+      "trackingUrl": "URL رهگیری",
       "addTracking": "افزودن شماره رهگیری",
+      "hideTracking": "پنهان کردن شماره رهگیری",
       "sendNotification": "ارسال اطلاع‌رسانی",
       "sendNotificationHint": "به مشتری درباره این ارسال اطلاع دهید.",
       "toastCreated": "ارسال با موفقیت ایجاد شد."
