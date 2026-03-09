@@ -11,6 +11,7 @@ import { sdk } from "../../lib/client"
 import { queryClient } from "../../lib/query-client"
 import { queryKeysFactory } from "../../lib/query-key-factory"
 import { productsQueryKeys } from "./products"
+import { CategoryDetail } from "@routes/categories/category-detail/types"
 
 const CATEGORIES_QUERY_KEY = "categories" as const
 export const categoriesQueryKeys = queryKeysFactory(CATEGORIES_QUERY_KEY)
@@ -97,6 +98,33 @@ export const useUpdateProductCategory = (
     ...options,
   })
 }
+
+export const useUpdateProductCategoryDetails = () => {
+  return useMutation({
+    mutationFn: ({
+      id,
+      payload
+    }: {
+      id: string;
+      payload: {
+        media: { delete?: string[]; create?: { url: string; alt_text?: string }[] };
+        thumbnail?: { url: string} | string | null;
+        icon?: { url: string} | string |null;
+        banner?: { url: string} | string| null;
+        rank?: number | null;
+      };
+    }) =>
+      sdk.client.fetch<{
+        category_detail: CategoryDetail;
+      }>(`/admin/product-categories/${id}/details`, {
+        method: 'POST',
+        body: payload
+      }),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: categoriesQueryKeys.detail(variables.id) });
+    }
+  });
+};
 
 export const useDeleteProductCategory = (
   id: string,

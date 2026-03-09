@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { HttpTypes } from '@medusajs/types';
 import { Button, CurrencyInput, Heading, Label, Select, Textarea, toast } from '@medusajs/ui';
-import i18next from 'i18next';
 import { formatValue } from 'react-currency-input-field';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
