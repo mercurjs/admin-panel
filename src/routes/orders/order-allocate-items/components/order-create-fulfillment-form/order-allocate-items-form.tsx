@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import {
-  ExtendedAdminOrder,
-  ExtendedAdminOrderLineItem,
-  ExtendedInventoryItemDTO,
-  ManagedBy
+  ManagedBy,
+  type ExtendedAdminOrder,
+  type ExtendedAdminOrderLineItem,
+  type ExtendedInventoryItemDTO
 } from '@custom-types/order';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { MagnifyingGlass } from '@medusajs/icons';
 import { Alert, Button, Heading, Input, Text, toast } from '@medusajs/ui';
 import { useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import * as zod from 'zod';
+import type * as zod from 'zod';
 
 import { NoRecords } from '../../../../../components/common/empty-table-content';
 import { Form } from '../../../../../components/common/form';
@@ -19,7 +19,7 @@ import { Combobox } from '../../../../../components/inputs/combobox';
 import { RouteFocusModal, useRouteModal } from '../../../../../components/modals';
 import { KeyboundForm } from '../../../../../components/utilities/keybound-form';
 import { ordersQueryKeys } from '../../../../../hooks/api/orders';
-import { useCreateReservationItem } from '../../../../../hooks/api/reservations';
+import { useBatchReservationItems } from '../../../../../hooks/api/reservations';
 import { useComboboxData } from '../../../../../hooks/use-combobox-data';
 import { sdk } from '../../../../../lib/client';
 import { getFulfillableQuantity } from '../../../../../lib/order-item';
@@ -38,7 +38,7 @@ export function OrderAllocateItemsForm({ order }: OrderAllocateItemsFormProps) {
   const [disableSubmit, setDisableSubmit] = useState(false);
   const [filterTerm, setFilterTerm] = useState('');
 
-  const { mutateAsync: allocateItems, isPending: isMutating } = useCreateReservationItem();
+  const { mutateAsync: batchAllocateItems, isPending: isMutating } = useBatchReservationItems();
 
   const stockLocations = useComboboxData({
     queryFn: params => sdk.admin.stockLocation.list(params),
@@ -57,6 +57,7 @@ export function OrderAllocateItemsForm({ order }: OrderAllocateItemsFormProps) {
         item.variant?.inventory?.length &&
         getFulfillableQuantity(item) > 0
     );
+
     return itemsWithQuantity;
   }, [order.items]);
 
@@ -64,6 +65,7 @@ export function OrderAllocateItemsForm({ order }: OrderAllocateItemsFormProps) {
     if (!filterTerm) {
       return allocatableItems;
     }
+
     return allocatableItems.filter(
       i =>
         i.variant_title?.toLowerCase().includes(filterTerm.toLowerCase()) ||
@@ -96,11 +98,13 @@ export function OrderAllocateItemsForm({ order }: OrderAllocateItemsFormProps) {
   const handleSubmit = form.handleSubmit(async data => {
     if (!selectedLocationId) {
       toast.error(t('orders.allocateItems.error.noLocation'));
+
       return;
     }
 
     if (data.selected_items.length === 0) {
       toast.error(t('orders.allocateItems.error.noItemsSelected'));
+
       return;
     }
 
@@ -109,6 +113,7 @@ export function OrderAllocateItemsForm({ order }: OrderAllocateItemsFormProps) {
         .filter(([key]) => !key.endsWith('-'))
         .filter(([key]) => {
           const itemId = key.split('-')[0];
+
           return data.selected_items.includes(itemId);
         })
         .map(([key, quantity]) => [...key.split('-'), quantity]);
@@ -119,21 +124,14 @@ export function OrderAllocateItemsForm({ order }: OrderAllocateItemsFormProps) {
         return;
       }
 
-      const promises = payload.map(([itemId, inventoryId, quantity]) =>
-        allocateItems({
-          location_id: selectedLocationId,
-          inventory_item_id: inventoryId as string,
-          line_item_id: itemId as string,
-          quantity: Number(quantity)
-        })
-          .then(() => ({ success: true, inventory_item_id: inventoryId }))
-          .catch(() => ({ success: false, inventory_item_id: inventoryId }))
-      );
+      const createPayload = payload.map(([itemId, inventoryId, quantity]) => ({
+        location_id: selectedLocationId,
+        inventory_item_id: inventoryId as string,
+        line_item_id: itemId as string,
+        quantity: Number(quantity)
+      }));
 
-      /**
-       * TODO: we should have bulk endpoint for this so this is executed in a workflow and can be reverted
-       */
-      const results = await Promise.all(promises);
+      await batchAllocateItems({ create: createPayload });
 
       // invalidate order details so we get new item.variant.inventory items
       await queryClient.invalidateQueries({
@@ -142,19 +140,6 @@ export function OrderAllocateItemsForm({ order }: OrderAllocateItemsFormProps) {
 
       toast.success(t('orders.allocateItems.toast.created'));
       handleSuccess(`/orders/${order.id}`);
-
-      if (results.some(r => !r.success)) {
-        const failedItems = results
-          .filter(r => !r.success)
-          .map(r => r.inventory_item_id)
-          .join(', ');
-
-        toast.error(t('general.error'), {
-          description: t('orders.allocateItems.toast.error', {
-            items: failedItems
-          })
-        });
-      }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'An error occurred');
     }
