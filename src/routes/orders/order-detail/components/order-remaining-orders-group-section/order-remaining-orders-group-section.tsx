@@ -26,9 +26,11 @@ export const OrderRemainingOrdersGroupSection = () => {
       <div data-testid="order-remaining-orders-group-list">
         {orders?.map((order: any) => {
           const items =
-            order.items.length > 1
+            order.items?.length > 1
               ? `${order.items[0].subtitle} + ${order.items.length - 1} more`
-              : order.items[0].subtitle;
+              : order.items?.length === 1
+              ? order.items[0].subtitle
+              : 'No items';
           return (
             <Button
               variant="secondary"
