@@ -22,6 +22,7 @@ import {
   RadioGroup,
   Switch,
   Text,
+  Textarea,
   toast,
   type ProgressStatus
 } from '@medusajs/ui';
@@ -34,7 +35,10 @@ import { DeprecatedPercentageInput } from '../../../../../components/inputs/perc
 import { RouteFocusModal, useRouteModal } from '../../../../../components/modals';
 import { KeyboundForm } from '../../../../../components/utilities/keybound-form';
 import { useCampaigns } from '../../../../../hooks/api/campaigns';
-import { useCreatePromotion } from '../../../../../hooks/api/promotions';
+import {
+  useCreatePromotion,
+  useUpdatePromotionMetadata
+} from '../../../../../hooks/api/promotions';
 import { useDocumentDirection } from '../../../../../hooks/use-document-direction';
 import { currencies, getCurrencySymbol } from '../../../../../lib/data/currencies';
 import { DEFAULT_CAMPAIGN_VALUES } from '../../../../campaigns/common/constants';
@@ -50,6 +54,10 @@ const defaultValues = {
   campaign_choice: 'none' as const,
   is_automatic: 'false',
   code: '',
+  title: '',
+  description: '',
+  conditions: '',
+  min_purchase: '',
   type: 'standard' as PromotionTypeValues,
   status: 'draft' as PromotionStatusValues,
   rules: [],
@@ -87,6 +95,7 @@ export const CreatePromotionForm = () => {
   const [allocationMode, setAllocationMode] = useState<AllocationMode>('each');
 
   const { mutateAsync: createPromotion } = useCreatePromotion();
+  const { mutateAsync: updateMetadata } = useUpdatePromotionMetadata();
 
   const handleSubmit = form.handleSubmit(
     async data => {
@@ -97,6 +106,10 @@ export const CreatePromotionForm = () => {
         template_id: _templateId,
         application_method,
         rules,
+        title,
+        description,
+        conditions,
+        min_purchase,
         ...promotionData
       } = data;
       const {
@@ -161,7 +174,24 @@ export const CreatePromotionForm = () => {
           is_automatic: is_automatic === 'true'
         },
         {
-          onSuccess: ({ promotion }) => {
+          onSuccess: async ({ promotion }) => {
+            if (title || description || conditions || min_purchase) {
+              try {
+                await updateMetadata({
+                  id: promotion.id,
+                  metadata: {
+                    title,
+                    description,
+                    conditions,
+                    min_purchase: min_purchase ? parseFloat(min_purchase as string) : null
+                  }
+                });
+              } catch (e) {
+                console.error('Failed to update promotion metadata', e);
+                toast.error('Promotion created but failed to save title/description/conditions');
+              }
+            }
+
             toast.success(
               t('promotions.toasts.promotionCreateSuccess', {
                 code: promotion.code
@@ -592,7 +622,7 @@ export const CreatePromotionForm = () => {
                     }}
                   />
 
-                  <div className="flex gap-y-4">
+                  <div className="flex flex-col gap-y-4">
                     <Form.Field
                       control={form.control}
                       name="code"
@@ -627,6 +657,100 @@ export const CreatePromotionForm = () => {
                               />
                             </Text>
                             <Form.ErrorMessage data-testid="promotion-create-form-code-error" />
+                          </Form.Item>
+                        );
+                      }}
+                    />
+
+                    <Form.Field
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => {
+                        return (
+                          <Form.Item>
+                            <Form.Label>Coupon Title</Form.Label>
+                            <Form.Control>
+                              <Input
+                                {...field}
+                                placeholder="e.g. Welcome Discount"
+                              />
+                            </Form.Control>
+                            <Form.ErrorMessage />
+                          </Form.Item>
+                        );
+                      }}
+                    />
+
+                    <Form.Field
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => {
+                        return (
+                          <Form.Item data-testid="promotion-create-form-description-item">
+                            <Form.Label data-testid="promotion-create-form-description-label">
+                              Description
+                            </Form.Label>
+                            <Form.Control data-testid="promotion-create-form-description-control">
+                              <Textarea
+                                {...field}
+                                placeholder="Enter coupon description"
+                                data-testid="promotion-create-form-description-input"
+                              />
+                            </Form.Control>
+                            <Form.ErrorMessage data-testid="promotion-create-form-description-error" />
+                          </Form.Item>
+                        );
+                      }}
+                    />
+
+                    <Form.Field
+                      control={form.control}
+                      name="conditions"
+                      render={({ field }) => {
+                        return (
+                          <Form.Item data-testid="promotion-create-form-conditions-item">
+                            <Form.Label data-testid="promotion-create-form-conditions-label">
+                              Conditions
+                            </Form.Label>
+                            <Form.Control data-testid="promotion-create-form-conditions-control">
+                              <Textarea
+                                {...field}
+                                placeholder="Enter coupon conditions"
+                                data-testid="promotion-create-form-conditions-input"
+                              />
+                            </Form.Control>
+                            <Form.ErrorMessage data-testid="promotion-create-form-conditions-error" />
+                          </Form.Item>
+                        );
+                      }}
+                    />
+
+                    <Form.Field
+                      control={form.control}
+                      name="min_purchase"
+                      render={({ field }) => {
+                        return (
+                          <Form.Item data-testid="promotion-create-form-min-purchase-item">
+                            <Form.Label data-testid="promotion-create-form-min-purchase-label">
+                              Minimum Purchase Amount
+                            </Form.Label>
+                            <Form.Control data-testid="promotion-create-form-min-purchase-control">
+                              <CurrencyInput
+                                {...field}
+                                min={0}
+                                onValueChange={value => {
+                                  field.onChange(value);
+                                }}
+                                code={form.getValues().application_method.currency_code || 'THB'}
+                                symbol={getCurrencySymbol(
+                                  form.getValues().application_method.currency_code || 'THB'
+                                )}
+                                value={field.value}
+                                placeholder="0.00"
+                                data-testid="promotion-create-form-min-purchase-input"
+                              />
+                            </Form.Control>
+                            <Form.ErrorMessage data-testid="promotion-create-form-min-purchase-error" />
                           </Form.Item>
                         );
                       }}
