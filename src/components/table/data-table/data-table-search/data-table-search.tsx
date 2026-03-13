@@ -1,50 +1,49 @@
-import { Input } from "@medusajs/ui"
-import { ChangeEvent, useCallback, useEffect } from "react"
-import { useTranslation } from "react-i18next"
+import { useCallback, useEffect, useRef, type ChangeEvent } from 'react';
 
-import { debounce } from "lodash"
-import { useSelectedParams } from "../hooks"
+import { Input } from '@medusajs/ui';
+import { debounce } from 'lodash';
+import { useTranslation } from 'react-i18next';
+
+import { useSelectedParams } from '../hooks';
 
 type DataTableSearchProps = {
-  placeholder?: string
-  prefix?: string
-  autofocus?: boolean
-}
+  placeholder?: string;
+  prefix?: string;
+  autofocus?: boolean;
+};
 
-export const DataTableSearch = ({
-  placeholder,
-  prefix,
-  autofocus,
-}: DataTableSearchProps) => {
-  const { t } = useTranslation()
-  const placeholderText = placeholder || t("general.search")
+export const DataTableSearch = ({ placeholder, prefix, autofocus }: DataTableSearchProps) => {
+  const { t } = useTranslation();
+  const placeholderText = placeholder || t('general.search');
   const selectedParams = useSelectedParams({
-    param: "q",
+    param: 'q',
     prefix,
-    multiple: false,
-  })
+    multiple: false
+  });
 
-  const query = selectedParams.get()
+  const query = selectedParams.get();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const selectedParamsRef = useRef(selectedParams);
+  selectedParamsRef.current = selectedParams;
+
   const debouncedOnChange = useCallback(
     debounce((e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
+      const value = e.target.value;
 
       if (!value) {
-        selectedParams.delete()
+        selectedParamsRef.current.delete();
       } else {
-        selectedParams.add(value)
+        selectedParamsRef.current.add(value);
       }
     }, 500),
-    [prefix]
-  )
+    []
+  );
 
   useEffect(() => {
     return () => {
-      debouncedOnChange.cancel()
-    }
-  }, [debouncedOnChange])
+      debouncedOnChange.cancel();
+    };
+  }, [debouncedOnChange]);
 
   return (
     <Input
@@ -58,5 +57,5 @@ export const DataTableSearch = ({
       placeholder={placeholderText}
       data-testid="data-table-search-input"
     />
-  )
-}
+  );
+};
