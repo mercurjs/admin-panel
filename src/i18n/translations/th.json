@@ -3,6 +3,8 @@
   "general": {
     "ascending": "เรียงจากน้อยไปมาก",
     "descending": "เรียงจากมากไปน้อย",
+    "expandAll": "ขยายทุกแถว",
+    "collapseAll": "ยุบทุกแถว",
     "add": "เพิ่ม",
     "start": "เริ่มต้น",
     "end": "สิ้นสุด",
@@ -929,7 +931,9 @@
     "cancelWarning": "คุณกำลังจะยกเลิกคำสั่งซื้อ {{id}} การดำเนินการนี้ไม่สามารถยกเลิกได้",
     "onDateFromSalesChannel": "{{date}} จาก {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "คำสั่งซื้อของคุณจะแสดงที่นี่"
+      "noRecordsMessage": "คำสั่งซื้อของคุณจะแสดงที่นี่",
+      "multipleVendors": "{{count}} ผู้ขาย",
+      "vendorFallback": "ผู้ขายที่ไม่รู้จัก"
     },
     "summary": {
       "requestReturn": "ขอคืนสินค้า",
@@ -2757,6 +2761,9 @@
     "customer": "ลูกค้า",
     "date": "วันที่",
     "order": "คำสั่งซื้อ",
+    "orderId": "รหัสคำสั่งซื้อ",
+    "groupId": "รหัสกลุ่ม",
+    "vendor": "ผู้ขาย",
     "fulfillment": "การจัดส่ง",
     "provider": "ผู้ให้บริการ",
     "payment": "การชำระเงิน",

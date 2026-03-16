@@ -3,6 +3,8 @@
   "general": {
     "ascending": "오름차순",
     "descending": "내림차순",
+    "expandAll": "모든 행 펼치기",
+    "collapseAll": "모든 행 접기",
     "add": "추가",
     "start": "시작",
     "end": "종료",
@@ -1019,7 +1021,9 @@
     "orderCanceled": "주문이 성공적으로 취소되었습니다",
     "onDateFromSalesChannel": "{{date}} {{salesChannel}}에서",
     "list": {
-      "noRecordsMessage": "주문이 이곳에 표시됩니다."
+      "noRecordsMessage": "주문이 이곳에 표시됩니다.",
+      "multipleVendors": "{{count}}개 판매자",
+      "vendorFallback": "알 수 없는 판매자"
     },
     "status": {
       "not_paid": "미결제",
@@ -2967,6 +2971,9 @@
     "customer": "고객",
     "date": "날짜",
     "order": "주문",
+    "orderId": "주문 ID",
+    "groupId": "그룹 ID",
+    "vendor": "공급업체",
     "fulfillment": "이행",
     "provider": "제공자",
     "payment": "결제",

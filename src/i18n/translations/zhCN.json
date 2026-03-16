@@ -3,6 +3,8 @@
   "general": {
     "ascending": "升序",
     "descending": "降序",
+    "expandAll": "展开所有行",
+    "collapseAll": "折叠所有行",
     "add": "添加",
     "start": "开始",
     "end": "结束",
@@ -1019,7 +1021,9 @@
     "orderCanceled": "订单取消成功！",
     "onDateFromSalesChannel": "{{date}} 来自 {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "您的订单将显示在这里。"
+      "noRecordsMessage": "您的订单将显示在这里。",
+      "multipleVendors": "{{count}}个供应商",
+      "vendorFallback": "未知供应商"
     },
     "status": {
       "not_paid": "未支付",
@@ -2961,6 +2965,9 @@
     "customer": "客户",
     "date": "日期",
     "order": "订单",
+    "orderId": "订单ID",
+    "groupId": "组ID",
+    "vendor": "供应商",
     "fulfillment": "履约",
     "provider": "供应商",
     "payment": "支付",

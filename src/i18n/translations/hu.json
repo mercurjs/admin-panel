@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Növekvő",
     "descending": "Csökkenő",
+    "expandAll": "Összes sor kibontása",
+    "collapseAll": "Összes sor összecsukása",
     "add": "Hozzáadás",
     "start": "Kezdés",
     "end": "Vége",
@@ -1015,7 +1017,9 @@
     "orderCanceled": "A rendelés törölve",
     "onDateFromSalesChannel": "{{date}} {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Itt fognak megjelenni a rendelések"
+      "noRecordsMessage": "Itt fognak megjelenni a rendelések",
+      "multipleVendors": "{{count}} eladó",
+      "vendorFallback": "Ismeretlen eladó"
     },
     "status": {
       "not_paid": "Nem fizetett",
@@ -2949,6 +2953,9 @@
     "customer": "Vásárló",
     "date": "Dátum",
     "order": "Rendelés",
+    "orderId": "Rendelés azonosító",
+    "groupId": "Csoport azonosító",
+    "vendor": "Eladó",
     "fulfillment": "Teljesítés",
     "provider": "Szolgáltató",
     "payment": "Fizetés",

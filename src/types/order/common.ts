@@ -5,9 +5,13 @@ import type {
   AdminOrderLineItem,
   AdminProductVariant,
   AdminProductVariantInventoryItemLink,
+  CustomerDTO,
+  FulfillmentStatus,
   InventoryItemDTO,
   OrderLineItemDTO,
-  PaginatedResponse
+  PaginatedResponse,
+  PaymentStatus,
+  SalesChannelDTO
 } from '@medusajs/types';
 
 export interface Order {
@@ -15,6 +19,7 @@ export interface Order {
   display_id: number;
   region_id: string;
   customer_id: string;
+  customer?: CustomerDTO;
   version: number;
   sales_channel_id: string;
   status: string;
@@ -31,6 +36,9 @@ export interface Order {
   billing_address_id: string;
   items: { id: string }[];
   seller: SellerDTO;
+  payment_status: PaymentStatus;
+  fulfillment_status: FulfillmentStatus;
+  total: number;
 }
 
 export interface OrderResponse {
@@ -56,13 +64,34 @@ export interface OrderQueryParams {
   q?: string;
 }
 
-export interface OrderSet extends Order {
+export interface OrderSet {
+  id: string;
+  display_id: number;
+  customer_id: string;
+  customer?: CustomerDTO;
+  sales_channel_id?: string;
+  sales_channel?: SalesChannelDTO;
+  created_at: string;
+  updated_at: string;
+  currency_code: string;
+  total: number;
   orders: Order[];
+  payment_status: PaymentStatus;
+  fulfillment_status: FulfillmentStatus;
 }
+
+export type OrderTableRow = OrderSet;
 
 export type AdminOrderListResponse = PaginatedResponse<{
   orders: AdminOrder[];
 }>;
+
+export interface AdminOrderSetListResponse {
+  order_sets: OrderSet[];
+  count?: number;
+  offset?: number;
+  limit?: number;
+}
 
 export enum ManagedBy {
   ADMIN = 'admin',

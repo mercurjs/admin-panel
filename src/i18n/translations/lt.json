@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Didėjančia tvarka",
     "descending": "Mažėjančia tvarka",
+    "expandAll": "Išskleisti visas eilutes",
+    "collapseAll": "Sutraukti visas eilutes",
     "add": "Pridėti",
     "start": "Pradžia",
     "end": "Pabaiga",
@@ -1017,7 +1019,9 @@
     "orderCanceled": "Užsakymas sėkmingai atšauktas",
     "onDateFromSalesChannel": "{{date}} iš {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Jūsų užsakymai bus rodomi čia."
+      "noRecordsMessage": "Jūsų užsakymai bus rodomi čia.",
+      "multipleVendors": "{{count}} pardavėjų",
+      "vendorFallback": "Nežinomas pardavėjas"
     },
     "status": {
       "not_paid": "Neapmokėtas",
@@ -2951,6 +2955,9 @@
     "customer": "Klientas",
     "date": "Data",
     "order": "Užsakymas",
+    "orderId": "Užsakymo ID",
+    "groupId": "Grupės ID",
+    "vendor": "Tiekėjas",
     "fulfillment": "Vykdymas",
     "provider": "Teikėjas",
     "payment": "Mokėjimas",

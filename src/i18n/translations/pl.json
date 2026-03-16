@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Rosnąco",
     "descending": "Malejąco",
+    "expandAll": "Rozwiń wszystkie wiersze",
+    "collapseAll": "Zwiń wszystkie wiersze",
     "add": "Dodaj",
     "start": "Początek",
     "end": "Koniec",
@@ -1082,7 +1084,9 @@
     "orderCanceled": "Zamówienie zostało pomyślnie anulowane",
     "onDateFromSalesChannel": "{{date}} z {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Twoje zamówienia pojawią się tutaj."
+      "noRecordsMessage": "Twoje zamówienia pojawią się tutaj.",
+      "multipleVendors": "{{count}} sprzedawców",
+      "vendorFallback": "Nieznany sprzedawca"
     },
     "status": {
       "not_paid": "Nieopłacone",
@@ -3119,6 +3123,9 @@
     "customer": "Klient",
     "date": "Data",
     "order": "Zamówienie",
+    "orderId": "ID zamówienia",
+    "groupId": "ID grupy",
+    "vendor": "Sprzedawca",
     "fulfillment": "Spełnienie",
     "provider": "Dostawca",
     "payment": "Zapłata",

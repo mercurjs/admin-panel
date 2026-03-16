@@ -14,6 +14,12 @@
         "descending": {
           "type": "string"
         },
+        "expandAll": {
+          "type": "string"
+        },
+        "collapseAll": {
+          "type": "string"
+        },
         "add": {
           "type": "string"
         },
@@ -183,6 +189,8 @@
       "required": [
         "ascending",
         "descending",
+        "expandAll",
+        "collapseAll",
         "add",
         "start",
         "end",
@@ -3973,9 +3981,15 @@
           "properties": {
             "noRecordsMessage": {
               "type": "string"
+            },
+            "multipleVendors": {
+              "type": "string"
+            },
+            "vendorFallback": {
+              "type": "string"
             }
           },
-          "required": ["noRecordsMessage"],
+          "required": ["noRecordsMessage", "multipleVendors", "vendorFallback"],
           "additionalProperties": false
         },
         "status": {
@@ -11549,6 +11563,15 @@
         "order": {
           "type": "string"
         },
+        "orderId": {
+          "type": "string"
+        },
+        "groupId": {
+          "type": "string"
+        },
+        "vendor": {
+          "type": "string"
+        },
         "fulfillment": {
           "type": "string"
         },
@@ -11830,6 +11853,9 @@
         "customer",
         "date",
         "order",
+        "orderId",
+        "groupId",
+        "vendor",
         "fulfillment",
         "provider",
         "payment",

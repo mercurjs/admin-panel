@@ -1,34 +1,26 @@
-import { _DataTable } from '@components/table/data-table';
-import { useOrders } from '@hooks/api';
-import { useOrderTableColumns } from '@hooks/table/columns';
-import { useOrderTableQuery } from '@hooks/table/query';
+import { _DataTable } from '@components/table/data-table/data-table';
+import type { Order, OrderSet } from '@custom-types/order';
+import { useOrderSets } from '@hooks/api/orders';
+import { useOrderSetTableColumns } from '@hooks/table/columns/use-order-set-table-columns';
+import { useOrderSetsTableFilters } from '@hooks/table/filters/use-order-sets-table-filters';
+import { useOrderSetsTableQuery } from '@hooks/table/query/use-order-sets-table-query';
 import { useDataTable } from '@hooks/use-data-table';
 import { Container, Heading } from '@medusajs/ui';
-import { useFeatureFlag } from '@providers/feature-flag-provider';
-import { DEFAULT_FIELDS } from '@routes/orders/order-detail/constants';
+import { hasMultipleOrders, isOrderSet } from '@routes/orders/order-list/utils/is-order-set';
 import { keepPreviousData } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-
-import { ConfigurableOrderListTable } from './configurable-order-list-table';
-import { useOrderLegacyTableFilters } from './use-order-legacy-table-filters';
 
 const PAGE_SIZE = 20;
 
 export const OrderListTable = () => {
   const { t } = useTranslation();
-  const isViewConfigEnabled = useFeatureFlag('view_configurations');
 
-  if (isViewConfigEnabled) {
-    return <ConfigurableOrderListTable />;
-  }
-
-  const { searchParams, raw } = useOrderTableQuery({
+  const { searchParams, raw } = useOrderSetsTableQuery({
     pageSize: PAGE_SIZE
   });
 
-  const { orders, count, isError, error, isLoading } = useOrders(
+  const { order_sets, count, isError, error, isLoading } = useOrderSets(
     {
-      fields: DEFAULT_FIELDS,
       ...searchParams
     },
     {
@@ -36,15 +28,23 @@ export const OrderListTable = () => {
     }
   );
 
-  const filters = useOrderLegacyTableFilters();
-  const columns = useOrderTableColumns({});
+  const filters = useOrderSetsTableFilters();
+  const columns = useOrderSetTableColumns();
 
-  const { table } = useDataTable({
-    data: orders ?? [],
+  const { table } = useDataTable<OrderSet | Order>({
+    data: order_sets ?? [],
     columns,
     enablePagination: true,
     count,
-    pageSize: PAGE_SIZE
+    pageSize: PAGE_SIZE,
+    getRowId: row => row.id,
+    getSubRows: row => {
+      if (isOrderSet(row) && hasMultipleOrders(row)) {
+        return row.orders;
+      }
+      return [];
+    },
+    enableExpandableRows: true
   });
 
   if (isError) {
@@ -62,28 +62,35 @@ export const OrderListTable = () => {
       >
         <Heading data-testid="orders-heading">{t('orders.domain')}</Heading>
       </div>
-      <div data-testid="orders-table-wrapper">
-        <_DataTable
-          columns={columns}
-          table={table}
-          pagination
-          navigateTo={row => `/orders/${row.original.id}`}
-          filters={filters}
-          count={count}
-          search
-          isLoading={isLoading}
-          pageSize={PAGE_SIZE}
-          orderBy={[
-            { key: 'display_id', label: t('orders.fields.displayId') },
-            { key: 'created_at', label: t('fields.createdAt') },
-            { key: 'updated_at', label: t('fields.updatedAt') }
-          ]}
-          queryObject={raw}
-          noRecords={{
-            message: t('orders.list.noRecordsMessage')
-          }}
-        />
-      </div>
+      <_DataTable
+        columns={columns}
+        table={table}
+        pagination
+        navigateTo={row => {
+          if (isOrderSet(row.original)) {
+            if (hasMultipleOrders(row.original)) {
+              return '';
+            }
+            return `/orders/${row.original.orders[0].id}`;
+          }
+          return `/orders/${row.original.id}`;
+        }}
+        filters={filters}
+        count={count}
+        search
+        isLoading={isLoading}
+        pageSize={PAGE_SIZE}
+        orderBy={[
+          { key: 'display_id', label: t('orders.fields.displayId') },
+          { key: 'created_at', label: t('fields.createdAt') },
+          { key: 'updated_at', label: t('fields.updatedAt') }
+        ]}
+        queryObject={raw}
+        noRecords={{
+          message: t('orders.list.noRecordsMessage')
+        }}
+        enableExpandAll
+      />
     </Container>
   );
 };

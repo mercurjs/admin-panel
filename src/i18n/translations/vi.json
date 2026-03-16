@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Tăng dần",
     "descending": "Giảm dần",
+    "expandAll": "Mở rộng tất cả hàng",
+    "collapseAll": "Thu gọn tất cả hàng",
     "add": "Thêm",
     "start": "Bắt đầu",
     "end": "Kết thúc",
@@ -1044,7 +1046,9 @@
     "orderCanceled": "Đơn hàng đã được hủy thành công",
     "onDateFromSalesChannel": "{{date}} từ {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Đơn hàng của bạn sẽ hiển thị ở đây."
+      "noRecordsMessage": "Đơn hàng của bạn sẽ hiển thị ở đây.",
+      "multipleVendors": "{{count}} nhà cung cấp",
+      "vendorFallback": "Nhà cung cấp không xác định"
     },
     "status": {
       "not_paid": "Chưa thanh toán",
@@ -2995,6 +2999,9 @@
     "customer": "Khách hàng",
     "date": "Ngày",
     "order": "Đơn hàng",
+    "orderId": "ID đơn hàng",
+    "groupId": "ID nhóm",
+    "vendor": "Nhà cung cấp",
     "fulfillment": "Xử lý giao hàng",
     "provider": "Nhà cung cấp",
     "payment": "Thanh toán",

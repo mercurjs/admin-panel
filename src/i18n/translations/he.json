@@ -3,6 +3,8 @@
   "general": {
     "ascending": "סדר עולה",
     "descending": "סדר יורד",
+    "expandAll": "הרחב את כל השורות",
+    "collapseAll": "צמצם את כל השורות",
     "add": "הוסף",
     "start": "התחל",
     "end": "סיום",
@@ -1019,7 +1021,9 @@
     "orderCanceled": "ההזמנה בוטלה בהצלחה",
     "onDateFromSalesChannel": "{{date}} מ{{salesChannel}}",
     "list": {
-      "noRecordsMessage": "ההזמנות שלך יופיעו כאן."
+      "noRecordsMessage": "ההזמנות שלך יופיעו כאן.",
+      "multipleVendors": "{{count}} ספקים",
+      "vendorFallback": "ספק לא ידוע"
     },
     "status": {
       "not_paid": "לא שולם",
@@ -2961,6 +2965,9 @@
     "customer": "לקוח",
     "date": "תאריך",
     "order": "הזמנה",
+    "orderId": "מזהה הזמנה",
+    "groupId": "מזהה קבוצה",
+    "vendor": "ספק",
     "fulfillment": "מימוש",
     "provider": "ספק",
     "payment": "תשלום",

@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Vzestupně",
     "descending": "Sestupně",
+    "expandAll": "Rozbalit všechny řádky",
+    "collapseAll": "Sbalit všechny řádky",
     "add": "Přidat",
     "start": "Začátek",
     "end": "Konec",
@@ -397,7 +399,6 @@
   },
   "products": {
     "domain": "Produkty",
-    "additionalAttributes": "Další atributy",
     "list": {
       "noRecordsMessage": "Vytvořte svůj první produkt, abyste mohli začít prodávat."
     },
@@ -1044,7 +1045,9 @@
     "orderCanceled": "Objednávka byla úspěšně zrušena",
     "onDateFromSalesChannel": "{{date}} z {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Vaše objednávky se zde zobrazí."
+      "noRecordsMessage": "Vaše objednávky se zde zobrazí.",
+      "multipleVendors": "{{count}} prodejců",
+      "vendorFallback": "Neznámý prodejce"
     },
     "status": {
       "not_paid": "Nezaplaceno",
@@ -2134,10 +2137,6 @@
         "across": {
           "title": "Napříč",
           "description": "Aplikuje hodnotu napříč položkami"
-        },
-        "once": {
-          "title": "Jednou",
-          "description": "Omezit slevu na max. množství"
         }
       },
       "code": {
@@ -2711,10 +2710,7 @@
         "placeholder": "špatná_velikost",
         "tooltip": "Hodnota by měla být jedinečný identifikátor pro důvod vrácení."
       },
-      "label": {
-        "label": "Štítek",
-        "placeholder": "Špatná velikost"
-      },
+      "label": { "label": "Štítek", "placeholder": "Špatná velikost" },
       "description": {
         "label": "Popis",
         "placeholder": "Zákazník obdržel špatnou velikost"
@@ -2990,6 +2986,9 @@
     "customer": "Zákazník",
     "date": "Datum",
     "order": "Objednávka",
+    "orderId": "ID objednávky",
+    "groupId": "ID skupiny",
+    "vendor": "Prodejce",
     "fulfillment": "Plnění",
     "provider": "Poskytovatel",
     "payment": "Platba",

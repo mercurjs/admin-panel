@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Crescente",
     "descending": "Decrescente",
+    "expandAll": "Espandi tutte le righe",
+    "collapseAll": "Comprimi tutte le righe",
     "add": "Aggiungi",
     "start": "Inizio",
     "end": "Fine",
@@ -941,7 +943,9 @@
     "cancelWarning": "Stai per annullare l'ordine {{id}}. Questa azione non può essere annullata.",
     "onDateFromSalesChannel": "{{date}} da {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "I tuoi ordini appariranno qui."
+      "noRecordsMessage": "I tuoi ordini appariranno qui.",
+      "multipleVendors": "{{count}} venditori",
+      "vendorFallback": "Venditore sconosciuto"
     },
     "summary": {
       "requestReturn": "Richiedi reso",
@@ -2770,6 +2774,9 @@
     "customer": "Cliente",
     "date": "Data",
     "order": "Ordine",
+    "orderId": "ID ordine",
+    "groupId": "ID gruppo",
+    "vendor": "Fornitore",
     "fulfillment": "Evasione",
     "provider": "Fornitore",
     "payment": "Pagamento",

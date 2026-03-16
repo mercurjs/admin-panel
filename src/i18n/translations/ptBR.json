@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Ascendente",
     "descending": "Descendente",
+    "expandAll": "Expandir todas as linhas",
+    "collapseAll": "Recolher todas as linhas",
     "add": "Adicionar",
     "start": "Início",
     "end": "Fim",
@@ -929,7 +931,9 @@
     "cancelWarning": "Você está prestes a cancelar o pedido {{id}}. Esta ação não pode ser desfeita.",
     "onDateFromSalesChannel": "{{date}} de {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Seus pedidos aparecerão aqui."
+      "noRecordsMessage": "Seus pedidos aparecerão aqui.",
+      "multipleVendors": "{{count}} fornecedores",
+      "vendorFallback": "Fornecedor desconhecido"
     },
     "summary": {
       "requestReturn": "Solicitar devolução",
@@ -2757,6 +2761,9 @@
     "customer": "Cliente",
     "date": "Data",
     "order": "Pedido",
+    "orderId": "ID do pedido",
+    "groupId": "ID do grupo",
+    "vendor": "Fornecedor",
     "fulfillment": "Atendimento",
     "provider": "Provedor",
     "payment": "Pagamento",

@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Ascendent",
     "descending": "Descendent",
+    "expandAll": "Extinde toate rândurile",
+    "collapseAll": "Restrânge toate rândurile",
     "add": "Adăuga",
     "start": "Început",
     "end": "Sfârşit",
@@ -976,7 +978,9 @@
     "orderCanceled": "Comanda a fost anulată cu succes",
     "onDateFromSalesChannel": "{{date}} din {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Comenzile tale vor apărea aici."
+      "noRecordsMessage": "Comenzile tale vor apărea aici.",
+      "multipleVendors": "{{count}} furnizori",
+      "vendorFallback": "Furnizor necunoscut"
     },
     "status": {
       "not_paid": "Neplătit",
@@ -2876,6 +2880,9 @@
     "customer": "Client",
     "date": "Data",
     "order": "Comanda",
+    "orderId": "ID comandă",
+    "groupId": "ID grup",
+    "vendor": "Furnizor",
     "fulfillment": "Îndeplinire",
     "provider": "Furnizor",
     "payment": "Plată",

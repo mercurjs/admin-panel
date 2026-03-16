@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Artan",
     "descending": "Azalan",
+    "expandAll": "Tüm satırları genişlet",
+    "collapseAll": "Tüm satırları daralt",
     "add": "Ekle",
     "start": "Başla",
     "end": "Bitiş",
@@ -993,7 +995,9 @@
     "cancelWarning": "{{id}} numaralı siparişi iptal etmek üzeresiniz. Bu işlem geri alınamaz.",
     "onDateFromSalesChannel": "{{date}} tarihinde {{salesChannel}} üzerinden",
     "list": {
-      "noRecordsMessage": "Siparişleriniz burada görünecektir."
+      "noRecordsMessage": "Siparişleriniz burada görünecektir.",
+      "multipleVendors": "{{count}} satıcı",
+      "vendorFallback": "Bilinmeyen satıcı"
     },
     "summary": {
       "requestReturn": "İade talebi",
@@ -2901,6 +2905,9 @@
     "customer": "Müşteri",
     "date": "Tarih",
     "order": "Sipariş",
+    "orderId": "Sipariş ID",
+    "groupId": "Grup ID",
+    "vendor": "Satıcı",
     "fulfillment": "Tamamlama",
     "provider": "Sağlayıcı",
     "payment": "Ödeme",

@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Ascendant",
     "descending": "Descendant",
+    "expandAll": "Développer toutes les lignes",
+    "collapseAll": "Réduire toutes les lignes",
     "add": "Ajouter",
     "start": "Début",
     "end": "Fin",
@@ -930,7 +932,9 @@
     "cancelWarning": "Vous êtes sur le point de supprimer la commande {{id}}. Cette action ne peut être annulée.",
     "onDateFromSalesChannel": "{{date}} de {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Vos commandes apparaîtront ici."
+      "noRecordsMessage": "Vos commandes apparaîtront ici.",
+      "multipleVendors": "{{count}} vendeurs",
+      "vendorFallback": "Vendeur inconnu"
     },
     "summary": {
       "requestReturn": "Demander un retour",
@@ -2759,6 +2763,9 @@
     "customer": "Client",
     "date": "Date",
     "order": "Commande",
+    "orderId": "ID de commande",
+    "groupId": "ID de groupe",
+    "vendor": "Vendeur",
     "fulfillment": "Livraison",
     "provider": "Fournisseur",
     "payment": "Paiement",

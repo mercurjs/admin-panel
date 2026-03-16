@@ -1,21 +1,21 @@
-import { TFunction } from "i18next"
+import type { TFunction } from "i18next";
 
 export const getCanceledOrderStatus = (
   t: TFunction<"translation">,
-  status: string
+  status: string,
 ): { label: string; color: "red" } | null => {
   if (status === "canceled") {
-    return { label: t("orders.status.canceled"), color: "red" }
+    return { label: t("orders.status.canceled"), color: "red" };
   }
 
-  return null
-}
+  return null;
+};
 
 export const getOrderPaymentStatus = (
   t: TFunction<"translation">,
-  status: string
+  status: string,
 ) => {
-  const [label, color] = {
+  const statusMap: Record<string, [string, "red" | "orange" | "green"]> = {
     not_paid: [t("orders.payment.status.notPaid"), "red"],
     authorized: [t("orders.payment.status.authorized"), "orange"],
     partially_authorized: [
@@ -24,6 +24,7 @@ export const getOrderPaymentStatus = (
     ],
     awaiting: [t("orders.payment.status.awaiting"), "orange"],
     captured: [t("orders.payment.status.captured"), "green"],
+    completed: [t("orders.payment.status.captured"), "green"],
     refunded: [t("orders.payment.status.refunded"), "green"],
     partially_refunded: [
       t("orders.payment.status.partiallyRefunded"),
@@ -35,14 +36,16 @@ export const getOrderPaymentStatus = (
     ],
     canceled: [t("orders.payment.status.canceled"), "red"],
     requires_action: [t("orders.payment.status.requiresAction"), "orange"],
-  }[status] as [string, "red" | "orange" | "green"]
+  };
 
-  return { label, color }
-}
+  const [label, color] = statusMap[status] ?? [];
+
+  return { label, color };
+};
 
 export const getOrderFulfillmentStatus = (
   t: TFunction<"translation">,
-  status: string
+  status: string,
 ) => {
   const [label, color] = {
     not_fulfilled: [t("orders.fulfillment.status.notFulfilled"), "red"],
@@ -68,7 +71,7 @@ export const getOrderFulfillmentStatus = (
     returned: [t("orders.fulfillment.status.returned"), "green"],
     canceled: [t("orders.fulfillment.status.canceled"), "red"],
     requires_action: [t("orders.fulfillment.status.requiresAction"), "orange"],
-  }[status] as [string, "red" | "orange" | "green"]
+  }[status] as [string, "red" | "orange" | "green"];
 
-  return { label, color }
-}
+  return { label, color };
+};

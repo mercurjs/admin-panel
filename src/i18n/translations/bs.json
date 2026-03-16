@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Rastuće",
     "descending": "Opadajuće",
+    "expandAll": "Proširi sve redove",
+    "collapseAll": "Skupi sve redove",
     "add": "Dodaj",
     "start": "Započni",
     "end": "Kraj",
@@ -1019,7 +1021,9 @@
     "orderCanceled": "Narudžba je uspješno otkazana",
     "onDateFromSalesChannel": "{{date}} iz {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Vaše narudžbe će se prikazati ovdje."
+      "noRecordsMessage": "Vaše narudžbe će se prikazati ovdje.",
+      "multipleVendors": "{{count}} prodavača",
+      "vendorFallback": "Nepoznat prodavač"
     },
     "status": {
       "not_paid": "Nije plaćeno",
@@ -2959,6 +2963,9 @@
     "customer": "Kupac",
     "date": "Datum",
     "order": "Narudžba",
+    "orderId": "ID narudžbe",
+    "groupId": "ID grupe",
+    "vendor": "Prodavač",
     "fulfillment": "Ispuna",
     "provider": "Pružatelj",
     "payment": "Plaćanje",

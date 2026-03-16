@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Aufsteigend",
     "descending": "Absteigend",
+    "expandAll": "Alle Zeilen erweitern",
+    "collapseAll": "Alle Zeilen reduzieren",
     "add": "Hinzufügen",
     "start": "Start",
     "end": "Ende",
@@ -929,7 +931,9 @@
     "cancelWarning": "Sie sind dabei, die Bestellung {{id}} zu stornieren. Diese Aktion kann nicht rückgängig gemacht werden.",
     "onDateFromSalesChannel": "{{date}} von {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Ihre Bestellungen werden hier angezeigt."
+      "noRecordsMessage": "Ihre Bestellungen werden hier angezeigt.",
+      "multipleVendors": "{{count}} Anbieter",
+      "vendorFallback": "Unbekannter Anbieter"
     },
     "summary": {
       "requestReturn": "Rücksendung anfordern",
@@ -2757,6 +2761,9 @@
     "customer": "Kunde",
     "date": "Datum",
     "order": "Bestellung",
+    "orderId": "Bestell-ID",
+    "groupId": "Gruppen-ID",
+    "vendor": "Anbieter",
     "fulfillment": "Erfüllung",
     "provider": "Anbieter",
     "payment": "Zahlung",

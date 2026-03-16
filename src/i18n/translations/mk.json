@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Растечки",
     "descending": "Опаѓачки",
+    "expandAll": "Прошири ги сите редови",
+    "collapseAll": "Собери ги сите редови",
     "add": "Додадете",
     "start": "Започнете",
     "end": "Крај",
@@ -976,7 +978,9 @@
     "orderCanceled": "Нарачката е успешно откажана",
     "onDateFromSalesChannel": "{{date}} од {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Вашите нарачки ќе се појават овде."
+      "noRecordsMessage": "Вашите нарачки ќе се појават овде.",
+      "multipleVendors": "{{count}} продавачи",
+      "vendorFallback": "Непознат продавач"
     },
     "status": {
       "not_paid": "Не е платено",
@@ -2866,6 +2870,9 @@
     "customer": "Клиент",
     "date": "Датум",
     "order": "Нарачајте",
+    "orderId": "ID на нарачка",
+    "groupId": "ID на група",
+    "vendor": "Продавач",
     "fulfillment": "Исполнување",
     "provider": "Провајдер",
     "payment": "Плаќање",

@@ -1,19 +1,19 @@
 import type { ReactNode } from 'react';
 
-import { DataTableFilter } from '@components/table/data-table/data-table-filter';
-import {
-  DataTableOrderBy,
-  type DataTableOrderByKey
-} from '@components/table/data-table/data-table-order-by';
-import { DataTableSearch } from '@components/table/data-table/data-table-search';
-
-import type { Filter } from '..';
+import { Filter } from '..';
+import { DataTableExpandAll } from '../data-table-expand-all';
+import { DataTableFilter } from '../data-table-filter';
+import { DataTableOrderBy, DataTableOrderByKey } from '../data-table-order-by';
+import { DataTableSearch } from '../data-table-search';
 
 export interface DataTableQueryProps<TData> {
   search?: boolean | 'autofocus';
   orderBy?: DataTableOrderByKey<TData>[];
   filters?: Filter[];
   prefix?: string;
+  enableExpandAll?: boolean;
+  isAllExpanded?: boolean;
+  onToggleExpandAll?: () => void;
   filterBarContent?: ReactNode;
 }
 
@@ -22,10 +22,16 @@ export const DataTableQuery = <TData,>({
   orderBy,
   filters,
   prefix,
+  enableExpandAll,
+  isAllExpanded,
+  onToggleExpandAll,
   filterBarContent
 }: DataTableQueryProps<TData>) => {
+  const hasQueryControls = search || orderBy || filters || prefix || enableExpandAll || filterBarContent;
+  const shouldShowExpandAll = enableExpandAll && onToggleExpandAll && isAllExpanded !== undefined;
+
   return (
-    (search || orderBy || filters || prefix || filterBarContent) && (
+    hasQueryControls && (
       <div
         className="flex items-start justify-between gap-x-4 px-6 py-4"
         data-testid="data-table-query"
@@ -56,6 +62,12 @@ export const DataTableQuery = <TData,>({
             <DataTableOrderBy
               keys={orderBy}
               prefix={prefix}
+            />
+          )}
+          {shouldShowExpandAll && (
+            <DataTableExpandAll
+              isAllExpanded={isAllExpanded}
+              onToggleExpandAll={onToggleExpandAll}
             />
           )}
         </div>

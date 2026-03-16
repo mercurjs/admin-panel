@@ -3,6 +3,8 @@
   "general": {
     "ascending": "По зростанню",
     "descending": "По спаданню",
+    "expandAll": "Розгорнути всі рядки",
+    "collapseAll": "Згорнути всі рядки",
     "add": "Додати",
     "start": "Почати",
     "end": "Кінець",
@@ -935,7 +937,9 @@
     "cancelWarning": "Ви збираєтеся скасувати замовлення {{id}}. Цю дію неможливо скасувати.",
     "onDateFromSalesChannel": "{{date}} з {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Ваші замовлення з'являться тут."
+      "noRecordsMessage": "Ваші замовлення з'являться тут.",
+      "multipleVendors": "{{count}} продавців",
+      "vendorFallback": "Невідомий продавець"
     },
     "summary": {
       "requestReturn": "Запросити повернення",
@@ -2800,6 +2804,9 @@
     "customer": "Клієнт",
     "date": "Дата",
     "order": "Замовлення",
+    "orderId": "ID замовлення",
+    "groupId": "ID групи",
+    "vendor": "Продавець",
     "fulfillment": "Виконання",
     "provider": "Постачальник",
     "payment": "Оплата",

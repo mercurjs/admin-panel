@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Ascending",
     "descending": "Descending",
+    "expandAll": "Expand all rows",
+    "collapseAll": "Collapse all rows",
     "add": "Add",
     "start": "Start",
     "end": "End",
@@ -1062,7 +1064,9 @@
     "orderCanceled": "Order canceled successfully",
     "onDateFromSalesChannel": "{{date}} from {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Your orders will show up here."
+      "noRecordsMessage": "Your orders will show up here.",
+      "multipleVendors": "{{count}} vendors",
+      "vendorFallback": "Unknown vendor"
     },
     "status": {
       "not_paid": "Not paid",
@@ -3152,6 +3156,9 @@
     "customer": "Customer",
     "date": "Date",
     "order": "Order",
+    "orderId": "Order ID",
+    "groupId": "Group ID",
+    "vendor": "Vendor",
     "fulfillment": "Fulfillment",
     "provider": "Provider",
     "payment": "Payment",

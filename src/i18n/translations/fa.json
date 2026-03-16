@@ -3,6 +3,8 @@
   "general": {
     "ascending": "صعودی",
     "descending": "نزولی",
+    "expandAll": "باز کردن همه ردیف‌ها",
+    "collapseAll": "بستن همه ردیف‌ها",
     "add": "اضافه کردن",
     "start": "شروع",
     "end": "پایان",
@@ -976,7 +978,9 @@
     "orderCanceled": "سفارش با موفقیت لغو شد",
     "onDateFromSalesChannel": "{{date}} از {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "سفارشات شما اینجا نمایش داده خواهند شد."
+      "noRecordsMessage": "سفارشات شما اینجا نمایش داده خواهند شد.",
+      "multipleVendors": "{{count}} فروشنده",
+      "vendorFallback": "فروشنده ناشناس"
     },
     "status": {
       "not_paid": "پرداخت نشده",
@@ -2876,6 +2880,9 @@
     "customer": "مشتری",
     "date": "تاریخ",
     "order": "سفارش",
+    "orderId": "شناسه سفارش",
+    "groupId": "شناسه گروه",
+    "vendor": "فروشنده",
     "fulfillment": "پردازش",
     "provider": "ارائه‌دهنده",
     "payment": "پرداخت",

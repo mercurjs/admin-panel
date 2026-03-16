@@ -3,6 +3,8 @@
   "general": {
     "ascending": "昇順",
     "descending": "降順",
+    "expandAll": "すべての行を展開",
+    "collapseAll": "すべての行を折りたたむ",
     "add": "追加",
     "start": "開始",
     "end": "終了",
@@ -935,7 +937,9 @@
     "cancelWarning": "注文{{id}}をキャンセルしようとしています。この操作は元に戻せません。",
     "onDateFromSalesChannel": "{{salesChannel}}から{{date}}",
     "list": {
-      "noRecordsMessage": "あなたの注文がここに表示されます。"
+      "noRecordsMessage": "あなたの注文がここに表示されます。",
+      "multipleVendors": "{{count}}社のベンダー",
+      "vendorFallback": "不明なベンダー"
     },
     "summary": {
       "requestReturn": "返品をリクエスト",
@@ -2765,6 +2769,9 @@
     "customer": "顧客",
     "date": "日付",
     "order": "注文",
+    "orderId": "注文ID",
+    "groupId": "グループID",
+    "vendor": "ベンダー",
     "fulfillment": "フルフィルメント",
     "provider": "プロバイダー",
     "payment": "支払い",

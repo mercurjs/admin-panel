@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Өсөх",
     "descending": "Буурах",
+    "expandAll": "Бүх мөрүүдийг дэлгэх",
+    "collapseAll": "Бүх мөрүүдийг хураах",
     "add": "Нэмэх",
     "start": "Эхлэх",
     "end": "Дуусах",
@@ -976,7 +978,9 @@
     "orderCanceled": "Захиалга амжилттай цуцлагдлаа",
     "onDateFromSalesChannel": "{{date}} нь {{salesChannel}}-ээс",
     "list": {
-      "noRecordsMessage": "Таны захиалгууд энд харагдана."
+      "noRecordsMessage": "Таны захиалгууд энд харагдана.",
+      "multipleVendors": "{{count}} борлуулагч",
+      "vendorFallback": "Тодорхойгүй борлуулагч"
     },
     "status": {
       "not_paid": "Төлөгдөөгүй",
@@ -2866,6 +2870,9 @@
     "customer": "Үйлчлүүлэгч",
     "date": "Огноо",
     "order": "Захиалга",
+    "orderId": "Захиалгын ID",
+    "groupId": "Бүлгийн ID",
+    "vendor": "Борлуулагч",
     "fulfillment": "Биелэлт",
     "provider": "Үйлчилгээ үзүүлэгч",
     "payment": "Төлбөр",

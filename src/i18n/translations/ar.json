@@ -3,6 +3,8 @@
   "general": {
     "ascending": "تصاعدي",
     "descending": "تنازلي",
+    "expandAll": "توسيع جميع الصفوف",
+    "collapseAll": "طي جميع الصفوف",
     "add": "إضافة",
     "start": "ابدأ",
     "end": "نهاية",
@@ -1003,7 +1005,9 @@
     "cancelWarning": "أنت على وشك إلغاء الطلب {{id}}. لا يمكن التراجع عن هذا الإجراء.",
     "onDateFromSalesChannel": "{{date}} من {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "ستظهر طلباتك هنا."
+      "noRecordsMessage": "ستظهر طلباتك هنا.",
+      "multipleVendors": "{{count}} بائعين",
+      "vendorFallback": "بائع غير معروف"
     },
     "summary": {
       "requestReturn": "طلب إرجاع",
@@ -2900,6 +2904,9 @@
     "customer": "العميل",
     "date": "التاريخ",
     "order": "الطلب",
+    "orderId": "معرف الطلب",
+    "groupId": "معرف المجموعة",
+    "vendor": "البائع",
     "fulfillment": "التنفيذ",
     "provider": "المزود",
     "payment": "الدفع",

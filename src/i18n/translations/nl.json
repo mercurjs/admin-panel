@@ -3,6 +3,8 @@
   "general": {
     "ascending": "Oplopend",
     "descending": "Aflopend",
+    "expandAll": "Alle rijen uitvouwen",
+    "collapseAll": "Alle rijen invouwen",
     "add": "Toevoegen",
     "start": "Start",
     "end": "Einde",
@@ -1015,7 +1017,9 @@
     "orderCanceled": "Bestelling succesvol geannuleerd",
     "onDateFromSalesChannel": "{{date}} van {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Uw bestellingen verschijnen hier."
+      "noRecordsMessage": "Uw bestellingen verschijnen hier.",
+      "multipleVendors": "{{count}} leveranciers",
+      "vendorFallback": "Onbekende leverancier"
     },
     "status": {
       "not_paid": "Niet betaald",
@@ -2949,6 +2953,9 @@
     "customer": "Klant",
     "date": "Datum",
     "order": "Bestelling",
+    "orderId": "Bestelling ID",
+    "groupId": "Groep ID",
+    "vendor": "Leverancier",
     "fulfillment": "Verzending",
     "provider": "Provider",
     "payment": "Betaling",

@@ -3,6 +3,8 @@
   "general": {
     "ascending": "По возрастанию",
     "descending": "По убыванию",
+    "expandAll": "Развернуть все строки",
+    "collapseAll": "Свернуть все строки",
     "add": "Добавить",
     "start": "Начало",
     "end": "Конец",
@@ -976,7 +978,9 @@
     "orderCanceled": "Заказ успешно отменен",
     "onDateFromSalesChannel": "{{date}} из {{salesChannel}}",
     "list": {
-      "noRecordsMessage": "Ваши заказы появятся здесь."
+      "noRecordsMessage": "Ваши заказы появятся здесь.",
+      "multipleVendors": "{{count}} продавцов",
+      "vendorFallback": "Неизвестный продавец"
     },
     "status": {
       "not_paid": "Не оплачен",
@@ -2875,6 +2879,9 @@
     "customer": "Клиент",
     "date": "Дата",
     "order": "Заказ",
+    "orderId": "ID заказа",
+    "groupId": "ID группы",
+    "vendor": "Продавец",
     "fulfillment": "Фулфилмент",
     "provider": "Провайдер",
     "payment": "Оплата",
