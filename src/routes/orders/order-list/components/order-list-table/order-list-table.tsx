@@ -71,7 +71,11 @@ export const OrderListTable = () => {
             if (hasMultipleOrders(row.original)) {
               return '';
             }
-            return `/orders/${row.original.orders[0].id}`;
+            const firstOrder = row.original.orders?.[0];
+            if (!firstOrder) {
+              return '';
+            }
+            return `/orders/${firstOrder.id}`;
           }
           return `/orders/${row.original.id}`;
         }}
