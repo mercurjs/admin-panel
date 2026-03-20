@@ -12,11 +12,7 @@ export const OrderRemainingOrdersGroupSection = () => {
   const { t } = useTranslation();
   const { getFullDate } = useDate();
 
-  const { data, isLoading } = useOrderSet(id!);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const { data } = useOrderSet(id!);
 
   const { order_sets } = data || {};
 
