@@ -318,6 +318,22 @@ const useCoreRoutes = (): Omit<INavItem, "pathname">[] => {
       label: t("messages.domain"),
       to: "/messages",
     },
+    // GP Operator Tooling (Epic 8)
+    {
+      icon: <MagnifyingGlass />,
+      label: "Entitlements",
+      to: "/entitlements",
+    },
+    {
+      icon: <Buildings />,
+      label: "Vendors",
+      to: "/vendors",
+    },
+    {
+      icon: <SquaresPlus />,
+      label: "Health Dashboard",
+      to: "/health-dashboard",
+    },
   ];
 };
 

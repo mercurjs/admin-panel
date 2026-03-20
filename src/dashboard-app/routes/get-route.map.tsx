@@ -1017,6 +1017,22 @@ export function getRouteMap({
                 },
               ],
             },
+            // GP extensions (Epic 8)
+            {
+              path: "/entitlements",
+              errorElement: <ErrorBoundary />,
+              lazy: () => import("../../routes/entitlements"),
+            },
+            {
+              path: "/vendors",
+              errorElement: <ErrorBoundary />,
+              lazy: () => import("../../routes/vendors"),
+            },
+            {
+              path: "/health-dashboard",
+              errorElement: <ErrorBoundary />,
+              lazy: () => import("../../routes/health-dashboard"),
+            },
             ...coreRoutes,
           ],
         },
