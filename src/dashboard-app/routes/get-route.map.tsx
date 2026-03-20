@@ -261,6 +261,11 @@ export function getRouteMap({
                   },
                   children: [
                     {
+                      path: 'media',
+                      lazy: () =>
+                        import("../../routes/categories/category-media"),
+                    },
+                    {
                       path: "edit",
                       lazy: () =>
                         import("../../routes/categories/category-edit"),
