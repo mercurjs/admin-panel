@@ -8,7 +8,6 @@ import type {
   CustomerDTO,
   FulfillmentStatus,
   InventoryItemDTO,
-  OrderLineItemDTO,
   PaginatedResponse,
   PaymentStatus,
   SalesChannelDTO

@@ -3,7 +3,6 @@ import { stockLocationsQueryKeys } from '@hooks/api/stock-locations';
 import { sdk } from '@lib/client';
 import { queryClient } from '@lib/query-client';
 import type { LoaderFunctionArgs } from 'react-router-dom';
-
 import { DEFAULT_FIELDS } from './constants';
 
 const orderDetailQuery = (id: string) => ({
@@ -13,7 +12,6 @@ const orderDetailQuery = (id: string) => ({
       fields: DEFAULT_FIELDS
     })
 });
-
 const stockLocationsListQuery = () => ({
   queryKey: stockLocationsQueryKeys.list({ limit: 999 }),
   queryFn: async () => sdk.admin.stockLocation.list({ limit: 999 })

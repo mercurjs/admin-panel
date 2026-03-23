@@ -5191,6 +5191,15 @@
             "disabledItemTooltip": {
               "type": "string"
             },
+            "disabledItemTooltipManagedByVendor": {
+              "type": "string"
+            },
+            "managedByVendorBadge": {
+              "type": "string"
+            },
+            "managedByVendorTooltip": {
+              "type": "string"
+            },
             "unfulfilledItems": {
               "type": "string"
             },
@@ -5245,6 +5254,9 @@
             "methodDescription": {
               "type": "string"
             },
+            "cantBeFulfilledByAdmin": {
+              "type": "string"
+            },
             "error": {
               "type": "object",
               "properties": {
@@ -5254,7 +5266,10 @@
                 "wrongQuantity_other": {
                   "type": "string"
                 },
-                "noItems": {
+                "fulfillmentNotAvailable": {
+                  "type": "string"
+                },
+                "fulfillmentNotAvailableDescription": {
                   "type": "string"
                 },
                 "noShippingOption": {
@@ -5267,7 +5282,8 @@
               "required": [
                 "wrongQuantity",
                 "wrongQuantity_other",
-                "noItems",
+                "fulfillmentNotAvailable",
+                "fulfillmentNotAvailableDescription",
                 "noShippingOption",
                 "noLocation"
               ],
@@ -5368,6 +5384,9 @@
             "markAsDeliveredWarning",
             "differentOptionSelected",
             "disabledItemTooltip",
+            "disabledItemTooltipManagedByVendor",
+            "managedByVendorBadge",
+            "managedByVendorTooltip",
             "unfulfilledItems",
             "statusLabel",
             "statusTitle",
@@ -5386,6 +5405,7 @@
             "locationDescription",
             "sendNotificationHint",
             "methodDescription",
+            "cantBeFulfilledByAdmin",
             "error",
             "status",
             "toast",

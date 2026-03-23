@@ -41,8 +41,9 @@ export const OrderDetail = () => {
   );
 
   // TODO: Retrieve endpoints don't have an order ability, so a JS sort until this is available
-  if (order) {
-    order.items = order.items.sort((itemA, itemB) => {
+  if (order?.items) {
+    order.items = order.items.sort(
+      (itemA: (typeof order.items)[number], itemB: (typeof order.items)[number]) => {
       if (itemA.created_at > itemB.created_at) {
         return 1;
       }
@@ -52,7 +53,8 @@ export const OrderDetail = () => {
       }
 
       return 0;
-    });
+      }
+    );
   }
 
   const { order: orderPreview, isLoading: isPreviewLoading } = useOrderPreview(id!);
@@ -90,7 +92,10 @@ export const OrderDetail = () => {
         data-testid="order-detail-page"
       >
         <TwoColumnPage.Main data-testid="order-detail-main">
-          <OrderActiveEditSection order={order} />
+          <OrderActiveEditSection
+            order={order}
+            quantity={0}
+          />
           <ActiveOrderClaimSection orderPreview={orderPreview!} />
           <ActiveOrderExchangeSection orderPreview={orderPreview!} />
           <ActiveOrderReturnSection orderPreview={orderPreview!} />
