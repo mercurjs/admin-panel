@@ -1467,7 +1467,8 @@
       "error": {
         "amountToLarge": "Cannot refund more than the original order amount.",
         "amountNegative": "Refund amount must be a positive number.",
-        "reasonRequired": "Please select a refund reason."
+        "reasonRequired": "Please select a refund reason.",
+        "refundAmountError": "Please enter an amount"
       }
     },
     "customer": {

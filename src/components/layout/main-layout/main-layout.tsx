@@ -23,6 +23,8 @@ import { Collapsible as RadixCollapsible } from "radix-ui";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
+import { MercurConnect } from "@assets/icons/MercurConnect";
+
 import { useLogout } from "../../../hooks/api";
 import { useStore } from "../../../hooks/api/store";
 import { useDocumentDirection } from "../../../hooks/use-document-direction";
@@ -61,6 +63,7 @@ const MainSidebar = () => {
         <div className="flex flex-1 flex-col justify-between">
           <div className="flex flex-1 flex-col">
             <CoreRouteSection />
+            <MercurConnectSection />
             <ExtensionRouteSection />
           </div>
           <UtilitySection />
@@ -95,7 +98,10 @@ const Logout = () => {
   };
 
   return (
-    <DropdownMenu.Item onClick={handleLogout} data-testid="sidebar-header-dropdown-logout">
+    <DropdownMenu.Item
+      onClick={handleLogout}
+      data-testid="sidebar-header-dropdown-logout"
+    >
       <div className="flex items-center gap-x-2">
         <OpenRectArrowOut className="text-ui-fg-subtle" />
         <span>{t("app.menus.actions.logout")}</span>
@@ -131,11 +137,19 @@ const Header = () => {
           data-testid="sidebar-header-dropdown-trigger"
         >
           {fallback ? (
-            <Avatar variant="squared" size="xsmall" fallback={fallback} data-testid="sidebar-header-dropdown-avatar" />
+            <Avatar
+              variant="squared"
+              size="xsmall"
+              fallback={fallback}
+              data-testid="sidebar-header-dropdown-avatar"
+            />
           ) : (
             <Skeleton className="h-6 w-6 rounded-md" />
           )}
-          <div className="block overflow-hidden text-start" data-testid="sidebar-header-dropdown-store-name">
+          <div
+            className="block overflow-hidden text-start"
+            data-testid="sidebar-header-dropdown-store-name"
+          >
             {name ? (
               <Text
                 size="small"
@@ -152,10 +166,24 @@ const Header = () => {
           <EllipsisHorizontal className="text-ui-fg-muted" />
         </DropdownMenu.Trigger>
         {isLoaded && (
-          <DropdownMenu.Content className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-0" data-testid="sidebar-header-dropdown-content">
-            <div className="flex items-center gap-x-3 px-2 py-1" data-testid="sidebar-header-dropdown-user-info">
-              <Avatar variant="squared" size="small" fallback={fallback} data-testid="sidebar-header-dropdown-user-avatar" />
-              <div className="flex flex-col overflow-hidden" data-testid="sidebar-header-dropdown-user-details">
+          <DropdownMenu.Content
+            className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-0"
+            data-testid="sidebar-header-dropdown-content"
+          >
+            <div
+              className="flex items-center gap-x-3 px-2 py-1"
+              data-testid="sidebar-header-dropdown-user-info"
+            >
+              <Avatar
+                variant="squared"
+                size="small"
+                fallback={fallback}
+                data-testid="sidebar-header-dropdown-user-avatar"
+              />
+              <div
+                className="flex flex-col overflow-hidden"
+                data-testid="sidebar-header-dropdown-user-details"
+              >
                 <Text
                   size="small"
                   weight="plus"
@@ -176,7 +204,11 @@ const Header = () => {
               </div>
             </div>
             <DropdownMenu.Separator data-testid="sidebar-header-dropdown-separator-1" />
-            <DropdownMenu.Item className="gap-x-2" asChild data-testid="sidebar-header-dropdown-store-settings">
+            <DropdownMenu.Item
+              className="gap-x-2"
+              asChild
+              data-testid="sidebar-header-dropdown-store-settings"
+            >
               <Link to="/settings/store">
                 <BuildingStorefront className="text-ui-fg-subtle" />
                 {t("app.nav.main.storeSettings")}
@@ -376,6 +408,23 @@ const CoreRouteSection = () => {
         return <NavItem key={route.to} {...route} />;
       })}
     </nav>
+  );
+};
+
+const MercurConnectSection = () => {
+  return (
+    <div>
+      <div className="px-3">
+        <Divider variant="dashed" />
+      </div>
+      <div className="flex flex-col gap-y-1 py-3">
+        <NavItem
+          label="Mercur Connect"
+          to="/mercur-connect"
+          icon={<MercurConnect />}
+        />
+      </div>
+    </div>
   );
 };
 

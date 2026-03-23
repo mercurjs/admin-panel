@@ -28,6 +28,11 @@ export function getRouteMap({
           element: <MainLayout />,
           children: [
             {
+              path: "/mercur-connect",
+              errorElement: <ErrorBoundary />,
+              lazy: () => import("../../routes/mercur-connect"),
+            },
+            {
               path: "/",
               errorElement: <ErrorBoundary />,
               lazy: () => import("../../routes/home"),

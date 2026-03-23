@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { HttpTypes } from '@medusajs/types';
 import { Button, CurrencyInput, Heading, Label, Select, Textarea, toast } from '@medusajs/ui';
+import i18next from 'i18next';
 import { formatValue } from 'react-currency-input-field';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -25,10 +26,14 @@ type CreateRefundFormProps = {
 };
 
 const CreateRefundSchema = zod.object({
-  amount: zod.object({
-    value: zod.string().or(zod.number()),
-    float: zod.number().or(zod.null())
-  }),
+  amount: zod
+    .object({
+      value: zod.string().or(zod.number()),
+      float: zod.number().or(zod.null())
+    })
+    .refine(data => data.float !== null && data.float !== undefined && data.float > 0, {
+      message: i18next.t('orders.refund.error.refundAmountError')
+    }),
   note: zod.string().optional(),
   refund_reason_id: zod.string().optional()
 });
