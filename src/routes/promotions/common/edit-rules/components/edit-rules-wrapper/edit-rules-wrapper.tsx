@@ -1,3 +1,4 @@
+import { FetchError } from '@medusajs/js-sdk';
 import {
   CreatePromotionRuleDTO,
   PromotionDTO,
@@ -62,49 +63,49 @@ export const EditRulesWrapper = ({ promotion, rules, ruleType }: EditPromotionFo
       const rulesToCreate: CreatePromotionRuleDTO[] = rulesData.filter(rule => !('id' in rule));
       const rulesToUpdate = rulesData.filter((rule: { id: string }) => typeof rule.id === 'string');
 
-      if (Object.keys(applicationMethodData).length) {
-        await updatePromotion(
-          {
+      try {
+        if (Object.keys(applicationMethodData).length) {
+          await updatePromotion({
             application_method: applicationMethodData
-          } as any,
-          {
-            onError: error => {
-              const message = error.message.replace(/(\w+_\w+)/g, match => `"${match.replace(/_/g, ' ')}"`);
-              toast.error(message);
-            }
-          }
-        );
+          } as any);
+        }
+
+        rulesToCreate.length &&
+          (await addPromotionRules({
+            rules: rulesToCreate.map(rule => {
+              return {
+                attribute: rule.attribute,
+                operator: rule.operator,
+                values: rule.values
+              } as any;
+            })
+          }));
+
+        rulesToRemove?.length &&
+          (await removePromotionRules({
+            rule_ids: rulesToRemove.map(r => r.id).filter(Boolean)
+          }));
+
+        rulesToUpdate.length &&
+          (await updatePromotionRules({
+            rules: rulesToUpdate.map((rule: PromotionRuleResponse) => {
+              return {
+                id: rule.id!,
+                attribute: rule.attribute,
+                operator: rule.operator as PromotionRuleOperatorValues,
+                values: rule.values as unknown as string | string[]
+              };
+            })
+          }));
+
+        handleSuccess();
+      } catch (error) {
+        const message =
+          error instanceof FetchError
+            ? error.message.replace(/(\w+_\w+)/g, match => `"${match.replace(/_/g, ' ')}"`)
+            : 'An error occurred';
+        toast.error(message);
       }
-
-      rulesToCreate.length &&
-        (await addPromotionRules({
-          rules: rulesToCreate.map(rule => {
-            return {
-              attribute: rule.attribute,
-              operator: rule.operator,
-              values: rule.values
-            } as any;
-          })
-        }));
-
-      rulesToRemove?.length &&
-        (await removePromotionRules({
-          rule_ids: rulesToRemove.map(r => r.id).filter(Boolean)
-        }));
-
-      rulesToUpdate.length &&
-        (await updatePromotionRules({
-          rules: rulesToUpdate.map((rule: PromotionRuleResponse) => {
-            return {
-              id: rule.id!,
-              attribute: rule.attribute,
-              operator: rule.operator as PromotionRuleOperatorValues,
-              values: rule.values as unknown as string | string[]
-            };
-          })
-        }));
-
-      handleSuccess();
     };
   };
 

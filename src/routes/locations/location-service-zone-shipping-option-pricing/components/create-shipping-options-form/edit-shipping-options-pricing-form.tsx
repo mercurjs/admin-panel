@@ -177,10 +177,11 @@ export function EditShippingOptionsPricingForm({
 
     await mutateAsync(
       {
-        prices: allPrices,
-        ...(shippingOption.type?.id && {
-          type_id: shippingOption.type.id
-        })
+        prices: allPrices as (
+          | HttpTypes.AdminUpdateShippingOptionPriceWithCurrency
+          | HttpTypes.AdminUpdateShippingOptionPriceWithRegion
+        )[],
+        ...(shippingOption.type?.id && { type_id: shippingOption.type.id })
       },
       {
         onSuccess: () => {
