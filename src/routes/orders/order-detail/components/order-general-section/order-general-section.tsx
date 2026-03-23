@@ -93,7 +93,9 @@ export const OrderGeneralSection = ({ order }: OrderGeneralSectionProps) => {
                 {
                   label: t('actions.cancel'),
                   onClick: handleCancel,
-                  disabled: !!order.canceled_at,
+                  disabled:
+                    !!order.canceled_at ||
+                    order.fulfillment_status !== 'not_fulfilled',
                   icon: <XCircle />
                 }
               ]

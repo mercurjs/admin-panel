@@ -3202,6 +3202,7 @@
     "location": "Location",
     "quantity": "Quantity",
     "variant": "Variant",
+    "vendor": "Vendor",
     "id": "ID",
     "parent": "Parent",
     "minSubtotal": "Min. Subtotal",
