@@ -10,7 +10,7 @@ import { hasMultipleOrders, isOrderSet } from '@routes/orders/order-list/utils/i
 import { keepPreviousData } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 export const OrderListTable = () => {
   const { t } = useTranslation();
@@ -42,6 +42,7 @@ export const OrderListTable = () => {
       if (isOrderSet(row) && hasMultipleOrders(row)) {
         return row.orders;
       }
+
       return [];
     },
     enableExpandableRows: true
@@ -75,8 +76,10 @@ export const OrderListTable = () => {
             if (!firstOrder) {
               return '';
             }
+
             return `/orders/${firstOrder.id}`;
           }
+
           return `/orders/${row.original.id}`;
         }}
         filters={filters}
@@ -85,7 +88,7 @@ export const OrderListTable = () => {
         isLoading={isLoading}
         pageSize={PAGE_SIZE}
         orderBy={[
-          { key: 'display_id', label: t('orders.fields.displayId') },
+          { key: 'display_id', label: t('fields.orderId') },
           { key: 'created_at', label: t('fields.createdAt') },
           { key: 'updated_at', label: t('fields.updatedAt') }
         ]}

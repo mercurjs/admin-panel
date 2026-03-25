@@ -1,134 +1,143 @@
-import { DescendingSorting } from "@medusajs/icons"
-import { DropdownMenu, IconButton } from "@medusajs/ui"
-import { useEffect, useState } from "react"
-import { useTranslation } from "react-i18next"
-import { useSearchParams } from "react-router-dom"
+import { useEffect, useState } from 'react';
 
-import { useDocumentDirection } from "../../../../hooks/use-document-direction"
+import { DescendingSorting } from '@medusajs/icons';
+import { DropdownMenu, IconButton } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
+
+import { useDocumentDirection } from '../../../../hooks/use-document-direction';
 
 export type DataTableOrderByKey<TData> = {
-  key: keyof TData
-  label: string
-}
+  key: keyof TData;
+  label: string;
+};
 
 type DataTableOrderByProps<TData> = {
-  keys: DataTableOrderByKey<TData>[]
-  prefix?: string
-}
+  keys: DataTableOrderByKey<TData>[];
+  prefix?: string;
+};
 
 enum SortDirection {
-  ASC = "asc",
-  DESC = "desc",
+  ASC = 'asc',
+  DESC = 'desc'
 }
 
 type SortState = {
-  key?: string
-  dir: SortDirection
-}
+  key?: string;
+  dir: SortDirection;
+};
 
 const initState = (params: URLSearchParams, prefix?: string): SortState => {
-  const param = prefix ? `${prefix}_order` : "order"
-  const sortParam = params.get(param)
+  const param = prefix ? `${prefix}_order` : 'order';
+  const sortParam = params.get(param);
 
   if (!sortParam) {
     return {
-      dir: SortDirection.ASC,
-    }
+      dir: SortDirection.ASC
+    };
   }
 
-  const dir = sortParam.startsWith("-") ? SortDirection.DESC : SortDirection.ASC
-  const key = sortParam.replace("-", "")
+  const dir = sortParam.startsWith('-') ? SortDirection.DESC : SortDirection.ASC;
+  const key = sortParam.replace('-', '');
 
   return {
     key,
-    dir,
-  }
-}
+    dir
+  };
+};
 
-export const DataTableOrderBy = <TData,>({
-  keys,
-  prefix,
-}: DataTableOrderByProps<TData>) => {
-  const [searchParams, setSearchParams] = useSearchParams()
+export const DataTableOrderBy = <TData,>({ keys, prefix }: DataTableOrderByProps<TData>) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [state, setState] = useState<{
-    key?: string
-    dir: SortDirection
-  }>(initState(searchParams, prefix))
-  const param = prefix ? `${prefix}_order` : "order"
-  const { t } = useTranslation()
-  const direction = useDocumentDirection()
+    key?: string;
+    dir: SortDirection;
+  }>(initState(searchParams, prefix));
+  const param = prefix ? `${prefix}_order` : 'order';
+  const { t } = useTranslation();
+  const direction = useDocumentDirection();
   useEffect(() => {
-    const newState = initState(searchParams, prefix)
-    setState(newState)
-  }, [searchParams, prefix])
+    const newState = initState(searchParams, prefix);
+    setState(newState);
+  }, [searchParams, prefix]);
 
   const handleDirChange = (dir: string) => {
-    setState((prev) => ({
+    setState(prev => ({
       ...prev,
-      dir: dir as SortDirection,
-    }))
+      dir: dir as SortDirection
+    }));
     updateOrderParam({
       key: state.key,
-      dir: dir as SortDirection,
-    })
-  }
+      dir: dir as SortDirection
+    });
+  };
 
   const handleKeyChange = (value: string) => {
-    setState((prev) => ({
+    setState(prev => ({
       ...prev,
-      key: value,
-    }))
+      key: value
+    }));
 
     updateOrderParam({
       key: value,
-      dir: state.dir,
-    })
-  }
+      dir: state.dir
+    });
+  };
 
   const updateOrderParam = (state: SortState) => {
     if (!state.key) {
-      setSearchParams((prev) => {
-        prev.delete(param)
-        return prev
-      })
+      setSearchParams(prev => {
+        prev.delete(param);
 
-      return
+        return prev;
+      });
+
+      return;
     }
 
-    const orderParam =
-      state.dir === SortDirection.ASC ? state.key : `-${state.key}`
-    setSearchParams((prev) => {
-      prev.set(param, orderParam)
-      return prev
-    })
-  }
+    const orderParam = state.dir === SortDirection.ASC ? state.key : `-${state.key}`;
+    setSearchParams(prev => {
+      prev.set(param, orderParam);
+
+      return prev;
+    });
+  };
 
   return (
-    <DropdownMenu dir={direction} data-testid="data-table-order-by-menu">
+    <DropdownMenu
+      dir={direction}
+      data-testid="data-table-order-by-menu"
+    >
       <DropdownMenu.Trigger asChild>
-        <IconButton size="small" data-testid="data-table-order-by-button">
+        <IconButton
+          size="small"
+          data-testid="data-table-order-by-button"
+        >
           <DescendingSorting />
         </IconButton>
       </DropdownMenu.Trigger>
-      <DropdownMenu.Content className="z-[1]" align="end" data-testid="data-table-order-by-content">
+      <DropdownMenu.Content
+        className="z-[1]"
+        align="end"
+        data-testid="data-table-order-by-content"
+      >
         <DropdownMenu.RadioGroup
           value={state.key}
           onValueChange={handleKeyChange}
           data-testid="data-table-order-by-field-group"
         >
-          {keys.map((key) => {
-            const stringKey = String(key.key)
+          {keys.map(key => {
+            const stringKey = String(key.key);
 
             return (
               <DropdownMenu.RadioItem
                 key={stringKey}
                 value={stringKey}
-                onSelect={(event) => event.preventDefault()}
+                onSelect={event => event.preventDefault()}
                 data-testid={`data-table-order-by-field-${stringKey}`}
               >
                 {key.label}
               </DropdownMenu.RadioItem>
-            )
+            );
           })}
         </DropdownMenu.RadioGroup>
         <DropdownMenu.Separator data-testid="data-table-order-by-separator" />
@@ -140,23 +149,23 @@ export const DataTableOrderBy = <TData,>({
           <DropdownMenu.RadioItem
             className="flex items-center justify-between"
             value="asc"
-            onSelect={(event) => event.preventDefault()}
+            onSelect={event => event.preventDefault()}
             data-testid="data-table-order-by-asc"
           >
-            {t("general.ascending")}
-            <DropdownMenu.Label>1 - 30</DropdownMenu.Label>
+            {t('general.ascending')}
+            <DropdownMenu.Label>1 → 30</DropdownMenu.Label>
           </DropdownMenu.RadioItem>
           <DropdownMenu.RadioItem
             className="flex items-center justify-between"
             value="desc"
-            onSelect={(event) => event.preventDefault()}
+            onSelect={event => event.preventDefault()}
             data-testid="data-table-order-by-desc"
           >
-            {t("general.descending")}
-            <DropdownMenu.Label>30 - 1</DropdownMenu.Label>
+            {t('general.descending')}
+            <DropdownMenu.Label>30 → 1</DropdownMenu.Label>
           </DropdownMenu.RadioItem>
         </DropdownMenu.RadioGroup>
       </DropdownMenu.Content>
     </DropdownMenu>
-  )
-}
+  );
+};
