@@ -10,7 +10,7 @@ import { hasMultipleOrders, isOrderSet } from '@routes/orders/order-list/utils/i
 import { keepPreviousData } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 export const OrderListTable = () => {
   const { t } = useTranslation();
