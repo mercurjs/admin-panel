@@ -1,5 +1,4 @@
 import type { HttpTypes } from "@medusajs/types"
-import type { ExtendedAdminProductListParams } from "@custom-types/product"
 import { useQueryParams } from "@hooks/use-query-params"
 
 type UseProductTableQueryProps = {
@@ -9,6 +8,7 @@ type UseProductTableQueryProps = {
 
 type ExtendedAdminProductListParams = HttpTypes.AdminProductListParams & {
   tag_id?: string[]
+  vendor_id?: string[]
 }
 
 const DEFAULT_FIELDS =
@@ -33,6 +33,7 @@ export const useProductTableQuery = ({
       "type_id",
       "status",
       "id",
+      "vendor_id",
     ],
     prefix
   )
@@ -50,6 +51,7 @@ export const useProductTableQuery = ({
     status,
     order,
     q,
+    vendor_id,
   } = queryObject
 
   const searchParams: ExtendedAdminProductListParams = {
@@ -67,6 +69,7 @@ export const useProductTableQuery = ({
     status: status?.split(",") as HttpTypes.AdminProductStatus[],
     q,
     fields: DEFAULT_FIELDS,
+    vendor_id: vendor_id?.split(","),
   }
 
   return {

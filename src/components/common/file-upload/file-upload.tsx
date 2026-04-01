@@ -9,6 +9,7 @@ export interface FileType {
 }
 
 export interface FileUploadProps {
+  disabled?: boolean
   label: string
   multiple?: boolean
   hint?: string
@@ -18,6 +19,7 @@ export interface FileUploadProps {
 }
 
 export const FileUpload = ({
+  disabled = false,
   label,
   hint,
   multiple = true,
@@ -95,6 +97,7 @@ export const FileUpload = ({
   return (
     <div>
       <button
+        disabled={disabled}
         ref={dropZoneRef}
         type="button"
         onClick={handleOpenFileSelector}
@@ -127,6 +130,7 @@ export const FileUpload = ({
         )}
       </button>
       <input
+        disabled={disabled}
         hidden
         ref={inputRef}
         onChange={handleFileChange}
