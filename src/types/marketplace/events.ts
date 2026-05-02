@@ -1,3 +1,3 @@
-export enum OrderSetWorkflowEvents {
-  PLACED = 'order_set.placed'
+export enum OrderGroupWorkflowEvents {
+  PLACED = 'order_group.placed'
 }

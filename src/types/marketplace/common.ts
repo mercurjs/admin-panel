@@ -11,7 +11,7 @@ import type {
   SalesChannelDTO
 } from '@medusajs/types'
 
-export type OrderSetDTO = {
+export type OrderGroupDTO = {
   id: string
   created_at: Date
   updated_at: Date
@@ -28,11 +28,11 @@ export type OrderSetDTO = {
   payment_collection?: PaymentCollectionDTO
 }
 
-export type OrderSetWithOrdersDTO = OrderSetDTO & {
+export type OrderGroupWithOrdersDTO = OrderGroupDTO & {
   orders: (OrderDTO & OrderDetailDTO)[]
 }
 
-export type FormattedOrderSetDTO = OrderSetDTO & {
+export type FormattedOrderGroupDTO = OrderGroupDTO & {
   status: OrderStatus
   payment_status: PaymentCollectionStatus
   fulfillment_status: FulfillmentStatus

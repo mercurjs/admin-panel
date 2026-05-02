@@ -10,7 +10,7 @@ import { sdk } from "../../lib/client";
 import { queryKeysFactory } from "../../lib/query-key-factory";
 import { VendorSeller } from "../../types";
 import { AdminCustomerGroup, AdminOrder, AdminProduct } from "@medusajs/types";
-import { OrderSet } from "../../types/order/common";
+import { OrderGroup } from "../../types/order/common";
 
 export const sellerQueryKeys = queryKeysFactory("seller");
 
@@ -556,15 +556,15 @@ export const useInviteSeller = () => {
   });
 };
 
-export const useOrderSet = (id: string) => {
+export const useOrderGroup = (id: string) => {
   return useQuery<
-    { order_sets: OrderSet[] },
+    { order_groups: OrderGroup[] },
     Error,
-    { order_sets: OrderSet[] }
+    { order_groups: OrderGroup[] }
   >({
-    queryKey: ["order-set", id],
+    queryKey: ["order-group", id],
     queryFn: () =>
-      sdk.client.fetch(`/admin/order-sets?order_id=${id}`, {
+      sdk.client.fetch(`/admin/order-groups?order_id=${id}`, {
         method: "GET",
       }),
   });

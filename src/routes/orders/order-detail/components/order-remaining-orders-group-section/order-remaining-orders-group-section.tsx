@@ -1,6 +1,6 @@
 import { Badge, Button, Container, Heading, Text } from "@medusajs/ui";
 import { useNavigate, useParams } from "react-router-dom";
-import { useOrderSet } from "../../../../../hooks/api/sellers";
+import { useOrderGroup } from "../../../../../hooks/api/sellers";
 import { PaymentStatusBadge } from "../../../../../components/common/payments-status-badge";
 import { OrderStatusBadge } from "../../../../../components/common/order-status-badge";
 
@@ -8,15 +8,15 @@ export const OrderRemainingOrdersGroupSection = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data, isLoading } = useOrderSet(id!);
+  const { data, isLoading } = useOrderGroup(id!);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  const { order_sets } = data || {};
+  const { order_groups } = data || {};
 
-  const { orders } = order_sets?.[0] || {};
+  const { orders } = order_groups?.[0] || {};
 
   return (
     <Container data-testid="order-remaining-orders-group-section">

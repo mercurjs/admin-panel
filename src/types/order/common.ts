@@ -48,7 +48,7 @@ export interface OrderQueryParams {
   q?: string;
 }
 
-export interface OrderSet extends Order {
+export interface OrderGroup extends Order {
   orders: Order[];
 }
 
