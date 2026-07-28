@@ -1,3 +1,5 @@
+> ⚠️  **Deprecated** — this repository is no longer maintained. The Admin panel is now part of the [Mercur](https://github.com/mercurjs/mercur) monorepo. Use [mercurjs/mercur](https://github.com/mercurjs/mercur) instead.
+
 <div align="center">
   <h1> Admin Panel
     <br> 
